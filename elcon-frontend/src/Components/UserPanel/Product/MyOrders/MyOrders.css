@@ -1,0 +1,193 @@
+@import '../../Common/UserLayout.css';
+
+.user-orders-page {
+  padding: 0 0 18px;
+}
+
+.user-orders-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.user-orders-route {
+  text-align: center;
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 600;
+  color: #2f2f2f;
+  margin-bottom: 18px;
+  word-break: break-word;
+}
+
+.user-orders-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(0, 162, 214, 0.14);
+  border-radius: 18px;
+  box-shadow: 0 18px 35px rgba(12, 52, 74, 0.08);
+  padding: 18px;
+}
+
+.user-orders-title {
+  margin: 0 0 10px;
+  font-size: clamp(22px, 2.5vw, 28px);
+  font-weight: 700;
+  color: #4a4a4a;
+}
+
+.user-orders-table-wrap {
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.user-orders-table {
+  min-width: 980px;
+}
+
+.user-orders-table thead th {
+  background: #13a7d3;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-color: rgba(255, 255, 255, 0.14);
+  text-align: center;
+  padding: 10px 12px;
+}
+
+.user-orders-table tbody tr:nth-child(even) {
+  background: var(--darker);
+}
+
+.user-orders-table td {
+  font-size: 16px;
+  color: #424242;
+  text-align: center;
+  padding: 11px 12px;
+}
+
+.order-status {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.order-status--pending {
+  color: #ff8f00;
+}
+
+.order-status--confirmed {
+  color: #00a4f0;
+}
+
+.order-status--processing {
+  color: #f5bf00;
+}
+
+.order-status--dispatched {
+  color: #5a46c7;
+}
+
+.order-status--delivered {
+  color: #00a865;
+}
+
+.order-status--returned {
+  color: #ca43c2;
+}
+
+.order-status--cancelled {
+  color: #ff2a23;
+}
+
+.user-order-detail-cell {
+  text-align: center;
+}
+
+.user-order-detail-btn {
+  width: 36px;
+  height: 24px;
+  border: 0;
+  border-radius: 4px;
+  background: #ffc700;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.user-order-detail-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.user-order-detail-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.98);
+}
+
+@media (max-width: 768px) {
+  .user-orders-page {
+    padding-bottom: 10px;
+  }
+
+  .user-orders-card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  /* Keep table layout on small screens and allow horizontal scrolling
+     so it matches the Level Income table behavior. */
+  .user-orders-table {
+    min-width: 760px; /* allow the table to scroll inside .table-wrap */
+  }
+
+  .user-orders-table thead th {
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+
+  .user-orders-table td {
+    padding: 8px 10px;
+    font-size: 16px;
+  }
+
+  .user-order-detail-btn {
+    width: 34px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 576px) {
+  .user-orders-page {
+    padding-bottom: 4px;
+  }
+
+  .user-orders-route {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .user-orders-card {
+    padding: 12px;
+  }
+
+  .user-orders-title {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .user-orders-table td {
+    padding: 10px 10px;
+  }
+
+  .user-orders-table td::before {
+    flex-basis: 46%;
+  }
+}
+
+
+

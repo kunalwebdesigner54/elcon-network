@@ -1,0 +1,13 @@
+@import '../Common/AdminLayout.css';
+
+.signout-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 500px;
+}
+
+.signout-button:hover {
+  background: var(--accent);
+  color: var(--card-bg);
+}

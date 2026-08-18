@@ -1,0 +1,152 @@
+@import '../../Common/AdminLayout.css';
+
+/* ========== REPURCHASE INCOME - COMPLETE STYLES ========== */
+
+.repurchase-income-report-page {
+  width: 100%;
+}
+
+.repurchase-income-screen-title {
+  margin: 0 0 16px;
+}
+
+.repurchase-income-panel {
+  border-radius: 28px;
+  padding: 24px;
+}
+
+.repurchase-income-export-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.repurchase-income-export-btn {
+  min-width: 72px;
+}
+
+.repurchase-income-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.repurchase-income-filter-input {
+  flex: 1 1 170px;
+  min-width: 150px;
+}
+
+.repurchase-income-size-select {
+  flex: 0 0 92px;
+  min-width: 92px;
+}
+
+.repurchase-income-search-btn {
+  min-width: 110px;
+}
+
+/* Table wrapper for responsive scrolling */
+.repurchase-income-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.repurchase-income-table {
+  width: 100%;
+  min-width: 980px;
+}
+
+/* Summary row */
+.repurchase-income-summary-row td {
+  font-weight: 700;
+  background: rgba(0, 212, 170, 0.08);
+}
+
+/* Pagination */
+.repurchase-income-table-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.repurchase-income-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.repurchase-income-page-btn {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: #6d7e93;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin: 0 4px;
+}
+
+.repurchase-income-page-btn:hover {
+  border-color: #00d4aa;
+}
+
+.repurchase-income-active {
+  background: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* ========== RESPONSIVE STYLES ========== */
+
+@media (max-width: 768px) {
+  .repurchase-income-panel {
+    border-radius: 18px;
+    padding: 12px;
+  }
+
+  .repurchase-income-filter-input,
+  .repurchase-income-size-select,
+  .repurchase-income-search-btn {
+    min-width: 100%;
+    flex-basis: 100%;
+  }
+
+  .repurchase-income-table {
+    min-width: 900px;
+  }
+
+  .data-table th,
+  .data-table td {
+    font-size: 0.75rem;
+    padding: 8px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .repurchase-income-panel {
+    border-radius: 12px;
+    padding: 8px;
+  }
+
+  .repurchase-income-screen-title {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+
+  .repurchase-income-table {
+    min-width: 800px;
+  }
+
+  .repurchase-income-page-btn {
+    min-width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+    margin: 0 2px;
+  }
+}

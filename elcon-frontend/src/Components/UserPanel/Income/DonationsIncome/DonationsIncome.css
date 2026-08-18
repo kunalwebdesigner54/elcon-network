@@ -1,0 +1,52 @@
+@import '../../Common/UserLayout.css';
+
+.donation-income-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.donation-income-filters input,
+.donation-income-filters select {
+  border: 1px solid #ccd3db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-height: 38px;
+  font-size: 16px;
+  background: var(--card-bg);
+}
+
+.donation-income-filters .filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.donation-income-filters .filter-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--user-dark);
+  letter-spacing: 0.6px;
+}
+
+.donation-income-filters .filter-field .text-input {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .donation-income-filters > * {
+    flex: 1 1 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .donation-income-filters .user-btn-blue {
+    width: 100%;
+    display: block;
+    margin: 0;
+  }
+}
+
+

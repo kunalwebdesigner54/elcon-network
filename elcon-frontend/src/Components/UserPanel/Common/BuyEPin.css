@@ -1,0 +1,682 @@
+/* BuyEPin.css - Fully Responsive Modern Styles */
+
+/* ===== RESET & BASE ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.buyepin-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  background: var(--darker);
+  min-height: 100vh;
+}
+
+/* ===== TITLE ===== */
+.buyepin-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0f2c2a, #1e5a5a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 32px;
+  padding-left: 24px;
+  border-left: 6px solid #00d4aa;
+  letter-spacing: -0.3px;
+}
+
+/* ===== SINGLE CARD LAYOUT ===== */
+.buyepin-single-card {
+  
+  
+ 
+  padding: 36px 32px;
+  transition: all 0.3s ease;
+}
+
+.buyepin-single-flex {
+  display: flex;
+  flex-direction: row;
+  gap: 48px;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Left Column - Payment Details */
+.buyepin-single-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Right Column - Form Fields */
+.buyepin-single-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Section Title */
+.buyepin-section-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1e2a3a;
+  margin-bottom: 8px;
+  display: inline-block;
+  padding-bottom: 8px;
+  border-bottom: 3px solid #00d4aa;
+  letter-spacing: -0.2px;
+}
+
+/* ===== SCANNER AREA ===== */
+.buyepin-scanner {
+  width: 100%;
+  background: linear-gradient(145deg, #f9fffe, #f0f6f4);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  border: 2px dashed #cbd5e1;
+  transition: all 0.2s;
+  min-height: 280px;
+}
+
+.buyepin-scanner:hover {
+  border-color: #00d4aa;
+  background: var(--card-bg);
+}
+
+.buyepin-scanner-content {
+  text-align: center;
+}
+
+.buyepin-scanner-icon {
+  width: 64px;
+  height: 64px;
+  color: #00b894;
+  margin-bottom: 16px;
+}
+
+.buyepin-scanner-text {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3e50;
+  margin-top: 12px;
+}
+
+.buyepin-scanner-subtext {
+  display: block;
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-top: 6px;
+}
+
+/* ===== TABLES WRAPPER ===== */
+.buyepin-tables-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.buyepin-payment-table-card {
+  width: 100%;
+  background: var(--darker);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #e9edf2;
+}
+
+.buyepin-table-heading {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #f1f5f9;
+  padding: 14px 20px;
+  color: #1e5a5a;
+  border-bottom: 1px solid var(--border-color);
+  margin: 0;
+}
+
+.buyepin-responsive-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+.buyepin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.buyepin-table th, .buyepin-table td {
+  padding: 12px 20px;
+  border-bottom: 1px solid #eef2f6;
+  border-right: 1px solid #eef2f6;
+  text-align: left;
+}
+.buyepin-table th {
+  background: #f1f5f9;
+  color: #1e5a5a;
+  font-weight: 700;
+  font-size: 1em;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.buyepin-table tr:last-child td {
+  border-bottom: none;
+}
+.buyepin-table tr:nth-child(even) td {
+  background: var(--darker);
+}
+.buyepin-table tr:nth-child(odd) td {
+  background: var(--card-bg);
+}
+.buyepin-table td[colspan] {
+  text-align: center;
+  background: #ffeaea;
+  color: #c00;
+  font-weight: 600;
+}
+.buyepin-table-label {
+  font-weight: 600;
+  color: #4a5568;
+  width: 140px;
+  background: #fefefe;
+}
+.buyepin-table-value {
+  color: var(--text-main);
+  font-family: monospace;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+@media (max-width: 767px) {
+  .buyepin-table th, .buyepin-table td {
+    padding: 10px 15px;
+    font-size: 0.85em;
+  }
+  .buyepin-table th {
+    font-size: 0.9em;
+  }
+}
+
+/* ===== FORM FIELDS ===== */
+.buyepin-form-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.buyepin-form-col {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.buyepin-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.buyepin-input-group label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.buyepin-required {
+  color: #e53e3e;
+  font-size: 0.75rem;
+  margin-left: 2px;
+}
+
+.buyepin-input-group input[type="text"],
+.buyepin-input-group input[type="number"],
+.buyepin-input-group input[type="tel"],
+.buyepin-select-input {
+  padding: 12px 16px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 16px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  background: var(--card-bg);
+  font-family: inherit;
+  width: 100%;
+}
+
+.buyepin-select-input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+.buyepin-input-group input:focus,
+.buyepin-select-input:focus {
+  outline: none;
+  border-color: #00d4aa;
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+/* File Input Styling */
+.buyepin-file-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.buyepin-file-input-wrapper input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.buyepin-file-label {
+  display: inline-block;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--darker);
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #4a5568;
+  transition: all 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buyepin-file-label:hover {
+  border-color: #00d4aa;
+  background: var(--darker);
+}
+
+.buyepin-field-hint {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* Button */
+.buyepin-btn-row {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #eef2f6;
+  padding-top: 28px;
+}
+
+.buyepin-btn-blue {
+  background: linear-gradient(95deg, #0f2c2a, #1e5a5a);
+  border: none;
+  padding: 14px 36px;
+  border-radius: 40px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 2px 8px rgba(0, 180, 140, 0.2);
+}
+
+.buyepin-btn-blue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 180, 140, 0.25);
+  background: linear-gradient(95deg, #1a403d, #227575);
+}
+
+.buyepin-btn-blue:active {
+  transform: translateY(1px);
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Large Desktop (1400px and above) */
+@media (min-width: 1400px) {
+  .buyepin-single-flex {
+    gap: 64px;
+  }
+  
+  .buyepin-single-left,
+  .buyepin-single-right {
+    flex: 1;
+  }
+}
+
+/* Desktop (1024px to 1399px) */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .buyepin-single-card {
+    padding: 32px 28px;
+  }
+  
+  .buyepin-single-flex {
+    gap: 40px;
+  }
+  
+  .buyepin-scanner {
+    padding: 40px 24px;
+    min-height: 260px;
+  }
+}
+
+/* Tablet Landscape (900px to 1023px) */
+@media (max-width: 1023px) {
+  .buyepin-single-card {
+    padding: 28px 24px;
+  }
+  
+  .buyepin-single-flex {
+    flex-direction: column;
+    gap: 32px;
+  }
+  
+  .buyepin-single-left,
+  .buyepin-single-right {
+    width: 100%;
+  }
+  
+  .buyepin-scanner {
+    min-height: 240px;
+    padding: 32px 24px;
+  }
+  
+  .buyepin-tables-wrapper {
+   
+    gap: 20px;
+  }
+  
+  .buyepin-payment-table-card {
+    flex: 1;
+  }
+}
+
+/* Tablet Portrait (768px to 899px) */
+@media (max-width: 899px) {
+  .buyepin-title {
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+  }
+  
+  .buyepin-single-card {
+    padding: 24px 20px;
+  }
+  
+  .buyepin-section-title {
+    font-size: 1.25rem;
+  }
+  
+  .buyepin-form-fields {
+    gap: 24px;
+  }
+  
+  .buyepin-form-col {
+    min-width: 100%;
+  }
+  
+  .buyepin-table td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .buyepin-table-label {
+    width: 130px;
+  }
+}
+
+/* Mobile Landscape (600px to 767px) */
+@media (max-width: 767px) {
+  .buyepin-container {
+    padding: 16px;
+  }
+  
+  .buyepin-title {
+    font-size: 1.6rem;
+    padding-left: 16px;
+    border-left-width: 4px;
+  }
+  
+  .buyepin-single-card {
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+  
+  .buyepin-section-title {
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+  }
+  
+  .buyepin-single-flex {
+    gap: 28px;
+  }
+  
+  .buy-epin-single-left,
+  .buy-epin-single-right {
+    gap: 24px;
+  }
+  
+  .buy-epin-scanner {
+    padding: 28px 20px;
+    min-height: 220px;
+  }
+  
+  .scanner-icon {
+    width: 52px;
+    height: 52px;
+  }
+  
+  .scanner-text {
+    font-size: 1rem;
+  }
+  
+  .buy-epin-tables-wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .table-heading {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+  }
+  
+  .buy-epin-table td {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .input-group input[type="text"],
+  .input-group input[type="number"],
+  .input-group input[type="tel"],
+  .select-input {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border-radius: 14px;
+  }
+  
+  .buyepin-btn-blue {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 24px;
+  }
+  
+  .buyepin-btn-row {
+    justify-content: center;
+  }
+}
+
+/* Mobile Portrait (480px and below) */
+@media (max-width: 480px) {
+  .buy-epin-container {
+    padding: 12px;
+  }
+  
+  .user-page-title {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  
+  .single-card {
+    padding: 16px 12px;
+    border-radius: 20px;
+  }
+  
+  .section-title {
+    font-size: 1rem;
+    margin-bottom: 0;
+  }
+  
+  .buy-epin-single-flex {
+    gap: 24px;
+  }
+  
+  .buy-epin-single-left,
+  .buy-epin-single-right {
+    gap: 20px;
+  }
+  
+  .buy-epin-scanner {
+    padding: 24px 16px;
+    min-height: 200px;
+  }
+  
+  .scanner-icon {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .scanner-text {
+    font-size: 0.9rem;
+  }
+  
+  .scanner-subtext {
+    font-size: 0.7rem;
+  }
+  
+  .table-heading {
+    padding: 10px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .buy-epin-table td {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .table-label {
+    width: 110px;
+    font-size: 0.75rem;
+  }
+  
+  .table-value {
+    font-size: 0.75rem;
+  }
+  
+  .input-group label {
+    font-size: 0.7rem;
+  }
+  
+  .required {
+    font-size: 0.65rem;
+  }
+  
+  .input-group input[type="text"],
+  .input-group input[type="number"],
+  .input-group input[type="tel"],
+  .select-input {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+  }
+  
+  .file-label {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .field-hint {
+    font-size: 0.6rem;
+  }
+  
+  .buyepin-btn-row {
+    margin-top: 4px;
+    padding-top: 20px;
+  }
+  
+  .buyepin-btn-blue {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+  
+  .user-btn-blue svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Touch-friendly adjustments */
+@media (hover: none) and (pointer: coarse) {
+  .input-group input,
+  .select-input,
+  .file-label,
+  .user-btn-blue {
+    min-height: 44px;
+  }
+  
+  .buy-epin-table td {
+    padding: 12px 10px;
+  }
+}
+
+/* Print support */
+@media print {
+  .buy-epin-container {
+    background: white;
+    padding: 0;
+  }
+  
+  .user-btn-blue {
+    display: none;
+  }
+  
+  .single-card {
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+  }
+  
+  .buy-epin-scanner {
+    border: 1px solid var(--border-color);
+  }
+}
+

@@ -1,0 +1,17 @@
+@import '../JoiningPackage/JoiningPackage.css';
+
+.user-product-heading {
+  margin-bottom: 16px;
+}
+
+.user-product-card {
+  border: 2px solid rgba(0, 212, 170, 0.35);
+}
+
+.user-product-card:hover {
+  border-color: var(--user-primary);
+}
+
+.user-product-btn {
+  border-color: var(--user-primary);
+}

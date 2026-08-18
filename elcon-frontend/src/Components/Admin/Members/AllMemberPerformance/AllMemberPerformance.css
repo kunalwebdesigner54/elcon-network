@@ -1,0 +1,6 @@
+@import '../../Common/AdminLayout.css';
+
+.member-performance-status-inactive {
+  color: #8a2332;
+  font-weight: 700;
+}

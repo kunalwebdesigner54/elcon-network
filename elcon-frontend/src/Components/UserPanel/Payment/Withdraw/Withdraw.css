@@ -1,0 +1,1069 @@
+.withdraw-wrapper {
+  padding: 20px;
+  background: var(--darker);
+  min-height: 100vh;
+}
+
+.withdraw-header {
+  background: linear-gradient(135deg, rgba(211, 211, 211, 0.6) 0%, rgba(192, 192, 192, 0.4) 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.withdraw-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* Balance Cards Container */
+.balance-cards-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.balance-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.balance-card:hover {
+  transform: translateY(-4px);
+}
+
+.balance-card.primary {
+  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  color: white;
+}
+
+.balance-card.secondary {
+  background: white;
+  color: var(--text-main);
+}
+
+.card-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-label {
+  font-size: 16px;
+  margin: 0 0 4px 0;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.card-amount {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.balance-card.secondary .card-amount {
+  color: #00d4aa;
+}
+
+/* Withdraw Container */
+.withdraw-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Left Section */
+.withdraw-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.withdrawal-amount-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Amount Input Section */
+.amount-input-section {
+  margin-bottom: 20px;
+}
+
+.amount-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rupee-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 16px;
+  color: #00d4aa;
+  font-weight: 600;
+}
+
+.amount-input {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.amount-input:focus {
+  outline: none;
+  border-color: #00d4aa;
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+/* Quick Select Buttons */
+.quick-select-section {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.quick-btn {
+  flex: 1;
+  padding: 10px;
+  background: var(--darker);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.quick-btn:hover {
+  background: #00d4aa;
+  border-color: #00d4aa;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Withdrawal Summary */
+.withdrawal-summary {
+  background: var(--darker);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-left: 4px solid #00d4aa;
+}
+
+.summary-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 16px;
+}
+
+.summary-row.highlight {
+  background: rgba(0, 212, 170, 0.05);
+  padding: 10px 8px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+.summary-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.summary-label.bold {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.summary-value {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.summary-row.highlight .summary-value {
+  color: #00d4aa;
+  font-weight: 700;
+}
+
+/* Password Fields */
+.password-field {
+  margin-bottom: 16px;
+}
+
+.password-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.password-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #00d4aa;
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+/* Confirm Withdrawal Button */
+.confirm-withdrawal-btn {
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+}
+
+.confirm-withdrawal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+}
+
+.confirm-withdrawal-btn:active {
+  transform: translateY(0);
+}
+
+/* Right Section */
+.withdraw-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.transfer-method-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Transfer Options */
+.transfer-option {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.transfer-option:last-of-type {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+}
+
+.transfer-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.transfer-radio {
+  display: none;
+}
+
+.radio-custom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.transfer-radio:checked + .radio-custom {
+  border-color: #00d4aa;
+  background: #00d4aa;
+}
+
+.transfer-radio:checked + .radio-custom::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.method-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.method-content {
+  flex: 1;
+}
+
+.method-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 4px 0;
+}
+
+.method-note {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Withdrawal Note */
+.withdrawal-note {
+  background: rgba(255, 193, 7, 0.1);
+  border-left: 4px solid #ffc107;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 16px 0;
+}
+
+.withdrawal-note p {
+  font-size: 16px;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Bank Account Details */
+.bank-account-details {
+  margin-top: 20px;
+}
+
+.details-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.details-table tr {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 16px;
+}
+
+.details-table tr:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--text-main);
+  flex: 0 0 40%;
+  text-align: left;
+}
+
+.detail-value {
+  color: var(--text-main);
+  flex: 1;
+  text-align: right;
+  word-break: break-word;
+}
+
+.upi-row .detail-value {
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 1280px) {
+  .balance-cards-container {
+    gap: 14px;
+  }
+
+  .withdraw-container {
+    gap: 20px;
+  }
+
+  .withdrawal-amount-card,
+  .transfer-method-card {
+    padding: 20px;
+  }
+
+  .card-amount {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 992px) {
+  .balance-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .withdraw-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card-label {
+    font-size: 16px;
+  }
+
+  .card-amount {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .withdraw-wrapper {
+    padding: 16px;
+  }
+
+  .withdraw-header {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .withdraw-header h2 {
+    font-size: 20px;
+  }
+
+  .balance-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .balance-card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .card-icon {
+    font-size: 28px;
+  }
+
+  .card-label {
+    font-size: 10px;
+  }
+
+  .card-amount {
+    font-size: 16px;
+  }
+
+  .withdrawal-amount-card,
+  .transfer-method-card {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .quick-select-section {
+    gap: 10px;
+  }
+
+  .quick-btn {
+    font-size: 16px;
+    padding: 9px;
+  }
+
+  .amount-input {
+    padding: 9px 12px 9px 36px;
+    font-size: 16px;
+  }
+
+  .summary-row {
+    font-size: 16px;
+    padding: 6px 0;
+  }
+
+  .password-input {
+    padding: 9px 10px;
+    font-size: 16px;
+  }
+
+  .confirm-withdrawal-btn {
+    padding: 11px 18px;
+    font-size: 16px;
+  }
+
+  .method-icon {
+    font-size: 22px;
+  }
+
+  .method-name {
+    font-size: 16px;
+  }
+
+  .method-note {
+    font-size: 16px;
+  }
+
+  .details-title {
+    font-size: 16px;
+  }
+
+  .details-table tr {
+    font-size: 16px;
+    padding: 8px 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .withdraw-wrapper {
+    padding: 12px;
+  }
+
+  .withdraw-header {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .withdraw-header h2 {
+    font-size: 18px;
+  }
+
+  .balance-cards-container {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .balance-card {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .card-icon {
+    font-size: 24px;
+  }
+
+  .card-label {
+    font-size: 9px;
+  }
+
+  .card-amount {
+    font-size: 16px;
+  }
+
+  .withdraw-container {
+    gap: 16px;
+  }
+
+  .withdrawal-amount-card,
+  .transfer-method-card {
+    padding: 14px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  .amount-input-section {
+    margin-bottom: 16px;
+  }
+
+  .amount-label {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .amount-input {
+    padding: 8px 10px 8px 32px;
+    font-size: 16px;
+  }
+
+  .rupee-icon {
+    left: 10px;
+    font-size: 16px;
+  }
+
+  .quick-select-section {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .quick-btn {
+    font-size: 16px;
+    padding: 8px;
+  }
+
+  .withdrawal-summary {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .summary-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .summary-row {
+    font-size: 16px;
+    padding: 5px 0;
+  }
+
+  .password-field {
+    margin-bottom: 12px;
+  }
+
+  .password-label {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  .password-input {
+    padding: 8px 8px;
+    font-size: 16px;
+  }
+
+  .confirm-withdrawal-btn {
+    padding: 10px 16px;
+    font-size: 16px;
+    margin-top: 6px;
+  }
+
+  .transfer-option {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+  }
+
+  .radio-custom {
+    width: 18px;
+    height: 18px;
+    border-width: 1.5px;
+    margin-top: 3px;
+  }
+
+  .method-icon {
+    font-size: 20px;
+  }
+
+  .method-name {
+    font-size: 16px;
+  }
+
+  .method-note {
+    font-size: 10px;
+  }
+
+  .withdrawal-note {
+    padding: 10px;
+    margin: 12px 0;
+  }
+
+  .withdrawal-note p {
+    font-size: 16px;
+  }
+
+  .details-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .details-table tr {
+    font-size: 10px;
+    padding: 6px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .withdraw-wrapper {
+    padding: 10px;
+  }
+
+  .withdraw-header {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .withdraw-header h2 {
+    font-size: 16px;
+  }
+
+  .balance-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .balance-card {
+    padding: 10px;
+    gap: 8px;
+    border-radius: 10px;
+  }
+
+  .card-icon {
+    font-size: 20px;
+  }
+
+  .card-label {
+    font-size: 8px;
+  }
+
+  .card-amount {
+    font-size: 16px;
+  }
+
+  .withdraw-container {
+    gap: 12px;
+  }
+
+  .withdrawal-amount-card,
+  .transfer-method-card {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .amount-label {
+    font-size: 16px;
+  }
+
+  .amount-input {
+    padding: 8px 10px 8px 30px;
+    font-size: 16px;
+  }
+
+  .quick-btn {
+    font-size: 10px;
+    padding: 8px;
+  }
+
+  .summary-title {
+    font-size: 16px;
+  }
+
+  .summary-row {
+    font-size: 10px;
+  }
+
+  .password-label {
+    font-size: 16px;
+  }
+
+  .password-input {
+    padding: 7px 8px;
+    font-size: 16px;
+  }
+
+  .confirm-withdrawal-btn {
+    padding: 9px 14px;
+    font-size: 16px;
+  }
+
+  .method-name {
+    font-size: 16px;
+  }
+
+  .method-note {
+    font-size: 9px;
+  }
+
+  .details-title {
+    font-size: 16px;
+  }
+
+  .details-table tr {
+    font-size: 9px;
+  }
+
+  .detail-label {
+    flex: 0 0 45%;
+  }
+}
+
+@media (max-width: 480px) {
+  .withdraw-wrapper {
+    padding: 8px;
+    background: var(--darker);
+    border-radius: 0;
+  }
+
+  .withdraw-header {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+  }
+
+  .withdraw-header h2 {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .balance-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .balance-card {
+    padding: 8px;
+    gap: 6px;
+    border-radius: 8px;
+  }
+
+  .card-icon {
+    font-size: 18px;
+  }
+
+  .card-label {
+    font-size: 7px;
+  }
+
+  .card-amount {
+    font-size: 16px;
+  }
+
+  .withdraw-container {
+    gap: 10px;
+  }
+
+  .withdrawal-amount-card,
+  .transfer-method-card {
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .amount-input-section {
+    margin-bottom: 12px;
+  }
+
+  .amount-label {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .amount-input {
+    padding: 7px 8px 7px 28px;
+    font-size: 10px;
+  }
+
+  .rupee-icon {
+    left: 8px;
+    font-size: 16px;
+  }
+
+  .quick-select-section {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .quick-btn {
+    font-size: 9px;
+    padding: 7px;
+  }
+
+  .withdrawal-summary {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .summary-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .summary-row {
+    font-size: 9px;
+    padding: 4px 0;
+  }
+
+  .password-field {
+    margin-bottom: 10px;
+  }
+
+  .password-label {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .password-input {
+    padding: 6px 8px;
+    font-size: 10px;
+    border-radius: 6px;
+  }
+
+  .confirm-withdrawal-btn {
+    padding: 8px 12px;
+    font-size: 16px;
+    margin-top: 4px;
+    border-radius: 6px;
+  }
+
+  .transfer-option {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+
+  .radio-custom {
+    width: 16px;
+    height: 16px;
+    border-width: 1.5px;
+  }
+
+  .method-icon {
+    font-size: 18px;
+  }
+
+  .method-name {
+    font-size: 10px;
+  }
+
+  .method-note {
+    font-size: 8px;
+  }
+
+  .withdrawal-note {
+    padding: 8px;
+    margin: 10px 0;
+    border-radius: 6px;
+  }
+
+  .withdrawal-note p {
+    font-size: 10px;
+  }
+
+  .details-title {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+
+  .details-table tr {
+    font-size: 8px;
+    padding: 5px 0;
+    flex-direction: column;
+  }
+
+  .detail-label {
+    text-align: left;
+    margin-bottom: 2px;
+    flex: 0 0 auto;
+  }
+
+  .detail-value {
+    text-align: left;
+    flex: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .withdraw-header h2 {
+    font-size: 16px;
+  }
+
+  .balance-cards-container {
+    gap: 5px;
+  }
+
+  .card-icon {
+    font-size: 16px;
+  }
+
+  .card-amount {
+    font-size: 10px;
+  }
+
+  .card-title {
+    font-size: 10px;
+  }
+
+  .amount-input {
+    font-size: 9px;
+  }
+
+  .quick-btn {
+    font-size: 8px;
+    padding: 6px;
+  }
+
+  .confirm-withdrawal-btn {
+    font-size: 10px;
+    padding: 7px 10px;
+  }
+
+  .method-name {
+    font-size: 9px;
+  }
+
+  .details-title {
+    font-size: 9px;
+  }
+}
+
+
+

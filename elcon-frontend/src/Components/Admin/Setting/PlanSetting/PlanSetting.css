@@ -1,0 +1,82 @@
+.plan-page {
+ 
+  margin: 18px auto;
+  padding: 18px;
+}
+.plan-header {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.plan-card {
+  display: flex;
+  gap: 18px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid var(--border-color);
+}
+.ps-col {
+  flex: 1;
+}
+.ps-col-head {
+  background: #06a9d9;
+  color: #fff;
+  padding: 12px;
+  border-radius: 6px 6px 0 0;
+  font-weight: 700;
+  text-align: center;
+}
+.ps-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ps-table th,
+.ps-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e9f0f5;
+  text-align: center;
+  color: var(--text-main);
+}
+.ps-table tbody tr:nth-child(odd) {
+  background: var(--darker);
+}
+.plan-footer {
+  display: flex;
+  gap: 18px;
+  margin-top: 16px;
+}
+.plan-item {
+  flex: 1;
+  background: var(--card-bg);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e6f2f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.plan-item .label {
+  background: #06a9d9;
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.plan-item .val {
+  font-weight: 700;
+  padding: 8px;
+}
+
+@media (max-width: 900px) {
+  .plan-card {
+    flex-direction: column;
+  }
+}
+
+
+@media (max-width: 500px) {     
+   .plan-footer {
+    flex-direction: column;
+  }
+}
+

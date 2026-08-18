@@ -1,0 +1,108 @@
+.deposit-history-panel .report-filters {
+  margin-bottom: 16px;
+}
+
+.deposit-history-panel .table-toolbar {
+  justify-content: flex-end;
+}
+
+.deposit-add-btn {
+  min-width: 120px;
+}
+
+.deposit-table-wrap {
+  overflow-x: auto;
+}
+
+.deposit-table {
+  min-width: 980px;
+}
+
+.deposit-slip-btn {
+  background: linear-gradient(135deg, #00a7e6 0%, #0088c7 100%);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 56px;
+  transition: opacity 0.3s ease;
+}
+
+.deposit-slip-btn:hover {
+  opacity: 0.9;
+}
+
+.deposit-details-btn {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  background: #ffe08a;
+  color: #8a5a00;
+}
+
+.deposit-status {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  color: #fff;
+}
+
+.deposit-status--pending {
+  background: #ffe58f;
+  color: #c98a00;
+}
+
+.deposit-status--approve {
+  background: #f7c26a;
+  color: #ffffff;
+}
+
+.deposit-status--succeed {
+  background: #d9f5de;
+  color: #1f9d55;
+}
+
+.deposit-status--reject {
+  background: #ffd6d6;
+  color: #ef4444;
+}
+
+@media (max-width: 840px) {
+  .deposit-add-btn {
+    min-width: 100px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .deposit-table {
+    min-width: 800px;
+  }
+
+  .deposit-status,
+  .deposit-details-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+  }
+}
+

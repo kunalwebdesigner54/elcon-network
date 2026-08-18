@@ -1,0 +1,366 @@
+.home-banner {
+  min-height: 800px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.home-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.home-banner-inner {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+}
+
+.home-banner-content {
+  color: #fff;
+}
+
+.home-banner-img-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-banner-img {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  animation: bannerFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes bannerFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* ===== Banner Text Blur Animation ===== */
+.home-banner-content {
+  filter: blur(12px);
+  opacity: 0.3;
+  transition: filter 1s ease-out, opacity 1s ease-out;
+}
+
+.home-banner-content.banner-text-clear {
+  filter: blur(0);
+  opacity: 1;
+}
+
+.home-banner-kicker {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  opacity: 0.85;
+}
+
+.home-banner-title {
+  margin: 10px 0 24px;
+  font-size: clamp(48px, 7vw, 86px);
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.home-banner-desc {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+/* ===== 3 Steps Section ===== */
+.home-steps-section {
+  background: url('/sparkle-bg.jpg') center/cover fixed no-repeat;
+  padding: 100px 0;
+  position: relative;
+}
+
+.home-steps-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.85);
+  z-index: 1;
+}
+
+.home-steps-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  align-items: stretch;
+  position: relative;
+  z-index: 2;
+}
+
+/* Rainbow Aura Glow */
+.step-aura {
+  position: relative;
+  border-radius: 20px;
+  padding: 3px; /* border thickness */
+  overflow: hidden;
+  display: flex;
+}
+
+.step-aura::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    #f97316,
+    #ef4444,
+    #ec4899,
+    #8b5cf6,
+    #3b82f6,
+    #10b981,
+    #f59e0b,
+    #f97316
+  );
+  animation: auraSpin 3s linear infinite;
+  z-index: 0;
+}
+
+@keyframes auraSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Card */
+.step-card {
+  position: relative;
+  z-index: 1;
+  background: #111827;
+  border-radius: 17px;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+
+.step-card-body {
+  padding: 34px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+}
+
+/* Badge */
+.step-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: fit-content;
+  margin-bottom: 8px;
+}
+
+.step-badge-blue {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+.step-badge-orange {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.step-badge-green {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+/* Card Header & 3D Icons */
+.step-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.float-3d-icon {
+  width: 54px;
+  height: 54px;
+  animation: float3d 3s ease-in-out infinite;
+  /* Double drop-shadow creates a very convincing 3D pop effect on SVGs */
+  filter: drop-shadow(0 12px 10px rgba(0,0,0,0.5)) drop-shadow(0 -2px 2px rgba(255,255,255,0.2));
+}
+
+@keyframes float3d {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+.step-card-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+/* ===== Welcome Card ===== */
+.home-welcome-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.home-welcome-image {
+  min-height: 180px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6c63ff, #00d4aa, #ffd166);
+}
+
+.home-welcome-kicker {
+  margin: 0;
+  color: #00b894;
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.home-welcome-card h2 {
+  margin: 4px 0 10px;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.home-welcome-card p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+/* ===== Feature Block Section ===== */
+.home-feature-section {
+  padding: 100px 0;
+  background: url('/grow-bg.jpg') center/cover fixed no-repeat;
+  position: relative;
+}
+
+.home-feature-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 45, 160, 0.8); /* Primary blue tint matching login button */
+  z-index: 1;
+}
+
+.home-feature-block {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.home-feature-img-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  animation: bannerFloat 4s ease-in-out infinite;
+}
+
+.home-feature-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 20px;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+}
+
+.home-feature-text h2 {
+  font-size: 48px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.home-feature-text p {
+  font-size: 17px;
+  color: #fff;
+  line-height: 1.7;
+}
+
+/* ===== Gallery Section ===== */
+.home-gallery-section {
+  background: #0a1628;
+  padding: 80px 0;
+  text-align: center;
+}
+
+.home-gallery-header h2 {
+  font-size: 48px;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.home-gallery-header p {
+  font-size: 17px;
+  color: #c8d4de;
+  margin: 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 860px) {
+  .home-steps-row {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .home-feature-block {
+    grid-template-columns: 1fr;
+    margin-top: 50px;
+  }
+
+  .home-welcome-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+

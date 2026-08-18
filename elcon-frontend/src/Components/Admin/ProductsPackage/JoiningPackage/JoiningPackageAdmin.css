@@ -1,0 +1,238 @@
+@import '../../Common/AdminLayout.css';
+
+.admin-products-panel {
+  padding: 14px;
+}
+
+.admin-products-section-title {
+  margin-bottom: 14px;
+  font-size: clamp(21px, 2.3vw, 32px);
+}
+
+.admin-products-filter-row {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-products-input {
+  min-width: 0;
+  font-size: 16px;
+  padding: 9px 10px;
+  border-radius: 8px;
+}
+
+.admin-products-input-name,
+.admin-products-input-category,
+.admin-products-input-hsn {
+  grid-column: span 2;
+}
+
+.admin-products-input-status,
+.admin-products-input-limit {
+  grid-column: span 1;
+}
+
+.admin-products-filter-actions {
+  grid-column: span 3;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.admin-products-search-btn {
+  width: 100%;
+  min-height: 40px;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+}
+
+.admin-products-export-icons {
+  grid-column: span 1;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-products-export-icons button {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--card-bg);
+  color: var(--text-main);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 42px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-products-table-wrap {
+  border-radius: 10px;
+}
+
+.admin-products-table {
+  min-width: 1180px;
+}
+
+.admin-products-table th,
+.admin-products-table td {
+  text-align: center;
+  padding: 8px 7px;
+  font-size: 16px;
+}
+
+.admin-products-table th {
+  color: #264153;
+  background: #d6edf8;
+}
+
+.admin-products-table tbody tr:nth-child(odd) {
+  background: #f4fbff;
+}
+
+.admin-products-image-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--card-bg);
+}
+
+.admin-products-action-group {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.admin-products-action-btn {
+  border: 0;
+  color: #fff;
+  width: 24px;
+  height: 22px;
+  border-radius: 4px;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.admin-products-action-btn.show {
+  background: #35cba6;
+}
+
+.admin-products-action-btn.edit {
+  background: #22c5d8;
+}
+
+.admin-products-action-btn.delete {
+  background: var(--darker);
+}
+
+.admin-products-table-footer {
+  padding-top: 12px;
+}
+
+@media (max-width: 1100px) {
+  .admin-products-filter-row {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .admin-products-input-name,
+  .admin-products-input-category,
+  .admin-products-input-hsn {
+    grid-column: span 2;
+  }
+
+  .admin-products-input-status,
+  .admin-products-input-limit,
+  .admin-products-export-icons {
+    grid-column: span 1;
+  }
+
+  .admin-products-filter-actions {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-products-panel {
+    padding: 12px;
+  }
+
+  .admin-products-filter-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .admin-products-input-name,
+  .admin-products-input-category,
+  .admin-products-input-hsn,
+  .admin-products-input-status,
+  .admin-products-input-limit,
+  .admin-products-filter-actions,
+  .admin-products-export-icons {
+    grid-column: span 2;
+  }
+
+  .admin-products-filter-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-products-search-btn,
+  .admin-products-export-icons button {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .admin-products-export-icons {
+    justify-self: stretch;
+    justify-content: space-between;
+  }
+
+  .admin-products-export-icons button {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .admin-products-table {
+    min-width: 980px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-products-section-title {
+    font-size: 20px;
+  }
+
+  .admin-products-filter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-products-input-name,
+  .admin-products-input-category,
+  .admin-products-input-hsn,
+  .admin-products-input-status,
+  .admin-products-input-limit,
+  .admin-products-filter-actions,
+  .admin-products-export-icons {
+    grid-column: span 1;
+  }
+
+  .admin-products-table-footer .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+
+

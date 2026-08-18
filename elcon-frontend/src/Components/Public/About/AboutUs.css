@@ -1,0 +1,42 @@
+.about-content {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 22px;
+}
+
+.about-content h3 {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  color: var(--text-main);
+  font-size: 28px;
+}
+
+.about-kicker {
+  margin: 0;
+  color: #00b894;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.about-content h2 {
+  margin: 4px 0 12px;
+  text-transform: uppercase;
+  color: #6c63ff;
+  font-size: 42px;
+}
+
+.about-content p {
+  margin: 0 0 10px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.about-thanks {
+  color: #00b894;
+  font-weight: 700;
+}
+
+
+

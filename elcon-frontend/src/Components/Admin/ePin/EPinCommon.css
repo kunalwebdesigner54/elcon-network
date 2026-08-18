@@ -1,0 +1,132 @@
+@import '../Common/AdminLayout.css';
+
+.epin-header-row {
+  margin-bottom: 12px;
+}
+
+.epin-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.epin-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(110px, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.epin-filter-grid .text-input,
+.epin-filter-grid .select-input,
+.epin-filter-grid .btn-primary,
+.epin-filter-grid .btn-outline {
+  min-height: 38px;
+  width: 100%;
+}
+
+.epin-filter-grid .btn-primary,
+.epin-filter-grid .btn-outline {
+  padding: 8px 12px;
+}
+
+.epin-tools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.epin-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.epin-chip-success {
+  background: linear-gradient(135deg, #00b894 0%, #16a085 100%);
+}
+
+.epin-chip-pending {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.epin-chip-used {
+  background: linear-gradient(135deg, #6c63ff 0%, #4c46cf 100%);
+}
+
+.epin-chip-unused {
+  background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%);
+}
+
+.epin-chip-deleted {
+  background: linear-gradient(135deg, #ff6b6b 0%, #eb4d4b 100%);
+}
+
+.epin-generate-grid {
+  display: grid;
+  grid-template-columns: 160px minmax(200px, 480px);
+  gap: 12px 14px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.epin-generate-grid .field-label {
+  text-transform: none;
+  color: var(--dark);
+  font-size: 16px;
+}
+
+.epin-generate-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  padding-left: 174px;
+}
+
+.epin-delete-btn {
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+@media (max-width: 1200px) {
+  .epin-filter-grid {
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .epin-filter-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .epin-generate-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .epin-generate-actions {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .epin-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .epin-title {
+    font-size: 18px;
+  }
+}
+

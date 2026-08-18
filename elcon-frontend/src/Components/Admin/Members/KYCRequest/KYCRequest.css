@@ -1,0 +1,48 @@
+@import '../../Common/AdminLayout.css';
+
+.kyc-action-group {
+  display: flex;
+  gap: 3px;
+}
+
+.kyc-action-btn {
+  border: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 9px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.kyc-action-cyan {
+  background: #1ac8c3;
+}
+
+.kyc-action-green {
+  background: #2dd36f;
+}
+
+.kyc-action-pink {
+  background: var(--darker);
+}
+
+.kyc-action-red {
+  background: #ff4d62;
+}
+
+.kyc-photo-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.kyc-photo-btn {
+  min-height: 24px;
+  padding: 4px 8px;
+  font-size: 10px;
+}
+

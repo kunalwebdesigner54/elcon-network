@@ -1,0 +1,118 @@
+.admin-products-panel {
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: 28px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section-title.admin-products-title {
+  font-size: clamp(24px, 2vw, 32px);
+  margin-bottom: 18px;
+}
+
+.admin-products-card {
+  background: #f3f6fa;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.admin-products-table-wrapper {
+  overflow-x: auto;
+}
+
+.admin-products-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 16px;
+}
+
+.admin-products-table th,
+.admin-products-table td {
+  padding: 10px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-products-table th {
+  background: #f1f5f9;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.admin-products-table .alt-row {
+  background: var(--darker);
+}
+
+.admin-products-img-placeholder {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background: #e2e8f0;
+  border-radius: 6px;
+}
+
+.admin-products-action-btn {
+  border: none;
+  background: none;
+  margin: 0 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.admin-products-action-btn.view {
+  background: #00d4aa;
+}
+.admin-products-action-btn.edit {
+  background: #ffc107;
+}
+.admin-products-action-btn.delete {
+  background: #ff4d4f;
+}
+
+.admin-products-status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.admin-products-status.showing {
+  background: #e6fffa;
+  color: #00b894;
+}
+.admin-products-status.hidden {
+  background: #ffeaea;
+  color: #ff4d4f;
+}
+
+@media (max-width: 900px) {
+  .admin-products-card {
+    padding: 10px;
+  }
+  .admin-products-panel {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-products-table th,
+  .admin-products-table td {
+    padding: 6px 2px;
+    font-size: 16px;
+  }
+  .section-title.admin-products-title {
+    font-size: 18px;
+  }
+}
+
+
+

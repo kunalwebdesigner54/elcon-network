@@ -1,0 +1,184 @@
+@import '../../Common/AdminLayout.css';
+
+.coupon-report-page {
+  width: 100%;
+}
+
+.coupon-route-title {
+  margin: 0 0 14px;
+  font-size: 34px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.coupon-report-panel {
+  background: var(--card-bg);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 28px;
+  padding: 22px 22px 28px;
+}
+
+.coupon-report-heading {
+  margin: 0 0 12px 8px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #202020;
+}
+
+.coupon-report-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.coupon-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  flex: 1;
+}
+
+.coupon-filter-input {
+  width: 100%;
+  max-width: 128px;
+  min-width: 92px;
+  border: 1px solid #d8d8d8;
+  background: var(--card-bg);
+  padding: 9px 10px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-main);
+}
+
+.coupon-status-select {
+  max-width: 104px;
+}
+
+.coupon-search-btn {
+  min-width: 86px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.coupon-export-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.coupon-export-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.coupon-table {
+  min-width: 1050px;
+}
+
+.coupon-table thead th {
+  background: #a5d4f0;
+  color: var(--text-main);
+  text-transform: uppercase;
+  font-size: 16px;
+  letter-spacing: 0.4px;
+}
+
+.coupon-table tbody tr:nth-child(even) {
+  background: rgba(165, 212, 240, 0.12);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.status-pill-active {
+  background: #e3f7e8;
+  color: #22a65a;
+}
+
+.status-pill-used {
+  background: #e0ecff;
+  color: #3f69c6;
+}
+
+.status-pill-expired {
+  background: #ffe2df;
+  color: #ef4d3f;
+}
+
+.coupon-pagination-wrap {
+  margin-top: 28px;
+  justify-content: center;
+}
+
+@media (max-width: 1100px) {
+  .coupon-report-toolbar {
+    flex-direction: column;
+  }
+
+  .coupon-export-actions {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 768px) {
+  .coupon-report-panel {
+    border-radius: 18px;
+    padding: 14px;
+  }
+
+  .coupon-route-title {
+    font-size: 24px;
+  }
+
+  .coupon-report-heading {
+    font-size: 20px;
+    margin-left: 0;
+  }
+
+  .coupon-filter-input,
+  .coupon-status-select,
+  .coupon-search-btn {
+    max-width: none;
+    min-width: 100%;
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .coupon-report-panel {
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .coupon-route-title {
+    font-size: 20px;
+  }
+
+  .coupon-report-heading {
+    font-size: 18px;
+  }
+
+  .coupon-table {
+    min-width: 860px;
+  }
+}
+

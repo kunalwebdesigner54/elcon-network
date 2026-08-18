@@ -1,0 +1,34 @@
+.help-info-row {
+
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.help-info-label {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.help-info-value {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.help-submit-btn {
+  margin-top: 18px;
+  background: #04e0f8;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.help-submit-btn:hover {
+  background: #04e0f8;
+}
+

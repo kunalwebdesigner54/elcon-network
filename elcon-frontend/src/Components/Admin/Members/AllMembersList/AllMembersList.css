@@ -1,0 +1,100 @@
+@import '../../Common/AdminLayout.css';
+
+.member-status-active {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.member-status-inactive {
+  color: #8a2332;
+  font-weight: 700;
+}
+
+.action-icon-btn {
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--card-bg);
+}
+
+.action-icon-btn.edit:hover {
+  background-color: #00bcd4;
+  border-color: #00bcd4;
+  color: #fff;
+}
+
+.action-icon-btn.status:hover {
+  background-color: #4caf50;
+  border-color: #4caf50;
+  color: #fff;
+}
+
+.action-icon-btn.wallet:hover {
+  background-color: #ff9800;
+  border-color: #ff9800;
+  color: #fff;
+}
+
+.login-btn {
+  background-color: #00bcd4;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.login-btn:hover {
+  background-color: #0097a7;
+}
+
+.legend {
+  color: var(--text-muted);
+}
+
+.legend .action-icon-btn {
+  background-color: var(--darker);
+  border: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .data-table {
+    min-width: 1200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .panel {
+    padding: 16px !important;
+  }
+  
+  .section-title {
+    font-size: 24px !important;
+  }
+  
+  .page-title {
+    font-size: 32px !important;
+  }
+  
+  .legend {
+    flex-direction: column;
+    gap: 8px !important;
+    align-items: flex-start;
+  }
+}
+

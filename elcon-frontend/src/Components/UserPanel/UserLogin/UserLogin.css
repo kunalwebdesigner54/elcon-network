@@ -1,0 +1,53 @@
+.user-login-wrap {
+	display: grid;
+	place-items: center;
+}
+
+.user-login-card {
+	width: min(460px, 100%);
+	background: var(--card-bg);
+	border: 1px solid #e1e1e1;
+	padding: 24px 22px;
+	display: grid;
+	gap: 8px;
+}
+
+.user-login-card label {
+	font-size: 16px;
+	font-weight: 700;
+	margin-top: 8px;
+}
+
+.user-login-card input {
+	width: 100%;
+	border: 1px solid var(--border-color);
+	padding: 10px;
+	font-size: 16px;
+}
+
+.user-login-card button {
+	border: 0;
+	background: #ff8900;
+	color: #fff;
+	font-weight: 700;
+	padding: 10px 18px;
+	margin: 10px auto 6px;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+.user-login-card p,
+.user-login-card small {
+	margin: 0;
+	text-align: center;
+	font-size: 16px;
+}
+
+.user-login-card span {
+	color: #ff8900;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+
+

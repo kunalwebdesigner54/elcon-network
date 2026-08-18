@@ -1,0 +1,85 @@
+@import '../../Common/UserLayout.css';
+
+.level-income-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.level-income-filters input,
+.level-income-filters select {
+  border: 1px solid #ccd3db;
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-height: 42px;
+  font-size: 16px;
+  background: var(--card-bg);
+  color: var(--text-main);
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.level-income-total-row td {
+  font-weight: 700;
+  background: rgba(0, 212, 170, 0.08);
+}
+
+.level-income-total-row td:first-child,
+.level-income-total-row td:nth-child(8) {
+  text-align: right;
+}
+
+.level-income-pagination {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.level-income-page-btn {
+  min-width: 34px;
+  height: 34px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: #6d7e93;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.level-income-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.level-income-page-btn-active {
+  background: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .level-income-filters > * {
+    flex: 1 1 100%;
+  }
+
+  .level-income-filters .user-btn-blue {
+    width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .user-table {
+    min-width: 760px;
+  }
+}
+
+
+

@@ -1,0 +1,165 @@
+.register-card {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: var(--public-shadow);
+}
+
+.register-title {
+  margin: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: center;
+  font-size: clamp(24px, 4vw, 36px);
+  line-height: 1.1;
+  color: var(--public-text);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.register-form {
+  margin-top: 16px;
+}
+
+.register-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.register-field {
+  position: relative;
+}
+
+.register-field label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--public-muted);
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.register-required {
+  color: var(--public-accent);
+}
+
+.register-field input,
+.register-field select,
+.register-field textarea {
+  width: 100%;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: var(--card-bg);
+  color: var(--public-text);
+  padding: 10px 12px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-field input::placeholder,
+.register-field textarea::placeholder,
+.register-field select {
+  color: var(--public-muted);
+}
+
+.register-field select {
+  appearance: auto;
+}
+
+.register-field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.register-field input:focus,
+.register-field select:focus,
+.register-field textarea:focus {
+  border-color: var(--public-primary);
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.14);
+}
+
+.register-lock-field input {
+  padding-right: 34px;
+}
+
+.register-lock-icon {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  color: var(--public-muted);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.register-full-row {
+  grid-column: 1 / -1;
+}
+
+.register-terms {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: var(--public-muted);
+}
+
+.register-terms input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--public-primary-dark);
+}
+
+.register-terms a {
+  color: var(--public-primary-dark);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.register-submit-btn {
+  margin-top: 18px;
+  width: 100%;
+  border: 0;
+  background: #0091ff;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.4px;
+  padding: 12px 22px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 10px 22px rgba(108, 99, 255, 0.24);
+}
+
+.register-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px rgba(108, 99, 255, 0.28);
+}
+
+@media (max-width: 700px) {
+  .register-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .register-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .register-full-row {
+    grid-column: auto;
+  }
+}
+
+
+

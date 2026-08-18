@@ -1,0 +1,150 @@
+@import '../../Common/AdminLayout.css';
+
+/* ========== TDS REPORT - COMPLETE STYLES ========== */
+
+.tds-report-report-page {
+  width: 100%;
+}
+
+.tds-report-route-title {
+  margin: 0 0 10px;
+}
+
+.tds-report-screen-title {
+  margin: 0 0 16px;
+}
+
+.tds-report-panel {
+  border-radius: 28px;
+  padding: 24px;
+}
+
+.tds-report-export-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tds-report-export-btn {
+  min-width: 72px;
+}
+
+.tds-report-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tds-report-filter-input {
+  flex: 1 1 170px;
+  min-width: 150px;
+}
+
+.tds-report-size-select {
+  flex: 0 0 92px;
+  min-width: 92px;
+}
+
+.tds-report-search-btn {
+  min-width: 110px;
+}
+
+/* Table wrapper for responsive scrolling */
+.tds-report-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.tds-report-table {
+  width: 100%;
+  min-width: 860px;
+}
+
+/* Pagination */
+.tds-report-table-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.tds-report-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tds-report-page-btn {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: #6d7e93;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin: 0 4px;
+}
+
+.tds-report-page-btn:hover {
+  border-color: #00d4aa;
+}
+
+.tds-report-active {
+  background: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* ========== RESPONSIVE STYLES ========== */
+
+@media (max-width: 768px) {
+  .tds-report-panel {
+    border-radius: 18px;
+    padding: 12px;
+  }
+
+  .tds-report-filter-input,
+  .tds-report-size-select,
+  .tds-report-search-btn {
+    min-width: 100%;
+    flex-basis: 100%;
+  }
+
+  .tds-report-table {
+    min-width: 700px;
+  }
+
+  .data-table th,
+  .data-table td {
+    font-size: 0.75rem;
+    padding: 8px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tds-report-panel {
+    border-radius: 12px;
+    padding: 8px;
+  }
+
+  .tds-report-screen-title {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+
+  .tds-report-table {
+    min-width: 600px;
+  }
+
+  .tds-report-page-btn {
+    min-width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+    margin: 0 2px;
+  }
+}

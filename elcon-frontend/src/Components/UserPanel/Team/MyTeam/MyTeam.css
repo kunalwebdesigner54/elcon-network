@@ -1,0 +1,70 @@
+@import '../../Common/UserLayout.css';
+
+.downline-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 12px 0;
+}
+
+.downline-filters input,
+.downline-filters select {
+	border: 1px solid #ccd3db;
+	border-radius: 8px;
+	padding: 8px 10px;
+	min-height: 38px;
+	font-size: 16px;
+	background: var(--card-bg);
+}
+
+.downline-pagination {
+	margin-top: 14px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	justify-content: center;
+}
+
+.downline-page-btn {
+	min-width: 34px;
+	height: 34px;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	border-radius: 8px;
+	background: var(--card-bg);
+	color: #6d7e93;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.downline-page-btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.downline-page-btn-active {
+	background: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
+	color: #fff;
+	border-color: transparent;
+}
+
+@media (max-width: 768px) {
+	.downline-filters > * {
+		flex: 1 1 100%;
+	}
+
+	.downline-filters input,
+	.downline-filters select,
+	.downline-filters .user-btn-blue {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.table-toolbar .user-btn-outline {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+	}
+}
+
+

@@ -1,0 +1,360 @@
+.deposit-funds-page {
+  padding: 20px;
+  background: var(--darker);
+  min-height: 100vh;
+  border-radius: 12px;
+}
+
+.deposit-funds-header {
+  background: linear-gradient(135deg, rgba(211, 211, 211, 0.6) 0%, rgba(192, 192, 192, 0.4) 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.deposit-funds-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.deposit-history-link {
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 140px;
+  transition: all 0.3s ease;
+}
+
+.deposit-history-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+}
+
+.deposit-stats-grid {
+  margin-bottom: 24px;
+}
+
+.deposit-stats-grid .balance-card.primary {
+  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  color: white;
+}
+
+.deposit-stats-grid .balance-card.secondary {
+  background: white;
+  color: var(--text-main);
+}
+
+.deposit-stats-grid .balance-card.secondary .card-amount {
+  color: #00d4aa;
+}
+
+.deposit-stats-grid .balance-card:hover {
+  transform: translateY(-4px);
+}
+
+.deposit-funds-layout {
+  gap: 24px;
+}
+
+.deposit-form-card,
+.deposit-method-card {
+  border-radius: 12px;
+}
+
+.deposit-form-card h3,
+.deposit-method-card h3 {
+  color: var(--text-main);
+}
+
+.deposit-preset-btn {
+  background: var(--darker);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.deposit-preset-btn:hover {
+  background: #00d4aa;
+  border-color: #00d4aa;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.deposit-summary-box {
+  background: var(--darker);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-left: 4px solid #00d4aa;
+}
+
+.deposit-summary-head {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.deposit-summary-row {
+  padding: 8px 0;
+}
+
+.deposit-summary-row strong {
+  color: #00d4aa;
+}
+
+.deposit-upload-box {
+  background: linear-gradient(90deg, #e7e7e7 0%, #f7f7f7 100%);
+  border: 1px solid var(--border-color);
+}
+
+.deposit-upload-box span {
+  color: #aaa;
+}
+
+.deposit-text-input {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.deposit-text-input:focus {
+  outline: none;
+  border-color: #00d4aa;
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+.deposit-confirm-btn {
+  width: 100%;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  border-radius: 8px;
+}
+
+.deposit-confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+}
+
+.deposit-method-option {
+  border: none;
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+.deposit-method-option .transfer-label {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--card-bg);
+}
+
+.deposit-method-option.is-active .transfer-label {
+  border-color: #00d4aa;
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+.deposit-method-option .radio-custom {
+  border-color: var(--border-color);
+}
+
+.deposit-method-option .transfer-radio:checked + .radio-custom {
+  border-color: #00d4aa;
+  background: #00d4aa;
+}
+
+.deposit-method-option .transfer-radio:checked + .radio-custom::after {
+  content: '✓';
+  color: white;
+}
+
+.deposit-method-option .method-name {
+  font-size: 16px;
+  color: var(--text-main);
+}
+
+.deposit-method-option .method-note {
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+.deposit-bank-panel,
+.deposit-upi-panel {
+  margin-top: 8px;
+}
+
+.deposit-upi-panel .deposit-qr-frame {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  padding: 14px 12px 10px;
+}
+
+.deposit-upi-panel .deposit-qr-image {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.deposit-upi-panel .deposit-upi-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-color);
+  border-top: none;
+  background: var(--darker);
+  border-radius: 0 0 10px 10px;
+  padding: 10px 12px;
+}
+
+.deposit-upi-panel .deposit-upi-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  flex: 0 0 auto;
+}
+
+.deposit-upi-panel .deposit-upi-value {
+  font-size: 16px;
+  color: #1f2937;
+  word-break: break-word;
+  flex: 1;
+}
+
+.deposit-upi-panel .deposit-copy-btn {
+  color: #00d4aa;
+  flex: 0 0 auto;
+}
+
+.deposit-bank-title {
+  background: #efefef;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.deposit-bank-table td {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.deposit-bank-table td:first-child {
+  background: transparent;
+  color: var(--text-main);
+}
+
+@media (max-width: 1280px) {
+  .deposit-funds-header {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .deposit-stats-grid,
+  .deposit-funds-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .deposit-funds-page {
+    padding: 16px;
+  }
+
+  .deposit-funds-header {
+    padding: 16px;
+    margin-bottom: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .deposit-funds-header h2 {
+    font-size: 20px;
+  }
+
+  .deposit-history-link {
+    width: 100%;
+    max-width: 220px;
+  }
+
+  .deposit-form-card,
+  .deposit-method-card {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .deposit-confirm-btn {
+    font-size: 16px;
+  }
+
+  .deposit-bank-table td,
+  .deposit-upi-label,
+  .deposit-upi-value {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 700px) {
+  .deposit-preset-row {
+    gap: 12px;
+  }
+
+  .deposit-preset-btn {
+    font-size: 16px;
+  }
+
+  .deposit-method-option .transfer-label {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .deposit-funds-page {
+    padding: 12px;
+  }
+
+  .deposit-funds-header {
+    padding: 12px;
+  }
+
+  .deposit-funds-header h2 {
+    font-size: 18px;
+  }
+
+  .deposit-history-link {
+    max-width: none;
+  }
+
+  .deposit-stats-grid {
+    gap: 12px;
+  }
+
+  .deposit-form-card,
+  .deposit-method-card {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .deposit-confirm-btn {
+    padding: 11px 18px;
+    margin-top: 14px;
+  }
+}
+
+

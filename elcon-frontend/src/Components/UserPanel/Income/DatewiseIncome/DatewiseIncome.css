@@ -1,0 +1,99 @@
+@import '../../Common/UserLayout.css';
+
+.report-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.report-filters input,
+.report-filters select {
+  border: 1px solid #ccd3db;
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-height: 42px;
+  font-size: 16px;
+  background: var(--card-bg);
+  color: var(--text-main);
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.report-total-row td {
+  font-weight: 700;
+  background: rgba(0, 212, 170, 0.08);
+}
+
+.pagination-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: #6d7e93;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.page-btn:hover {
+  border-color: #00d4aa;
+}
+
+.page-btn.active {
+  background: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+@media (max-width: 840px) {
+  .report-filters > * {
+    flex: 1 1 100%;
+  }
+
+  .table-toolbar {
+    justify-content: center;
+  }
+
+  .user-table th,
+  .user-table td {
+    font-size: 0.82rem;
+    padding: 8px 6px;
+  }
+}
+
+@media (max-width: 620px) {
+  .user-page-title {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+
+  .report-filters {
+    gap: 8px;
+  }
+
+  .user-table {
+    min-width: 800px;
+  }
+
+  .user-panel {
+    padding: 12px;
+  }
+}
+
+
+

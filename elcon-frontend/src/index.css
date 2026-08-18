@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+	--primary: #0A37C4;
+	--primary-dark: #082da0;
+	--primary-light: #3b6de8;
+	--secondary: #6c63ff;
+	--accent: #ff6b6b;
+	--success: #1db954;
+	--warning: #ffd166;
+	--dark: #2d3748;
+	--darker: #1a202c;
+	--light: #f7fafc;
+	--gray: #a0aec0;
+	--card-bg: #ffffff;
+	--shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+	--shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+	--gradient-primary: linear-gradient(135deg, #0A37C4 0%, #3b6de8 100%);
+	--gradient-secondary: linear-gradient(135deg, #ff6b6b 0%, #ffd166 100%);
+	--gradient-success: linear-gradient(135deg, #1db954 0%, #00d4aa 100%);
+	--border-radius: 20px;
+	--border-radius-sm: 12px;
+}
+
+* {
+	box-sizing: border-box;
+	font-family: 'Poppins', sans-serif !important;
+}
+
+html,
+body,
+#root {
+	min-height: 100vh;
+}
+
+body {
+	margin: 0;
+	font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+	font-size: 16px;
+	background: #0b192c;
+	color: var(--dark);
+	line-height: 1.6;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+	max-width: 100%;
+	height: auto;
+}
+
+table {
+	width: 100%;
+}
+
+input,
+select,
+textarea,
+button,
+[class*='btn'] {
+	max-width: 100%;
+	border-radius: 5px !important;
+}
+
+.btn-primary {
+	background: var(--primary) !important;
+	color: #fff !important;
+	border: none !important;
+	padding: 10px 24px;
+	font-weight: 600;
+	cursor: pointer;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+	line-height: 1;
+	box-shadow: none !important;
+}
+
+.btn-primary:hover {
+	background: var(--primary-dark) !important;
+	transform: translateY(-2px);
+	box-shadow: none !important;
+}
+
+.btn-primary:active,
+.btn-primary.active {
+	background: var(--primary-dark) !important;
+	color: #fff !important;
+	border: none !important;
+}
+
+.btn-secondary {
+	background: #FF9A3C !important;
+	color: #fff !important;
+	border: none !important;
+	padding: 10px 24px;
+	font-weight: 600;
+	cursor: pointer;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+	line-height: 1;
+	box-shadow: none !important;
+}
+
+.btn-secondary:hover {
+	background: #e8851f !important;
+	transform: translateY(-2px);
+	box-shadow: none !important;
+}
+
+.btn-secondary:active,
+.btn-secondary.active {
+	background: #e8851f !important;
+	color: #fff !important;
+	border: none !important;
+}
+
+[class*='table-wrap'],
+[class*='table-wrapper'],
+[class*='table-container'],
+[class*='data-table-wrap'],
+[class*='list-wrap'] {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+[class*='data-table'],
+[class*='user-table'],
+[class*='table'] {
+	max-width: 100%;
+}
+
+@media (max-width: 1200px) {
+	[class*='cards-row'],
+	[class*='stats-grid'],
+	[class*='dashboard-grid'] {
+		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+	}
+}
+
+@media (max-width: 992px) {
+	[class*='root'] {
+		overflow-x: hidden;
+	}
+
+	[class*='sidebar'] {
+		max-width: 100%;
+	}
+
+	
+	[class*='table-tools'],
+	[class*='table-toolbar'],
+	[class*='btn-row'],
+	[class*='actions'],
+	[class*='filters'],
+	[class*='tree-controls'] {
+		
+		gap: 10px;
+	}
+
+	[class*='search-box'] input,
+	[class*='controls'] input,
+	[class*='controls'] select,
+	[class*='toolbar'] input,
+	[class*='toolbar'] select {
+		width: 100% !important;
+	}
+
+	[class*='page-container'],
+	[class*='page-wrap'],
+	[class*='panel'],
+	[class*='white-card'],
+	[class*='card-body'],
+	[class*='content-wrap'] {
+		padding-left: 16px !important;
+		padding-right: 16px !important;
+	}
+}
+
+@media (max-width: 768px) {
+	html,
+	body {
+		overflow-x: hidden;
+	}
+
+	h1,
+	[class*='page-title'] {
+		font-size: clamp(24px, 6vw, 30px) !important;
+	}
+
+	h2,
+	[class*='section-title'] {
+		font-size: clamp(20px, 5vw, 26px) !important;
+	}
+
+	[class*='table-tools'],
+	[class*='table-toolbar'],
+	[class*='btn-row'],
+	[class*='actions'],
+	[class*='filters'],
+	[class*='tree-controls'] {
+	
+		align-items: stretch !important;
+	}
+
+	[class*='table-tools'] > *,
+	[class*='table-toolbar'] > *,
+	[class*='btn-row'] > *,
+	[class*='actions'] > *,
+	[class*='filters'] > *,
+	[class*='tree-controls'] > * {
+		width: 100%;
+	}
+
+	[class*='public-container'] {
+		width: min(100%, 94%);
+	}
+
+	[class*='hero'],
+	[class*='cta'] {
+		padding-left: 12px !important;
+		padding-right: 12px !important;
+	}
+}
+
+@media (max-width: 576px) {
+	[class*='page-container'],
+	[class*='page-wrap'],
+	[class*='panel'],
+	[class*='white-card'],
+	[class*='content-wrap'] {
+		padding-left: 12px !important;
+		padding-right: 12px !important;
+	}
+
+	[class*='auth-btn'],
+	[class*='btn'],
+	
+
+	[class*='data-table'],
+	[class*='user-table'],
+	table {
+		font-size: 16px;
+	}
+}
+
+/* Dark Blue Theme Toggle Styles */
+body.dark-blue-theme {
+    background-color: #0b192c !important;
+    color: #ffffff !important;
+}
+
+body.dark-blue-theme * {
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Force dark background on all block elements to override specific component CSS */
+body.dark-blue-theme div,
+body.dark-blue-theme section,
+body.dark-blue-theme header,
+body.dark-blue-theme footer,
+body.dark-blue-theme aside,
+body.dark-blue-theme nav,
+body.dark-blue-theme main,
+body.dark-blue-theme table,
+body.dark-blue-theme th,
+body.dark-blue-theme td,
+body.dark-blue-theme tr,
+body.dark-blue-theme ul,
+body.dark-blue-theme li,
+body.dark-blue-theme form {
+    background-color: #0b192c !important;
+}
+
+/* Specific overrides for interactive elements */
+body.dark-blue-theme input,
+body.dark-blue-theme select,
+body.dark-blue-theme textarea {
+    background-color: #112240 !important;
+    color: #ffffff !important;
+}
+
+body.dark-blue-theme button,
+body.dark-blue-theme [class*="btn"],
+body.dark-blue-theme .public-auth-link {
+    background-color: var(--primary-dark) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Preserve branding and specific backgrounds */
+body.dark-blue-theme .public-brand-mark {
+    background: linear-gradient(135deg, #111111, #e21f26 72%, #f5b61f) !important;
+    color: #fff !important;
+}
+
+body.dark-blue-theme .public-root::before {
+    background: none !important;
+}
+
+body.dark-blue-theme img,
+body.dark-blue-theme svg,
+body.dark-blue-theme path,
+body.dark-blue-theme .public-socials span,
+body.dark-blue-theme .public-footer-socials span {
+    background-color: transparent !important;
+}

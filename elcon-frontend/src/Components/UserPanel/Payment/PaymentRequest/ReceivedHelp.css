@@ -1,0 +1,129 @@
+@import '../../Common/UserLayout.css';
+
+.user-btn-blue3{
+  background: #00bcd4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background 0.2s;
+}
+
+
+button.user-btn-blue3 {
+  color: #fff !important;
+}
+
+.level-income-filters .filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.level-income-filters .filter-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--user-dark);
+  letter-spacing: 0.6px;
+}
+
+.level-income-filters .filter-field .text-input {
+  width: 100%;
+}
+
+.user-mini-btn {
+  border: 0;
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.72rem;
+  line-height: 1.1;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.user-mini-btn:hover {
+  transform: translateY(-1px);
+}
+
+.user-accept {
+  background: #1db954;
+  color: #fff;
+}
+
+.user-reject {
+  background: #f44336;
+  color: #fff;
+}
+
+.user-btn-green {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 4px;
+  transition: background 0.2s;
+}
+.user-btn-green:hover {
+  background: #388e3c;
+}
+.user-btn-red {
+  background: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.user-btn-red:hover {
+  background: #b71c1c;
+}
+
+
+
+@media (max-width: 900px) {
+  .user-page-title {
+    font-size: 1.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .user-page-title {
+    font-size: 1rem !important;
+    margin-bottom: 12px;
+  }
+  .level-income-filters {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  .level-income-filters input,
+  .level-income-filters select {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+    color: var(--text-main) !important;
+  }
+  .level-income-filters button.user-btn-blue3 {
+    color: #fff !important;
+  }
+  .level-income-filters .filter-field {
+    gap: 4px;
+  }
+  .user-table th, .user-table td {
+    font-size: 0.85rem;
+    padding: 5px 4px;
+  }
+}
+
+

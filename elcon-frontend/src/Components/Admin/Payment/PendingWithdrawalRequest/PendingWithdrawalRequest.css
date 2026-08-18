@@ -1,0 +1,114 @@
+@import '../../Common/AdminLayout.css';
+
+.tds-report-page {
+  width: 100%;
+}
+
+.tds-screen-title {
+  margin: 0 0 16px;
+}
+
+.tds-panel {
+  border-radius: 28px;
+  padding: 24px;
+}
+
+.tds-export-row {
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+
+.tds-export-btn {
+  min-width: 72px;
+}
+
+.tds-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tds-filter-input {
+  flex: 1 1 170px;
+  min-width: 150px;
+}
+
+.tds-size-select {
+  flex: 0 0 92px;
+  min-width: 92px;
+}
+
+.tds-search-btn {
+  min-width: 110px;
+}
+
+.tds-table {
+  min-width: 1700px;
+}
+
+.withdrawal-action-group {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.withdrawal-action-btn {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 2px;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+}
+
+.withdrawal-action-btn--approve {
+  background: #f6b26b;
+  color: #ffffff;
+}
+
+.withdrawal-action-btn--succeed {
+  background: #d9f2dd;
+  color: #15a34a;
+}
+
+.withdrawal-action-btn--reject {
+  background: #ffd9d9;
+  color: #f03e3e;
+}
+
+.withdrawal-action-btn--reset {
+  background: #7f97d9;
+  color: #fff;
+}
+
+.remark-cell {
+  text-align: center;
+}
+
+.action-cell {
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .tds-panel {
+    border-radius: 18px;
+    padding: 12px;
+  }
+
+  .tds-filter-input,
+  .tds-size-select,
+  .tds-search-btn {
+    min-width: 100%;
+    flex-basis: 100%;
+  }
+}
+

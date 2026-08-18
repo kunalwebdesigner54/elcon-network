@@ -1,0 +1,6 @@
+@import '../../Common/UserLayout.css';
+
+.create-ticket-grid textarea {
+  resize: vertical;
+  min-height: 120px;
+}

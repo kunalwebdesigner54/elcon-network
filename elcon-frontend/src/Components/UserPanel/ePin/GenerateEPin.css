@@ -1,0 +1,4 @@
+/* Reuse BuyEPin styles for full responsiveness and consistency */
+@import "../Common/BuyEPin.css";
+
+/* Add any GenerateEPin-specific overrides below if needed */

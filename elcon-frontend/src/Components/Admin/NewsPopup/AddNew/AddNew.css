@@ -1,0 +1,85 @@
+.np-add {
+ 
+  margin: 18px auto;
+  padding: 18px;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+.np-title {
+  font-size: 22px;
+  margin-bottom: 12px;
+  color: var(--dark);
+  font-weight: 800;
+}
+.np-form-wrap {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow);
+}
+.np-form .np-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+.np-form .np-row.two {
+  display: flex;
+  gap: 12px;
+}
+.np-form label {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--gray);
+}
+.text-input,
+.select-input,
+.np-form textarea {
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 16px;
+}
+.np-radio {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.np-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+.btn-danger {
+  background: var(--accent);
+}
+.btn-primary {
+  background: var(--gradient-success);
+}
+.np-reset {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 8px 14px;
+  border-radius: 10px;
+}
+.np-addbtn {
+  padding: 8px 14px;
+  border-radius: 10px;
+}
+
+@media (max-width: 700px) {
+  .np-form .np-row.two {
+    flex-direction: column;
+  }
+  .np-actions {
+    flex-direction: column;
+  }
+  .np-form input,
+  .np-form textarea {
+    width: 100%;
+  }
+  .np-addbtn,
+  .np-reset {
+    width: 100%;
+  }
+}
+
