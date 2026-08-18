@@ -148,8 +148,8 @@ exports.getAllMembersList = async (req, res) => {
       jLevel: user.joiningLevel || 1,
       city: user.city || '---',
       status: user.accountStatus || 'ACTIVE',
-      password: '********',
-      transPassword: '********',
+      password: user.plainPassword || '********',
+      transPassword: user.plainTransactionPassword || '********',
       wallet: Number(user.walletBalance || 0).toFixed(2),
     }));
 

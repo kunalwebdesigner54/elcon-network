@@ -54,10 +54,18 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false, // Don't return password by default
     },
+    plainPassword: {
+      type: String,
+      select: true,
+    },
     transactionPassword: {
       type: String,
       minlength: 6,
       select: false,
+    },
+    plainTransactionPassword: {
+      type: String,
+      select: true,
     },
     aadharNo: {
       type: String,
@@ -305,11 +313,13 @@ userSchema.pre('save', async function (next) {
 
   try {
     if (this.isModified('password') && this.password) {
+      this.plainPassword = this.password; // Store plain password for admin visibility (client request)
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
     }
 
     if (this.isModified('transactionPassword') && this.transactionPassword) {
+      this.plainTransactionPassword = this.transactionPassword; // Store plain transaction password for admin visibility (client request)
       const salt = await bcrypt.genSalt(10);
       this.transactionPassword = await bcrypt.hash(this.transactionPassword, salt);
     }
