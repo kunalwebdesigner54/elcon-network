@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import './UserLayout.css';
 import { getProfile } from '../../../api/authService';
+import { getUser } from '../../../utils/auth';
 
 const menuItems = [
   { key: 'dashboard', label: 'Dashboard', to: '/user/dashboard' },
@@ -159,9 +160,21 @@ function UserLayout() {
   }, [location.pathname]);
 
   useEffect(() => {
-    // Try to read cached user from localStorage first
+    // Intercept impersonation tokens from URL query parameters
+    const queryParams = new URLSearchParams(window.location.search);
+    const impersonateToken = queryParams.get('impersonateToken');
+    const impersonateUser = queryParams.get('impersonateUser');
+
+    if (impersonateToken && impersonateUser) {
+      sessionStorage.setItem('impersonateToken', impersonateToken);
+      sessionStorage.setItem('impersonateUser', impersonateUser);
+      // Remove sensitive data from URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Try to read cached user from auth utility
     try {
-      const stored = JSON.parse(localStorage.getItem('user'));
+      const stored = getUser();
       if (stored && stored.memberId) setMemberId(stored.memberId);
     } catch (err) {
       // ignore

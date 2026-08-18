@@ -66,9 +66,8 @@ const AllMembersList = () => {
       setLoginLoadingMember(memberId);
       const response = await loginAsUser(memberId);
       if (response?.token) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        navigate('/user/dashboard', { replace: true });
+        const url = `/user/dashboard?impersonateToken=${encodeURIComponent(response.token)}&impersonateUser=${encodeURIComponent(JSON.stringify(response.user))}`;
+        window.open(url, '_blank');
       } else {
         setLoginError('Unable to login to user account.');
       }

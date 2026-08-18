@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import "./GenerateEPin.css";
 import { generateEpins } from '../../../api/managementService';
+import { getUser } from '../../../utils/auth';
 
 const GenerateEPin = () => {
   const defaultGeneratedForId = useMemo(() => {
     try {
-      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const storedUser = getUser() || {};
       return storedUser.memberId || storedUser.epin || storedUser.id || 'ADMIN';
     } catch (error) {
       return 'ADMIN';

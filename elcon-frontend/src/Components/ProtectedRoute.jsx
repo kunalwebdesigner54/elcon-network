@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 
+import { getToken } from '../utils/auth';
+
 function ProtectedRoute({ children }) {
 	const [isAuthorized, setIsAuthorized] = useState(null);
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
+		const token = getToken();
 		if (!token) {
 			setIsAuthorized(false);
 		} else {

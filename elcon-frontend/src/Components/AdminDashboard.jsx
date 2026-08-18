@@ -1,19 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getAdminDashboard } from '../api/dashboardService';
+import { getUser } from '../utils/auth';
 
 function AdminDashboard({ metrics }) {
 	const navigate = useNavigate();
-	const storedUser = localStorage.getItem('user');
+	const storedUser = getUser();
 	let adminName = 'Admin';
 
 	if (storedUser) {
-		try {
-			const parsedUser = JSON.parse(storedUser);
-			adminName = parsedUser?.name || adminName;
-		} catch (error) {
-			adminName = 'Admin';
-		}
+		adminName = storedUser?.name || adminName;
 	}
 
 	const handleLogout = () => {

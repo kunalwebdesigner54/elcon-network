@@ -1,26 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 
+import { getToken, getUser } from '../utils/auth';
+
 function AdminRoute({ children }) {
 	const [isAuthorized, setIsAuthorized] = useState(null);
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
-		const storedUser = localStorage.getItem('user');
+		const token = getToken();
+		const user = getUser();
 
-		if (!token || !storedUser) {
+		if (!token || !user) {
 			setIsAuthorized(false);
 			return;
 		}
 
-		try {
-			const user = JSON.parse(storedUser);
-			if (user?.role === 'admin') {
-				setIsAuthorized(true);
-			} else {
-				setIsAuthorized(false);
-			}
-		} catch (error) {
+		if (user?.role === 'admin') {
+			setIsAuthorized(true);
+		} else {
 			setIsAuthorized(false);
 		}
 	}, []);
