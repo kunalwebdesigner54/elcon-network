@@ -13,11 +13,17 @@ const formatDate = (value) => {
   return date.toLocaleDateString('en-GB');
 };
 
-const buildReferralGraph = (users) => {
+const buildReferralGraph = (users, adminMemberId = null) => {
   const childrenBySponsor = new Map();
 
   users.forEach((user) => {
-    const sponsorKey = String(user.sponsorId || '').trim();
+    let sponsorKey = String(user.sponsorId || '').trim();
+    
+    // Ignore admin as sponsor to prevent automatically showing admin ID as referrer
+    if (adminMemberId && sponsorKey === adminMemberId) {
+      sponsorKey = '';
+    }
+
     if (!sponsorKey) {
       return;
     }
@@ -135,11 +141,12 @@ exports.updateKycStatus = async (req, res) => {
 
 exports.getAllMembersList = async (req, res) => {
   try {
+    const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
     const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 });
 
     const rows = users.map((user, index) => ({
       sNo: index + 1,
-      sponsorId: user.sponsorId || '---',
+      sponsorId: (user.sponsorId && user.sponsorId !== adminMemberId) ? user.sponsorId : '---',
       memberId: user.memberId || '---',
       name: user.name || '---',
       mobile: user.contactNo || '---',
@@ -221,8 +228,9 @@ exports.getTeamTree = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Member ID not found' });
     }
 
+    const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
     const allUsers = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).lean();
-    const childrenBySponsor = buildReferralGraph(allUsers);
+    const childrenBySponsor = buildReferralGraph(allUsers, adminMemberId);
     const memberIds = new Set(allUsers.map((user) => user.memberId));
 
     const buildNode = (memberId, depth = 0) => {
@@ -282,8 +290,9 @@ exports.getTeamTree = async (req, res) => {
 
 exports.getMemberPerformance = async (req, res) => {
   try {
+    const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
     const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).sort({ createdAt: -1 });
-    const childrenBySponsor = buildReferralGraph(users);
+    const childrenBySponsor = buildReferralGraph(users, adminMemberId);
 
     const rows = users.map((user, index) => {
       const descendants = collectDescendants(user.memberId, childrenBySponsor);
