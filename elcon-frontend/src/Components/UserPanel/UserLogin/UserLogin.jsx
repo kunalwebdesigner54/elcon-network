@@ -6,7 +6,7 @@ import './UserLogin.css';
 
 function UserLogin() {
 	const navigate = useNavigate();
-	const [memberId, setMemberId] = useState('');
+	const [loginId, setLoginId] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -17,7 +17,9 @@ function UserLogin() {
 		setLoading(true);
 
 		try {
-			const data = await loginUser({ memberId, password });
+			const isEmail = loginId.includes('@');
+			const payload = isEmail ? { email: loginId, password } : { memberId: loginId, password };
+			const data = await loginUser(payload);
 			localStorage.setItem('token', data.token);
 			localStorage.setItem('user', JSON.stringify(data.user));
 
@@ -30,6 +32,7 @@ function UserLogin() {
 		} catch (requestError) {
             const responseData = requestError?.response?.data;
             const message = responseData?.errors?.[0]?.msg || responseData?.message || 'Invalid login credentials';
+            setError(message);
 		} finally {
 			setLoading(false);
 		}
@@ -46,12 +49,12 @@ function UserLogin() {
 								{error}
 							</div>
 						) : null}
-						<label>Member ID</label>
+						<label>Member ID or Email</label>
 						<input
 							type="text"
-							placeholder="Enter your Member ID (e.g. EL12345678)"
-							value={memberId}
-							onChange={(event) => setMemberId(event.target.value)}
+							placeholder="Enter Member ID or Email"
+							value={loginId}
+							onChange={(event) => setLoginId(event.target.value)}
 						/>
 						<label>Password</label>
 						<input

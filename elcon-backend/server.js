@@ -30,6 +30,8 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_ORIGIN || 'https://elconnetwork.com',
   'https://www.elconnetwork.com',
+  'http://localhost:3000',
+  'http://localhost:3001',
 ];
 
 // Middleware
