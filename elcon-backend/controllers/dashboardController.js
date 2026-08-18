@@ -8,14 +8,14 @@ const Order = require('../models/Order');
 // @access Private (admin)
 exports.adminDashboard = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments({ role: 'user' });
+    const totalUsers = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' } });
     const totalAdmins = await User.countDocuments({ role: 'admin' });
 
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const newUsersLast7Days = await User.countDocuments({ role: 'user', createdAt: { $gte: sevenDaysAgo } });
+    const newUsersLast7Days = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' }, createdAt: { $gte: sevenDaysAgo } });
 
-    const usersWithBank = await User.countDocuments({ role: 'user', 'bankDetails.accountNo': { $exists: true, $ne: '' } });
+    const usersWithBank = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' }, 'bankDetails.accountNo': { $exists: true, $ne: '' } });
 
     // Top sponsors (by direct referrals)
     const topSponsorsAgg = await User.aggregate([
@@ -124,16 +124,16 @@ exports.userDashboard = async (req, res) => {
 // @access Private (admin)
 exports.adminFullDashboard = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments({ role: 'user' });
+    const totalUsers = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' } });
 
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
-    const todaysJoiningMembers = await User.countDocuments({ role: 'user', createdAt: { $gte: startOfToday } });
+    const todaysJoiningMembers = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' }, createdAt: { $gte: startOfToday } });
 
     // Define active as users created in last 90 days (best-effort without activity model)
     const nintyDaysAgo = new Date();
     nintyDaysAgo.setDate(nintyDaysAgo.getDate() - 90);
-    const activeMembers = await User.countDocuments({ role: 'user', createdAt: { $gte: nintyDaysAgo } });
+    const activeMembers = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' }, createdAt: { $gte: nintyDaysAgo } });
 
     const inactiveMembers = Math.max(0, totalUsers - activeMembers);
 

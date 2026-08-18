@@ -68,7 +68,7 @@ const getKycSnapshot = (user) => ({
 
 exports.getAdminKycRequests = async (req, res) => {
   try {
-    const users = await User.find({ role: 'user' }).sort({ createdAt: -1 });
+    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).sort({ createdAt: -1 });
     const rows = users.map((user, index) => ({
       ...getKycSnapshot(user),
       sNo: index + 1,
@@ -102,7 +102,7 @@ exports.updateKycStatus = async (req, res) => {
     const normalizedStatus = status === 'REJECT' ? 'REJECTED' : status;
 
     const user = await User.findOneAndUpdate(
-      { memberId: memberId.toUpperCase(), role: 'user' },
+      { memberId: memberId.toUpperCase(), role: 'user', email: { $ne: 'admin@gmail.com' } },
       {
         kycStatus: normalizedStatus,
         kycRemarks: remarks || '',
@@ -135,7 +135,7 @@ exports.updateKycStatus = async (req, res) => {
 
 exports.getAllMembersList = async (req, res) => {
   try {
-    const users = await User.find({ role: 'user' }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 });
+    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 });
 
     const rows = users.map((user, index) => ({
       sNo: index + 1,
@@ -168,7 +168,7 @@ exports.getAllMembersList = async (req, res) => {
 
 exports.getMembersLocation = async (req, res) => {
   try {
-    const users = await User.find({ role: 'user' }).sort({ createdAt: -1 });
+    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).sort({ createdAt: -1 });
 
     const rows = users.map((user, index) => ({
       srNo: String(index + 1),
@@ -221,7 +221,7 @@ exports.getTeamTree = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Member ID not found' });
     }
 
-    const allUsers = await User.find({ role: 'user' }).lean();
+    const allUsers = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).lean();
     const childrenBySponsor = buildReferralGraph(allUsers);
     const memberIds = new Set(allUsers.map((user) => user.memberId));
 
@@ -282,7 +282,7 @@ exports.getTeamTree = async (req, res) => {
 
 exports.getMemberPerformance = async (req, res) => {
   try {
-    const users = await User.find({ role: 'user' }).sort({ createdAt: -1 });
+    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).sort({ createdAt: -1 });
     const childrenBySponsor = buildReferralGraph(users);
 
     const rows = users.map((user, index) => {

@@ -295,7 +295,7 @@ exports.loginAsUser = async (req, res) => {
     }
 
     const { memberId } = req.body;
-    const user = await User.findOne({ memberId: String(memberId).toUpperCase(), role: 'user' });
+    const user = await User.findOne({ memberId: String(memberId).toUpperCase(), role: 'user', email: { $ne: 'admin@gmail.com' } });
 
     if (!user) {
       return res.status(404).json({
