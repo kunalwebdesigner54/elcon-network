@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema(
     },
     plainPassword: {
       type: String,
-      select: true,
+      select: false,
     },
     transactionPassword: {
       type: String,
@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema(
     },
     plainTransactionPassword: {
       type: String,
-      select: true,
+      select: false,
     },
     aadharNo: {
       type: String,

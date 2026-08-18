@@ -135,7 +135,7 @@ exports.updateKycStatus = async (req, res) => {
 
 exports.getAllMembersList = async (req, res) => {
   try {
-    const users = await User.find({ role: 'user' }).sort({ createdAt: -1 });
+    const users = await User.find({ role: 'user' }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 });
 
     const rows = users.map((user, index) => ({
       sNo: index + 1,
