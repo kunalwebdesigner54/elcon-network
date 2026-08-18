@@ -21,6 +21,7 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_ORIGIN || 'https://elconnetwork.com',
   'https://www.elconnetwork.com',
+  'https://elcon-network.netlify.app',
   'http://localhost:3000',
   'http://localhost:3001',
 ];
