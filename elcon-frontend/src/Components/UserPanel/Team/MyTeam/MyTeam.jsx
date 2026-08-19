@@ -11,10 +11,12 @@ function flattenDescendants(node, depth = 0, acc = []) {
       memberId: child.memberId,
       name: child.name,
       level: depth + 1,
-      joinDate: child.joinDateRaw ? new Date(child.joinDateRaw).toLocaleString('en-IN', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit', hour12: true
-      }).toUpperCase() : (child.joinDate || '---'),
+      joinDate: child.joinDateRaw ? (() => {
+        const d = new Date(child.joinDateRaw);
+        const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }).toUpperCase();
+        const date = d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        return `${time}, ${date}`;
+      })() : (child.joinDate || '---'),
       joinDateRaw: child.joinDateRaw,
       unlockLevel: child.unlockLevel || 1,
       city: child.city || '---',
