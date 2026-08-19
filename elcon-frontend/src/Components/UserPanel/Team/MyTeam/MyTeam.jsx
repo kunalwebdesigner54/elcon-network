@@ -13,9 +13,14 @@ function flattenDescendants(node, depth = 0, acc = []) {
       level: depth + 1,
       joinDate: child.joinDateRaw ? (() => {
         const d = new Date(child.joinDateRaw);
-        const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }).toUpperCase();
-        const date = d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        return `${time}, ${date}`;
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        const seconds = String(d.getSeconds()).padStart(2, '0');
+        const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}${ampm}`;
       })() : (child.joinDate || '---'),
       joinDateRaw: child.joinDateRaw,
       unlockLevel: child.unlockLevel || 1,
