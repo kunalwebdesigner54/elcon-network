@@ -58,6 +58,20 @@ const AllMembersList = () => {
     });
   }, [filters, membersData]);
 
+  const formatJoinDate = (joinDateRaw, fallbackDate) => {
+    if (!joinDateRaw) return fallbackDate || '---';
+    const d = new Date(joinDateRaw);
+    if (isNaN(d.getTime())) return fallbackDate || '---';
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    const seconds = String(d.getSeconds()).padStart(2, '0');
+    const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+  };
+
   const visibleMembers = filteredMembers.slice(0, Number(pageSize));
 
   const handleLoginAsUser = async (memberId) => {
@@ -143,7 +157,7 @@ const AllMembersList = () => {
                   <td>{member.memberId}</td>
                   <td>{member.name}</td>
                   <td>{member.mobile}</td>
-                  <td>{member.joinDate}</td>
+                  <td>{formatJoinDate(member.joinDateRaw, member.joinDate)}</td>
                   <td>{member.levelDepth}</td>
                   <td>{member.city}</td>
                   <td>
@@ -187,7 +201,10 @@ const AllMembersList = () => {
           </table>
         </div>
 
-        <div className="table-footer" style={{ justifyContent: 'center', marginTop: '12px' }}>
+        <div className="table-footer" style={{ justifyContent: 'space-between', marginTop: '12px' }}>
+          <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
+            Total: {filteredMembers.length} members
+          </span>
           <div className="pagination">
             <button className="page-btn">&laquo;</button>
             <button className="page-btn">&lsaquo;</button>

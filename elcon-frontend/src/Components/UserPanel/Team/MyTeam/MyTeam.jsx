@@ -179,7 +179,7 @@ function MyTeam() {
 
             {/* Footer with Total and Pagination */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '10px' }}>
-              <span style={{ fontSize: '0.95em', color: '#555', fontWeight: '500', paddingLeft: '8px' }}>
+              <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
                 Total: {filteredRows.length} members
               </span>
               
