@@ -121,7 +121,7 @@ const AllMembersList = () => {
                 <th>NAME</th>
                 <th>MOBILE</th>
                 <th>JOIN DATE</th>
-                <th>J.LEVEL</th>
+                <th>LEVEL DEPTH</th>
                 <th>CITY</th>
                 <th>STATUS</th>
                 <th>PASSWORD</th>
@@ -144,7 +144,7 @@ const AllMembersList = () => {
                   <td>{member.name}</td>
                   <td>{member.mobile}</td>
                   <td>{member.joinDate}</td>
-                  <td>{member.jLevel}</td>
+                  <td>{member.levelDepth}</td>
                   <td>{member.city}</td>
                   <td>
                     <span className={member.status === 'IN-ACTIVE' ? 'member-status-inactive' : 'member-status-active'}>

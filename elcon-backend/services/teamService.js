@@ -103,9 +103,47 @@ const getAllUsersTeamStats = async () => {
     return { users, childrenBySponsor, statsMap, adminMemberId };
 };
 
+/**
+ * Calculates the level depth of each user from the root.
+ * Root = 0, Directs = 1, etc.
+ */
+const calculateLevelDepths = (users, adminMemberId = null) => {
+  const depthMap = new Map();
+  const userMap = new Map(users.map(u => [u.memberId, u]));
+
+  const getDepth = (memberId, visited = new Set()) => {
+    if (!memberId || visited.has(memberId)) return 0; // root or circular
+    if (depthMap.has(memberId)) return depthMap.get(memberId);
+
+    const user = userMap.get(memberId);
+    if (!user) return 0;
+
+    let sponsorKey = String(user.sponsorId || '').trim();
+    if (adminMemberId && sponsorKey === adminMemberId) {
+      sponsorKey = '';
+    }
+
+    if (!sponsorKey || !userMap.has(sponsorKey)) {
+      depthMap.set(memberId, 0);
+      return 0;
+    }
+
+    visited.add(memberId);
+    const depth = 1 + getDepth(sponsorKey, visited);
+    visited.delete(memberId);
+
+    depthMap.set(memberId, depth);
+    return depth;
+  };
+
+  users.forEach(u => getDepth(u.memberId));
+  return depthMap;
+};
+
 module.exports = {
   buildReferralGraph,
   collectDescendants,
   getTeamStats,
-  getAllUsersTeamStats
+  getAllUsersTeamStats,
+  calculateLevelDepths
 };

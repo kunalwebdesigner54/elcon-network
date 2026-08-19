@@ -3,7 +3,8 @@ const {
   buildReferralGraph,
   collectDescendants,
   getTeamStats,
-  getAllUsersTeamStats
+  getAllUsersTeamStats,
+  calculateLevelDepths
 } = require('../services/teamService');
 
 const formatDate = (value) => {
@@ -108,24 +109,9 @@ exports.updateKycStatus = async (req, res) => {
 exports.getAllMembersList = async (req, res) => {
   try {
     const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
-    let users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 });
+    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 }).lean();
 
-    // ==========================================
-    // TEMPORARY TESTING FILTER (REMOVE LATER)
-    // ==========================================
-    const userOne = users.find(u => u.name && u.name.toUpperCase() === 'USER ONE');
-    if (userOne) {
-      const cutoffTime = userOne.createdAt.getTime();
-      users = users.filter(u => {
-        // Keep USER ONE explicitly
-        if (u.memberId === userOne.memberId) return true;
-        // Keep any member created strictly AFTER USER ONE
-        if (u.createdAt && u.createdAt.getTime() > cutoffTime) return true;
-        // Hide all older existing members
-        return false;
-      });
-    }
-    // ==========================================
+    const depthMap = calculateLevelDepths(users, adminMemberId);
 
     const rows = users.map((user, index) => ({
       sNo: index + 1,
@@ -135,7 +121,7 @@ exports.getAllMembersList = async (req, res) => {
       mobile: user.contactNo || '---',
       joinDate: formatDate(user.createdAt),
       joinDateRaw: user.createdAt,
-      jLevel: user.joiningLevel || 1,
+      levelDepth: depthMap.get(user.memberId) || 0,
       city: user.city || '---',
       status: user.accountStatus || 'ACTIVE',
       password: user.plainPassword || '********',
