@@ -36,6 +36,8 @@ const getKycSnapshot = (user) => ({
   bankName: user.kycDetails?.bankName || user.bankDetails?.bankName || '---',
   branch: user.kycDetails?.bankBranch || user.bankDetails?.bankBranch || '---',
   ifscCode: user.kycDetails?.ifscCode || user.bankDetails?.ifsc || '---',
+  aadharFrontImage: user.kycDetails?.aadharFrontImage || null,
+  aadharBackImage: user.kycDetails?.aadharBackImage || null,
   createdAt: user.createdAt,
 });
 
@@ -65,7 +67,7 @@ exports.updateKycStatus = async (req, res) => {
     const { memberId } = req.params;
     const { status, remarks } = req.body;
 
-    if (!['APPROVED', 'PENDING', 'REJECT', 'REJECTED'].includes(status)) {
+    if (!['APPROVED', 'PENDING', 'REJECT', 'REJECTED', 'DELETE'].includes(status)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid KYC status',
@@ -74,14 +76,27 @@ exports.updateKycStatus = async (req, res) => {
 
     const normalizedStatus = status === 'REJECT' ? 'REJECTED' : status;
 
-    const user = await User.findOneAndUpdate(
-      { memberId: memberId.toUpperCase(), role: 'user', email: { $ne: 'admin@gmail.com' } },
-      {
-        kycStatus: normalizedStatus,
-        kycRemarks: remarks || '',
+    let updateData = {
+      kycStatus: normalizedStatus,
+      kycRemarks: remarks || '',
+      kycReviewedAt: new Date(),
+      kycReviewedBy: req.user.id,
+    };
+
+    if (status === 'DELETE') {
+      updateData = {
+        kycStatus: 'PENDING',
+        kycRemarks: 'KYC Request Deleted by Admin',
+        kycDetails: {},
+        kycSubmittedAt: null,
         kycReviewedAt: new Date(),
         kycReviewedBy: req.user.id,
-      },
+      };
+    }
+
+    const user = await User.findOneAndUpdate(
+      { memberId: memberId.toUpperCase(), role: 'user', email: { $ne: 'admin@gmail.com' } },
+      updateData,
       { new: true }
     );
 

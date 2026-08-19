@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import './KYCRequest.css';
-import { getAdminKycRequests } from '../../../../api/membersService';
+import { getAdminKycRequests, updateAdminKycStatus } from '../../../../api/membersService';
 
 const exportColumns = [
   'S.NO',
@@ -32,6 +32,9 @@ function KYCRequest() {
   });
   const [pageSize, setPageSize] = useState('10');
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [selectedKyc, setSelectedKyc] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const loadKycRequests = async () => {
@@ -47,6 +50,39 @@ function KYCRequest() {
 
     loadKycRequests();
   }, []);
+
+  const handleUpdateStatus = async (memberId, newStatus) => {
+    if (!window.confirm(`Are you sure you want to ${newStatus} this KYC request?`)) return;
+    
+    setActionLoading(true);
+    try {
+      await updateAdminKycStatus(memberId, { status: newStatus });
+      setKycRows(prev => prev.map(row => {
+        if (row.memberId === memberId) {
+           if (newStatus === 'DELETE') {
+             return { ...row, status: 'PENDING', adharNo: '---', panNo: '---', googlePay: '---', phonePe: '---', upiId: '---', accountHolder: '---', accountNo: '---', bankName: '---', branch: '---', ifscCode: '---', aadharFrontImage: null, aadharBackImage: null };
+           }
+           return { ...row, status: newStatus === 'REJECT' ? 'REJECT' : newStatus };
+        }
+        return row;
+      }));
+      alert(`KYC status updated to ${newStatus} successfully.`);
+    } catch (error) {
+      alert(`Failed to update status: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleViewKyc = (row) => {
+    setSelectedKyc(row);
+    setIsModalOpen(true);
+  };
+
+  const closeViewModal = () => {
+    setIsModalOpen(false);
+    setSelectedKyc(null);
+  };
 
   const handleFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
@@ -203,10 +239,10 @@ function KYCRequest() {
                     <td>{row.sNo}</td>
                     <td>
                       <div className="kyc-action-group">
-                        <button type="button" className="kyc-action-btn kyc-action-cyan" aria-label="Change status">C</button>
-                        <button type="button" className="kyc-action-btn kyc-action-green" aria-label="Remark">R</button>
-                        <button type="button" className="kyc-action-btn kyc-action-pink" aria-label="Reject">X</button>
-                        <button type="button" className="kyc-action-btn kyc-action-red" aria-label="Delete">D</button>
+                        <button type="button" className="kyc-action-btn kyc-action-cyan" aria-label="View" title="View Details" onClick={() => handleViewKyc(row)}>C</button>
+                        <button type="button" className="kyc-action-btn kyc-action-green" aria-label="Approve" title="Approve" disabled={actionLoading} onClick={() => handleUpdateStatus(row.memberId, 'APPROVED')}>R</button>
+                        <button type="button" className="kyc-action-btn kyc-action-pink" aria-label="Reject" title="Reject" disabled={actionLoading} onClick={() => handleUpdateStatus(row.memberId, 'REJECT')}>X</button>
+                        <button type="button" className="kyc-action-btn kyc-action-red" aria-label="Delete" title="Delete KYC Data" disabled={actionLoading} onClick={() => handleUpdateStatus(row.memberId, 'DELETE')}>D</button>
                       </div>
                     </td>
                     <td>{row.status}</td>
@@ -256,6 +292,113 @@ function KYCRequest() {
           </div>
         </section>
       </div>
+
+      {isModalOpen && selectedKyc && (
+        <div className="kyc-modal-overlay" onClick={closeViewModal}>
+          <div className="kyc-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="kyc-modal-header">
+              <h2>KYC Details - {selectedKyc.name}</h2>
+              <button className="kyc-modal-close" onClick={closeViewModal}>&times;</button>
+            </div>
+            <div className="kyc-modal-body">
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">Member ID</span>
+                  <span className="kyc-detail-value">{selectedKyc.memberId}</span>
+                </div>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">Status</span>
+                  <span className="kyc-detail-value" style={{ 
+                    color: selectedKyc.status === 'APPROVED' ? 'green' : selectedKyc.status === 'REJECT' ? 'red' : 'orange',
+                    fontWeight: 'bold' 
+                  }}>{selectedKyc.status}</span>
+                </div>
+              </div>
+
+              <hr style={{ border: 'none', borderTop: '1px solid #eee' }} />
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">Aadhaar No</span>
+                  <span className="kyc-detail-value">{selectedKyc.adharNo}</span>
+                </div>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">PAN No</span>
+                  <span className="kyc-detail-value">{selectedKyc.panNo}</span>
+                </div>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">Mobile</span>
+                  <span className="kyc-detail-value">{selectedKyc.mobile}</span>
+                </div>
+              </div>
+
+              <hr style={{ border: 'none', borderTop: '1px solid #eee' }} />
+
+              <h3 style={{ margin: '0', fontSize: '16px', color: '#444' }}>Banking Details</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">Bank Name</span>
+                  <span className="kyc-detail-value">{selectedKyc.bankName}</span>
+                </div>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">Account Holder</span>
+                  <span className="kyc-detail-value">{selectedKyc.accountHolder}</span>
+                </div>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">Account No</span>
+                  <span className="kyc-detail-value">{selectedKyc.accountNo}</span>
+                </div>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">IFSC Code</span>
+                  <span className="kyc-detail-value">{selectedKyc.ifscCode}</span>
+                </div>
+              </div>
+
+              <hr style={{ border: 'none', borderTop: '1px solid #eee' }} />
+
+              <h3 style={{ margin: '0', fontSize: '16px', color: '#444' }}>Payment Apps</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">Google Pay</span>
+                  <span className="kyc-detail-value">{selectedKyc.googlePay}</span>
+                </div>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">PhonePe</span>
+                  <span className="kyc-detail-value">{selectedKyc.phonePe}</span>
+                </div>
+                <div className="kyc-detail-row">
+                  <span className="kyc-detail-label">UPI ID</span>
+                  <span className="kyc-detail-value">{selectedKyc.upiId}</span>
+                </div>
+              </div>
+
+              <hr style={{ border: 'none', borderTop: '1px solid #eee' }} />
+
+              <h3 style={{ margin: '0', fontSize: '16px', color: '#444' }}>Uploaded Documents</h3>
+              <div className="kyc-images-grid">
+                <div className="kyc-image-card">
+                  <span style={{ fontWeight: '600', color: '#333', fontSize: '13px' }}>Aadhaar Front</span>
+                  {selectedKyc.aadharFrontImage ? (
+                    <img src={selectedKyc.aadharFrontImage.startsWith('http') ? selectedKyc.aadharFrontImage : `http://localhost:5000/uploads/${selectedKyc.aadharFrontImage}`} alt="Aadhaar Front" className="kyc-image-preview" />
+                  ) : (
+                    <div className="kyc-no-image">No Image Uploaded</div>
+                  )}
+                </div>
+                <div className="kyc-image-card">
+                  <span style={{ fontWeight: '600', color: '#333', fontSize: '13px' }}>Aadhaar Back</span>
+                  {selectedKyc.aadharBackImage ? (
+                    <img src={selectedKyc.aadharBackImage.startsWith('http') ? selectedKyc.aadharBackImage : `http://localhost:5000/uploads/${selectedKyc.aadharBackImage}`} alt="Aadhaar Back" className="kyc-image-preview" />
+                  ) : (
+                    <div className="kyc-no-image">No Image Uploaded</div>
+                  )}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
