@@ -12,34 +12,36 @@
 
 .action-icon-btn {
   background: none;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 4px 8px;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0;
   cursor: pointer;
-  font-size: 16px;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--card-bg);
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.action-icon-btn.edit:hover {
-  background-color: #00bcd4;
-  border-color: #00bcd4;
-  color: #fff;
+.action-icon-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
-.action-icon-btn.status:hover {
-  background-color: #4caf50;
-  border-color: #4caf50;
-  color: #fff;
+.action-icon-btn.edit {
+  background-color: #0ea5e9;
 }
 
-.action-icon-btn.wallet:hover {
-  background-color: #ff9800;
-  border-color: #ff9800;
-  color: #fff;
+.action-icon-btn.status {
+  background-color: #10b981;
+}
+
+.action-icon-btn.wallet {
+  background-color: #f59e0b;
 }
 
 .login-btn {

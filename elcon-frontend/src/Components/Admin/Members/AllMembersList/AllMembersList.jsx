@@ -155,15 +155,15 @@ const AllMembersList = () => {
                   <td>{member.transPassword}</td>
                   <td>{member.wallet}</td>
                   <td>
-                    <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
-                      <button className="action-icon-btn edit" title="Edit Profile" style={{ backgroundColor: '#4ec3e0', border: 'none', color: '#fff' }}>
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25z" fill="#fff"/><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#fff"/></svg>
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                      <button className="action-icon-btn edit" title="Edit Profile">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                       </button>
-                      <button className="action-icon-btn status" title="Active/Inactive" style={{ backgroundColor: '#4caf50', border: 'none', color: '#fff' }}>
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="20 6 9.5 17 4 11.5" stroke="#fff" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      <button className="action-icon-btn status" title="Active/Inactive">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                       </button>
-                      <button className="action-icon-btn wallet" title="Credit/Debit Wallet" style={{ backgroundColor: '#00bcd4', border: 'none', color: '#fff' }}>
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="9" y="4" width="6" height="16" rx="3" fill="#fff"/><rect x="4" y="9" width="16" height="6" rx="3" fill="#fff"/></svg>
+                      <button className="action-icon-btn wallet" title="Credit/Debit Wallet">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" /><path d="M3 5v14a2 2 0 0 0 2 2h16v-5" /><path d="M18 12a2 2 0 0 0 0 4h4v-4Z" /></svg>
                       </button>
                     </div>
                   </td>
