@@ -257,7 +257,8 @@ exports.getTeamTree = async (req, res) => {
 
 exports.getMemberPerformance = async (req, res) => {
   try {
-    const { users, statsMap } = await getAllUsersTeamStats();
+    const { users, statsMap, adminMemberId } = await getAllUsersTeamStats();
+    const depthMap = calculateLevelDepths(users, adminMemberId);
 
     const rows = users.map((user, index) => {
       const stats = statsMap.get(user.memberId);
@@ -280,7 +281,7 @@ exports.getMemberPerformance = async (req, res) => {
         joinDate: formatDate(user.createdAt),
         joinDateRaw: user.createdAt,
         status: user.accountStatus || 'ACTIVE',
-        joiningLevel: user.joiningLevel || 1,
+        levelDepth: depthMap.get(user.memberId) || 0,
         unlockLevel: user.unlockLevel || 1,
         rank: user.rank || '---',
         activeTeamCount,
