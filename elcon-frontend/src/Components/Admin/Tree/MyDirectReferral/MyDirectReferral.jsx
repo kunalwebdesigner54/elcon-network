@@ -21,6 +21,8 @@ function MyDirectReferral() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   useEffect(() => {
     getTeamTree()
@@ -42,21 +44,23 @@ function MyDirectReferral() {
     );
   }, [rows, search]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / pageSize));
+  const pageRows = filteredRows.slice((page - 1) * pageSize, page * pageSize);
+
+  // Reset to first page when search changes
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
   return (
     <div>
-      <h1 className="page-title">Member Direct Report</h1>
+      <h1 className="page-title" style={{ fontSize: '42px', marginBottom: '14px' }}>Member Direct Report</h1>
 
-      <div className="panel">
-        <div className="form-grid" style={{ maxWidth: 700 }}>
-          <label className="field-label">Member ID</label>
-          <input className="text-input" />
-        </div>
-
-        <div className="btn-row">
-          <button className="btn-primary" type="button">Show Details</button>
-        </div>
-        <div className="btn-row">
-          <button className="btn-outline" type="button">Excel</button>
+      <div className="panel" style={{ borderRadius: '28px', padding: '24px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
+          <input className="text-input" style={{ maxWidth: '140px' }} placeholder="MEMBER ID" />
+          <button className="btn-primary" type="button">SHOW DETAILS</button>
+          <button className="btn-outline" type="button">EXCEL</button>
         </div>
 
         <div className="table-tools">
@@ -86,12 +90,12 @@ function MyDirectReferral() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9}>Loading...</td></tr>
-              ) : filteredRows.length === 0 ? (
-                <tr><td colSpan={9}>No direct referrals found.</td></tr>
-              ) : filteredRows.map((row) => (
+                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '20px' }}>Loading...</td></tr>
+              ) : pageRows.length === 0 ? (
+                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '20px' }}>No direct referrals found.</td></tr>
+              ) : pageRows.map((row, index) => (
                 <tr key={row.memberId}>
-                  <td>{row.sNo}</td>
+                  <td>{(page - 1) * pageSize + index + 1}</td>
                   <td>{row.memberId}</td>
                   <td>{row.memberName}</td>
                   <td>{row.totalDirect}</td>
@@ -106,20 +110,46 @@ function MyDirectReferral() {
           </table>
         </div>
 
-        <div className="table-footer">
-          <span>Showing 1 to 10 of 366 entries</span>
-          <div className="pagination">
-            <button className="page-btn">Previous</button>
-            <button className="page-btn active">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">4</button>
-            <button className="page-btn">5</button>
-            <button className="page-btn">...</button>
-            <button className="page-btn">37</button>
-            <button className="page-btn">Next</button>
+        {!loading && filteredRows.length > 0 && (
+          <div className="table-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
+            <span>
+              Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, filteredRows.length)} of {filteredRows.length} entries
+            </span>
+            <div className="pagination" style={{ display: 'flex', gap: '4px' }}>
+              <button 
+                className="page-btn" 
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                Previous
+              </button>
+              
+              {[...Array(Math.min(totalPages, 5))].map((_, i) => {
+                let p = page > 3 && totalPages > 5 ? page - 2 + i : i + 1;
+                if (p > totalPages) p = totalPages - (4 - i); // adjust if at end
+                if (p < 1) p = 1;
+                
+                return (
+                  <button
+                    key={p}
+                    className={`page-btn ${page === p ? 'active' : ''}`}
+                    onClick={() => setPage(p)}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
+              
+              <button 
+                className="page-btn" 
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
