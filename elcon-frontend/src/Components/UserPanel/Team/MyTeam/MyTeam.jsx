@@ -128,7 +128,7 @@ function MyTeam() {
                   ) : (
                     pageRows.map((item, index) => (
                       <tr key={item.memberId}>
-                        <td>{(page - 1) * PAGE_SIZE + index + 1}</td>
+                        <td>{(page - 1) * pageSize + index + 1}</td>
                         <td>{item.memberId}</td>
                         <td>{item.name}</td>
                         <td>{item.level}</td>
