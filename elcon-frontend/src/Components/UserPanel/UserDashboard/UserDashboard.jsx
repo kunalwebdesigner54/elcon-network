@@ -203,7 +203,7 @@ function MemberDashboard() {
             ))}
           </div>
           <div className="user-dashboard1-member-dashboard-table-wrap">
-            <table className="user-dashboard1-member-dashboard-table">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>S.NO</th>

@@ -129,7 +129,7 @@ function DiscountCoupon() {
               <h2 className="discount-coupon-history-heading">DISCOUNT COUPON HISTORY</h2>
 
           <div className="table-wrap coupon-history-wrap">
-            <table className="user-table coupon-history-table">
+            <table className="data-table coupon-history-table">
               <thead>
                 <tr>
                   <th>COUPON ID</th>

@@ -37,7 +37,7 @@ function TotalLevelIncome() {
         <h3>Total Level Income : {totalAmount.toFixed(2)}</h3>
         <div className="table-toolbar"><button className="user-btn-outline" type="button">Excel</button></div>
         <div className="table-wrap">
-          <table className="user-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>SR. NO.</th>

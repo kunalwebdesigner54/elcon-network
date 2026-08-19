@@ -66,7 +66,7 @@ function MyOrders() {
           <h1 className="user-orders-title">My Orders</h1>
 
           <div className="table-wrap user-orders-table-wrap">
-            <table className="user-table user-orders-table">
+            <table className="data-table user-orders-table">
               <thead>
                 <tr>
                   <th>S. NO</th>

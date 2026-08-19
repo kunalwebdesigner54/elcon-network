@@ -1,25 +1,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-	--primary: #0A37C4;
-	--primary-dark: #082da0;
-	--primary-light: #3b6de8;
-	--secondary: #6c63ff;
-	--accent: #ff6b6b;
-	--success: #1db954;
-	--warning: #ffd166;
-	--dark: #2d3748;
-	--darker: #1a202c;
-	--light: #f7fafc;
-	--gray: #a0aec0;
-	--card-bg: #ffffff;
-	--shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-	--shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
-	--gradient-primary: linear-gradient(135deg, #0A37C4 0%, #3b6de8 100%);
-	--gradient-secondary: linear-gradient(135deg, #ff6b6b 0%, #ffd166 100%);
-	--gradient-success: linear-gradient(135deg, #1db954 0%, #00d4aa 100%);
-	--border-radius: 20px;
-	--border-radius-sm: 12px;
+	/* New Premium Dark Fintech Theme */
+	--primary: #00E5FF; /* Neon Cyan */
+	--primary-dark: #00B8CC;
+	--primary-light: #33EBFF;
+	--secondary: #8A2BE2; /* Neon Purple */
+	--accent: #FF3366; /* Neon Pink/Red for accents */
+	
+	/* Status Colors */
+	--success: #00E676; /* Neon Green */
+	--warning: #FFAB00;
+	--danger: #FF1744;
+	--info: #2979FF;
+
+	/* Dark Backgrounds */
+	--bg-darkest: #040814;
+	--bg-dark: #0B1221;
+	--bg-card: rgba(18, 26, 47, 0.7);
+	--bg-card-hover: rgba(25, 35, 60, 0.85);
+	
+	/* Glassmorphism / Borders */
+	--glass-border: rgba(255, 255, 255, 0.08);
+	--glass-border-light: rgba(255, 255, 255, 0.15);
+	--glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+	
+	/* Text Colors */
+	--text-main: #FFFFFF;
+	--text-muted: #94A3B8;
+	--text-dark: #1E293B;
+
+	/* Gradients */
+	--gradient-primary: linear-gradient(135deg, #00E5FF 0%, #0077FF 100%);
+	--gradient-secondary: linear-gradient(135deg, #8A2BE2 0%, #FF3366 100%);
+	--gradient-success: linear-gradient(135deg, #00E676 0%, #1DE9B6 100%);
+	--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+
+	--border-radius: 16px;
+	--border-radius-sm: 8px;
+	--border-radius-lg: 24px;
+	
+	--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -251,65 +272,157 @@ button,
 	}
 }
 
-/* Dark Blue Theme Toggle Styles */
-body.dark-blue-theme {
-    background-color: #0b192c !important;
-    color: #ffffff !important;
+/* Premium Dark Theme Resets (Scoped to Dashboards) */
+.admin-root, .user-root {
+	background-color: var(--bg-darkest);
+	color: var(--text-main);
+	min-height: 100vh;
+	font-family: 'Poppins', sans-serif;
 }
 
-body.dark-blue-theme * {
-    color: #ffffff !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+.admin-root *, .user-root * {
+	border-color: var(--glass-border);
 }
 
-/* Force dark background on all block elements to override specific component CSS */
-body.dark-blue-theme div,
-body.dark-blue-theme section,
-body.dark-blue-theme header,
-body.dark-blue-theme footer,
-body.dark-blue-theme aside,
-body.dark-blue-theme nav,
-body.dark-blue-theme main,
-body.dark-blue-theme table,
-body.dark-blue-theme th,
-body.dark-blue-theme td,
-body.dark-blue-theme tr,
-body.dark-blue-theme ul,
-body.dark-blue-theme li,
-body.dark-blue-theme form {
-    background-color: #0b192c !important;
+/* Global Dashboard Typography */
+.admin-root h1, .admin-root h2, .admin-root h3, .admin-root h4, .admin-root h5, .admin-root h6,
+.user-root h1, .user-root h2, .user-root h3, .user-root h4, .user-root h5, .user-root h6 {
+	color: var(--text-main);
+	font-weight: 600;
+	letter-spacing: 0.5px;
 }
 
-/* Specific overrides for interactive elements */
-body.dark-blue-theme input,
-body.dark-blue-theme select,
-body.dark-blue-theme textarea {
-    background-color: #112240 !important;
-    color: #ffffff !important;
+/* Global Glass Cards */
+.admin-root .white-card, .admin-root .card, .admin-root .panel, .admin-root .content-wrap, .admin-root .form-container,
+.user-root .white-card, .user-root .card, .user-root .panel, .user-root .content-wrap, .user-root .form-container {
+	background: var(--bg-card) !important;
+	backdrop-filter: blur(12px) !important;
+	-webkit-backdrop-filter: blur(12px) !important;
+	border: 1px solid var(--glass-border) !important;
+	border-radius: var(--border-radius) !important;
+	box-shadow: var(--glass-shadow) !important;
+	color: var(--text-main) !important;
+	transition: var(--transition);
 }
 
-body.dark-blue-theme button,
-body.dark-blue-theme [class*="btn"],
-body.dark-blue-theme .public-auth-link {
-    background-color: var(--primary-dark) !important;
-    color: #ffffff !important;
-    border: none !important;
+/* Hover effect on cards */
+.admin-root .white-card:hover, .user-root .white-card:hover {
+	background: var(--bg-card-hover) !important;
+	border-color: var(--primary) !important;
+	box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.15) !important;
 }
 
-/* Preserve branding and specific backgrounds */
-body.dark-blue-theme .public-brand-mark {
-    background: linear-gradient(135deg, #111111, #e21f26 72%, #f5b61f) !important;
-    color: #fff !important;
+/* Global Inputs & Selects */
+.admin-root input, .admin-root select, .admin-root textarea,
+.user-root input, .user-root select, .user-root textarea {
+	background: rgba(0, 0, 0, 0.2) !important;
+	border: 1px solid var(--glass-border) !important;
+	color: var(--text-main) !important;
+	border-radius: var(--border-radius-sm) !important;
+	padding: 10px 16px !important;
+	transition: var(--transition) !important;
 }
 
-body.dark-blue-theme .public-root::before {
-    background: none !important;
+.admin-root input:focus, .admin-root select:focus, .admin-root textarea:focus,
+.user-root input:focus, .user-root select:focus, .user-root textarea:focus {
+	outline: none !important;
+	border-color: var(--primary) !important;
+	box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.2) !important;
+	background: rgba(0, 0, 0, 0.4) !important;
 }
 
-body.dark-blue-theme img,
-body.dark-blue-theme svg,
-body.dark-blue-theme path,
-body.dark-blue-theme .public-socials span,
-body.dark-blue-theme .public-footer-socials span {
-    background-color: transparent !important;
+/* Global Dashboard Buttons */
+.admin-root .btn-primary, .user-root .btn-primary,
+.admin-root button[type="submit"], .user-root button[type="submit"] {
+	background: var(--gradient-primary) !important;
+	color: #fff !important;
+	border: none !important;
+	border-radius: var(--border-radius-sm) !important;
+	padding: 12px 24px !important;
+	font-weight: 600 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 1px !important;
+	box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3) !important;
+	transition: var(--transition) !important;
+}
+
+.admin-root .btn-primary:hover, .user-root .btn-primary:hover,
+.admin-root button[type="submit"]:hover, .user-root button[type="submit"]:hover {
+	transform: translateY(-2px) !important;
+	box-shadow: 0 8px 25px rgba(0, 229, 255, 0.5) !important;
+}
+
+.admin-root .btn-secondary, .user-root .btn-secondary {
+	background: var(--gradient-secondary) !important;
+	box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3) !important;
+}
+
+.admin-root .btn-secondary:hover, .user-root .btn-secondary:hover {
+	box-shadow: 0 8px 25px rgba(138, 43, 226, 0.5) !important;
+}
+
+/* Outline Buttons (Excel, PDF, Filters) */
+.admin-root .user-btn-outline, .user-root .user-btn-outline,
+.admin-root .btn-outline, .user-root .btn-outline {
+	background: transparent !important;
+	border: 1px solid var(--primary) !important;
+	color: var(--primary) !important;
+	border-radius: var(--border-radius-sm) !important;
+	padding: 8px 16px !important;
+	font-weight: 500 !important;
+	transition: var(--transition) !important;
+}
+
+.admin-root .user-btn-outline:hover, .user-root .user-btn-outline:hover,
+.admin-root .btn-outline:hover, .user-root .btn-outline:hover {
+	background: rgba(0, 229, 255, 0.1) !important;
+	box-shadow: 0 0 10px rgba(0, 229, 255, 0.2) !important;
+}
+
+/* Global Tables */
+.admin-root table, .user-root table,
+.admin-root .data-table, .user-root .data-table {
+	background: transparent !important;
+	border-collapse: separate !important;
+	border-spacing: 0 !important;
+	width: 100% !important;
+}
+
+.admin-root th, .user-root th {
+	background: rgba(0, 0, 0, 0.4) !important;
+	color: var(--primary-light) !important;
+	font-weight: 600 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 1px !important;
+	padding: 16px !important;
+	border-bottom: 2px solid var(--glass-border-light) !important;
+	white-space: nowrap !important;
+}
+
+.admin-root td, .user-root td {
+	padding: 16px !important;
+	color: var(--text-main) !important;
+	border-bottom: 1px solid var(--glass-border) !important;
+	background: transparent !important;
+	transition: var(--transition) !important;
+}
+
+.admin-root tr:hover td, .user-root tr:hover td {
+	background: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Scrollbars inside dashboard */
+.admin-root ::-webkit-scrollbar, .user-root ::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+.admin-root ::-webkit-scrollbar-track, .user-root ::-webkit-scrollbar-track {
+	background: rgba(0,0,0,0.2);
+}
+.admin-root ::-webkit-scrollbar-thumb, .user-root ::-webkit-scrollbar-thumb {
+	background: var(--primary-dark);
+	border-radius: 4px;
+}
+.admin-root ::-webkit-scrollbar-thumb:hover, .user-root ::-webkit-scrollbar-thumb:hover {
+	background: var(--primary);
 }

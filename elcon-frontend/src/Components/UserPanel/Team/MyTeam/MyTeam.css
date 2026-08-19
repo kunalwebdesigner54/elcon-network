@@ -9,12 +9,13 @@
 
 .downline-filters input,
 .downline-filters select {
-	border: 1px solid #ccd3db;
-	border-radius: 8px;
+	border: 1px solid var(--glass-border);
+	border-radius: var(--border-radius-sm);
 	padding: 8px 10px;
 	min-height: 38px;
 	font-size: 16px;
-	background: var(--card-bg);
+	background: var(--bg-input);
+	color: var(--text-main);
 }
 
 .downline-pagination {
@@ -28,10 +29,10 @@
 .downline-page-btn {
 	min-width: 34px;
 	height: 34px;
-	border: 1px solid rgba(0, 0, 0, 0.08);
-	border-radius: 8px;
-	background: var(--card-bg);
-	color: #6d7e93;
+	border: 1px solid var(--glass-border);
+	border-radius: var(--border-radius-sm);
+	background: rgba(255, 255, 255, 0.05);
+	color: var(--text-muted);
 	cursor: pointer;
 	font-weight: 600;
 }
@@ -42,7 +43,7 @@
 }
 
 .downline-page-btn-active {
-	background: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
+	background: var(--gradient-primary);
 	color: #fff;
 	border-color: transparent;
 }

@@ -46,7 +46,7 @@ function TeamLevel() {
         </div>
         <div className="table-toolbar"><button className="user-btn-outline">Excel</button></div>
         <div className="table-wrap">
-          <table className="user-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>MEMBERID</th>

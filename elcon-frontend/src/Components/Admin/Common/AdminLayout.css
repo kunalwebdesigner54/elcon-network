@@ -1,26 +1,4 @@
-:root {
-  --primary: #00d4aa;
-  --primary-dark: #00b894;
-  --primary-light: #80ffe5;
-  --secondary: #6c63ff;
-  --accent: #ff6b6b;
-  --success: #1db954;
-  --warning: #ffd166;
-  --dark: #2d3748;
-  --darker: #1a202c;
-  --light: #f7fafc;
-  --gray: #a0aec0;
-  --card-bg: #ffffff;
-  --border-soft: rgba(255, 255, 255, 0.24);
-  --line-soft: rgba(45, 55, 72, 0.1);
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
-  --gradient-primary: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
-  --gradient-secondary: linear-gradient(135deg, #ff6b6b 0%, #ffd166 100%);
-  --gradient-success: linear-gradient(135deg, #1db954 0%, #00d4aa 100%);
-  --radius: 20px;
-  --radius-sm: 12px;
-}
+/* Variables are now managed globally in index.css */
 
 * {
   box-sizing: border-box;
@@ -29,9 +7,6 @@
 .admin-root {
   display: flex;
   min-height: 100vh;
-  background: #0b192c;
-  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  color: var(--dark);
   position: relative;
   overflow: hidden;
 }
@@ -41,9 +16,9 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.05) 0%, transparent 20%),
-    radial-gradient(circle at 90% 30%, rgba(0, 212, 170, 0.05) 0%, transparent 20%),
-    radial-gradient(circle at 50% 80%, rgba(255, 107, 107, 0.05) 0%, transparent 20%);
+    radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 90% 30%, rgba(138, 43, 226, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(255, 51, 102, 0.03) 0%, transparent 40%);
   pointer-events: none;
   z-index: 0;
 }
@@ -58,14 +33,14 @@
   width: 280px;
   min-width: 280px;
   height: 100vh;
-  background: rgba(45, 55, 72, 0.84);
-  color: #fff;
+  background: var(--bg-card);
+  color: var(--text-main);
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-right: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.08);
+  border-right: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
   transition: margin-left 0.3s ease, opacity 0.3s ease;
   overflow-y: auto;
 }
@@ -78,13 +53,16 @@
 
 .sidebar-brand {
   min-height: 74px;
-  background: var(--gradient-primary);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 32px;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .sidebar-user {
@@ -114,11 +92,13 @@
 }
 
 .sidebar-section-title {
-  background: rgba(0, 212, 170, 0.18);
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--primary-light);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 12px 14px;
+  text-transform: uppercase;
 }
 
 .sidebar-nav {
@@ -146,7 +126,8 @@
 
 .sidebar-link:hover,
 .sidebar-sublink:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--primary);
   transform: translateX(3px);
 }
 
@@ -155,17 +136,19 @@
 }
 
 .sidebar-submenu {
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-sublink {
-  font-size: 16px;
+  font-size: 15px;
   padding: 10px 24px;
+  color: var(--text-muted);
 }
 
 .sidebar-active {
-  background: var(--gradient-secondary);
-  color: #fff;
+  background: var(--gradient-glass);
+  color: var(--primary) !important;
+  border-right: 3px solid var(--primary);
 }
 
 .admin-main {
@@ -178,15 +161,15 @@
 
 .topbar {
   min-height: 74px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--bg-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 18px;
-  color: var(--dark);
+  color: var(--text-main);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--glass-border);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -202,7 +185,7 @@
   border: none;
   background: transparent;
   font-size: 24px;
-  color: var(--dark);
+  color: var(--text-main);
   cursor: pointer;
   width: 42px;
   height: 42px;
@@ -212,8 +195,8 @@
 
 .sidebar-toggle-btn {
   border: none;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
   cursor: pointer;
   width: 36px;
   height: 36px;
@@ -228,7 +211,7 @@
   border: none;
   background: transparent;
   font-size: 24px;
-  color: var(--dark);
+  color: var(--text-main);
   cursor: pointer;
   width: 42px;
   height: 42px;
@@ -236,16 +219,13 @@
   transition: background 0.2s ease;
 }
 
-.topbar-menu:hover {
-  background: rgba(0, 212, 170, 0.1);
+.topbar-menu:hover, .topbar-back:hover {
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--primary);
 }
 
 .sidebar-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.topbar-back:hover {
-  background: rgba(0, 212, 170, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .topbar-avatar {
@@ -269,13 +249,13 @@
 .page-breadcrumb-row {
   text-align: right;
   margin-bottom: 12px;
-  color: var(--gray);
-  font-size: 16px;
-  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .crumb-home {
-  color: var(--primary-dark);
+  color: var(--primary-light);
 }
 
 .crumb-divider {
@@ -283,19 +263,14 @@
 }
 
 .page-title {
-  font-size: 34px;
+  font-size: 32px;
   margin: 0 0 16px;
-  color: var(--dark);
-  font-weight: 800;
+  color: var(--text-main);
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.panel {
-  background: var(--card-bg);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius);
-  padding: 18px;
-  box-shadow: var(--shadow);
-}
+/* Remove duplicated .panel etc since they are in index.css */
 
 .cards-row {
   display: grid;
@@ -534,15 +509,16 @@
 .timer-error {
   color: var(--accent);
   font-size: 34px;
+  text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
 }
 
 .page-footer {
   text-align: center;
   padding: 16px;
-  font-size: 16px;
-  color: var(--gray);
-  border-top: 1px solid var(--line-soft);
-  background: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--glass-border);
+  background: var(--bg-card);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -617,8 +593,9 @@
     top: 14px;
     left: 12px;
     z-index: 50;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
   }
 
   .topbar-back {
@@ -629,8 +606,9 @@
     top: 14px;
     left: 12px;
     z-index: 50;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
   }
 
 

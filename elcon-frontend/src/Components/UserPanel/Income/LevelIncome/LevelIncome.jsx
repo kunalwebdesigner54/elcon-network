@@ -58,7 +58,7 @@ function LevelIncome() {
         </div>
 
         <div className="table-wrap">
-          <table className="user-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>

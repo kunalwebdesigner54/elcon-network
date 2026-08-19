@@ -43,7 +43,7 @@ function PaymentRequestHistory() {
         />
         {error && <p style={{ color: '#c62828', padding: '0 0 12px' }}>{error}</p>}
         <div className="table-wrap">
-          <table className="user-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>SR. NO.</th>

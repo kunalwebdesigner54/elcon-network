@@ -1,60 +1,8 @@
-/* Table styles copied from AdminLayout.css for consistent look */
-.table-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border: 1px solid var(--user-border-soft);
-  border-radius: 12px;
-  background: var(--card-bg);
-  margin-bottom: 18px;
-}
-
-.user-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 980px;
-  background: var(--card-bg);
-}
-
-.user-table th,
-.user-table td {
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 11px 10px;
-  font-size: 16px;
-  white-space: nowrap;
-}
-
-.user-table th {
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--user-dark);
-  text-align: left;
-  background: rgba(0, 212, 170, 0.1);
-}
-
-.user-table tbody tr:nth-child(odd) {
-  background: rgba(0, 212, 170, 0.03);
-}
-:root {
-  --user-primary: #00d4aa;
-  --user-primary-dark: #00b894;
-  --user-secondary: #6c63ff;
-  --user-accent: #ff6b6b;
-  --user-dark: #2d3748;
-  --user-card-bg: #ffffff;
-  --user-line-soft: rgba(45, 55, 72, 0.12);
-  --user-border-soft: rgba(255, 255, 255, 0.24);
-  --user-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  --user-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
-  --user-gradient-primary: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
-  --user-gradient-secondary: linear-gradient(135deg, #ff6b6b 0%, #ffd166 100%);
-}
+/* Variables and global components (tables, buttons) are now managed globally in index.css */
 
 .user-root {
   display: flex;
   min-height: 100vh;
-  background: #0b192c;
-  color: var(--user-dark);
   position: relative;
   overflow: hidden;
 }
@@ -64,9 +12,9 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 12% 20%, rgba(108, 99, 255, 0.05) 0%, transparent 20%),
-    radial-gradient(circle at 85% 35%, rgba(0, 212, 170, 0.05) 0%, transparent 20%),
-    radial-gradient(circle at 45% 85%, rgba(255, 107, 107, 0.05) 0%, transparent 24%);
+    radial-gradient(circle at 12% 20%, rgba(0, 229, 255, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 85% 35%, rgba(138, 43, 226, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 45% 85%, rgba(255, 51, 102, 0.03) 0%, transparent 44%);
   pointer-events: none;
   z-index: 0;
 }
@@ -81,14 +29,14 @@
   width: 280px;
   min-width: 280px;
   height: 100vh;
-  background: rgba(45, 55, 72, 0.84);
-  color: #fff;
+  background: var(--bg-card);
+  color: var(--text-main);
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-right: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.08);
+  border-right: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
   transition: margin-left 0.3s ease, opacity 0.3s ease;
   overflow-y: auto;
 }
@@ -101,13 +49,16 @@
 
 .user-brand {
   min-height: 74px;
-  background: var(--user-gradient-primary);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 32px;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .user-member-card {
@@ -147,8 +98,8 @@
   height: 36px;
   border: 0;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--primary);
   font-size: 18px;
   line-height: 1;
   display: inline-flex;
@@ -166,7 +117,7 @@
 .member-label {
   font-size: 16px;
   font-weight: 700;
-  color: #d4deea;
+  color: var(--text-muted);
 }
 
 .member-value {
@@ -175,11 +126,13 @@
 }
 
 .user-nav-title {
-  background: rgba(0, 212, 170, 0.18);
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--primary-light);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 12px 14px;
+  text-transform: uppercase;
 }
 
 .user-nav-link,
@@ -216,13 +169,15 @@
 .user-nav-link:hover,
 .user-nav-toggle:hover,
 .user-submenu-link:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--primary);
   transform: translateX(3px);
 }
 
 .user-nav-active {
-  background: var(--user-gradient-secondary);
-  color: #fff;
+  background: var(--gradient-glass);
+  color: var(--primary) !important;
+  border-right: 3px solid var(--primary);
 }
 
 .user-main {
@@ -234,15 +189,15 @@
 
 .user-topbar {
   min-height: 74px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--bg-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 18px;
-  color: var(--user-dark);
+  color: var(--text-main);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--user-border-soft);
+  border-bottom: 1px solid var(--glass-border);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -255,7 +210,7 @@
 }
 
 .user-top-title {
-    color: var(--user-dark);
+    color: var(--text-main);
     font-weight: 700;
     margin-left: 55px;
     font-size: 16px;
@@ -265,7 +220,7 @@
   border: none;
   background: transparent;
   font-size: 24px;
-  color: var(--user-dark);
+  color: var(--text-main);
   cursor: pointer;
   width: 42px;
   height: 42px;
@@ -275,8 +230,8 @@
 
 .user-sidebar-toggle {
   border: none;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
   cursor: pointer;
   width: 36px;
   height: 36px;
@@ -291,7 +246,7 @@
   border: none;
   background: transparent;
   font-size: 24px;
-  color: var(--user-dark);
+  color: var(--text-main);
   cursor: pointer;
   width: 42px;
   height: 42px;
@@ -299,16 +254,13 @@
   transition: background 0.2s ease;
 }
 
-.user-menu-btn:hover {
-  background: rgba(0, 212, 170, 0.1);
+.user-menu-btn:hover, .user-back-btn:hover {
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--primary);
 }
 
 .user-sidebar-toggle:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.user-back-btn:hover {
-  background: rgba(0, 212, 170, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .user-page-wrap {
@@ -320,123 +272,27 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  color: #8b98a8;
-  font-size: 16px;
-  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
   margin-bottom: 12px;
 }
 
 .user-breadcrumb-home {
-  color: var(--user-primary-dark);
+  color: var(--primary-light);
 }
 
 .user-page-title {
-  font-size: 34px;
+  font-size: 32px;
   margin: 0 0 16px;
-  color: var(--user-dark);
-  font-weight: 800;
-}
-
-.user-panel {
-  background: var(--user-card-bg);
-  
-padding: 18px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.user-table {
-  width: 100%;
-  min-width: 760px;
-  border-collapse: collapse;
-  background: var(--card-bg);
-}
-
-.user-table th,
-.user-table td {
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 10px;
-  font-size: 16px;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.user-table th {
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--user-dark);
-  background: rgba(0, 212, 170, 0.1);
-}
-
-.user-btn,
-.user-btn-muted,
-.user-btn-blue,
-.user-btn-outline {
-  border: 0;
-  border-radius: 12px;
-  text-transform: uppercase;
+  color: var(--text-main);
   font-weight: 700;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  padding: 10px 18px;
-  font-size: 16px;
-  transition: all 0.25s ease;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.user-btn {
-  background: var(--user-gradient-secondary);
-  color: #fff;
-}
+/* Remove duplicate table, button, and panel classes since they are globally handled */
 
-.user-btn-blue {
-  background: var(--user-gradient-primary);
-  color: #fff;
-}
-
-.user-btn-muted {
-  background: #7d8895;
-  color: #fff;
-}
-
-.user-btn-outline {
-  background: rgba(0, 212, 170, 0.1);
-  border: 1px solid rgba(0, 212, 170, 0.35);
-  color: var(--user-primary-dark);
-}
-
-.user-btn:hover,
-.user-btn-muted:hover,
-.user-btn-blue:hover,
-.user-btn-outline:hover {
-  transform: translateY(-2px);
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 240px minmax(220px, 1fr);
-  gap: 12px 14px;
-  align-items: center;
-}
-
-.form-grid label {
-  font-size: 16px;
-  color: #8b98a8;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.form-grid input,
-.form-grid select,
-.form-grid textarea {
-  width: 100%;
-  border: 2px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  background: var(--card-bg);
-  padding: 10px 12px;
-  font-size: 16px;
-  outline: none;
-}
+/* Removed duplicate user-table, user-btn, user-panel, form-grid CSS here */
 
 .btn-row,
 .table-toolbar {
@@ -448,20 +304,20 @@ padding: 18px;
 .user-footer {
   text-align: center;
   padding: 16px;
-  font-size: 16px;
-  color: #8b98a8;
-  border-top: 1px solid var(--user-line-soft);
-  background: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--glass-border);
+  background: var(--bg-card);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 .user-blank-page {
   min-height: 520px;
-  background: var(--card-bg);
-  border: 1px solid var(--user-border-soft);
-  border-radius: 18px;
-  box-shadow: var(--user-shadow);
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--glass-shadow);
 }
 
 @media (max-width: 992px) {
@@ -519,8 +375,9 @@ padding: 18px;
     top: 14px;
     left: 12px;
     z-index: 50;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
   }
 
   .user-main {
@@ -542,8 +399,9 @@ padding: 18px;
     top: 14px;
     left: 12px;
     z-index: 50;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
   }
 
 

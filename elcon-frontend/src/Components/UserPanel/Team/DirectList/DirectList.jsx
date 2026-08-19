@@ -42,7 +42,7 @@ function DirectList() {
               <button className="user-btn-outline">Excel</button>
             </div>
             <div className="table-wrap">
-              <table className="user-table">
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th>SR. NO.</th>
