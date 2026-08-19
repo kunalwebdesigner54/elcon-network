@@ -43,7 +43,7 @@
 }
 
 .kyc-action-pink {
-  background: var(--darker);
+  background: #f59e0b; /* Changed from black to orange/amber for Reject */
 }
 
 .kyc-action-red {
