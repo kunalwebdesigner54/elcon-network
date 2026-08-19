@@ -43,7 +43,20 @@ const getKycSnapshot = (user) => ({
 
 exports.getAdminKycRequests = async (req, res) => {
   try {
-    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).sort({ createdAt: -1 });
+    const { status } = req.query;
+
+    const query = { 
+      role: 'user', 
+      email: { $ne: 'admin@gmail.com' },
+      kycSubmittedAt: { $exists: true },
+      kycStatus: { $ne: 'NOT_SUBMITTED' }
+    };
+
+    if (status && status !== 'ALL') {
+      query.kycStatus = status;
+    }
+
+    const users = await User.find(query).sort({ kycSubmittedAt: -1, createdAt: -1 });
     const rows = users.map((user, index) => ({
       ...getKycSnapshot(user),
       sNo: index + 1,
@@ -76,27 +89,35 @@ exports.updateKycStatus = async (req, res) => {
 
     const normalizedStatus = status === 'REJECT' ? 'REJECTED' : status;
 
-    let updateData = {
-      kycStatus: normalizedStatus,
-      kycRemarks: remarks || '',
-      kycReviewedAt: new Date(),
-      kycReviewedBy: req.user.id,
-    };
+    let updateOp = {};
 
     if (status === 'DELETE') {
-      updateData = {
-        kycStatus: 'PENDING',
-        kycRemarks: 'KYC Request Deleted by Admin',
-        kycDetails: {},
-        kycSubmittedAt: null,
-        kycReviewedAt: new Date(),
-        kycReviewedBy: req.user.id,
+      updateOp = {
+        $set: {
+          kycStatus: 'NOT_SUBMITTED',
+          kycRemarks: 'KYC Request Deleted by Admin',
+          kycDetails: {},
+          kycReviewedAt: new Date(),
+          kycReviewedBy: req.user.id,
+        },
+        $unset: {
+          kycSubmittedAt: 1
+        }
+      };
+    } else {
+      updateOp = {
+        $set: {
+          kycStatus: normalizedStatus,
+          kycRemarks: remarks || '',
+          kycReviewedAt: new Date(),
+          kycReviewedBy: req.user.id,
+        }
       };
     }
 
     const user = await User.findOneAndUpdate(
       { memberId: memberId.toUpperCase(), role: 'user', email: { $ne: 'admin@gmail.com' } },
-      updateData,
+      updateOp,
       { new: true }
     );
 

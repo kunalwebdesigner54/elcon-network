@@ -1,7 +1,8 @@
 import apiClient from './config';
 
-export const getAdminKycRequests = async () => {
-  const response = await apiClient.get('/members/kyc-requests');
+export const getAdminKycRequests = async (status = 'PENDING') => {
+  const url = status ? `/members/kyc-requests?status=${status}` : '/members/kyc-requests';
+  const response = await apiClient.get(url);
   return response.data;
 };
 

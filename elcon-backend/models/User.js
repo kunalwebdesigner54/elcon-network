@@ -183,8 +183,8 @@ const userSchema = new mongoose.Schema(
     },
     kycStatus: {
       type: String,
-      enum: ['PENDING', 'APPROVED', 'REJECTED'],
-      default: 'PENDING',
+      enum: ['NOT_SUBMITTED', 'PENDING', 'APPROVED', 'REJECTED'],
+      default: 'NOT_SUBMITTED',
     },
     kycDetails: {
       bankName: {
