@@ -11,7 +11,10 @@ function flattenDescendants(node, depth = 0, acc = []) {
       memberId: child.memberId,
       name: child.name,
       level: depth + 1,
-      joinDate: child.joinDate || '---',
+      joinDate: child.joinDateRaw ? new Date(child.joinDateRaw).toLocaleString('en-IN', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true
+      }).toUpperCase() : (child.joinDate || '---'),
       joinDateRaw: child.joinDateRaw,
       unlockLevel: child.unlockLevel || 1,
       city: child.city || '---',
@@ -119,9 +122,11 @@ function MyTeam() {
         {!loading && !error && (
           <>
             <div className="table-toolbar">
-              <span style={{ fontSize: '0.9em', color: '#666' }}>Total: {filteredRows.length} members</span>
-              <button className="user-btn-outline" type="button">Excel</button>
-              <button className="user-btn-outline" type="button">PDF</button>
+              <div /> {/* flex spacer */}
+              <div>
+                <button className="user-btn-outline" type="button" style={{ marginRight: '8px' }}>Excel</button>
+                <button className="user-btn-outline" type="button">PDF</button>
+              </div>
             </div>
 
             <div className="table-wrap">
@@ -165,9 +170,14 @@ function MyTeam() {
               </table>
             </div>
 
-            {/* Pagination */}
-            <div className="downline-pagination">
-              <button className="downline-page-btn" onClick={() => setPage(1)} disabled={page === 1}>«</button>
+            {/* Footer with Total and Pagination */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '10px' }}>
+              <span style={{ fontSize: '0.95em', color: '#555', fontWeight: '500', paddingLeft: '8px' }}>
+                Total: {filteredRows.length} members
+              </span>
+              
+              <div className="downline-pagination" style={{ margin: 0 }}>
+                <button className="downline-page-btn" onClick={() => setPage(1)} disabled={page === 1}>«</button>
               <button className="downline-page-btn" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>‹</button>
               {[...Array(Math.min(totalPages, 7))].map((_, i) => {
                 const p = i + 1;
@@ -181,8 +191,9 @@ function MyTeam() {
                   </button>
                 );
               })}
-              <button className="downline-page-btn" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>›</button>
-              <button className="downline-page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages}>»</button>
+                <button className="downline-page-btn" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>›</button>
+                <button className="downline-page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages}>»</button>
+              </div>
             </div>
           </>
         )}
