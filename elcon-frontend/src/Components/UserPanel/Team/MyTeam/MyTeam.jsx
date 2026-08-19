@@ -62,7 +62,11 @@ function MyTeam() {
     setPage(1);
   };
 
-  const levelOptions = [...Array(10)].map((_, i) => i + 1);
+  const maxLevel = useMemo(() => {
+    return allRows.reduce((max, row) => Math.max(max, row.level || 1), 10);
+  }, [allRows]);
+
+  const levelOptions = [...Array(maxLevel)].map((_, i) => i + 1);
 
   return (
     <div>

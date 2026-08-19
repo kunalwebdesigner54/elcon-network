@@ -236,14 +236,22 @@ exports.getTeamTree = async (req, res) => {
     const { users: allUsers, childrenBySponsor, adminMemberId } = await getAllUsersTeamStats();
     const memberIds = new Set(allUsers.map((user) => user.memberId));
 
-    const buildNode = (memberId, depth = 0) => {
-      if (depth > 10) return null; // guard against deep trees
+    const buildNode = (memberId, depth = 0, visited = new Set()) => {
+      if (visited.has(memberId)) return null; // guard against circular references
+      if (depth > 1000) return null; // guard against extremely deep trees
+
+      visited.add(memberId);
       const user = allUsers.find((u) => u.memberId === memberId);
-      if (!user) return null;
+      if (!user) {
+        visited.delete(memberId);
+        return null;
+      }
 
       const children = (childrenBySponsor.get(memberId) || []).map((child) =>
-        buildNode(child.memberId, depth + 1)
+        buildNode(child.memberId, depth + 1, visited)
       ).filter(Boolean);
+
+      visited.delete(memberId);
 
       return {
         memberId: user.memberId,
