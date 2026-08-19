@@ -56,7 +56,7 @@ function MembersLocation() {
 
       return inGlobalSearch && byMember && byName && byMobile && byState && byCity && byStatus && byStartDate && byEndDate;
     });
-  }, [filters, searchText]);
+  }, [filters, searchText, membersLocationRows]);
 
   const visibleRows = filteredRows.slice(0, Number(pageSize));
 

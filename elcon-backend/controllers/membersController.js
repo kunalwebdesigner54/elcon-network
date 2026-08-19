@@ -108,7 +108,24 @@ exports.updateKycStatus = async (req, res) => {
 exports.getAllMembersList = async (req, res) => {
   try {
     const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
-    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 });
+    let users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 });
+
+    // ==========================================
+    // TEMPORARY TESTING FILTER (REMOVE LATER)
+    // ==========================================
+    const userOne = users.find(u => u.name && u.name.toUpperCase() === 'USER ONE');
+    if (userOne) {
+      const cutoffTime = userOne.createdAt.getTime();
+      users = users.filter(u => {
+        // Keep USER ONE explicitly
+        if (u.memberId === userOne.memberId) return true;
+        // Keep any member created strictly AFTER USER ONE
+        if (u.createdAt && u.createdAt.getTime() > cutoffTime) return true;
+        // Hide all older existing members
+        return false;
+      });
+    }
+    // ==========================================
 
     const rows = users.map((user, index) => ({
       sNo: index + 1,
