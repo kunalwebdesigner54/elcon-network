@@ -50,7 +50,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .admin-add-product-row > span {
@@ -66,7 +66,7 @@
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid #cbd5e1;
-  font-size: 16px;
+  font-size: 14px;
   background: var(--card-bg);
 }
 
@@ -86,7 +86,7 @@
 .admin-add-product-row-radio label {
   display: inline-flex;
   gap: 6px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   align-items: center;
 }
@@ -105,7 +105,7 @@
   resize: vertical;
   min-height: 120px;
   padding: 10px 12px;
-  font-size: 16px;
+  font-size: 14px;
   background: var(--card-bg);
 }
 
@@ -144,7 +144,7 @@
   padding: 6px 10px;
   border-radius: 6px;
   border: 1px solid #cbd5e1;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .admin-add-product-delete {
@@ -185,7 +185,7 @@
   border: none;
   border-radius: 8px;
   padding: 10px 32px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -196,7 +196,7 @@
   border: none;
   border-radius: 8px;
   padding: 10px 32px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -218,19 +218,19 @@
   .admin-add-product-row > span,
   .admin-add-product-spec-row > span {
     min-width: 80px;
-    font-size: 16px;
+    font-size: 14px;
   }
   .admin-add-product-row input[type="text"],
   .admin-add-product-row input[type="number"],
   .admin-add-product-row select,
   .admin-add-product-spec-row input[type="text"] {
-    font-size: 16px;
+    font-size: 14px;
     padding: 6px 8px;
   }
   .btn-danger.admin-add-product-btn-reset,
   .btn-primary.admin-add-product-btn-submit {
     padding: 8px 18px;
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -256,14 +256,14 @@
 .admin-add-product-spec-row > span {
   border: 1px solid rgba(45, 55, 72, 0.22);
   background: var(--card-bg);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   padding: 8px 10px;
 }
 
 .admin-add-product-spec-row > input {
   border: 1px solid rgba(45, 55, 72, 0.22);
-  font-size: 16px;
+  font-size: 14px;
   padding: 8px 10px;
   min-width: 0;
 }
@@ -340,7 +340,7 @@
   .admin-add-product-row > span {
     border-right: 0;
     border-bottom: 0;
-    font-size: 16px;
+    font-size: 14px;
     padding-bottom: 4px;
   }
 
@@ -348,7 +348,7 @@
   .admin-add-product-row > select,
   .admin-add-product-row > div {
     border-top: 1px solid rgba(45, 55, 72, 0.12);
-    font-size: 16px;
+    font-size: 14px;
     min-height: 44px;
   }
 
@@ -359,7 +359,7 @@
   }
 
   .admin-add-product-row-radio label {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 4px;
   }
 
@@ -379,7 +379,7 @@
   .admin-add-product-btn-reset,
   .admin-add-product-btn-submit {
     width: 100%;
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 

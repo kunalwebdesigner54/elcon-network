@@ -20,7 +20,7 @@ function NetworkTreeNode({ node, expandedNodes, toggleNode, searchTerm, searchLe
             style={{
               cursor: 'pointer',
               userSelect: 'none',
-              fontSize: "16px",
+              fontSize: '14px',
               fontWeight: 'bold',
               width: '16px',
               display: 'flex',
@@ -33,7 +33,7 @@ function NetworkTreeNode({ node, expandedNodes, toggleNode, searchTerm, searchLe
         ) : (
           <span style={{ width: '16px', marginRight: '4px' }}></span>
         )}
-        <span style={{ fontSize: "16px", color: '#333', fontWeight: matches ? '600' : '400' }}>
+        <span style={{ fontSize: '14px', color: '#333', fontWeight: matches ? '600' : '400' }}>
           {hasChildren && <span style={{ marginRight: '4px' }}>📁</span>}
           <strong>{nodeId}</strong> - {node.name || node.userName || 'N/A'}
         </span>
@@ -129,7 +129,7 @@ function NetworkExplorer() {
                   onChange={(e) => setSearchMemberId(e.target.value)}
                   style={{
                     padding: '8px 12px',
-                    fontSize: "16px",
+                    fontSize: '14px',
                     border: '1px solid #ccc',
                     borderRadius: '4px',
                     width: '150px',
@@ -142,7 +142,7 @@ function NetworkExplorer() {
                 onChange={(e) => setSearchLevel(e.target.value)}
                 style={{
                   padding: '8px 12px',
-                  fontSize: "16px",
+                  fontSize: '14px',
                   border: '1px solid #ccc',
                   borderRadius: '4px',
                   width: '120px',
@@ -160,7 +160,7 @@ function NetworkExplorer() {
               <button
                 style={{
                   padding: '8px 20px',
-                  fontSize: "16px",
+                  fontSize: '14px',
                   fontWeight: '600',
                   backgroundColor: '#4a7ba7',
                   color: '#fff',
@@ -178,7 +178,7 @@ function NetworkExplorer() {
 
             {/* Instructions and Expand/Collapse Buttons */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <span style={{ fontSize: "16px", color: '#666' }}>
+              <span style={{ fontSize: '14px', color: '#666' }}>
                 Click on + Sign to Expand Tree{' '}
                 <span
                   onClick={expandAll}
@@ -206,7 +206,7 @@ function NetworkExplorer() {
                 padding: '12px',
                 maxHeight: '600px',
                 overflowY: 'auto',
-                fontSize: "16px",
+                fontSize: '14px',
                 lineHeight: '1.8'
               }}
             >

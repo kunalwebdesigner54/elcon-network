@@ -125,7 +125,7 @@ function AllMemberPerformance() {
             body { font-family: Arial, sans-serif; padding: 16px; }
             h2 { margin: 0 0 12px 0; }
             table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #d6d6d6; padding: 6px; font-size: 16px; text-align: left; }
+            th, td { border: 1px solid #d6d6d6; padding: 6px; font-size: 14px; text-align: left; }
             th { background: #e8f6fb; }
           </style>
         </head>

@@ -32,7 +32,7 @@
 .tds-filter-input {
   flex: 1 1 110px;
   min-width: 90px;
-  font-size: 16px;
+  font-size: 14px;
   padding: 8px 9px;
 }
 
@@ -55,7 +55,7 @@
   padding: 3px 7px;
   background: #0aa2d6;
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -70,7 +70,7 @@
   height: 22px;
   border: 0;
   border-radius: 2px;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
   padding: 0;
   display: inline-flex;

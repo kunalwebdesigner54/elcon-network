@@ -37,7 +37,7 @@
 .data-table td {
   padding: 11px 10px;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  font-size: 16px;
+  font-size: 14px;
   white-space: nowrap;
 }
 .data-table th {
@@ -54,7 +54,7 @@
   display: inline-block;
   padding: 6px 10px;
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 14px;
 }
 .np-published {
   background: rgba(29, 185, 84, 0.08);
@@ -99,7 +99,7 @@
   }
   .data-table {
     min-width: 760px;
-    font-size: 16px;
+    font-size: 14px;
   }
   .data-table th,
   .data-table td {

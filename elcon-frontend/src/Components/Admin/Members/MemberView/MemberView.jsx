@@ -37,7 +37,7 @@ const actionBtnStyle = {
   borderRadius: '4px',
   minWidth: '62px',
   height: '24px',
-  fontSize: "16px",
+  fontSize: '14px',
   cursor: 'pointer',
   color: '#fff',
   fontWeight: 700,
@@ -140,7 +140,7 @@ function MemberView() {
             body { font-family: Arial, sans-serif; padding: 16px; }
             h2 { margin: 0 0 12px 0; }
             table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #d6d6d6; padding: 6px; font-size: 16px; text-align: left; }
+            th, td { border: 1px solid #d6d6d6; padding: 6px; font-size: 14px; text-align: left; }
             th { background: #e8f6fb; }
           </style>
         </head>
@@ -243,7 +243,7 @@ function MemberView() {
                     </div>
                   </td>
                   <td>
-                    <button className="btn-primary" type="button" style={{ padding: '5px 12px', fontSize: "16px" }}>
+                    <button className="btn-primary" type="button" style={{ padding: '5px 12px', fontSize: '14px' }}>
                       Login
                     </button>
                   </td>

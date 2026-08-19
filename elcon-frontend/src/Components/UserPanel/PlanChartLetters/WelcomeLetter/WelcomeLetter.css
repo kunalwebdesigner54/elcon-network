@@ -174,7 +174,7 @@
   .welcome-letter-joining-date,
   .welcome-letter-member-line,
   .welcome-letter-frame p {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 12px;
   }
 
@@ -183,7 +183,7 @@
   }
 
   .welcome-letter-table {
-    font-size: 16px;
+    font-size: 14px;
     min-width: 620px;
   }
 
@@ -193,7 +193,7 @@
   }
 
   .welcome-letter-footnote {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .welcome-letter-print-btn {
@@ -240,7 +240,7 @@
   .welcome-letter-frame p,
   .welcome-letter-table,
   .welcome-letter-footnote {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .welcome-letter-table {

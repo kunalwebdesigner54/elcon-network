@@ -30,7 +30,7 @@
 
 .user-rank-section-title {
   margin: 0 0 16px 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--user-dark);
   letter-spacing: 0.5px;
@@ -81,7 +81,7 @@
   background: var(--user-gradient-primary);
   color: #fff;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
@@ -93,19 +93,19 @@
 }
 
 .user-rank-item-earning {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--user-primary);
   font-weight: 600;
 }
 
 .user-rank-item-name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--user-dark);
 }
 
 .user-rank-expand-icon {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--user-primary);
   flex-shrink: 0;
 }
@@ -113,7 +113,7 @@
 .user-rank-item-detail {
   padding: 0 12px 12px 12px;
   border-top: 1px solid var(--user-line-soft);
-  font-size: 16px;
+  font-size: 14px;
   color: var(--user-dark);
   line-height: 1.5;
 }
@@ -140,7 +140,7 @@
 
 .user-rank-card-title {
   margin: 0 0 12px 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -203,7 +203,7 @@
 }
 
 .user-rank-progress-text {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--user-dark);
   font-weight: 600;
 }
@@ -222,7 +222,7 @@
 
 .user-rank-holders-title {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--user-dark);
   letter-spacing: 0.5px;
@@ -244,7 +244,7 @@
   border-radius: 8px;
   background: var(--user-gradient-primary);
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -276,7 +276,7 @@
   padding: 12px;
   text-align: left;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--user-dark);
@@ -285,7 +285,7 @@
 
 .user-rank-data-table td {
   padding: 12px;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--user-dark);
   border-bottom: 1px solid var(--user-line-soft);
 }
@@ -302,7 +302,7 @@
   border-radius: 8px;
   background: var(--user-card-bg);
   color: var(--user-dark);
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -329,7 +329,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--user-dark);
   flex-wrap: wrap;
   gap: 10px;
@@ -348,7 +348,7 @@
   color: var(--user-dark);
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
 }
@@ -408,7 +408,7 @@
 
   .user-rank-section-title,
   .user-rank-holders-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-item-header {
@@ -418,21 +418,21 @@
   .user-rank-circle {
     width: 36px;
     height: 36px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-item-earning {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-item-name {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-badge,
   .user-rank-next-badge {
     padding: 8px 18px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-earning-display,
@@ -443,15 +443,15 @@
   .user-rank-data-table th,
   .user-rank-data-table td {
     padding: 8px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-data-table th {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-table-footer {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -484,7 +484,7 @@
 
   .user-rank-section-title,
   .user-rank-holders-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 10px;
   }
 
@@ -496,7 +496,7 @@
   .user-rank-circle {
     width: 32px;
     height: 32px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-item-earning {
@@ -504,18 +504,18 @@
   }
 
   .user-rank-item-name {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-item-detail {
-    font-size: 16px;
+    font-size: 14px;
     padding: 0 8px 8px 8px;
   }
 
   .user-rank-badge,
   .user-rank-next-badge {
     padding: 6px 14px;
-    font-size: 16px;
+    font-size: 14px;
     margin: 8px 0;
   }
 
@@ -526,7 +526,7 @@
   }
 
   .user-rank-card-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 8px;
   }
 
@@ -536,13 +536,13 @@
   }
 
   .user-rank-progress-text {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-data-table th,
   .user-rank-data-table td {
     padding: 6px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-data-table th {
@@ -550,14 +550,14 @@
   }
 
   .user-rank-table-footer {
-    font-size: 16px;
+    font-size: 14px;
     padding: 8px 0;
   }
 
   .user-rank-page-btn {
     width: 28px;
     height: 28px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-rank-progression-list {

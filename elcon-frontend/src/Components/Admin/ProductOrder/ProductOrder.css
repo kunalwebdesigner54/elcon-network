@@ -35,7 +35,7 @@
   border: 2px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-sm);
   padding: 10px 14px;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--dark);
   font-weight: 500;
   transition: all 0.2s ease;
@@ -67,7 +67,7 @@
   border: 0;
   border-radius: var(--radius-sm);
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -92,7 +92,7 @@
   border-collapse: collapse;
   min-width: 1100px;
   background: var(--card-bg);
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .admin-product-order-table th,
@@ -108,7 +108,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  font-size: 16px;
+  font-size: 14px;
   text-align: left;
 }
 
@@ -120,7 +120,7 @@
   display: inline-block;
   padding: 6px 12px;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -144,7 +144,7 @@
   background: var(--gradient-primary);
   color: #fff;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   margin: 0 6px 0 4px;
   min-width: 56px;
@@ -160,7 +160,7 @@
   background: var(--card-bg);
   color: var(--primary, #007bff);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   margin-right: 6px;
 }
@@ -184,7 +184,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 0;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--gray);
   font-weight: 600;
   flex-wrap: wrap;
@@ -202,7 +202,7 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: var(--card-bg);
   color: var(--dark);
-  font-size: 16px;
+  font-size: 14px;
   padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -221,7 +221,7 @@
   .admin-product-order-panel { padding: 12px; }
   .admin-product-order-title { font-size: 20px; }
   .admin-product-order-table { min-width: 800px; }
-  .admin-product-order-input { padding: 8px 10px; font-size: 16px; }
+  .admin-product-order-input { padding: 8px 10px; font-size: 14px; }
 }
 
 @media (max-width: 600px) {
@@ -234,7 +234,7 @@
 
 @media (max-width: 480px) {
   .admin-product-order-panel { padding: 8px; }
-  .admin-product-order-title { font-size: 16px; }
+  .admin-product-order-title { font-size: 14px; }
   .admin-product-order-table { min-width: 550px; }
   .admin-product-order-table-footer { flex-direction: column; align-items: stretch; }
 }

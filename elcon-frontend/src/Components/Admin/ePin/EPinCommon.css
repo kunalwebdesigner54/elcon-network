@@ -43,7 +43,7 @@
   align-items: center;
   border-radius: 8px;
   padding: 4px 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: #fff;
 }
@@ -79,7 +79,7 @@
 .epin-generate-grid .field-label {
   text-transform: none;
   color: var(--dark);
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .epin-generate-actions {
@@ -96,7 +96,7 @@
   border-radius: 8px;
   width: 28px;
   height: 28px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
 }
 

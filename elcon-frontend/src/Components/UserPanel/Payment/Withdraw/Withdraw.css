@@ -60,7 +60,7 @@
 }
 
 .card-label {
-  font-size: 16px;
+  font-size: 14px;
   margin: 0 0 4px 0;
   opacity: 0.9;
   font-weight: 500;
@@ -97,7 +97,7 @@
 }
 
 .card-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0 0 20px 0;
@@ -112,7 +112,7 @@
 
 .amount-label {
   display: block;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin-bottom: 8px;
@@ -127,7 +127,7 @@
 .rupee-icon {
   position: absolute;
   left: 12px;
-  font-size: 16px;
+  font-size: 14px;
   color: #00d4aa;
   font-weight: 600;
 }
@@ -137,7 +137,7 @@
   padding: 10px 12px 10px 40px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
@@ -166,7 +166,7 @@
   color: var(--text-main);
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .quick-btn:hover {
@@ -186,7 +186,7 @@
 }
 
 .summary-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0 0 12px 0;
@@ -199,7 +199,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .summary-row.highlight {
@@ -236,7 +236,7 @@
 
 .password-label {
   display: block;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin-bottom: 6px;
@@ -247,7 +247,7 @@
   padding: 10px 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-family: Arial, sans-serif;
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -267,7 +267,7 @@
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -341,7 +341,7 @@
   content: '✓';
   position: absolute;
   color: white;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   top: 50%;
   left: 50%;
@@ -358,14 +358,14 @@
 }
 
 .method-name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0 0 4px 0;
 }
 
 .method-note {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-muted);
   margin: 0;
 }
@@ -380,7 +380,7 @@
 }
 
 .withdrawal-note p {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-main);
   margin: 0;
   line-height: 1.4;
@@ -392,7 +392,7 @@
 }
 
 .details-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0 0 12px 0;
@@ -410,7 +410,7 @@
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid var(--border-color);
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .details-table tr:last-child {
@@ -451,7 +451,7 @@
   }
 
   .card-amount {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -467,11 +467,11 @@
   }
 
   .card-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .card-amount {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -509,7 +509,7 @@
   }
 
   .card-amount {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .withdrawal-amount-card,
@@ -519,7 +519,7 @@
   }
 
   .card-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 16px;
   }
 
@@ -528,28 +528,28 @@
   }
 
   .quick-btn {
-    font-size: 16px;
+    font-size: 14px;
     padding: 9px;
   }
 
   .amount-input {
     padding: 9px 12px 9px 36px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .summary-row {
-    font-size: 16px;
+    font-size: 14px;
     padding: 6px 0;
   }
 
   .password-input {
     padding: 9px 10px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .confirm-withdrawal-btn {
     padding: 11px 18px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .method-icon {
@@ -557,19 +557,19 @@
   }
 
   .method-name {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .method-note {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .details-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .details-table tr {
-    font-size: 16px;
+    font-size: 14px;
     padding: 8px 0;
   }
 }
@@ -607,7 +607,7 @@
   }
 
   .card-amount {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .withdraw-container {
@@ -620,7 +620,7 @@
   }
 
   .card-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 14px;
   }
 
@@ -629,18 +629,18 @@
   }
 
   .amount-label {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 6px;
   }
 
   .amount-input {
     padding: 8px 10px 8px 32px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .rupee-icon {
     left: 10px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .quick-select-section {
@@ -649,7 +649,7 @@
   }
 
   .quick-btn {
-    font-size: 16px;
+    font-size: 14px;
     padding: 8px;
   }
 
@@ -659,12 +659,12 @@
   }
 
   .summary-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 10px;
   }
 
   .summary-row {
-    font-size: 16px;
+    font-size: 14px;
     padding: 5px 0;
   }
 
@@ -673,18 +673,18 @@
   }
 
   .password-label {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 5px;
   }
 
   .password-input {
     padding: 8px 8px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .confirm-withdrawal-btn {
     padding: 10px 16px;
-    font-size: 16px;
+    font-size: 14px;
     margin-top: 6px;
   }
 
@@ -705,7 +705,7 @@
   }
 
   .method-name {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .method-note {
@@ -718,11 +718,11 @@
   }
 
   .withdrawal-note p {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .details-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 10px;
   }
 
@@ -743,7 +743,7 @@
   }
 
   .withdraw-header h2 {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .balance-cards-container {
@@ -767,7 +767,7 @@
   }
 
   .card-amount {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .withdraw-container {
@@ -781,17 +781,17 @@
   }
 
   .card-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 12px;
   }
 
   .amount-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .amount-input {
     padding: 8px 10px 8px 30px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .quick-btn {
@@ -800,7 +800,7 @@
   }
 
   .summary-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .summary-row {
@@ -808,21 +808,21 @@
   }
 
   .password-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .password-input {
     padding: 7px 8px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .confirm-withdrawal-btn {
     padding: 9px 14px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .method-name {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .method-note {
@@ -830,7 +830,7 @@
   }
 
   .details-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .details-table tr {
@@ -856,7 +856,7 @@
   }
 
   .withdraw-header h2 {
-    font-size: 16px;
+    font-size: 14px;
     margin: 0;
   }
 
@@ -881,7 +881,7 @@
   }
 
   .card-amount {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .withdraw-container {
@@ -895,7 +895,7 @@
   }
 
   .card-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 10px;
   }
 
@@ -915,7 +915,7 @@
 
   .rupee-icon {
     left: 8px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .quick-select-section {
@@ -934,7 +934,7 @@
   }
 
   .summary-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 8px;
   }
 
@@ -960,7 +960,7 @@
 
   .confirm-withdrawal-btn {
     padding: 8px 12px;
-    font-size: 16px;
+    font-size: 14px;
     margin-top: 4px;
     border-radius: 6px;
   }
@@ -1023,7 +1023,7 @@
 
 @media (max-width: 420px) {
   .withdraw-header h2 {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .balance-cards-container {
@@ -1031,7 +1031,7 @@
   }
 
   .card-icon {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .card-amount {

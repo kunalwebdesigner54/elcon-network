@@ -223,7 +223,7 @@ const CompletePayment = () => {
                 <label className="proof-label">Selected Cart Items</label>
                 <div style={{ display: 'grid', gap: '8px', marginTop: '8px' }}>
                   {cartItems.map((item) => (
-                    <div key={item.productId} style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', fontSize: '16px' }}>
+                    <div key={item.productId} style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', fontSize: '14px' }}>
                       <span>{item.productName} x {item.quantity}</span>
                       <strong>₹ {Number(item.totalPrice || 0).toFixed(2)}</strong>
                     </div>

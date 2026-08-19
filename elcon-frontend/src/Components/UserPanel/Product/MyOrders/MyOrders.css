@@ -47,7 +47,7 @@
 .user-orders-table thead th {
   background: #13a7d3;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -61,7 +61,7 @@
 }
 
 .user-orders-table td {
-  font-size: 16px;
+  font-size: 14px;
   color: #424242;
   text-align: center;
   padding: 11px 12px;
@@ -146,13 +146,13 @@
   }
 
   .user-orders-table thead th {
-    font-size: 16px;
+    font-size: 14px;
     padding: 8px 10px;
   }
 
   .user-orders-table td {
     padding: 8px 10px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-order-detail-btn {

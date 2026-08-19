@@ -197,7 +197,7 @@ function Register() {
                     value={sponsorId}
                     onChange={(event) => setSponsorId(event.target.value)}
                   />
-                  {sponsorError && <div style={{ fontSize: "16px", color: '#dc3545', marginTop: '4px' }}>{sponsorError}</div>}
+                  {sponsorError && <div style={{ fontSize: '14px', color: '#dc3545', marginTop: '4px' }}>{sponsorError}</div>}
                 </div>
 
                 <div className="register-field">
@@ -443,7 +443,7 @@ function Register() {
                 <input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} /> I agree to the <a href="/">Terms &amp; Conditions.</a>
               </label>
 
-              <div style={{ padding: '10px 12px',marginLeft : '0px', marginBlock: '16px', backgroundColor: '#f0f4ff', border: '1px solid #d4e0ff', borderRadius: '6px', fontSize: '16px', color: '#333', fontWeight: '500' }}>
+              <div style={{ padding: '10px 12px',marginLeft : '0px', marginBlock: '16px', backgroundColor: '#f0f4ff', border: '1px solid #d4e0ff', borderRadius: '6px', fontSize: '14px', color: '#333', fontWeight: '500' }}>
                 <strong>Note:</strong> One Person, One ID Policy
               </div>
 

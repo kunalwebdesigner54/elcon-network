@@ -57,7 +57,7 @@ body,
 body {
 	margin: 0;
 	font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
-	font-size: 16px;
+	font-size: 14px;
 	background: #0b192c;
 	color: var(--dark);
 	line-height: 1.6;
@@ -268,7 +268,7 @@ button,
 	[class*='data-table'],
 	[class*='user-table'],
 	table {
-		font-size: 16px;
+		font-size: 14px;
 	}
 }
 

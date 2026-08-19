@@ -31,7 +31,7 @@
 	gap: 6px;
 	padding: 8px 14px;
 	color: var(--text-muted);
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 700;
 }
 
@@ -124,7 +124,7 @@
 .admin-dashboard-news-label {
 	flex: 0 0 auto;
 	color: var(--danger);
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 800;
 	letter-spacing: 0.2px;
 	text-transform: uppercase;
@@ -140,7 +140,7 @@
 	display: inline-block;
 	white-space: nowrap;
 	color: var(--text-main);
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 600;
 	padding-left: 100%;
 	animation: admin-dashboard-marquee 12s linear infinite;
@@ -176,7 +176,7 @@
 .admin-dashboard-profile-meta {
 	margin: 7px 0 0;
 	color: rgba(255, 255, 255, 0.95);
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 600;
 }
 
@@ -241,7 +241,7 @@
 	}
 
 	.admin-dashboard-breadcrumbs {
-		font-size: 16px;
+		font-size: 14px;
 	}
 
 	.admin-dashboard-profile-title {
@@ -249,7 +249,7 @@
 	}
 
 	.admin-dashboard-profile-meta {
-		font-size: 16px;
+		font-size: 14px;
 	}
 
 	.admin-dashboard-stat-card {
@@ -258,7 +258,7 @@
 	}
 
 	.admin-dashboard-stat-label {
-		font-size: 16px;
+		font-size: 14px;
 	}
 
 	.admin-dashboard-stat-value {
@@ -298,7 +298,7 @@
 	}
 
 	.admin-dashboard-stat-label {
-		font-size: 16px;
+		font-size: 14px;
 		padding-bottom: 5px;
 		margin-bottom: 5px;
 	}

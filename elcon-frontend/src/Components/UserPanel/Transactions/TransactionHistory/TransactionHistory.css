@@ -13,7 +13,7 @@
   border-radius: 8px;
   padding: 10px 12px;
   min-height: 42px;
-  font-size: 16px;
+  font-size: 14px;
   background: var(--card-bg);
   color: var(--text-main);
 }
@@ -93,7 +93,7 @@
 .transaction-table th,
 .transaction-table td {
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   padding: 10px 8px;
   white-space: nowrap;
 }
@@ -132,7 +132,7 @@
   border: 1px solid #e1e1e1;
   background: var(--card-bg);
   color: #7c8aa5;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .transaction-page-btn.active {
@@ -223,7 +223,7 @@
   .transaction-page-btn {
     min-width: 32px;
     height: 32px;
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 

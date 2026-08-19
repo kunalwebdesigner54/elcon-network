@@ -62,7 +62,7 @@
   color: var(--text-main);
 }
 .mc-bv {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-muted);
   margin-top: 6px;
 }
@@ -169,7 +169,7 @@
   padding: 10px 0;
   border-top: 1px solid var(--border-color);
   margin-top: 8px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .mc-coupon-row {
@@ -209,7 +209,7 @@
 }
 .mc-address-body {
   color: var(--text-main);
-  font-size: 16px;
+  font-size: 14px;
 }
 .mc-deliver {
   color: #1e90ff;
@@ -278,7 +278,7 @@
     padding: 6px 10px;
   }
   .mc-clear {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -308,10 +308,10 @@
     padding: 0 6px;
   }
   .mc-title {
-    font-size: 16px;
+    font-size: 14px;
   }
   .mc-bv {
-    font-size: 16px;
+    font-size: 14px;
   }
   .mc-qty {
     margin-top: 8px;
@@ -324,10 +324,10 @@
         width: 35%;
   }
   .mc-price {
-    font-size: 16px;
+    font-size: 14px;
   }
   .mc-total {
-    font-size: 16px;
+    font-size: 14px;
   }
   .mc-delete {
             right: 0px;
@@ -352,7 +352,7 @@
 
   /* address compact */
   .mc-address-body {
-    font-size: 16px;
+    font-size: 14px;
   }
   .mc-address {
     padding: 10px;

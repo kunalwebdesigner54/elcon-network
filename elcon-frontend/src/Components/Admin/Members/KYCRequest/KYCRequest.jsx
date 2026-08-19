@@ -155,7 +155,7 @@ function KYCRequest() {
             body { font-family: Arial, sans-serif; padding: 16px; }
             h2 { margin: 0 0 12px 0; }
             table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #d6d6d6; padding: 6px; font-size: 16px; text-align: left; }
+            th, td { border: 1px solid #d6d6d6; padding: 6px; font-size: 14px; text-align: left; }
             th { background: #e8f6fb; }
           </style>
         </head>
@@ -361,7 +361,7 @@ function KYCRequest() {
 
               <hr style={{ border: 'none', borderTop: '1px solid #eee' }} />
 
-              <h3 style={{ margin: '0', fontSize: '16px', color: '#444' }}>Banking Details</h3>
+              <h3 style={{ margin: '0', fontSize: '14px', color: '#444' }}>Banking Details</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div className="kyc-detail-row">
                   <span className="kyc-detail-label">Bank Name</span>
@@ -383,7 +383,7 @@ function KYCRequest() {
 
               <hr style={{ border: 'none', borderTop: '1px solid #eee' }} />
 
-              <h3 style={{ margin: '0', fontSize: '16px', color: '#444' }}>Payment Apps</h3>
+              <h3 style={{ margin: '0', fontSize: '14px', color: '#444' }}>Payment Apps</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
                 <div className="kyc-detail-row">
                   <span className="kyc-detail-label">Google Pay</span>
@@ -401,7 +401,7 @@ function KYCRequest() {
 
               <hr style={{ border: 'none', borderTop: '1px solid #eee' }} />
 
-              <h3 style={{ margin: '0', fontSize: '16px', color: '#444' }}>Uploaded Documents</h3>
+              <h3 style={{ margin: '0', fontSize: '14px', color: '#444' }}>Uploaded Documents</h3>
               <div className="kyc-images-grid">
                 <div className="kyc-image-card">
                   <span style={{ fontWeight: '600', color: '#333', fontSize: '13px' }}>Aadhaar Front</span>

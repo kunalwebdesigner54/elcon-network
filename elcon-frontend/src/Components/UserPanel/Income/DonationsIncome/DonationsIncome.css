@@ -13,7 +13,7 @@
   border-radius: 8px;
   padding: 8px 10px;
   min-height: 38px;
-  font-size: 16px;
+  font-size: 14px;
   background: var(--card-bg);
 }
 
@@ -25,7 +25,7 @@
 }
 
 .donation-income-filters .filter-label {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--user-dark);
   letter-spacing: 0.6px;

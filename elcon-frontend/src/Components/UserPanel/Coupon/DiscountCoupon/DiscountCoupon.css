@@ -87,7 +87,7 @@
 }
 
 .coupon-left-label {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   text-align: center;
   line-height: 1.3;
@@ -167,7 +167,7 @@
 
 .coupon-on-shopping {
   margin: -2px 0 10px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
 }
 
@@ -175,7 +175,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-main);
   margin-bottom: 6px;
 }
@@ -208,7 +208,7 @@
   bottom: 12px;
   border-radius: 8px;
   padding: 7px 12px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   background: rgba(255, 255, 255, 0.9);
 }
@@ -235,7 +235,7 @@
 
 .coupon-caption {
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -263,7 +263,7 @@
   background: var(--darker);
   color: var(--text-main);
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .coupon-history-table tbody tr:nth-child(even) {
@@ -277,7 +277,7 @@
   min-width: 74px;
   padding: 7px 12px;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
 }
 
@@ -353,7 +353,7 @@
   }
 
   .coupon-off-text {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .coupon-card-right {
@@ -376,11 +376,11 @@
   }
 
   .coupon-left-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .coupon-code {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .coupon-info-row,

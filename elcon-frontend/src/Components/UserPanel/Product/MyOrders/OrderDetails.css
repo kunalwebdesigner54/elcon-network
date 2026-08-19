@@ -36,7 +36,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(60, 182, 237, 0.12);
@@ -65,7 +65,7 @@
   background: #109ccc;
   color: #ffffff;
   padding: 10px 14px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -89,12 +89,12 @@
 
 .order-details-info-label {
   color: #5f5f5f;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .order-details-info-value {
   color: #3e3e3e;
-  font-size: 16px;
+  font-size: 14px;
   text-align: right;
   overflow-wrap: anywhere;
 }
@@ -125,13 +125,13 @@
   background: #109ccc;
   color: #ffffff;
   text-align: left;
-  font-size: 16px;
+  font-size: 14px;
   padding: 12px 16px;
   border-color: rgba(255, 255, 255, 0.14);
 }
 
 .order-details-items-table td {
-  font-size: 16px;
+  font-size: 14px;
   color: #404040;
   padding: 14px 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -200,7 +200,7 @@
 
   .order-details-info-card__header,
   .order-details-items-table thead th {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   /* Keep table as grid on mobile? No – we enable horizontal scroll */

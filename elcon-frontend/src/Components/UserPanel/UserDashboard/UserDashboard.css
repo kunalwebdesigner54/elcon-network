@@ -79,7 +79,7 @@
   justify-content: flex-end;
   gap: 6px;
   align-items: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-muted);
   box-shadow: none;
@@ -182,7 +182,7 @@
 .user-dashboard-news-label {
   flex: 0 0 auto;
   color: var(--danger);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.2px;
   text-transform: uppercase;
@@ -199,7 +199,7 @@
   display: inline-block;
   white-space: nowrap;
   color: var(--text-main);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   padding-left: 100%;
   animation: user-dashboard-marquee 12s linear infinite;
@@ -246,7 +246,7 @@
 
 .user-dashboard1-member-dashboard-profile-meta {
   margin-top: 6px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.2px;
   opacity: 0.95;
@@ -265,7 +265,7 @@
   border-radius: 999px;
   background: var(--bg-card);
   color: var(--text-main);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   text-transform: uppercase;
   min-height: 32px;
@@ -452,16 +452,16 @@
   }
 
   .user-dashboard1-member-dashboard-profile-meta {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard1-member-dashboard-action-btn {
     min-height: 36px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard1-member-dashboard-stat-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard1-member-dashboard-stat-value {
@@ -503,11 +503,11 @@
   }
 
   .user-dashboard-news-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard-news-marquee {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard1-member-dashboard-header {
@@ -535,11 +535,11 @@
   }
 
   .user-dashboard1-member-dashboard-stat-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard1-member-dashboard-stat-value {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard1-member-dashboard-table-section,
@@ -549,7 +549,7 @@
 
   .user-dashboard1-member-dashboard-table-title,
   .user-dashboard1-member-dashboard-products-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard1-member-dashboard-table th,
@@ -582,7 +582,7 @@
   }
 
   .user-dashboard1-member-dashboard-stat-value {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .user-dashboard1-member-dashboard-action-btn {

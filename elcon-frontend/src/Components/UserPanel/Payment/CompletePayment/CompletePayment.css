@@ -43,7 +43,7 @@
 }
 
 .mode-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0 0 12px 0;
@@ -104,12 +104,12 @@
   content: '✓';
   position: absolute;
   color: white;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 
 .mode-text {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-main);
   font-weight: 500;
 }
@@ -140,7 +140,7 @@
 }
 
 .details-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0 0 16px 0;
@@ -167,14 +167,14 @@
 .detail-label {
   font-weight: 600;
   color: var(--text-main);
-  font-size: 16px;
+  font-size: 14px;
   flex: 1;
   text-align: left;
 }
 
 .detail-value {
   color: var(--text-main);
-  font-size: 16px;
+  font-size: 14px;
   text-align: right;
   flex: 1;
   word-break: break-word;
@@ -189,7 +189,7 @@
 
 .copy-icon {
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   opacity: 0.6;
   transition: opacity 0.2s;
 }
@@ -212,7 +212,7 @@
 }
 
 .summary-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0 0 16px 0;
@@ -245,7 +245,7 @@
 
 .proof-label {
   display: block;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin-bottom: 8px;
@@ -286,13 +286,13 @@
 .file-upload-area::after {
   content: 'Click to upload or drag and drop';
   display: block;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
 .file-name {
   display: inline-block;
-  font-size: 16px;
+  font-size: 14px;
   color: #00d4aa;
   font-weight: 600;
 }
@@ -304,7 +304,7 @@
 
 .password-label {
   display: block;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   margin-bottom: 8px;
@@ -315,7 +315,7 @@
   padding: 10px 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-family: Arial, sans-serif;
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -335,7 +335,7 @@
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   margin-top: 16px;
@@ -405,7 +405,7 @@
   .mode-title,
   .details-title,
   .summary-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .amount-display {
@@ -423,11 +423,11 @@
 
   .detail-label,
   .detail-value {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .mode-text {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -456,18 +456,18 @@
 
   .password-input {
     padding: 9px 10px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .pay-now-btn {
     padding: 11px 18px;
-    font-size: 16px;
+    font-size: 14px;
     margin-top: 14px;
   }
 
   .proof-label,
   .password-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -499,7 +499,7 @@
   .mode-title,
   .details-title,
   .summary-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 12px;
   }
 
@@ -509,7 +509,7 @@
   }
 
   .mode-text {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .amount-display {
@@ -524,7 +524,7 @@
 
   .password-input {
     padding: 8px 8px;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .password-section {
@@ -533,7 +533,7 @@
 
   .pay-now-btn {
     padding: 10px 16px;
-    font-size: 16px;
+    font-size: 14px;
     margin-top: 12px;
   }
 
@@ -570,7 +570,7 @@
   }
 
   .payment-header h2 {
-    font-size: 16px;
+    font-size: 14px;
     margin: 0;
   }
 
@@ -588,7 +588,7 @@
   .mode-title,
   .details-title,
   .summary-title {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 10px;
   }
 
@@ -609,7 +609,7 @@
   }
 
   .mode-text {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .amount-display {
@@ -619,7 +619,7 @@
   }
 
   .rupee-icon {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .proof-section,
@@ -629,7 +629,7 @@
 
   .proof-label,
   .password-label {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 6px;
   }
 
@@ -640,13 +640,13 @@
 
   .password-input {
     padding: 8px 6px;
-    font-size: 16px;
+    font-size: 14px;
     border-radius: 6px;
   }
 
   .pay-now-btn {
     padding: 10px 12px;
-    font-size: 16px;
+    font-size: 14px;
     margin-top: 10px;
     border-radius: 6px;
   }
@@ -657,23 +657,23 @@
 
   .detail-label,
   .detail-value {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .copy-icon {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
 @media (max-width: 420px) {
   .payment-header h2 {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .mode-title,
   .details-title,
   .summary-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .mode-text {
@@ -685,7 +685,7 @@
   }
 
   .pay-now-btn {
-    font-size: 16px;
+    font-size: 14px;
     padding: 9px 10px;
   }
 }
