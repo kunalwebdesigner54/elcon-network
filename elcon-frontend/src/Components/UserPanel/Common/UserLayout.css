@@ -43,6 +43,7 @@
   box-shadow: var(--glass-shadow);
   transition: margin-left 0.3s ease, opacity 0.3s ease;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .user-sidebar-collapsed .user-sidebar {

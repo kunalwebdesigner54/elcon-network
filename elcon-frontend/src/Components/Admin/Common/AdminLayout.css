@@ -47,6 +47,7 @@
   box-shadow: var(--glass-shadow);
   transition: margin-left 0.3s ease, opacity 0.3s ease;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .admin-root.sidebar-collapsed .sidebar {
