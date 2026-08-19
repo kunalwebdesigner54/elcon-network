@@ -33,6 +33,10 @@
   width: 280px;
   min-width: 280px;
   height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
   background: var(--bg-card);
   color: var(--text-main);
   display: flex;
@@ -157,6 +161,12 @@
   flex-direction: column;
   min-width: 0;
   min-height: 100vh;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+}
+
+.admin-root.sidebar-collapsed .admin-main {
+  margin-left: 0;
 }
 
 .topbar {
@@ -551,6 +561,10 @@
     flex-direction: column;
   }
 
+  .admin-main {
+    margin-left: 0;
+  }
+
   .sidebar {
     position: fixed;
     top: 0;
@@ -568,7 +582,15 @@
     margin-left: 0;
     transform: translateX(-100%);
     opacity: 1;
-    border-right: 1px solid rgba(255, 255, 255, 0.14);
+    border-right: 1px solid var(--glass-border);
+  }
+
+  .admin-root.sidebar-collapsed .admin-main {
+    margin-left: 0;
+  }
+
+  .admin-root.sidebar-open .admin-main {
+    margin-left: 0;
   }
 
   .admin-root.sidebar-open .sidebar {
