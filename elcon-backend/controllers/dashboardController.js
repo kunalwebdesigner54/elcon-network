@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Donation = require('../models/Donation');
 const Epin = require('../models/Epin');
 const Order = require('../models/Order');
+const { getTeamStats } = require('../services/teamService');
 
 // @desc Admin dashboard metrics
 // @route GET /api/dashboard/admin
@@ -53,8 +54,10 @@ exports.userDashboard = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Count direct referrals
-    const referralsCount = await User.countDocuments({ sponsorId: user.memberId });
+    // Count direct referrals and complete descendant team
+    const teamStats = await getTeamStats(user.memberId);
+    const referralsCount = teamStats.directCount;
+    const totalTeamCount = teamStats.totalTeamCount;
 
     const recentReferrals = await User.find({ sponsorId: user.memberId })
       .select('memberId name contactNo createdAt')
@@ -106,7 +109,7 @@ exports.userDashboard = async (req, res) => {
         yesterdayRepurchaseIncome: fmt(0),
         totalLRIncome: fmt(0),
         yesterdayTotalIncome: fmt(yesterdayReceivedHelp),
-        totalTeam: referralsCount,
+        totalTeam: totalTeamCount,
         yesterdayJoining: 0,
         unlockLevel: user.unlockLevel || 1,
         upgradedLevel: user.unlockLevel || 1,

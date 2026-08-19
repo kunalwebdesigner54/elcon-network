@@ -1,4 +1,10 @@
 const User = require('../models/User');
+const {
+  buildReferralGraph,
+  collectDescendants,
+  getTeamStats,
+  getAllUsersTeamStats
+} = require('../services/teamService');
 
 const formatDate = (value) => {
   if (!value) {
@@ -11,46 +17,6 @@ const formatDate = (value) => {
   }
 
   return date.toLocaleDateString('en-GB');
-};
-
-const buildReferralGraph = (users, adminMemberId = null) => {
-  const childrenBySponsor = new Map();
-
-  users.forEach((user) => {
-    let sponsorKey = String(user.sponsorId || '').trim();
-    
-    // Ignore admin as sponsor to prevent automatically showing admin ID as referrer
-    if (adminMemberId && sponsorKey === adminMemberId) {
-      sponsorKey = '';
-    }
-
-    if (!sponsorKey) {
-      return;
-    }
-
-    if (!childrenBySponsor.has(sponsorKey)) {
-      childrenBySponsor.set(sponsorKey, []);
-    }
-
-    childrenBySponsor.get(sponsorKey).push(user);
-  });
-
-  return childrenBySponsor;
-};
-
-const collectDescendants = (memberId, childrenBySponsor) => {
-  const stack = [...(childrenBySponsor.get(memberId) || [])];
-  const descendants = [];
-
-  while (stack.length > 0) {
-    const current = stack.pop();
-    descendants.push(current);
-
-    const nextChildren = childrenBySponsor.get(current.memberId) || [];
-    stack.push(...nextChildren);
-  }
-
-  return descendants;
 };
 
 const getKycSnapshot = (user) => ({
@@ -228,9 +194,7 @@ exports.getTeamTree = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Member ID not found' });
     }
 
-    const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
-    const allUsers = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).lean();
-    const childrenBySponsor = buildReferralGraph(allUsers, adminMemberId);
+    const { users: allUsers, childrenBySponsor, adminMemberId } = await getAllUsersTeamStats();
     const memberIds = new Set(allUsers.map((user) => user.memberId));
 
     const buildNode = (memberId, depth = 0) => {
@@ -290,15 +254,14 @@ exports.getTeamTree = async (req, res) => {
 
 exports.getMemberPerformance = async (req, res) => {
   try {
-    const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
-    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).sort({ createdAt: -1 });
-    const childrenBySponsor = buildReferralGraph(users, adminMemberId);
+    const { users, statsMap } = await getAllUsersTeamStats();
 
     const rows = users.map((user, index) => {
-      const descendants = collectDescendants(user.memberId, childrenBySponsor);
+      const stats = statsMap.get(user.memberId);
+      const descendants = stats.descendants;
       const activeDescendants = descendants.filter((descendant) => descendant.accountStatus === 'ACTIVE');
       const inactiveDescendants = descendants.filter((descendant) => descendant.accountStatus !== 'ACTIVE');
-      const totalTeamCount = descendants.length;
+      const totalTeamCount = stats.totalTeamCount;
       const activeTeamCount = activeDescendants.length;
       const inactiveTeamCount = inactiveDescendants.length;
       const levelIncome = totalTeamCount * 100;
