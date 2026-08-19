@@ -22,15 +22,16 @@ function flattenDescendants(node, depth = 0, acc = []) {
   return acc;
 }
 
-const PAGE_SIZE = 10;
 
 function MyTeam() {
   const [allRows, setAllRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const [filterMemberId, setFilterMemberId] = useState('');
+  const [filterMemberName, setFilterMemberName] = useState('');
   const [filterLevel, setFilterLevel] = useState('');
   const [filterUnlock, setFilterUnlock] = useState('');
   const [appliedFilters, setAppliedFilters] = useState({});
@@ -48,17 +49,23 @@ function MyTeam() {
   const filteredRows = useMemo(() => {
     return allRows.filter((row) => {
       if (appliedFilters.memberId && !row.memberId?.toLowerCase().includes(appliedFilters.memberId.toLowerCase())) return false;
+      if (appliedFilters.memberName && !row.name?.toLowerCase().includes(appliedFilters.memberName.toLowerCase())) return false;
       if (appliedFilters.level && String(row.level) !== appliedFilters.level) return false;
       if (appliedFilters.unlock && String(row.unlockLevel) !== appliedFilters.unlock) return false;
       return true;
     });
   }, [allRows, appliedFilters]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
-  const pageRows = filteredRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / pageSize));
+  const pageRows = filteredRows.slice((page - 1) * pageSize, page * pageSize);
 
   const handleSearch = () => {
-    setAppliedFilters({ memberId: filterMemberId, level: filterLevel, unlock: filterUnlock });
+    setAppliedFilters({ 
+      memberId: filterMemberId, 
+      memberName: filterMemberName,
+      level: filterLevel, 
+      unlock: filterUnlock 
+    });
     setPage(1);
   };
 
@@ -74,6 +81,7 @@ function MyTeam() {
       <div className="user-panel">
         <div className="downline-filters">
           <input type="text" placeholder="MEMBER ID" value={filterMemberId} onChange={(e) => setFilterMemberId(e.target.value)} />
+          <input type="text" placeholder="MEMBER NAME" value={filterMemberName} onChange={(e) => setFilterMemberName(e.target.value)} />
           <select value={filterLevel} onChange={(e) => setFilterLevel(e.target.value)}>
             <option value="">LEVEL (Depth)</option>
             {levelOptions.map((l) => <option key={l} value={l}>{l}</option>)}
@@ -81,6 +89,11 @@ function MyTeam() {
           <select value={filterUnlock} onChange={(e) => setFilterUnlock(e.target.value)}>
             <option value="">UNLOCK LEVEL</option>
             {levelOptions.map((l) => <option key={l} value={l}>{l}</option>)}
+          </select>
+          <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
+            <option value="10">10 / page</option>
+            <option value="50">50 / page</option>
+            <option value="100">100 / page</option>
           </select>
           <button className="user-btn-blue" type="button" onClick={handleSearch}>Search</button>
         </div>
