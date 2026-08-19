@@ -258,6 +258,8 @@ exports.getTeamTree = async (req, res) => {
         name: user.name,
         mobile: user.contactNo || '---',
         joinDate: formatDate(user.createdAt),
+        joinDateRaw: user.createdAt,
+        city: user.city || '---',
         status: user.accountStatus || 'ACTIVE',
         unlockLevel: user.unlockLevel || 1,
         rank: user.rank || '---',

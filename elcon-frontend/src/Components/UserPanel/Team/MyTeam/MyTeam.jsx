@@ -11,9 +11,10 @@ function flattenDescendants(node, depth = 0, acc = []) {
       memberId: child.memberId,
       name: child.name,
       level: depth + 1,
-      joinDate: '---',
+      joinDate: child.joinDate || '---',
+      joinDateRaw: child.joinDateRaw,
       unlockLevel: child.unlockLevel || 1,
-      city: '---',
+      city: child.city || '---',
       rankNo: child.rank || '---',
       status: child.status,
     });
@@ -34,6 +35,8 @@ function MyTeam() {
   const [filterMemberName, setFilterMemberName] = useState('');
   const [filterLevel, setFilterLevel] = useState('');
   const [filterUnlock, setFilterUnlock] = useState('');
+  const [filterStartDate, setFilterStartDate] = useState('');
+  const [filterEndDate, setFilterEndDate] = useState('');
   const [appliedFilters, setAppliedFilters] = useState({});
 
   useEffect(() => {
@@ -52,6 +55,14 @@ function MyTeam() {
       if (appliedFilters.memberName && !row.name?.toLowerCase().includes(appliedFilters.memberName.toLowerCase())) return false;
       if (appliedFilters.level && String(row.level) !== appliedFilters.level) return false;
       if (appliedFilters.unlock && String(row.unlockLevel) !== appliedFilters.unlock) return false;
+      if (appliedFilters.startDate && row.joinDateRaw) {
+        if (new Date(row.joinDateRaw) < new Date(appliedFilters.startDate)) return false;
+      }
+      if (appliedFilters.endDate && row.joinDateRaw) {
+        const endDate = new Date(appliedFilters.endDate);
+        endDate.setHours(23, 59, 59, 999);
+        if (new Date(row.joinDateRaw) > endDate) return false;
+      }
       return true;
     });
   }, [allRows, appliedFilters]);
@@ -64,7 +75,9 @@ function MyTeam() {
       memberId: filterMemberId, 
       memberName: filterMemberName,
       level: filterLevel, 
-      unlock: filterUnlock 
+      unlock: filterUnlock,
+      startDate: filterStartDate,
+      endDate: filterEndDate
     });
     setPage(1);
   };
@@ -90,6 +103,8 @@ function MyTeam() {
             <option value="">UNLOCK LEVEL</option>
             {levelOptions.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
+          <input type="date" placeholder="START DATE" value={filterStartDate} onChange={(e) => setFilterStartDate(e.target.value)} />
+          <input type="date" placeholder="END DATE" value={filterEndDate} onChange={(e) => setFilterEndDate(e.target.value)} />
           <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
             <option value="10">10 / page</option>
             <option value="50">50 / page</option>
@@ -117,9 +132,11 @@ function MyTeam() {
                     <th>MEMBER ID</th>
                     <th>MEMBER NAME</th>
                     <th>LEVEL (DEPTH)</th>
+                    <th>JOIN DATE</th>
                     <th>UNLOCK LEVEL</th>
+                    <th>CITY</th>
                     <th>STATUS</th>
-                    <th>RANK</th>
+                    <th>RANK NO</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -132,7 +149,9 @@ function MyTeam() {
                         <td>{item.memberId}</td>
                         <td>{item.name}</td>
                         <td>{item.level}</td>
+                        <td>{item.joinDate}</td>
                         <td>{item.unlockLevel}</td>
+                        <td>{item.city}</td>
                         <td>
                           <span style={{ color: item.status === 'ACTIVE' ? '#27ae60' : '#e74c3c', fontWeight: 600 }}>
                             {item.status}
