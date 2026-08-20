@@ -48,13 +48,8 @@ function EPinRequest() {
       <h1 className="page-title">ePin Request</h1>
 
       <div className="panel">
-        <div className="epin-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="epin-header-row">
           <h2 className="epin-title">List ePin Request</h2>
-          <div className="epin-tools" style={{ display: 'flex', gap: '8px' }}>
-            <button className="btn-outline">Excel</button>
-            <button className="btn-outline">PDF</button>
-            <button className="btn-outline">Print</button>
-          </div>
         </div>
 
         <div className="epin-filter-grid">
@@ -75,7 +70,11 @@ function EPinRequest() {
           <button className="btn-primary" type="button" onClick={loadRows}>Search</button>
         </div>
 
-
+        <div className="epin-tools">
+          <button className="btn-outline">Excel</button>
+          <button className="btn-outline">PDF</button>
+          <button className="btn-outline">Print</button>
+        </div>
 
         <div className="table-wrap">
           <table className="data-table">

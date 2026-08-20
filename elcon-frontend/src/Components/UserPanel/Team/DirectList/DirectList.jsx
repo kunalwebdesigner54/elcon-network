@@ -31,19 +31,16 @@ function DirectList() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 className="user-page-title" style={{ margin: 0 }}>My Direct</h1>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="user-btn-outline">Excel</button>
-        </div>
-      </div>
+      <h1 className="user-page-title">My Direct</h1>
       <div className="user-panel">
         {loading && <p style={{ padding: '16px' }}>Loading…</p>}
         {error && <p style={{ color: 'red', padding: '16px' }}>{error}</p>}
 
         {!loading && !error && (
           <>
-
+            <div className="table-toolbar">
+              <button className="user-btn-outline">Excel</button>
+            </div>
             <div className="table-wrap">
               <table className="data-table">
                 <thead>
