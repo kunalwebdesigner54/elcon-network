@@ -202,8 +202,8 @@ const GivenHelp = () => {
 
               {receiver.skippedMembers?.length > 0 && (
                 <div className="help-info-row21" style={{ marginTop: 8 }}>
-                  <span className="help-info-label" style={{ color: "#e67e22" }}>Skipped (not eligible) :</span>
-                  <span className="help-info-value" style={{ color: "#e67e22" }}>{receiver.skippedMembers.join(", ")}</span>
+                  <span className="help-info-label" style={{ color: "#e67e22" }}>Skipped ID :</span>
+                  <span className="help-info-value" style={{ color: "#e67e22" }}>{receiver.skippedMembers[0]}</span>
                 </div>
               )}
             </div>
@@ -213,6 +213,8 @@ const GivenHelp = () => {
               <div className="section-title21">Donation / Help Details</div>
               <div className="help-info-row21"><span className="help-info-label">Amount :</span> <span className="help-info-value amount">₹ {DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}.00</span></div>
               <div className="help-info-row21"><span className="help-info-label">Upgrade Level :</span> <span className="help-info-value">Level {nextLevel}</span></div>
+              <div className="help-info-row21"><span className="help-info-label">Donation Date :</span> <span className="help-info-value">{new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}</span></div>
+              <div className="help-info-row21"><span className="help-info-label">Donation Status :</span> <span className="help-info-value" style={{ color: "#f39c12", fontWeight: 600 }}>PENDING</span></div>
             </div>
 
             {/* Declaration + submission */}
