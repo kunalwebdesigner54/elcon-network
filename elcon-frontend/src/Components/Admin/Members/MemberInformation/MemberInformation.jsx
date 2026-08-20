@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getAllMembersList, updateBlockStatus } from '../../../../api/membersService';
+import Swal from 'sweetalert2';
 
 const MemberInformation = () => {
   const [membersData, setMembersData] = useState([]);
@@ -29,17 +30,46 @@ const MemberInformation = () => {
 
   const handleToggleBlock = async (memberId, currentStatus) => {
     const isCurrentlyBlocked = currentStatus === 'Block';
-    const actionText = isCurrentlyBlocked ? 'unblock' : 'block';
+    const actionText = isCurrentlyBlocked ? 'UNBLOCK' : 'BLOCK';
     
-    if (!window.confirm(`Are you sure you want to ${actionText} member ${memberId}?`)) return;
+    const result = await Swal.fire({
+      icon: 'warning',
+      title: `Are you sure you want to ${actionText}?`,
+      html: `Member ID: <strong>${memberId}</strong>`,
+      showCancelButton: true,
+      confirmButtonText: `Yes, ${actionText.toLowerCase()} it!`,
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#00d284', 
+      cancelButtonColor: '#4b5563',
+      background: '#1e2029',
+      color: '#fff',
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       setActionLoading(memberId);
       await updateBlockStatus(memberId, !isCurrentlyBlocked);
-      alert(`Member successfully ${actionText}ed.`);
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: `Member successfully ${actionText.toLowerCase()}ed.`,
+        background: '#1e2029',
+        color: '#fff',
+        confirmButtonColor: '#00d284'
+      });
+      
       await loadMembers();
     } catch (err) {
-      alert(err?.response?.data?.message || `Failed to ${actionText} member.`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: err?.response?.data?.message || `Failed to ${actionText.toLowerCase()} member.`,
+        background: '#1e2029',
+        color: '#fff',
+        confirmButtonColor: '#ef4444'
+      });
     } finally {
       setActionLoading(null);
     }
@@ -133,7 +163,8 @@ const MemberInformation = () => {
                   </td>
                   <td>
                     <button 
-                      className={member.blockStatus === 'Block' ? "btn-danger" : "btn-success"} 
+                      className="btn-primary" 
+                      style={{ padding: '6px 14px', fontSize: '13px', borderRadius: '4px' }}
                       type="button"
                       disabled={actionLoading === member.memberId}
                       onClick={() => handleToggleBlock(member.memberId, member.blockStatus || 'Unblock')}
