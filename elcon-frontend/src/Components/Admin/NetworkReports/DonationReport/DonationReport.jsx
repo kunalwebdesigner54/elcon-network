@@ -32,6 +32,19 @@ function parseDate(value) {
   return value;
 }
 
+function formatDateTime(value) {
+  if (!value) return '\u2014';
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return '\u2014';
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  return `${dd}-${mm}-${yyyy} ${hh}:${min}:${ss}`;
+}
+
 function DonationReport() {
   const [donationRows, setDonationRows] = useState([]);
   const [filters, setFilters] = useState({
@@ -67,7 +80,7 @@ function DonationReport() {
         paymentProof: donation.utrNumber !== '---' ? donation.utrNumber : '',
         transactionId: donation.donationId || '',
         requestDate: donation.dateRaw || '',
-        approveDate: donation.updatedAt || '', // Note: Backend currently doesn't send updatedAt, but this preserves the field
+        approveDate: donation.reviewedAt || '',
         status: donation.status || 'PENDING'
       })));
       setError('');
@@ -253,8 +266,8 @@ function DonationReport() {
                       <td>{row.receiverMemberName}</td>
                       <td>{row.amount}</td>
                       <td>{row.rank}</td>
-                      <td>{row.requestDate}</td>
-                      <td>{row.approveDate}</td>
+                      <td>{formatDateTime(row.requestDate)}</td>
+                      <td>{['APPROVED', 'COMPLETED'].includes(row.status) ? formatDateTime(row.approveDate) : '\u2014'}</td>
                       <td>{row.transactionId}</td>
                       <td>
                         {row.paymentProof ? (

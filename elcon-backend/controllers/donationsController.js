@@ -433,6 +433,7 @@ exports.getAllDonations = async (req, res) => {
       skippedMembers: d.skippedMembers || [],
       date: formatDate(d.createdAt),
       dateRaw: d.createdAt,
+      reviewedAt: d.reviewedAt || null,
       utrNumber: d.utrNumber || '---',
       remark: d.remark || '---',
     }));
