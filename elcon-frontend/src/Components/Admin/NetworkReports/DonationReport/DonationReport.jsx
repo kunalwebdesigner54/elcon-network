@@ -58,16 +58,16 @@ function DonationReport() {
       const donations = Array.isArray(data) ? data : (data.data ? data.data : []);
       setDonationRows(donations.map((donation, index) => ({
         srNo: index + 1,
-        donorMemberId: donation.from?.memberId || 'N/A',
-        donorMemberName: donation.from?.userName || 'N/A',
-        receiverMemberId: donation.to?.memberId || 'N/A',
-        receiverMemberName: donation.to?.userName || 'N/A',
-        amount: donation.amount || '0',
-        rank: donation.level || '',
-        paymentProof: donation.paymentProof ? 'VIEW' : '',
-        transactionId: donation._id || '',
-        requestDate: donation.createdAt || '',
-        approveDate: donation.updatedAt || '',
+        donorMemberId: donation.fromMemberId || 'N/A',
+        donorMemberName: donation.fromName || 'N/A',
+        receiverMemberId: donation.toMemberId || 'N/A',
+        receiverMemberName: donation.toName || 'N/A',
+        amount: donation.amount ? String(donation.amount) : '0',
+        rank: donation.level ? String(donation.level) : '',
+        paymentProof: donation.utrNumber !== '---' ? donation.utrNumber : '',
+        transactionId: donation.donationId || '',
+        requestDate: donation.dateRaw || '',
+        approveDate: donation.updatedAt || '', // Note: Backend currently doesn't send updatedAt, but this preserves the field
         status: donation.status || 'PENDING'
       })));
       setError('');
@@ -106,7 +106,7 @@ function DonationReport() {
 
       return byDonorId && byReceiverId && byAmount && byRank && byStatus && byStartDate && byEndDate;
     });
-  }, [filters]);
+  }, [filters, donationRows]);
 
   const visibleRows = filteredRows.slice(0, Number(pageSize));
 
