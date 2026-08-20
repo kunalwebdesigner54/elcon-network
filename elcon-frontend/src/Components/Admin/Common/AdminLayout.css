@@ -577,6 +577,7 @@
     z-index: 30;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
+    background: rgba(18, 26, 47, 0.97);
   }
 
   .admin-root.sidebar-collapsed .sidebar {
