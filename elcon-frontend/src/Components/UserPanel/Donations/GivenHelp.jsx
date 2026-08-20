@@ -164,38 +164,26 @@ const GivenHelp = () => {
       {!error && (
         isCurrentlyPending ? (
           <div className="donation-details-card" style={{ textAlign: 'center', padding: '40px' }}>
-            <h3 style={{ color: '#00aaff', marginBottom: '10px' }}>Submission Under Review</h3>
-            <p style={{ color: '#8b949e' }}>You have already submitted a donation for Level {nextLevel}. It is currently WAITING FOR RECEIVER CONFIRMATION.</p>
+            <h3 style={{ color: '#00d084', marginBottom: '10px' }}>Status : Waiting Receiver Confirmation</h3>
+            <p style={{ color: '#666' }}>You have already submitted a donation for Level {nextLevel}. It is currently pending approval.</p>
           </div>
         ) : (
           targetData ? (
-            <>
-              <div className="donation-note">
-                <span className="donation-free-will">"I am donating of my own free will"</span>
-                <span className="donation-desc">
-                  I declare that I am gifting{" "}
-                  <b>₹{DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}</b> (Level {nextLevel} Upgrade) as per my wish to{" "}
-                  <b>{receiver.toName}</b> and I will never claim this amount in future.
-                </span>
-              </div>
-
               <div className="donation-details-card">
-                {/* Sender */}
+                
                 <div className="donation-section">
-                  <div className="section-title21">Sender Details (Help Provider)</div>
+                  <div className="section-title21">Sender Details (help Provider)</div>
                   <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{currentUser?.name || "---"}</span></div>
                   <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{currentUser?.memberId || "---"}</span></div>
                   <div className="help-info-row21"><span className="help-info-label">E-mail ID :</span> <span className="help-info-value">{currentUser?.email || "---"}</span></div>
-                  <div className="help-info-row21"><span className="help-info-label">Current Level :</span> <span className="help-info-value">{nextLevel - 1}</span></div>
-                  <div className="help-info-row21"><span className="help-info-label">Upgrading To Level :</span> <span className="help-info-value" style={{ color: "#00aaff", fontWeight: 600 }}>{nextLevel}</span></div>
-                  <div className="help-info-row21"><span className="help-info-label">Donation Status :</span> <span className="help-info-value">{getStatusBadge('PENDING')}</span></div>
                 </div>
 
-                {/* Receiver */}
                 <div className="donation-section">
-                  <div className="section-title21">Receiver Details (Help Receiver)</div>
+                  <div className="section-title21">Receiver Details (help Receiver)</div>
                   <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{receiver.toName || "---"}</span></div>
+                  <div className="help-info-row21"><span className="help-info-label">Mobile No. :</span> <span className="help-info-value">{receiver.phone || "---"}</span></div>
                   <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{receiver.toMemberId || "---"}</span></div>
+                  <div className="help-info-row21"><span className="help-info-label">E-mail ID :</span> <span className="help-info-value">{receiver.email || "---"}</span></div>
 
                   {payment.googlePay && (
                     <div className="help-info-row21 align-row"><span className="help-info-label">GPay :</span>
@@ -231,75 +219,66 @@ const GivenHelp = () => {
                   )}
                   {bank.bankName && <div className="help-info-row21"><span className="help-info-label">Bank Name :</span> <span className="help-info-value">{bank.bankName}</span></div>}
                   {bank.accountNo && <div className="help-info-row21"><span className="help-info-label">Account No :</span> <span className="help-info-value">{bank.accountNo}</span></div>}
-                  {bank.holderName && <div className="help-info-row21"><span className="help-info-label">Beneficiary :</span> <span className="help-info-value">{bank.holderName}</span></div>}
+                  {bank.holderName && <div className="help-info-row21"><span className="help-info-label">Beneficiary Name :</span> <span className="help-info-value">{bank.holderName}</span></div>}
                   {bank.ifsc && <div className="help-info-row21"><span className="help-info-label">IFSC Code :</span> <span className="help-info-value">{bank.ifsc}</span></div>}
                 </div>
 
-                {/* Donation details */}
                 <div className="donation-section">
-                  <div className="section-title21">Donation / Help Details</div>
-                  <div className="help-info-row21"><span className="help-info-label">Amount :</span> <span className="help-info-value amount">₹ {DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}.00</span></div>
-                  <div className="help-info-row21"><span className="help-info-label">Upgrade Level :</span> <span className="help-info-value">Level {nextLevel}</span></div>
-                  <div className="help-info-row21"><span className="help-info-label">Donation Date :</span> <span className="help-info-value">{new Date().toLocaleDateString('en-GB')}</span></div>
+                  <div className="section-title21">Donation Or Help Details</div>
+                  <div className="help-info-row21"><span className="help-info-label">Amount Sent in Rupees :</span> <span className="help-info-value amount">₹ {DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}.00</span></div>
+                  <div className="help-info-row21"><span className="help-info-label">Donation Date :</span> <span className="help-info-value">{new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true }).replace(',', '')}</span></div>
+                  <div className="help-info-row21"><span className="help-info-label">Status :</span> <span className="help-info-value" style={{ color: '#f39c12' }}>PENDING</span></div>
                 </div>
 
-                {/* Declaration + submission */}
                 <div className="donation-section">
                   <div className="section-title21">Declaration By Sender</div>
                   <div className="help-info-row22">
                     <span className="help-info-label">Declaration :</span>
                     <span className="help-info-value declaration-text">{declaration}</span>
                   </div>
-                  
-                  <div className="help-info-row21 form-inputs-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginTop: '15px' }}>
-                    <div style={{ flex: '1 1 250px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span className="help-info-label" style={{ minWidth: '80px', flex: 'none' }}>Pay Slip :</span>
+                  <div className="help-info-row21 pay-slip-row">
+                    <span className="help-info-label" style={{ display: 'flex', alignItems: 'center' }}>
+                      Pay Slip :
                       <input
                         type="file"
-                        className="input-txn"
+                        className="pay-slip-input"
                         accept="image/*"
+                        style={{ marginLeft: '10px' }}
                         onChange={(e) => {
                           if (e.target.files.length > 0) setPaymentProof('Uploaded');
                         }}
-                        style={{ flex: '1' }}
                       />
-                    </div>
-                    <div style={{ flex: '1 1 250px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span className="help-info-label" style={{ minWidth: '80px', flex: 'none' }}>Trans. No :</span>
+                    </span>
+                    <span className="help-info-label trans-label" style={{ display: 'flex', alignItems: 'center' }}>
+                      Trans. No : 
                       <input
                         type="text"
                         className="input-txn"
-                        placeholder="Enter UTR / Txn No"
                         value={utrNumber}
                         onChange={(e) => setUtrNumber(e.target.value)}
-                        style={{ flex: '1' }}
                       />
-                    </div>
+                    </span>
                   </div>
-
-                  <div className="help-info-row21 form-inputs-row" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '15px' }}>
-                    <button className="get-code-btn" type="button" style={{ 
-                      background: '#00d084', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' 
-                    }}>GET CODE</button>
-                    <span className="help-info-label" style={{ marginLeft: '10px' }}>E-Mail Verification Code :</span>
-                    <input
-                      type="text"
-                      className="input-txn"
-                      style={{ maxWidth: '200px' }}
-                      value={emailCode}
-                      onChange={(e) => setEmailCode(e.target.value)}
-                    />
+                  <div className="help-info-row21 pay-slip-row" style={{ marginTop: '10px', justifyContent: 'flex-start', gap: '15px' }}>
+                    <button className="get-code-btn" type="button" onClick={() => alert('Code sent to email!')}>GET CODE</button>
+                    <span className="help-info-label" style={{ display: 'flex', alignItems: 'center' }}>
+                      E-Mail Verification Code :
+                      <input
+                        type="text"
+                        className="input-code"
+                        placeholder=""
+                        value={emailCode}
+                        onChange={(e) => setEmailCode(e.target.value)}
+                      />
+                    </span>
                   </div>
                 </div>
 
-                <div className="submit-row" style={{ marginTop: '20px', textAlign: 'left' }}>
-                  <button className="help-submit-btn" onClick={handleSubmit} disabled={submitting} style={{ 
-                    background: '#00d0ff', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px' 
-                  }}>
+                <div className="submit-row" style={{ textAlign: 'center', marginTop: '20px' }}>
+                  <button className="help-submit-btn" onClick={handleSubmit} disabled={submitting}>
                     {submitting ? "Submitting…" : "Submit"}
                   </button>
                 </div>
-
                 {/* Level Indicators */}
                 <div className="level-indicators" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '30px', paddingBottom: '10px' }}>
                   {[...Array(10)].map((_, i) => {
