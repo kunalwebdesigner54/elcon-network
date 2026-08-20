@@ -37,7 +37,7 @@ const MemberInformation = () => {
       title: `Are you sure you want to ${actionText}?`,
       html: `Member ID: <strong>${memberId}</strong>`,
       showCancelButton: true,
-      confirmButtonText: `Yes, ${actionText.toLowerCase()} it!`,
+      confirmButtonText: isCurrentlyBlocked ? `🔓 Yes, unblock it!` : `🔒 Yes, block it!`,
       cancelButtonText: 'Cancel',
       confirmButtonColor: '#00d284', 
       cancelButtonColor: '#4b5563',
