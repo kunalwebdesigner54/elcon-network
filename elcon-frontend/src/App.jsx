@@ -60,6 +60,7 @@ import Gallery from './Components/Public/Gallery/Gallery';
 import Contact from './Components/Public/Contact/Contact';
 import Register from './Components/Public/Register/Register';
 import AllMembersList from './Components/Admin/Members/AllMembersList/AllMembersList';
+import MemberInformation from './Components/Admin/Members/MemberInformation/MemberInformation';
 import ReceivedHelp from './Components/UserPanel/Payment/PaymentRequest/ReceivedHelp';
 import TransactionHistory from './Components/UserPanel/Transactions/TransactionHistory/TransactionHistory';
 import AdminTransactionHistory from './Components/Admin/Transactions/TransactionHistory/TransactionHistory';
@@ -241,6 +242,7 @@ function App() {
        
 
           <Route path="members/all-members-list" element={<AllMembersList />} />
+          <Route path="members/member-information" element={<MemberInformation />} />
 
           <Route path="network-reports/network-explorer" element={<NetworkExplorer />} />
           <Route path="network-reports/downline-list" element={<MyDirectReferral />} />

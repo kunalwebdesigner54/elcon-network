@@ -24,6 +24,7 @@ const menuItems = [
     children: [
       { label: 'KYC Request', to: '/members/kyc-request' },
       { label: 'All Members List', to: '/members/all-members-list' },
+      { label: 'Member Information', to: '/members/member-information' },
       { label: 'Members Location', to: '/members/active-members' },
       { label: 'All-Member-Performance', to: '/members/all-member-performance' },
       
