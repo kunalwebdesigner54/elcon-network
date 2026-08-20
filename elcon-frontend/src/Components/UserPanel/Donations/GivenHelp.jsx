@@ -35,6 +35,7 @@ const GivenHelp = () => {
   const [donationHistory, setDonationHistory] = useState([]);
 
   const [utrNumber, setUtrNumber] = useState("");
+  const [paymentProof, setPaymentProof] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const loadData = async () => {
@@ -97,9 +98,10 @@ const GivenHelp = () => {
     setError("");
     setSubmitting(true);
     try {
-      const result = await submitDonation(nextLevel, utrNumber.trim());
+      const result = await submitDonation(nextLevel, utrNumber.trim(), paymentProof);
       setSuccessMsg(result.message || "Donation submitted successfully! Awaiting confirmation.");
       setUtrNumber("");
+      setPaymentProof("");
       loadData(); // Refresh history
     } catch (err) {
       setError(err?.response?.data?.message || "Submission failed. Please try again.");
@@ -165,7 +167,7 @@ const GivenHelp = () => {
             <p style={{ color: '#8b949e' }}>You have already submitted a donation for Level {nextLevel}. It is currently WAITING FOR RECEIVER CONFIRMATION.</p>
           </div>
         ) : (
-          targetData && (
+          targetData ? (
             <>
               <div className="donation-note">
                 <span className="donation-free-will">"I am donating of my own free will"</span>
@@ -257,6 +259,18 @@ const GivenHelp = () => {
                       onChange={(e) => setUtrNumber(e.target.value)}
                     />
                   </div>
+                  <div className="help-info-row21 pay-slip-row" style={{ marginTop: '10px' }}>
+                    <span className="help-info-label">Payment Slip :</span>
+                    <input
+                      type="file"
+                      className="input-txn"
+                      accept="image/*"
+                      onChange={(e) => {
+                        // Normally this would be a file upload, but for now we'll just set it to 'Uploaded'
+                        if (e.target.files.length > 0) setPaymentProof('Uploaded');
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <div className="submit-row">
@@ -265,7 +279,11 @@ const GivenHelp = () => {
                   </button>
                 </div>
               </div>
-            </>
+          ) : (
+            <div className="donation-details-card" style={{ textAlign: 'center', padding: '40px' }}>
+              <h3 style={{ color: '#00aaff', marginBottom: '10px' }}>No Eligible Receiver Found</h3>
+              <p style={{ color: '#8b949e' }}>Currently, there is no eligible receiver for Level {nextLevel}. Please contact the administrator.</p>
+            </div>
           )
         )
       )}
