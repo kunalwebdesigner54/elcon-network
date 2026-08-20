@@ -139,37 +139,106 @@
 }
 /* Steps bar at the bottom, always */
 .rank-steps {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background: var(--card-bg);
+  display: none;
+}
+
+/* Donation Progress Table Styles */
+.donation-progress-container {
+  background: var(--card-bg, #1a2235);
+  border: 1px solid var(--border-color, #2d3748);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  padding: 10px 8px;
-  margin-top: 24px;
-  position: static;
-  width: 100%;
+  padding: 20px;
+  margin-top: 30px;
 }
-.rank-step {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #e0e0e0;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+.donation-progress-title {
+  color: var(--text-primary, #ffffff);
+  font-size: 16px;
   font-weight: 600;
-  font-size: 1.1rem;
-  margin-bottom: 6px;
-  border: 2px solid #fff;
-  transition: background 0.2s, color 0.2s;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary, #00aaff);
+  padding-left: 10px;
 }
-.rank-step.active {
-  background: var(--primary, #00aaff);
-  color: #fff;
-  border: 2px solid #e6007a;
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.donation-progress-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.donation-progress-table th {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary, #8b949e);
+  font-weight: 500;
+  text-align: left;
+  padding: 14px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border-color, #2d3748);
+  white-space: nowrap;
+}
+
+.donation-progress-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--text-primary, #ffffff);
+  border-bottom: 1px solid var(--border-color, #2d3748);
+  vertical-align: middle;
+}
+
+.donation-progress-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.donation-progress-table tr.row-locked td {
+  color: var(--text-secondary, #8b949e);
+  opacity: 0.6;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.status-approved {
+  background: rgba(40, 167, 69, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status-waiting {
+  background: rgba(0, 170, 255, 0.15);
+  color: #00aaff;
+  border: 1px solid rgba(0, 170, 255, 0.3);
+}
+
+.status-pending {
+  background: rgba(255, 193, 7, 0.15);
+  color: #f39c12;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-rejected {
+  background: rgba(220, 53, 69, 0.15);
+  color: #e74c3c;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.status-locked {
+  background: rgba(255, 255, 255, 0.05);
+  color: #7f8c8d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 @media (max-width: 900px) {
   .given-help-container {

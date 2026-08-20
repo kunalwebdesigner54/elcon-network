@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { getMyDonations } from "../../../../api/donationsService";
+import { getMyDonations, updateDonationStatus } from "../../../../api/donationsService";
 import "./ReceivedHelp.css";
 
 const ReceivedHelp = () => {
   const [receivedHelpRows, setReceivedHelpRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     fetchReceivedDonations();
@@ -15,21 +16,19 @@ const ReceivedHelp = () => {
     try {
       setLoading(true);
       const data = await getMyDonations();
-      const donations = Array.isArray(data) ? data : (data.data ? data.data : []);
+      const donations = data.data?.received || [];
       
-      // Filter for received donations (where logged-in user is the receiver)
-      const received = donations
-        .filter(d => d.received) // Assuming received is a property
-        .map((donation, index) => ({
-          sNo: index + 1,
-          memberId: donation.from?.memberId || 'N/A',
-          name: donation.from?.userName || 'N/A',
-          amount: donation.amount || 0,
-          rank: donation.level || '-',
-          requestDate: donation.createdAt ? new Date(donation.createdAt).toLocaleString('en-IN') : '-',
-          transactionId: donation._id || '-',
-          status: donation.status || 'PENDING'
-        }));
+      const received = donations.map((donation, index) => ({
+        sNo: index + 1,
+        donationId: donation.donationId,
+        memberId: donation.fromMemberId || 'N/A',
+        name: donation.fromName || 'N/A',
+        amount: donation.amount || 0,
+        level: donation.level || '-',
+        requestDate: donation.date || '-',
+        transactionId: donation.utrNumber || '---',
+        status: donation.status || 'PENDING'
+      }));
 
       setReceivedHelpRows(received);
       setError('');
@@ -41,91 +40,108 @@ const ReceivedHelp = () => {
       setLoading(false);
     }
   };
+
+  const handleAction = async (donationId, status) => {
+    if (!window.confirm(`Are you sure you want to ${status} this donation?`)) return;
+    
+    try {
+      setActionLoading(donationId);
+      await updateDonationStatus(donationId, status);
+      await fetchReceivedDonations(); // Refresh list after action
+    } catch (err) {
+      alert(err?.response?.data?.message || `Failed to ${status} donation.`);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'APPROVED':
+      case 'COMPLETED':
+        return <span className="status-badge status-approved">APPROVED</span>;
+      case 'WAITING_FOR_RECEIVER_CONFIRMATION':
+        return <span className="status-badge status-waiting">WAITING</span>;
+      case 'PENDING':
+        return <span className="status-badge status-pending">PENDING</span>;
+      case 'REJECTED':
+        return <span className="status-badge status-rejected">REJECTED</span>;
+      default:
+        return <span className="status-badge status-locked">{status}</span>;
+    }
+  };
+
   return (
     <div>
-      <h1 className="user-page-title">Received  Help (Downline ➔ You)</h1>
+      <h1 className="user-page-title">Received Help (Downline ➔ You)</h1>
       <div className="user-panel">
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
-        {loading && <div style={{ color: '#666', marginBottom: '14px' }}>Loading...</div>}
+        {loading && <div style={{ color: '#00aaff', marginBottom: '14px' }}>Loading donations...</div>}
         
         {!loading && (
           <>
-            <div
-              className="level-income-filters"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(6, minmax(110px, 1fr))",
-                gap: 8,
-                marginBottom: 14,
-                ...(window.innerWidth <= 600
-                  ? { gridTemplateColumns: "1fr", gap: 6 }
-                  : {})
-              }}
-            >
-              <input className="text-input" placeholder="DONAR MEMBER ID" />
-              <select className="select-input">
-                <option value="">RANK</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-              </select>
-              <label className="filter-field">
-                <input className="text-input" type="date" aria-label="Start Date" />
-              </label>
-              <label className="filter-field">
-                <input className="text-input" type="date" aria-label="End Date" />
-              </label>
-              <select className="select-input">
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-              <button className="user-btn-blue3" type="button">Search</button>
-            </div>
-            <div className="epin-tools" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 10 }}>
-              <button className="btn-outline">Excel</button>
-              <button className="btn-outline">PDF</button>
-              <button className="btn-outline">Print</button>
-            </div>
-            <div className="table-wrap">
-              <table className="data-table">
+            <div className="table-wrap custom-scrollbar" style={{ overflowX: 'auto' }}>
+              <table className="data-table donation-progress-table">
                 <thead>
                   <tr>
                     <th>S.NO</th>
-                    <th>DONAR MEMBER ID</th>
-                    <th>DONAR MEMBER NAME</th>
+                    <th>DONOR ID</th>
+                    <th>DONOR NAME</th>
+                    <th>LEVEL</th>
                     <th>AMOUNT</th>
-                    <th>RANK</th>
-                    <th>REQUEST DATE</th>
-                    <th>TRASACTION ID</th>
-                    <th>PAYMENT PROOF</th>
+                    <th>DONATION DATE</th>
+                    <th>TRANSACTION NO</th>
+                    <th>STATUS</th>
                     <th>ACTION</th>
-                <th>STATUS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {receivedHelpRows.map((row) => (
-                <tr key={row.sNo}>
-                  <td>{row.sNo}</td>
-                  <td>{row.memberId}</td>
-                  <td>{row.name}</td>
-                  <td>{row.amount}</td>
-                  <td>{row.rank}</td>
-                  <td>{row.requestDate}</td>
-                  <td>{row.transactionId}</td>
-                  <td><button className="user-btn-blue3">VIEW</button></td>
-                  <td>
-                    <button className="user-mini-btn user-accept" type="button">ACCEPT</button>
-                    <button className="user-mini-btn user-reject" type="button" style={{ marginLeft: 4 }}>REJECT</button>
-                  </td>
-                  <td>{row.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </tr>
+                </thead>
+                <tbody>
+                  {receivedHelpRows.length > 0 ? (
+                    receivedHelpRows.map((row) => (
+                      <tr key={row.donationId}>
+                        <td>{row.sNo}</td>
+                        <td>{row.memberId}</td>
+                        <td>{row.name}</td>
+                        <td>Level {row.level}</td>
+                        <td>₹{row.amount?.toLocaleString('en-IN')}</td>
+                        <td>{row.requestDate}</td>
+                        <td>{row.transactionId}</td>
+                        <td>{getStatusBadge(row.status)}</td>
+                        <td>
+                          {row.status === 'WAITING_FOR_RECEIVER_CONFIRMATION' ? (
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <button 
+                                className="user-mini-btn user-accept" 
+                                type="button"
+                                disabled={actionLoading === row.donationId}
+                                onClick={() => handleAction(row.donationId, 'APPROVED')}
+                                style={{ background: '#2ecc71', color: '#fff', border: 'none', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer' }}
+                              >
+                                {actionLoading === row.donationId ? '...' : 'Approve'}
+                              </button>
+                              <button 
+                                className="user-mini-btn user-reject" 
+                                type="button"
+                                disabled={actionLoading === row.donationId}
+                                onClick={() => handleAction(row.donationId, 'REJECTED')}
+                                style={{ background: '#e74c3c', color: '#fff', border: 'none', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer' }}
+                              >
+                                {actionLoading === row.donationId ? '...' : 'Reject'}
+                              </button>
+                            </div>
+                          ) : (
+                            <span style={{ color: '#8b949e', fontSize: '12px' }}>No Action Required</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9" style={{ textAlign: 'center', padding: '20px' }}>No received donations found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </>
         )}

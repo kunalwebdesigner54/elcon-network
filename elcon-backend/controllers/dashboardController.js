@@ -72,14 +72,21 @@ exports.userDashboard = async (req, res) => {
     const endOfYesterday = new Date(yesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    const [donationsSent, donationsReceived, yesterdayReceived] = await Promise.all([
-      Donation.find({ fromMemberId: memberId, status: 'COMPLETED' }),
-      Donation.find({ toMemberId: memberId, status: 'COMPLETED' }),
+    const [donationsSent, donationsReceived, yesterdayReceived, pendingAndWaiting] = await Promise.all([
+      Donation.find({ fromMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
+      Donation.find({ toMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({
         toMemberId: memberId,
-        status: 'COMPLETED',
-        createdAt: { $gte: yesterday, $lte: endOfYesterday },
+        status: { $in: ['APPROVED', 'COMPLETED'] },
+        $or: [
+          { donationDate: { $gte: yesterday, $lte: endOfYesterday } },
+          { createdAt: { $gte: yesterday, $lte: endOfYesterday } }
+        ]
       }),
+      Donation.find({
+        $or: [{ fromMemberId: memberId }, { toMemberId: memberId }],
+        status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] }
+      })
     ]);
 
     const totalGivenHelp = donationsSent.reduce((s, d) => s + d.amount, 0);
@@ -99,7 +106,7 @@ exports.userDashboard = async (req, res) => {
         recentReferrals,
         totalEarning: fmt(totalReceivedHelp),
         lastMonthIncome: fmt(0),
-        pendingHelp: fmt(0),
+        pendingHelp: fmt(pendingAndWaiting.reduce((s, d) => s + d.amount, 0)),
         givenHelp: fmt(totalGivenHelp),
         receivedHelp: fmt(totalReceivedHelp),
         yesterdayReceivedHelp: fmt(yesterdayReceivedHelp),
@@ -167,8 +174,13 @@ exports.adminFullDashboard = async (req, res) => {
       activeCoupons,
       expiredCoupons
     ] = await Promise.all([
-      Donation.find({ status: 'COMPLETED' }),
-      Donation.find({ status: 'COMPLETED', createdAt: { $gte: yesterday2, $lte: endOfYesterday2 } }),
+      Donation.find({ status: { $in: ['APPROVED', 'COMPLETED'] } }),
+      Donation.find({ status: { $in: ['APPROVED', 'COMPLETED'] }, 
+        $or: [
+          { donationDate: { $gte: yesterday2, $lte: endOfYesterday2 } },
+          { createdAt: { $gte: yesterday2, $lte: endOfYesterday2 } }
+        ] 
+      }),
       Epin.countDocuments({ status: { $ne: 'Deleted' } }),
       Epin.countDocuments({ status: 'Used' }),
       Epin.countDocuments({ status: 'Unused' }),

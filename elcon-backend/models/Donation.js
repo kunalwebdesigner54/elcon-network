@@ -57,8 +57,8 @@ const donationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['PENDING', 'COMPLETED', 'REJECTED'],
-      default: 'COMPLETED',
+      enum: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION', 'APPROVED', 'REJECTED', 'COMPLETED'],
+      default: 'PENDING',
     },
     // UTR / transaction reference for P2P direct-payment tracking
     utrNumber: {
@@ -74,6 +74,16 @@ const donationSchema = new mongoose.Schema(
     },
     // Members skipped due to the skip rule
     skippedMembers: [{ type: String }],
+    donationDate: {
+      type: Date,
+    },
+    approvedBy: {
+      type: String,
+      trim: true,
+    },
+    approvedAt: {
+      type: Date,
+    },
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { getAllDonations } from '../../../../api/donationsService';
+import { getAllDonations, updateDonationStatus } from '../../../../api/donationsService';
 import './DonationReport.css';
 
 const exportColumns = [
@@ -46,6 +46,7 @@ function DonationReport() {
   const [pageSize, setPageSize] = useState('10');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     fetchDonations();
@@ -57,16 +58,18 @@ function DonationReport() {
       const data = await getAllDonations();
       const donations = Array.isArray(data) ? data : (data.data ? data.data : []);
       setDonationRows(donations.map((donation, index) => ({
+        donationId: donation.donationId,
         srNo: index + 1,
-        donorMemberId: donation.from?.memberId || 'N/A',
-        donorMemberName: donation.from?.userName || 'N/A',
-        receiverMemberId: donation.to?.memberId || 'N/A',
-        receiverMemberName: donation.to?.userName || 'N/A',
+        donorMemberId: donation.fromMemberId || 'N/A',
+        donorMemberName: donation.fromName || 'N/A',
+        receiverMemberId: donation.toMemberId || 'N/A',
+        receiverMemberName: donation.toName || 'N/A',
         amount: donation.amount || '0',
         rank: donation.level || '',
         paymentProof: donation.paymentProof ? 'VIEW' : '',
-        transactionId: donation._id || '',
-        requestDate: donation.createdAt || '',
+        transactionId: donation.utrNumber || '---',
+        requestDate: donation.dateRaw || donation.createdAt || '',
+        requestDateFormatted: donation.date || '',
         approveDate: donation.updatedAt || '',
         status: donation.status || 'PENDING'
       })));
@@ -84,9 +87,9 @@ function DonationReport() {
     return donationRows.filter((row) => {
       const byDonorId = !filters.donorMemberId || row.donorMemberId.toLowerCase().includes(filters.donorMemberId.toLowerCase());
       const byReceiverId = !filters.receiverMemberId || row.receiverMemberId.toLowerCase().includes(filters.receiverMemberId.toLowerCase());
-      const byAmount = !filters.amount || row.amount.includes(filters.amount);
-      const byRank = !filters.rank || row.rank === filters.rank;
-      const byStatus = !filters.status || row.status === filters.status;
+      const byAmount = !filters.amount || String(row.amount).includes(filters.amount);
+      const byRank = !filters.rank || String(row.rank) === filters.rank;
+      const byStatus = !filters.status || row.status === filters.status || (filters.status === 'APPROVED' && row.status === 'COMPLETED');
 
       const rowDate = parseDate(row.requestDate);
       const byStartDate = !filters.startDate || rowDate >= filters.startDate;
@@ -94,12 +97,26 @@ function DonationReport() {
 
       return byDonorId && byReceiverId && byAmount && byRank && byStatus && byStartDate && byEndDate;
     });
-  }, [filters]);
+  }, [donationRows, filters]);
 
   const visibleRows = filteredRows.slice(0, Number(pageSize));
 
   const handleFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
+  };
+
+  const handleAction = async (donationId, status) => {
+    if (!window.confirm(`Are you sure you want to ${status} this donation?`)) return;
+    
+    try {
+      setActionLoading(donationId);
+      await updateDonationStatus(donationId, status);
+      await fetchDonations(); // Refresh list after action
+    } catch (err) {
+      alert(err?.response?.data?.message || `Failed to ${status} donation.`);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
@@ -110,7 +127,7 @@ function DonationReport() {
     row.receiverMemberName,
     row.amount,
     row.rank,
-    row.requestDate,
+    row.requestDateFormatted,
     row.approveDate,
     row.transactionId,
     row.paymentProof,
@@ -169,13 +186,29 @@ function DonationReport() {
     printWindow.print();
   };
 
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'APPROVED':
+      case 'COMPLETED':
+        return <span className="status-badge" style={{ background: 'rgba(40, 167, 69, 0.15)', color: '#2ecc71', border: '1px solid rgba(40, 167, 69, 0.3)', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>APPROVED</span>;
+      case 'WAITING_FOR_RECEIVER_CONFIRMATION':
+        return <span className="status-badge" style={{ background: 'rgba(0, 170, 255, 0.15)', color: '#00aaff', border: '1px solid rgba(0, 170, 255, 0.3)', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>WAITING</span>;
+      case 'PENDING':
+        return <span className="status-badge" style={{ background: 'rgba(255, 193, 7, 0.15)', color: '#f39c12', border: '1px solid rgba(255, 193, 7, 0.3)', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>PENDING</span>;
+      case 'REJECTED':
+        return <span className="status-badge" style={{ background: 'rgba(220, 53, 69, 0.15)', color: '#e74c3c', border: '1px solid rgba(220, 53, 69, 0.3)', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>REJECTED</span>;
+      default:
+        return <span className="status-badge">{status}</span>;
+    }
+  };
+
   return (
     <div>
       <h2 className="section-title tds-screen-title">Donation Report</h2>
 
       <div className="panel" style={{ borderRadius: '28px', padding: '24px' }}>
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
-        {loading && <div style={{ color: '#666', marginBottom: '14px' }}>Loading donations...</div>}
+        {loading && <div style={{ color: '#00aaff', marginBottom: '14px' }}>Loading donations...</div>}
         
         {!loading && (
           <>
@@ -189,10 +222,12 @@ function DonationReport() {
                   <option key={rankKey} value={rankKey}>{rankKey}</option>
                 ))}
               </select>
-              <select className="select-input" style={{ maxWidth: '98px' }} value={filters.status} onChange={handleFilterChange('status')}>
+              <select className="select-input" style={{ maxWidth: '120px' }} value={filters.status} onChange={handleFilterChange('status')}>
                 <option value="">STATUS</option>
                 <option value="PENDING">PENDING</option>
-                <option value="SUCCESS">SUCCESS</option>
+                <option value="WAITING_FOR_RECEIVER_CONFIRMATION">WAITING</option>
+                <option value="APPROVED">APPROVED</option>
+                <option value="REJECTED">REJECTED</option>
               </select>
               <input className="text-input" type="date" style={{ maxWidth: '130px' }} value={filters.startDate} onChange={handleFilterChange('startDate')} />
               <input className="text-input" type="date" style={{ maxWidth: '120px' }} value={filters.endDate} onChange={handleFilterChange('endDate')} />
@@ -201,7 +236,6 @@ function DonationReport() {
                 <option value="25">25</option>
                 <option value="50">50</option>
               </select>
-              <button className="btn-primary" type="button">Search</button>
             </div>
 
             <div className="btn-row" style={{ justifyContent: 'flex-end', marginBottom: '14px' }}>
@@ -209,19 +243,18 @@ function DonationReport() {
               <button className="btn-outline" type="button" onClick={handleExportExcel}>Export Excel</button>
             </div>
 
-            <div className="table-wrap">
+            <div className="table-wrap custom-scrollbar" style={{ overflowX: 'auto' }}>
               <table className="data-table" style={{ minWidth: '1680px' }}>
                 <thead>
                   <tr>
                     <th>S.NO</th>
-                    <th>DONAR MID</th>
-                    <th>DONAR MEMBER NAME</th>
+                    <th>DONOR MID</th>
+                    <th>DONOR MEMBER NAME</th>
                     <th>RECEIVER MID</th>
                     <th>RECEIVER MEMBER NAME</th>
                     <th>D. AMOUNT</th>
                     <th>RANK</th>
-                    <th>REQUEST DATE</th>
-                    <th>APPROVE DATE</th>
+                    <th>DONATION DATE</th>
                     <th>TRANSACTION ID</th>
                     <th>SLIP</th>
                     <th>STATUS</th>
@@ -238,31 +271,43 @@ function DonationReport() {
                       <td>{row.receiverMemberName}</td>
                       <td>{row.amount}</td>
                       <td>{row.rank}</td>
-                      <td>{row.requestDate}</td>
-                      <td>{row.approveDate}</td>
+                      <td>{row.requestDateFormatted}</td>
                       <td>{row.transactionId}</td>
                       <td>
                         {row.paymentProof ? (
                           <button className="btn-primary" type="button" style={{ padding: '5px 10px', fontSize: '14px' }}>
-                            {row.paymentProof}
+                            VIEW
                           </button>
                         ) : (
                           '-'
                         )}
                       </td>
-                      <td>{row.status}</td>
+                      <td>{getStatusBadge(row.status)}</td>
                       <td>
-                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                          <button className="action-btn accept-btn" type="button" title="Accept" style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60' }}>
-                            ✓
-                          </button>
-                          <button className="action-btn reject-btn" type="button" title="Reject" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c' }}>
-                            ✕
-                          </button>
-                          <button className="action-btn return-btn" type="button" title="Return" style={{ background: '#ebf5fb', color: '#3498db', border: '1px solid #3498db' }}>
-                            ↻
-                          </button>
-                        </div>
+                        {row.status === 'WAITING_FOR_RECEIVER_CONFIRMATION' || row.status === 'PENDING' ? (
+                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                            <button 
+                              className="action-btn accept-btn" 
+                              type="button" 
+                              title="Approve" 
+                              disabled={actionLoading === row.donationId}
+                              onClick={() => handleAction(row.donationId, 'APPROVED')}
+                              style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60' }}>
+                              ✓
+                            </button>
+                            <button 
+                              className="action-btn reject-btn" 
+                              type="button" 
+                              title="Reject" 
+                              disabled={actionLoading === row.donationId}
+                              onClick={() => handleAction(row.donationId, 'REJECTED')}
+                              style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c' }}>
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <span style={{ color: '#8b949e', fontSize: '12px' }}>N/A</span>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -279,8 +324,6 @@ function DonationReport() {
                 <button className="page-btn">3</button>
                 <button className="page-btn">4</button>
                 <button className="page-btn">5</button>
-                <button className="page-btn">6</button>
-                <button className="page-btn">7</button>
                 <button className="page-btn">&gt;</button>
                 <button className="page-btn">&gt;&gt;</button>
               </div>
@@ -293,4 +336,3 @@ function DonationReport() {
 }
 
 export default DonationReport;
-
