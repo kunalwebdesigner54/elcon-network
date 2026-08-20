@@ -36,6 +36,7 @@ const GivenHelp = () => {
 
   const [utrNumber, setUtrNumber] = useState("");
   const [paymentProof, setPaymentProof] = useState("");
+  const [emailCode, setEmailCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const loadData = async () => {
@@ -141,8 +142,8 @@ const GivenHelp = () => {
     );
   }
 
-  // Check if current level is already submitted but pending/waiting
-  const isCurrentlyPending = donationHistory.some(d => d.level === nextLevel && (d.status === 'PENDING' || d.status === 'WAITING_FOR_RECEIVER_CONFIRMATION'));
+  // Check if current level is already submitted but waiting for receiver confirmation
+  const isCurrentlyPending = donationHistory.some(d => d.level === nextLevel && d.status === 'WAITING_FOR_RECEIVER_CONFIRMATION');
 
   return (
     <div className="given-help-container">
@@ -249,34 +250,72 @@ const GivenHelp = () => {
                     <span className="help-info-label">Declaration :</span>
                     <span className="help-info-value declaration-text">{declaration}</span>
                   </div>
-                  <div className="help-info-row21 pay-slip-row">
-                    <span className="help-info-label">Trans. No (UTR) :</span>
+                  
+                  <div className="help-info-row21 form-inputs-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginTop: '15px' }}>
+                    <div style={{ flex: '1 1 250px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span className="help-info-label" style={{ minWidth: '80px', flex: 'none' }}>Pay Slip :</span>
+                      <input
+                        type="file"
+                        className="input-txn"
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files.length > 0) setPaymentProof('Uploaded');
+                        }}
+                        style={{ flex: '1' }}
+                      />
+                    </div>
+                    <div style={{ flex: '1 1 250px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span className="help-info-label" style={{ minWidth: '80px', flex: 'none' }}>Trans. No :</span>
+                      <input
+                        type="text"
+                        className="input-txn"
+                        placeholder="Enter UTR / Txn No"
+                        value={utrNumber}
+                        onChange={(e) => setUtrNumber(e.target.value)}
+                        style={{ flex: '1' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="help-info-row21 form-inputs-row" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '15px' }}>
+                    <button className="get-code-btn" type="button" style={{ 
+                      background: '#00d084', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' 
+                    }}>GET CODE</button>
+                    <span className="help-info-label" style={{ marginLeft: '10px' }}>E-Mail Verification Code :</span>
                     <input
                       type="text"
                       className="input-txn"
-                      placeholder="Enter UTR / Transaction Number"
-                      value={utrNumber}
-                      onChange={(e) => setUtrNumber(e.target.value)}
-                    />
-                  </div>
-                  <div className="help-info-row21 pay-slip-row" style={{ marginTop: '10px' }}>
-                    <span className="help-info-label">Payment Slip :</span>
-                    <input
-                      type="file"
-                      className="input-txn"
-                      accept="image/*"
-                      onChange={(e) => {
-                        // Normally this would be a file upload, but for now we'll just set it to 'Uploaded'
-                        if (e.target.files.length > 0) setPaymentProof('Uploaded');
-                      }}
+                      style={{ maxWidth: '200px' }}
+                      value={emailCode}
+                      onChange={(e) => setEmailCode(e.target.value)}
                     />
                   </div>
                 </div>
 
-                <div className="submit-row">
-                  <button className="help-submit-btn" onClick={handleSubmit} disabled={submitting}>
-                    {submitting ? "Submitting…" : "Submit Donation"}
+                <div className="submit-row" style={{ marginTop: '20px', textAlign: 'left' }}>
+                  <button className="help-submit-btn" onClick={handleSubmit} disabled={submitting} style={{ 
+                    background: '#00d0ff', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px' 
+                  }}>
+                    {submitting ? "Submitting…" : "Submit"}
                   </button>
+                </div>
+
+                {/* Level Indicators */}
+                <div className="level-indicators" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '30px', paddingBottom: '10px' }}>
+                  {[...Array(10)].map((_, i) => {
+                    const isActive = (i + 1) === nextLevel;
+                    return (
+                      <div key={i} style={{
+                        width: '24px', height: '24px', borderRadius: '50%',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '12px', fontWeight: 'bold',
+                        background: isActive ? '#00d0ff' : '#2d3340',
+                        color: isActive ? '#fff' : '#8b949e'
+                      }}>
+                        {i + 1}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
           ) : (
