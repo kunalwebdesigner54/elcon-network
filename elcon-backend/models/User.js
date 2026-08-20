@@ -117,6 +117,14 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    joiningAmount: {
+      type: Number,
+      default: 0,
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
     accountStatus: {
       type: String,
       enum: ['ACTIVE', 'IN-ACTIVE'],

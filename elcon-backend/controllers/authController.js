@@ -3,6 +3,7 @@
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Epin = require('../models/Epin');
 
 /**
  * Generate JWT Token
@@ -115,6 +116,14 @@ exports.registerUser = async (req, res) => {
 
     // ========== ALL VALIDATION PASSED - CREATE USER ==========
 
+    let joiningAmount = 0;
+    if (epin) {
+      const foundEpin = await Epin.findOne({ epinNo: epin });
+      if (foundEpin) {
+        joiningAmount = foundEpin.cost || 0;
+      }
+    }
+
     // Create new user with role='user'
     const user = await User.create({
       sponsorId,
@@ -131,6 +140,7 @@ exports.registerUser = async (req, res) => {
       city,
       pincode,
       joiningPackage,
+      joiningAmount,
       epin,
       password,
       panNo,

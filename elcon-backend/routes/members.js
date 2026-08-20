@@ -3,6 +3,7 @@ const { protect, authorize } = require('../middleware/auth');
 const {
   getAdminKycRequests,
   updateKycStatus,
+  updateBlockStatus,
   getAllMembersList,
   getMembersLocation,
   getMemberPerformance,
@@ -15,6 +16,7 @@ router.use(protect);
 
 router.get('/kyc-requests', authorize('admin'), getAdminKycRequests);
 router.patch('/kyc-requests/:memberId/status', authorize('admin'), updateKycStatus);
+router.patch('/:memberId/block-status', authorize('admin'), updateBlockStatus);
 router.get('/all-members', authorize('admin'), getAllMembersList);
 router.get('/locations', authorize('admin'), getMembersLocation);
 router.get('/performance', authorize('admin'), getMemberPerformance);

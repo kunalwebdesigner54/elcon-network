@@ -201,7 +201,7 @@ const AllMembersList = () => {
           </table>
         </div>
 
-        <div className="table-footer" style={{ justifyContent: 'space-between', marginTop: '12px' }}>
+        <div className="table-footer" style={{ justifyContent: 'space-between', marginTop: '12px', marginBottom: '40px' }}>
           <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
             Total: {filteredMembers.length} members
           </span>
@@ -218,6 +218,65 @@ const AllMembersList = () => {
             <button className="page-btn">&rsaquo;</button>
             <button className="page-btn">&raquo;</button>
           </div>
+        </div>
+
+        {/* --- NEW MEMBER INFORMATION TABLE --- */}
+        <h2 style={{ fontSize: '24px', marginBottom: '14px', color: 'var(--text-color)' }}>Member Information</h2>
+        <div className="table-wrap">
+          <table className="data-table" style={{ minWidth: '1000px' }}>
+            <thead>
+              <tr>
+                <th>S.NO</th>
+                <th>MEMBER ID</th>
+                <th>NAME</th>
+                <th>E-PIN</th>
+                <th>PACKAGE</th>
+                <th>JOINING AMOUNT</th>
+                <th>KYC STATUS</th>
+                <th>BLOCK STATUS</th>
+                <th>INCOME STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="9">Loading...</td>
+                </tr>
+              ) : visibleMembers.length > 0 ? visibleMembers.map((member) => (
+                <tr key={`info-${member.memberId || member.sNo}`}>
+                  <td>{member.sNo}</td>
+                  <td>{member.memberId}</td>
+                  <td>{member.name}</td>
+                  <td>{member.epin}</td>
+                  <td>{member.joiningPackage}</td>
+                  <td>{member.joiningAmount > 0 ? `₹${member.joiningAmount}` : '---'}</td>
+                  <td>
+                    <span className={
+                      member.kycStatus === 'APPROVED' ? 'member-status-active' :
+                      member.kycStatus === 'REJECTED' || member.kycStatus === 'REJECT' ? 'member-status-inactive' :
+                      'member-status-pending'
+                    } style={member.kycStatus === 'PENDING' ? { backgroundColor: '#f59e0b', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' } : {}}>
+                      {member.kycStatus || 'PENDING'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={member.blockStatus === 'Block' ? 'member-status-inactive' : 'member-status-active'}>
+                      {member.blockStatus || 'Unblock'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={member.incomeStatus === 'Inactive' ? 'member-status-inactive' : 'member-status-active'}>
+                      {member.incomeStatus || 'Active'}
+                    </span>
+                  </td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="9">No members found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
 
       </div>

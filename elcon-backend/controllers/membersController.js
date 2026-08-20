@@ -142,6 +142,48 @@ exports.updateKycStatus = async (req, res) => {
   }
 };
 
+exports.updateBlockStatus = async (req, res) => {
+  try {
+    const { memberId } = req.params;
+    const { isBlocked } = req.body;
+
+    if (typeof isBlocked !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        message: 'isBlocked must be a boolean value',
+      });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { memberId: memberId.toUpperCase(), role: 'user', email: { $ne: 'admin@gmail.com' } },
+      { $set: { isBlocked } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Member not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Member successfully ${isBlocked ? 'blocked' : 'unblocked'}`,
+      data: {
+        memberId: user.memberId,
+        isBlocked: user.isBlocked,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating block status',
+      error: error.message,
+    });
+  }
+};
+
 exports.getAllMembersList = async (req, res) => {
   try {
     const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
@@ -163,6 +205,14 @@ exports.getAllMembersList = async (req, res) => {
       password: user.plainPassword || '********',
       transPassword: user.plainTransactionPassword || '********',
       wallet: Number(user.walletBalance || 0).toFixed(2),
+      // New member info fields
+      epin: user.epin || '---',
+      joiningPackage: user.joiningPackage || '---',
+      joiningAmount: user.joiningAmount || 0,
+      kycStatus: user.kycStatus || 'PENDING',
+      isBlocked: user.isBlocked || false,
+      blockStatus: user.isBlocked ? 'Block' : 'Unblock',
+      incomeStatus: user.accountStatus === 'ACTIVE' ? 'Active' : 'Inactive',
     }));
 
     res.status(200).json({

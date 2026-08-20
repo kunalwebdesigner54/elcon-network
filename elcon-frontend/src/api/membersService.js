@@ -16,6 +16,11 @@ export const getAllMembersList = async () => {
   return response.data;
 };
 
+export const updateBlockStatus = async (memberId, isBlocked) => {
+  const response = await apiClient.patch(`/members/${memberId}/block-status`, { isBlocked });
+  return response.data;
+};
+
 export const getMembersLocation = async () => {
   const response = await apiClient.get('/members/locations');
   return response.data;

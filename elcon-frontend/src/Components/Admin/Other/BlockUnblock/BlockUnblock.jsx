@@ -1,6 +1,6 @@
 import './BlockUnblock.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getAllMembersList } from '../../../../api/membersService';
+import { getAllMembersList, updateBlockStatus } from '../../../../api/membersService';
 
 function BlockUnblock() {
   const [rows, setRows] = useState([]);
@@ -8,12 +8,30 @@ function BlockUnblock() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
+  const loadData = () => {
     getAllMembersList()
       .then((response) => setRows(response.data || []))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load members.'))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
+
+  const handleToggleBlock = async (memberId, currentStatus) => {
+    const isCurrentlyBlocked = currentStatus === 'Block';
+    const action = isCurrentlyBlocked ? 'unblock' : 'block';
+    
+    if (!window.confirm(`Are you sure you want to ${action} member ${memberId}?`)) return;
+
+    try {
+      await updateBlockStatus(memberId, !isCurrentlyBlocked);
+      loadData();
+    } catch (err) {
+      alert(err?.response?.data?.message || `Failed to ${action} member.`);
+    }
+  };
 
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -70,11 +88,17 @@ function BlockUnblock() {
                 <tr key={row.memberId || index}>
                   <td>{index + 1}</td>
                   <td>{row.status || 'ACTIVE'}</td>
-                  <td>{row.status || 'ACTIVE'}</td>
+                  <td>{row.blockStatus || 'Unblock'}</td>
                   <td>{row.memberId}</td>
                   <td>{row.name}</td>
                   <td>
-                    <button className="btn-success" type="button">BLOCK</button>
+                    <button 
+                      className={row.blockStatus === 'Block' ? "btn-danger" : "btn-success"} 
+                      type="button"
+                      onClick={() => handleToggleBlock(row.memberId, row.blockStatus || 'Unblock')}
+                    >
+                      {row.blockStatus === 'Block' ? 'UNBLOCK' : 'BLOCK'}
+                    </button>
                   </td>
                   <td>{row.mobile}</td>
                   <td>{row.joinDate}</td>
