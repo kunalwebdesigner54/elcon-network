@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { getAllMembersList } from '../../../../api/membersService';
+import { getAllMembersList, updateBlockStatus } from '../../../../api/membersService';
 
 const MemberInformation = () => {
   const [membersData, setMembersData] = useState([]);
@@ -10,21 +10,40 @@ const MemberInformation = () => {
   });
   const [pageSize, setPageSize] = useState('10');
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(null);
+
+  const loadMembers = async () => {
+    try {
+      const response = await getAllMembersList();
+      setMembersData(response.data || []);
+    } catch (error) {
+      setMembersData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadMembers = async () => {
-      try {
-        const response = await getAllMembersList();
-        setMembersData(response.data || []);
-      } catch (error) {
-        setMembersData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadMembers();
   }, []);
+
+  const handleToggleBlock = async (memberId, currentStatus) => {
+    const isCurrentlyBlocked = currentStatus === 'Block';
+    const actionText = isCurrentlyBlocked ? 'unblock' : 'block';
+    
+    if (!window.confirm(`Are you sure you want to ${actionText} member ${memberId}?`)) return;
+
+    try {
+      setActionLoading(memberId);
+      await updateBlockStatus(memberId, !isCurrentlyBlocked);
+      alert(`Member successfully ${actionText}ed.`);
+      await loadMembers();
+    } catch (err) {
+      alert(err?.response?.data?.message || `Failed to ${actionText} member.`);
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const handleFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
@@ -77,12 +96,13 @@ const MemberInformation = () => {
                 <th>KYC STATUS</th>
                 <th>BLOCK STATUS</th>
                 <th>INCOME STATUS</th>
+                <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="9">Loading...</td>
+                  <td colSpan="10">Loading...</td>
                 </tr>
               ) : visibleMembers.length > 0 ? visibleMembers.map((member) => (
                 <tr key={`info-${member.memberId || member.sNo}`}>
@@ -111,10 +131,20 @@ const MemberInformation = () => {
                       {member.incomeStatus || 'Active'}
                     </span>
                   </td>
+                  <td>
+                    <button 
+                      className={member.blockStatus === 'Block' ? "btn-danger" : "btn-success"} 
+                      type="button"
+                      disabled={actionLoading === member.memberId}
+                      onClick={() => handleToggleBlock(member.memberId, member.blockStatus || 'Unblock')}
+                    >
+                      {actionLoading === member.memberId ? 'PROCESSING...' : (member.blockStatus === 'Block' ? 'UNBLOCK' : 'BLOCK')}
+                    </button>
+                  </td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan="9">No members found</td>
+                  <td colSpan="10">No members found</td>
                 </tr>
               )}
             </tbody>
