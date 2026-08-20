@@ -38,12 +38,15 @@ function TicketHistory() {
 
   return (
     <div>
-      <h1 className="page-title">Ticket History</h1>
-
-      <div className="panel">
-        <div className="btn-row">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 className="page-title" style={{ margin: 0 }}>Ticket History</h1>
+        <div style={{ display: 'flex', gap: '8px' }}>
           <button className="btn-outline">Excel</button>
         </div>
+      </div>
+
+      <div className="panel">
+
 
         <div className="table-tools">
           <div />

@@ -3,7 +3,12 @@ import './TeamLevel.css';
 function TeamLevel() {
   return (
     <div>
-      <h1 className="page-title">My Team Level</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 className="page-title" style={{ margin: 0 }}>My Team Level</h1>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn-outline">Excel</button>
+        </div>
+      </div>
 
       <div className="panel">
         <div className="form-grid" style={{ maxWidth: 700 }}>
@@ -22,9 +27,7 @@ function TeamLevel() {
         <div className="btn-row">
           <button className="btn-primary">Show Details</button>
         </div>
-        <div className="btn-row">
-          <button className="btn-outline">Excel</button>
-        </div>
+
 
         <div className="table-tools">
           <div />

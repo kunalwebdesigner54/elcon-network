@@ -37,14 +37,19 @@ function TeamLevel() {
 
   return (
     <div>
-      <h1 className="user-page-title">My Tree Level</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 className="user-page-title" style={{ margin: 0 }}>My Tree Level</h1>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="user-btn-outline">Excel</button>
+        </div>
+      </div>
       <div className="user-panel">
         <div className="tree-controls">
           <label>LEVEL</label>
           <select><option>Select Level</option></select>
           <button className="user-btn-blue">Show Details</button>
         </div>
-        <div className="table-toolbar"><button className="user-btn-outline">Excel</button></div>
+
         <div className="table-wrap">
           <table className="data-table">
             <thead>

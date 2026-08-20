@@ -204,7 +204,13 @@ function DonationReport() {
 
   return (
     <div>
-      <h2 className="section-title tds-screen-title">Donation Report</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2 className="section-title tds-screen-title" style={{ margin: 0 }}>Donation Report</h2>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn-outline" type="button" onClick={handleExportPdf}>Export PDF</button>
+          <button className="btn-outline" type="button" onClick={handleExportExcel}>Export Excel</button>
+        </div>
+      </div>
 
       <div className="panel" style={{ borderRadius: '28px', padding: '24px' }}>
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
@@ -238,10 +244,7 @@ function DonationReport() {
               </select>
             </div>
 
-            <div className="btn-row" style={{ justifyContent: 'flex-end', marginBottom: '14px' }}>
-              <button className="btn-outline" type="button" onClick={handleExportPdf}>Export PDF</button>
-              <button className="btn-outline" type="button" onClick={handleExportExcel}>Export Excel</button>
-            </div>
+
 
             <div className="table-wrap custom-scrollbar" style={{ overflowX: 'auto' }}>
               <table className="data-table" style={{ minWidth: '1680px' }}>
