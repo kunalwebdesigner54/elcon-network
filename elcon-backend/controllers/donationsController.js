@@ -30,17 +30,30 @@ const getActualCompletedLevel = async (memberId) => {
 };
 
 /**
- * Walk up the sponsor chain from startMemberId and return the first upline
- * whose actual completed level >= targetLevel. Members who don't qualify are collected
- * in the `skipped` array (skip rule from client_details.md).
+ * Walk up the sponsor chain from startMemberId to the Nth upline (where N = targetLevel).
+ * If the Nth upline hasn't upgraded to targetLevel, they are skipped and added to `skipped` array.
+ * We continue checking further uplines until we find one with actual completed level >= targetLevel.
  *
  * If no eligible upline exists the admin receives the donation.
  */
 const findEligibleUpline = async (startMemberId, targetLevel) => {
   const skipped = [];
   let currentMemberId = startMemberId;
-  const MAX_DEPTH = 50;
 
+  // 1. Unconditionally skip (targetLevel - 1) uplines.
+  // For Level 1, loops 0 times (starts check at 1st upline).
+  // For Level 2, loops 1 time (starts check at 2nd upline).
+  for (let i = 1; i < targetLevel; i++) {
+    const currentUser = await User.findOne({ memberId: currentMemberId });
+    if (!currentUser || !currentUser.sponsorId) {
+      // Reached the top before finding the Nth upline
+      const admin = await User.findOne({ role: 'admin' });
+      return { upline: admin, skipped: [] };
+    }
+    currentMemberId = currentUser.sponsorId;
+  }
+
+  const MAX_DEPTH = 50;
   for (let depth = 0; depth < MAX_DEPTH; depth++) {
     const currentUser = await User.findOne({ memberId: currentMemberId });
     if (!currentUser || !currentUser.sponsorId) break;
@@ -48,11 +61,17 @@ const findEligibleUpline = async (startMemberId, targetLevel) => {
     const upline = await User.findOne({ memberId: currentUser.sponsorId });
     if (!upline) break;
 
+    // If upline is admin, always accept as eligible
+    if (upline.role === 'admin') {
+      return { upline, skipped };
+    }
+
     const uplineActualLevel = await getActualCompletedLevel(upline.memberId);
     if (uplineActualLevel >= targetLevel) {
       return { upline, skipped };
     }
 
+    // This user was the intended target but didn't have the required level
     skipped.push(upline.memberId);
     currentMemberId = upline.memberId;
   }
