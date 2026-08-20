@@ -114,6 +114,7 @@ const GivenHelp = () => {
 
   return (
     <div className="given-help-container">
+      <h2 className="section-title tds-screen-title" style={{ textAlign: 'left', marginBottom: '16px', borderBottom: 'none' }}>Given Help</h2>
       <h2 className="donation-title">DONATION DECLARATION FORM</h2>
 
       {error && (

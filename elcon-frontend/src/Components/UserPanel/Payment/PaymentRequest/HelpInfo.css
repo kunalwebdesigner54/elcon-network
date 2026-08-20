@@ -18,8 +18,8 @@
 
 .help-submit-btn {
   margin-top: 18px;
-  background: #04e0f8;
-  color: #fff;
+  background: var(--primary, #04e0f8);
+  color: #000;
   border: none;
   border-radius: 5px;
   padding: 8px 32px;
