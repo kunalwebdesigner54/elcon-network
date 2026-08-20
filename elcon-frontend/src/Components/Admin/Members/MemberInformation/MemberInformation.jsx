@@ -124,9 +124,9 @@ const MemberInformation = () => {
                 <th>PACKAGE</th>
                 <th>JOINING AMOUNT</th>
                 <th>KYC STATUS</th>
+                <th>ACTION</th>
                 <th>BLOCK STATUS</th>
                 <th>INCOME STATUS</th>
-                <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
@@ -152,16 +152,6 @@ const MemberInformation = () => {
                     </span>
                   </td>
                   <td>
-                    <span className={member.blockStatus === 'Block' ? 'member-status-inactive' : 'member-status-active'}>
-                      {member.blockStatus || 'Unblock'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={member.incomeStatus === 'Inactive' ? 'member-status-inactive' : 'member-status-active'}>
-                      {member.incomeStatus || 'Active'}
-                    </span>
-                  </td>
-                  <td>
                     <button 
                       className="btn-primary" 
                       style={{ padding: '6px 14px', fontSize: '13px', borderRadius: '4px' }}
@@ -171,6 +161,16 @@ const MemberInformation = () => {
                     >
                       {actionLoading === member.memberId ? 'PROCESSING...' : (member.blockStatus === 'Block' ? 'UNBLOCK' : 'BLOCK')}
                     </button>
+                  </td>
+                  <td>
+                    <span className={member.blockStatus === 'Block' ? 'member-status-inactive' : 'member-status-active'}>
+                      {member.blockStatus || 'Unblock'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={member.incomeStatus === 'Inactive' ? 'member-status-inactive' : 'member-status-active'}>
+                      {member.incomeStatus || 'Active'}
+                    </span>
                   </td>
                 </tr>
               )) : (
