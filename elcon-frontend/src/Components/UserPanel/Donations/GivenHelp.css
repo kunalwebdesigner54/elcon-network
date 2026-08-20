@@ -171,6 +171,12 @@
   color: #fff;
   border: 2px solid #e6007a;
 }
+.rank-step.next-level {
+  background: #e6007a;
+  color: #fff;
+  border: 2px solid var(--primary, #00aaff);
+  box-shadow: 0 0 8px rgba(230, 0, 122, 0.4);
+}
 @media (max-width: 900px) {
   .given-help-container {
     max-width: 98vw;

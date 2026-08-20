@@ -275,11 +275,11 @@ function DonationReport() {
                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                           {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) && (
                             <>
-                              <button className="action-btn accept-btn" type="button" title="Accept" style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60' }} onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>
-                                ✓
+                              <button className="action-btn accept-btn" type="button" title="Accept" style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>
+                                Approve
                               </button>
-                              <button className="action-btn reject-btn" type="button" title="Reject" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c' }} onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>
-                                ✕
+                              <button className="action-btn reject-btn" type="button" title="Reject" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>
+                                Reject
                               </button>
                             </>
                           )}

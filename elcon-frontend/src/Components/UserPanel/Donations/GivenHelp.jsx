@@ -250,7 +250,7 @@ const GivenHelp = () => {
             {[...Array(10)].map((_, i) => (
               <div
                 key={i}
-                className={`rank-step${i + 1 <= (currentUser?.unlockLevel ?? 0) ? " active" : ""}${i + 1 === nextLevel ? " next-level" : ""}`}
+                className={`rank-step${i + 1 <= (currentUser?.unlockLevel ?? 0) ? " active" : ""}${i + 1 === parseInt(nextLevel, 10) ? " next-level" : ""}`}
                 title={`Level ${i + 1} — ₹${DONATION_AMOUNTS[i + 1]?.toLocaleString("en-IN")}`}
               >
                 {i + 1}
