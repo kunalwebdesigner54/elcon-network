@@ -153,7 +153,7 @@ const GivenHelp = () => {
               <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{currentUser?.name || "---"}</span></div>
               <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{currentUser?.memberId || "---"}</span></div>
               <div className="help-info-row21"><span className="help-info-label">E-mail ID :</span> <span className="help-info-value">{currentUser?.email || "---"}</span></div>
-              <div className="help-info-row21"><span className="help-info-label">Current Level :</span> <span className="help-info-value">{currentUser?.unlockLevel || 1}</span></div>
+              <div className="help-info-row21"><span className="help-info-label">Current Level :</span> <span className="help-info-value">{currentUser?.unlockLevel ?? 0}</span></div>
               <div className="help-info-row21"><span className="help-info-label">Upgrading To Level :</span> <span className="help-info-value" style={{ color: "#007bff", fontWeight: 600 }}>{nextLevel}</span></div>
             </div>
 
@@ -248,7 +248,7 @@ const GivenHelp = () => {
             {[...Array(10)].map((_, i) => (
               <div
                 key={i}
-                className={`rank-step${i + 1 <= (currentUser?.unlockLevel || 1) ? " active" : ""}${i + 1 === nextLevel ? " next-level" : ""}`}
+                className={`rank-step${i + 1 <= (currentUser?.unlockLevel ?? 0) ? " active" : ""}${i + 1 === nextLevel ? " next-level" : ""}`}
                 title={`Level ${i + 1} — ₹${DONATION_AMOUNTS[i + 1]?.toLocaleString("en-IN")}`}
               >
                 {i + 1}
