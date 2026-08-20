@@ -139,10 +139,10 @@ const GivenHelp = () => {
           ) : (
             <>
               <div className="donation-note">
-                <span className="donation-free-will">"I am donating of my own free will"</span>
+                <span className="donation-free-will">"I am donating of my own free will"</span>{" "}
                 <span className="donation-desc">
                   I declare that I am gifting{" "}
-                  <b>₹{DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}</b> (Level {nextLevel} Upgrade) as per my wish to{" "}
+                  <b>₹{DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}</b> to{" "}
                   <b>{receiver.toName}</b> and I will never claim this amount in future.
                 </span>
               </div>
@@ -153,6 +153,7 @@ const GivenHelp = () => {
               <div className="section-title21">Sender Details (Help Provider)</div>
               <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{currentUser?.name || "---"}</span></div>
               <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{currentUser?.memberId || "---"}</span></div>
+              <div className="help-info-row21"><span className="help-info-label">Mobile No :</span> <span className="help-info-value">{currentUser?.contactNo || "---"}</span></div>
               <div className="help-info-row21"><span className="help-info-label">E-mail ID :</span> <span className="help-info-value">{currentUser?.email || "---"}</span></div>
               <div className="help-info-row21"><span className="help-info-label">Current Level :</span> <span className="help-info-value">{currentUser?.unlockLevel ?? 0}</span></div>
               <div className="help-info-row21"><span className="help-info-label">Upgrading To Level :</span> <span className="help-info-value" style={{ color: "#007bff", fontWeight: 600 }}>{nextLevel}</span></div>
