@@ -118,6 +118,7 @@ exports.getDonationTarget = async (req, res) => {
         amount: DONATION_AMOUNTS[level],
         toMemberId: upline.memberId,
         toName: upline.name,
+        toPhone: upline.contactNo || '',
         toPaymentDetails: upline.paymentDetails || {},
         toBankDetails: upline.bankDetails || {},
         skippedMembers: skipped,

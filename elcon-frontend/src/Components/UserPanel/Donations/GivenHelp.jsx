@@ -163,6 +163,7 @@ const GivenHelp = () => {
               <div className="section-title21">Receiver Details (Help Receiver)</div>
               <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{receiver.toName || "---"}</span></div>
               <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{receiver.toMemberId || "---"}</span></div>
+              <div className="help-info-row21"><span className="help-info-label">Contact No :</span> <span className="help-info-value">{receiver.toPhone || "---"}</span></div>
 
               {payment.googlePay && (
                 <div className="help-info-row21 align-row"><span className="help-info-label">GPay :</span>
