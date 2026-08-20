@@ -355,6 +355,7 @@
     margin-left: 0;
     opacity: 1;
     max-height: none;
+    background: rgba(18, 26, 47, 0.97);
   }
 
   .user-sidebar-collapsed .user-sidebar {
