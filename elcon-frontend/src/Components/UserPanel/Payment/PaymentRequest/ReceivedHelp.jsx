@@ -15,27 +15,26 @@ const ReceivedHelp = () => {
     try {
       setLoading(true);
       const data = await getMyDonations();
-      const donations = Array.isArray(data) ? data : (data.data ? data.data : []);
-      
-      // Filter for received donations (where logged-in user is the receiver)
-      const received = donations
-        .filter(d => d.received) // Assuming received is a property
-        .map((donation, index) => ({
-          sNo: index + 1,
-          memberId: donation.from?.memberId || 'N/A',
-          name: donation.from?.userName || 'N/A',
-          amount: donation.amount || 0,
-          rank: donation.level || '-',
-          requestDate: donation.createdAt ? new Date(donation.createdAt).toLocaleString('en-IN') : '-',
-          transactionId: donation._id || '-',
-          status: donation.status || 'PENDING'
-        }));
+      // Backend returns: { success, data: { sent: [...], received: [...], summary: {...} } }
+      const receivedDonations = data?.data?.received || [];
+
+      const received = receivedDonations.map((donation, index) => ({
+        sNo: index + 1,
+        memberId: donation.fromMemberId || 'N/A',
+        name: donation.fromName || 'N/A',
+        amount: donation.amount || 0,
+        rank: donation.level || '-',
+        requestDate: donation.dateRaw ? new Date(donation.dateRaw).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : (donation.date || '-'),
+        transactionId: donation.donationId || '-',
+        utrNumber: donation.utrNumber || '---',
+        status: donation.status || 'PENDING'
+      }));
 
       setReceivedHelpRows(received);
       setError('');
     } catch (err) {
       setError('Failed to load received donations');
-      console.error(err);
+      console.error('ReceivedHelp fetch error:', err);
       setReceivedHelpRows([]);
     } finally {
       setLoading(false);
