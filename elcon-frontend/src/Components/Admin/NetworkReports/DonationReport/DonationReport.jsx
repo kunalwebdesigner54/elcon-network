@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { getAllDonations } from '../../../../api/donationsService';
+import { getAllDonations, updateDonationStatus } from '../../../../api/donationsService';
 import './DonationReport.css';
 
 const exportColumns = [
@@ -76,6 +76,18 @@ function DonationReport() {
       console.error(err);
       setDonationRows([]);
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateStatus = async (donationId, status) => {
+    if (!window.confirm(`Are you sure you want to mark this donation as ${status}?`)) return;
+    try {
+      setLoading(true);
+      await updateDonationStatus(donationId, status);
+      await fetchDonations();
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Failed to update status');
       setLoading(false);
     }
   };
@@ -189,10 +201,13 @@ function DonationReport() {
                   <option key={rankKey} value={rankKey}>{rankKey}</option>
                 ))}
               </select>
-              <select className="select-input" style={{ maxWidth: '98px' }} value={filters.status} onChange={handleFilterChange('status')}>
+              <select className="select-input" style={{ maxWidth: '120px' }} value={filters.status} onChange={handleFilterChange('status')}>
                 <option value="">STATUS</option>
                 <option value="PENDING">PENDING</option>
-                <option value="SUCCESS">SUCCESS</option>
+                <option value="WAITING_FOR_RECEIVER_CONFIRMATION">WAITING</option>
+                <option value="APPROVED">APPROVED</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="REJECTED">REJECTED</option>
               </select>
               <input className="text-input" type="date" style={{ maxWidth: '130px' }} value={filters.startDate} onChange={handleFilterChange('startDate')} />
               <input className="text-input" type="date" style={{ maxWidth: '120px' }} value={filters.endDate} onChange={handleFilterChange('endDate')} />
@@ -250,18 +265,24 @@ function DonationReport() {
                           '-'
                         )}
                       </td>
-                      <td>{row.status}</td>
+                      <td style={{
+                        color: ['APPROVED', 'COMPLETED'].includes(row.status) ? '#27ae60' : row.status === 'REJECTED' ? '#e74c3c' : '#f39c12',
+                        fontWeight: 500
+                      }}>
+                        {row.status.replace(/_/g, ' ')}
+                      </td>
                       <td>
                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                          <button className="action-btn accept-btn" type="button" title="Accept" style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60' }}>
-                            ✓
-                          </button>
-                          <button className="action-btn reject-btn" type="button" title="Reject" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c' }}>
-                            ✕
-                          </button>
-                          <button className="action-btn return-btn" type="button" title="Return" style={{ background: '#ebf5fb', color: '#3498db', border: '1px solid #3498db' }}>
-                            ↻
-                          </button>
+                          {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) && (
+                            <>
+                              <button className="action-btn accept-btn" type="button" title="Accept" style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60' }} onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>
+                                ✓
+                              </button>
+                              <button className="action-btn reject-btn" type="button" title="Reject" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c' }} onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>
+                                ✕
+                              </button>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>

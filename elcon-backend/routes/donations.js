@@ -8,6 +8,7 @@ const {
   getMyDonations,
   getAllDonations,
   getDonationStats,
+  getMyStatus,
 } = require('../controllers/donationsController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -18,6 +19,9 @@ router.use(protect);
 
 // GET /api/donations/stats  — admin or user stats
 router.get('/stats', getDonationStats);
+
+// GET /api/donations/my-status
+router.get('/my-status', getMyStatus);
 
 // GET /api/donations/my  — logged-in user's sent & received donations
 router.get('/my', getMyDonations);
@@ -46,13 +50,12 @@ router.post(
   submitDonation
 );
 
-// PATCH /api/donations/:donationId/status  — admin: approve / reject pending donation
+// PATCH /api/donations/:donationId/status  — admin or receiver: approve / reject pending donation
 router.patch(
   '/:donationId/status',
-  authorize('admin'),
   [
     param('donationId').trim().notEmpty().withMessage('Donation ID is required'),
-    body('status').isIn(['COMPLETED', 'REJECTED']).withMessage('Status must be COMPLETED or REJECTED'),
+    body('status').isIn(['APPROVED', 'COMPLETED', 'REJECTED']).withMessage('Status must be APPROVED or REJECTED'),
   ],
   updateDonationStatus
 );

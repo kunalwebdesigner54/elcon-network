@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getMyDonations } from "../../../../api/donationsService";
+import { getMyDonations, updateDonationStatus } from "../../../../api/donationsService";
 import "./ReceivedHelp.css";
 
 const ReceivedHelp = () => {
@@ -38,6 +38,18 @@ const ReceivedHelp = () => {
       console.error(err);
       setReceivedHelpRows([]);
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateStatus = async (donationId, status) => {
+    if (!window.confirm(`Are you sure you want to mark this donation as ${status}?`)) return;
+    try {
+      setLoading(true);
+      await updateDonationStatus(donationId, status);
+      await fetchReceivedDonations();
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Failed to update status');
       setLoading(false);
     }
   };
@@ -118,10 +130,21 @@ const ReceivedHelp = () => {
                   <td>{row.transactionId}</td>
                   <td><button className="user-btn-blue3">VIEW</button></td>
                   <td>
-                    <button className="user-mini-btn user-accept" type="button">ACCEPT</button>
-                    <button className="user-mini-btn user-reject" type="button" style={{ marginLeft: 4 }}>REJECT</button>
+                    {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
+                      <>
+                        <button className="user-mini-btn user-accept" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>ACCEPT</button>
+                        <button className="user-mini-btn user-reject" type="button" style={{ marginLeft: 4 }} onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>REJECT</button>
+                      </>
+                    ) : (
+                      <span>-</span>
+                    )}
                   </td>
-                  <td>{row.status}</td>
+                  <td style={{
+                    color: ['APPROVED', 'COMPLETED'].includes(row.status) ? '#27ae60' : row.status === 'REJECTED' ? '#e74c3c' : '#f39c12',
+                    fontWeight: 500
+                  }}>
+                    {row.status.replace(/_/g, ' ')}
+                  </td>
                 </tr>
               ))}
             </tbody>

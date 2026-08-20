@@ -18,6 +18,10 @@ export const submitDonation = (level, utrNumber, paymentProof = '') =>
 export const getMyDonations = () =>
   apiClient.get('/donations/my').then((r) => r.data);
 
+// Logged-in user's actual donation status
+export const getMyStatus = () =>
+  apiClient.get('/donations/my-status').then((r) => r.data);
+
 // Donation stats (admin or user scoped)
 export const getDonationStats = () =>
   apiClient.get('/donations/stats').then((r) => r.data);

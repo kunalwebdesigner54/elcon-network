@@ -15,9 +15,23 @@ const formatDate = (value) => {
   return new Date(value).toLocaleDateString('en-GB');
 };
 
+const getActualCompletedLevel = async (memberId) => {
+  const donations = await Donation.find({
+    fromMemberId: memberId,
+    status: { $in: ['APPROVED', 'COMPLETED'] }
+  });
+  if (!donations || donations.length === 0) return 0;
+  
+  let maxLevel = 0;
+  donations.forEach(d => {
+    if (d.level > maxLevel) maxLevel = d.level;
+  });
+  return maxLevel;
+};
+
 /**
  * Walk up the sponsor chain from startMemberId and return the first upline
- * whose unlockLevel >= targetLevel.  Members who don't qualify are collected
+ * whose actual completed level >= targetLevel. Members who don't qualify are collected
  * in the `skipped` array (skip rule from client_details.md).
  *
  * If no eligible upline exists the admin receives the donation.
@@ -34,7 +48,8 @@ const findEligibleUpline = async (startMemberId, targetLevel) => {
     const upline = await User.findOne({ memberId: currentUser.sponsorId });
     if (!upline) break;
 
-    if ((upline.unlockLevel || 0) >= targetLevel) {
+    const uplineActualLevel = await getActualCompletedLevel(upline.memberId);
+    if (uplineActualLevel >= targetLevel) {
       return { upline, skipped };
     }
 
@@ -60,7 +75,7 @@ exports.getDonationTarget = async (req, res) => {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    const currentUnlock = user.unlockLevel || 1;
+    const currentUnlock = await getActualCompletedLevel(user.memberId);
     if (level !== currentUnlock + 1) {
       return res.status(400).json({
         success: false,
@@ -109,7 +124,7 @@ exports.upgradeMember = async (req, res) => {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    const currentUnlock = user.unlockLevel || 1;
+    const currentUnlock = await getActualCompletedLevel(user.memberId);
 
     // Must upgrade sequentially
     if (targetLevel !== currentUnlock + 1) {
@@ -161,7 +176,7 @@ exports.upgradeMember = async (req, res) => {
       toName: upline.name,
       amount,
       level: targetLevel,
-      status: 'COMPLETED',
+      status: 'APPROVED',
       skippedMembers: skipped,
     });
 
@@ -199,7 +214,7 @@ exports.submitDonation = async (req, res) => {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    const currentUnlock = user.unlockLevel || 1;
+    const currentUnlock = await getActualCompletedLevel(user.memberId);
     if (targetLevel !== currentUnlock + 1) {
       return res.status(400).json({
         success: false,
@@ -211,7 +226,7 @@ exports.submitDonation = async (req, res) => {
     const existing = await Donation.findOne({
       fromMemberId: user.memberId,
       level: targetLevel,
-      status: 'PENDING',
+      status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] },
     });
     if (existing) {
       return res.status(409).json({
@@ -240,7 +255,7 @@ exports.submitDonation = async (req, res) => {
       toName: upline.name,
       amount: DONATION_AMOUNTS[targetLevel],
       level: targetLevel,
-      status: 'PENDING',
+      status: 'WAITING_FOR_RECEIVER_CONFIRMATION',
       utrNumber: utrNumber || '',
       paymentProof: paymentProof || '',
       remark: remark || '',
@@ -256,7 +271,7 @@ exports.submitDonation = async (req, res) => {
         amount: DONATION_AMOUNTS[targetLevel],
         toMemberId: upline.memberId,
         toName: upline.name,
-        status: 'PENDING',
+        status: 'WAITING_FOR_RECEIVER_CONFIRMATION',
       },
     });
   } catch (error) {
@@ -272,24 +287,28 @@ exports.updateDonationStatus = async (req, res) => {
     const { donationId } = req.params;
     const { status, remark } = req.body;
 
-    if (!['COMPLETED', 'REJECTED'].includes(status)) {
-      return res.status(400).json({ success: false, message: 'Status must be COMPLETED or REJECTED' });
+    if (!['APPROVED', 'COMPLETED', 'REJECTED'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Status must be APPROVED or REJECTED' });
     }
 
     const donation = await Donation.findOne({ donationId });
     if (!donation) {
       return res.status(404).json({ success: false, message: 'Donation not found' });
     }
-    if (donation.status !== 'PENDING') {
+
+    if (req.user.role !== 'admin' && req.user.memberId !== donation.toMemberId) {
+      return res.status(403).json({ success: false, message: 'Not authorized to approve this donation' });
+    }
+    if (!['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'].includes(donation.status)) {
       return res.status(400).json({ success: false, message: `Donation is already ${donation.status}` });
     }
 
-    if (status === 'COMPLETED') {
+    if (status === 'APPROVED' || status === 'COMPLETED') {
       const payer = await User.findOne({ memberId: donation.fromMemberId });
       const receiver = await User.findOne({ memberId: donation.toMemberId });
 
       if (payer && payer.unlockLevel < donation.level) {
-        payer.unlockLevel = donation.level;
+        payer.unlockLevel = donation.level; // Still updating this as a cache/fallback
         await payer.save();
       }
       if (receiver) {
@@ -345,8 +364,8 @@ exports.getMyDonations = async (req, res) => {
     const sentRows = sent.map((d, i) => ({ ...mapRow(d, 'SENT'), sNo: i + 1 }));
     const receivedRows = received.map((d, i) => ({ ...mapRow(d, 'RECEIVED'), sNo: i + 1 }));
 
-    const totalSent = sent.filter(d => d.status === 'COMPLETED').reduce((s, d) => s + d.amount, 0);
-    const totalReceived = received.filter(d => d.status === 'COMPLETED').reduce((s, d) => s + d.amount, 0);
+    const totalSent = sent.filter(d => ['APPROVED', 'COMPLETED'].includes(d.status)).reduce((s, d) => s + d.amount, 0);
+    const totalReceived = received.filter(d => ['APPROVED', 'COMPLETED'].includes(d.status)).reduce((s, d) => s + d.amount, 0);
 
     res.status(200).json({
       success: true,
@@ -398,7 +417,7 @@ exports.getAllDonations = async (req, res) => {
       remark: d.remark || '---',
     }));
 
-    const totalAmount = donations.filter(d => d.status === 'COMPLETED').reduce((s, d) => s + d.amount, 0);
+    const totalAmount = donations.filter(d => ['APPROVED', 'COMPLETED'].includes(d.status)).reduce((s, d) => s + d.amount, 0);
 
     res.status(200).json({
       success: true,
@@ -419,16 +438,16 @@ exports.getDonationStats = async (req, res) => {
     const isAdmin = req.user.role === 'admin';
     const memberId = req.user.memberId;
 
-    const completedFilter = { status: 'COMPLETED' };
+    const completedFilter = { status: { $in: ['APPROVED', 'COMPLETED'] } };
     if (!isAdmin) {
       completedFilter.$or = [{ fromMemberId: memberId }, { toMemberId: memberId }];
     }
 
     const [completed, pending, byLevel] = await Promise.all([
       Donation.find(completedFilter),
-      Donation.countDocuments({ status: 'PENDING' }),
+      Donation.countDocuments({ status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] } }),
       Donation.aggregate([
-        { $match: { status: 'COMPLETED' } },
+        { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
         { $group: { _id: '$level', totalAmount: { $sum: '$amount' }, count: { $sum: 1 } } },
         { $sort: { _id: 1 } },
       ]),
@@ -468,6 +487,28 @@ exports.getDonationStats = async (req, res) => {
         byLevel,
         ...userStats,
       },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getMyStatus = async (req, res) => {
+  try {
+    const memberId = req.user.memberId;
+    const currentUnlock = await getActualCompletedLevel(memberId);
+    const activeDonation = await Donation.findOne({
+      fromMemberId: memberId,
+      status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] }
+    });
+    res.status(200).json({
+      success: true,
+      data: {
+        currentLevel: currentUnlock,
+        nextLevel: currentUnlock + 1,
+        amount: DONATION_AMOUNTS[currentUnlock + 1] || 0,
+        activeDonation: activeDonation || null
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

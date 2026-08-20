@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./GivenHelp.css";
 import "../Payment/PaymentRequest/HelpInfo.css";
-import { getDonationTarget, submitDonation } from "../../../api/donationsService";
+import { getDonationTarget, submitDonation, getMyStatus } from "../../../api/donationsService";
 import apiClient from "../../../api/config";
 
 const DONATION_AMOUNTS = {
@@ -45,18 +45,25 @@ const GivenHelp = () => {
         const user = res.data.data;
         setCurrentUser(user);
 
-        const unlock = user.unlockLevel || 1;
-        if (unlock >= 10) {
+        const statusRes = await getMyStatus();
+        const { currentLevel, nextLevel: next, activeDonation } = statusRes.data;
+        // Update user's unlock level in state to match actual backend logic for the UI dots
+        user.unlockLevel = currentLevel; 
+
+        if (currentLevel >= 10) {
           setError("You have already reached the maximum donation level (10).");
           setLoading(false);
           return;
         }
 
-        const next = unlock + 1;
         setNextLevel(next);
 
-        const target = await getDonationTarget(next);
-        setTargetData(target.data);
+        if (activeDonation) {
+          setTargetData({ isActiveDonation: true, ...activeDonation });
+        } else {
+          const target = await getDonationTarget(next);
+          setTargetData(target.data);
+        }
       } catch (err) {
         setError(err?.response?.data?.message || "Failed to load donation details.");
       } finally {
@@ -122,14 +129,22 @@ const GivenHelp = () => {
 
       {!error && targetData && (
         <>
-          <div className="donation-note">
-            <span className="donation-free-will">"I am donating of my own free will"</span>
-            <span className="donation-desc">
-              I declare that I am gifting{" "}
-              <b>₹{DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}</b> (Level {nextLevel} Upgrade) as per my wish to{" "}
-              <b>{receiver.toName}</b> and I will never claim this amount in future.
-            </span>
-          </div>
+          {targetData.isActiveDonation ? (
+            <div style={{ background: "#fff3cd", color: "#856404", padding: "20px", borderRadius: "8px", border: "1px solid #ffeeba", textAlign: "center", marginBottom: "20px" }}>
+              <h3 style={{ margin: "0 0 10px 0" }}>Donation Pending Approval</h3>
+              <p style={{ margin: "0 0 5px 0" }}>Your donation of <b>₹{targetData.amount?.toLocaleString("en-IN")}</b> for Level <b>{targetData.level}</b> to <b>{targetData.toName}</b> is currently <b>{targetData.status?.replace(/_/g, ' ')}</b>.</p>
+              <p style={{ margin: 0 }}>Please wait for the receiver to approve it. Once approved, you will be upgraded to Level {targetData.level}.</p>
+            </div>
+          ) : (
+            <>
+              <div className="donation-note">
+                <span className="donation-free-will">"I am donating of my own free will"</span>
+                <span className="donation-desc">
+                  I declare that I am gifting{" "}
+                  <b>₹{DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}</b> (Level {nextLevel} Upgrade) as per my wish to{" "}
+                  <b>{receiver.toName}</b> and I will never claim this amount in future.
+                </span>
+              </div>
 
           <div className="donation-details-card">
             {/* Sender */}
@@ -225,6 +240,8 @@ const GivenHelp = () => {
               </button>
             </div>
           </div>
+          </>
+          )}
 
           {/* Level progress indicator */}
           <div className="rank-steps">
