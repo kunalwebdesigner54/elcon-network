@@ -21,7 +21,7 @@ const rankLabels = {
 };
 
 function parseDate(value) {
-  if (!value) return '';
+  if (!value || value === '\u2014') return '';
   const datePart = typeof value === 'string' ? value.split(' ')[0] : '';
   if (!datePart) return value;
   const parts = datePart.split('-');
@@ -79,8 +79,8 @@ function DonationReport() {
         rank: donation.level ? String(donation.level) : '',
         paymentProof: donation.utrNumber !== '---' ? donation.utrNumber : '',
         transactionId: donation.donationId || '',
-        requestDate: donation.dateRaw || '',
-        approveDate: donation.reviewedAt || '',
+        requestDate: formatDateTime(donation.dateRaw),
+        approveDate: ['APPROVED', 'COMPLETED'].includes(donation.status) ? formatDateTime(donation.reviewedAt) : '\u2014',
         status: donation.status || 'PENDING'
       })));
       setError('');
@@ -266,8 +266,8 @@ function DonationReport() {
                       <td>{row.receiverMemberName}</td>
                       <td>{row.amount}</td>
                       <td>{row.rank}</td>
-                      <td>{formatDateTime(row.requestDate)}</td>
-                      <td>{['APPROVED', 'COMPLETED'].includes(row.status) ? formatDateTime(row.approveDate) : '\u2014'}</td>
+                      <td>{row.requestDate}</td>
+                      <td>{row.approveDate}</td>
                       <td>{row.transactionId}</td>
                       <td>
                         {row.paymentProof ? (
