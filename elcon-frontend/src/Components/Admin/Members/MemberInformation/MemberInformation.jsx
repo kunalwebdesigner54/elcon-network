@@ -13,10 +13,21 @@ const MemberInformation = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
 
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
+
   const loadMembers = async () => {
     try {
-      const response = await getAllMembersList();
+      setLoading(true);
+      const params = {
+        page,
+        limit: pageSize,
+        search: filters.memberId || filters.name, // The backend searches across memberId and name
+        status: filters.status
+      };
+      const response = await getAllMembersList(params);
       setMembersData(response.data || []);
+      setPagination(response.pagination || { total: 0, page: 1, limit: 10, pages: 1 });
     } catch (error) {
       setMembersData([]);
     } finally {
@@ -26,7 +37,12 @@ const MemberInformation = () => {
 
   useEffect(() => {
     loadMembers();
-  }, []);
+  }, [page, pageSize]);
+
+  const handleSearch = () => {
+    setPage(1);
+    loadMembers();
+  };
 
   const handleToggleBlock = async (memberId, currentStatus) => {
     const isCurrentlyBlocked = currentStatus === 'Block';
@@ -79,17 +95,8 @@ const MemberInformation = () => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
   };
 
-  const filteredMembers = useMemo(() => {
-    return membersData.filter((member) => {
-      const byMember = !filters.memberId || (member.memberId && member.memberId.toLowerCase().includes(filters.memberId.toLowerCase()));
-      const byName = !filters.name || (member.name && member.name.toLowerCase().includes(filters.name.toLowerCase()));
-      const byStatus = !filters.status || member.status === filters.status;
-
-      return byMember && byName && byStatus;
-    });
-  }, [filters, membersData]);
-
-  const visibleMembers = filteredMembers.slice(0, Number(pageSize));
+  // Removed client-side filteredMembers and visibleMembers
+  // Data is now fetched directly from server with pagination
 
   return (
     <div>
@@ -105,12 +112,12 @@ const MemberInformation = () => {
             <option value="ACTIVE">ACTIVE</option>
             <option value="IN-ACTIVE">IN-ACTIVE</option>
           </select>
-          <select className="select-input" style={{ maxWidth: '84px' }} value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
+          <select className="select-input" style={{ maxWidth: '84px' }} value={pageSize} onChange={(event) => { setPageSize(event.target.value); setPage(1); }}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary" type="button">SEARCH</button>
+          <button className="btn-primary" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="table-wrap">
@@ -134,7 +141,7 @@ const MemberInformation = () => {
                 <tr>
                   <td colSpan="10">Loading...</td>
                 </tr>
-              ) : visibleMembers.length > 0 ? visibleMembers.map((member) => (
+              ) : membersData.length > 0 ? membersData.map((member) => (
                 <tr key={`info-${member.memberId || member.sNo}`}>
                   <td>{member.sNo}</td>
                   <td>{member.memberId}</td>
@@ -196,18 +203,31 @@ const MemberInformation = () => {
 
         <div className="table-footer" style={{ justifyContent: 'space-between', marginTop: '12px' }}>
           <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
-            Total: {filteredMembers.length} members
+            Total: {pagination.total} members
           </span>
           <div className="pagination">
-            <button className="page-btn">&laquo;</button>
-            <button className="page-btn">&lsaquo;</button>
-            <button className="page-btn active">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">4</button>
-            <button className="page-btn">5</button>
-            <button className="page-btn">&rsaquo;</button>
-            <button className="page-btn">&raquo;</button>
+            <button className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
+            <button className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
+            
+            {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
+              let start = Math.max(1, page - 2);
+              if (start + 4 > pagination.pages) start = Math.max(1, pagination.pages - 4);
+              const pageNum = start + i;
+              if (pageNum > pagination.pages) return null;
+              
+              return (
+                <button 
+                  key={pageNum} 
+                  className={`page-btn ${page === pageNum ? 'active' : ''}`}
+                  onClick={() => setPage(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+            
+            <button className="page-btn" onClick={() => setPage(p => Math.min(pagination.pages, p + 1))} disabled={page === pagination.pages || pagination.pages === 0}>&rsaquo;</button>
+            <button className="page-btn" onClick={() => setPage(pagination.pages)} disabled={page === pagination.pages || pagination.pages === 0}>&raquo;</button>
           </div>
         </div>
 

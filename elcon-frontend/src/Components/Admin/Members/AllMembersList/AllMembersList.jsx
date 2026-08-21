@@ -22,41 +22,40 @@ const AllMembersList = () => {
   const [loginError, setLoginError] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadMembers = async () => {
-      try {
-        const response = await getAllMembersList();
-        setMembersData(response.data || []);
-      } catch (error) {
-        setMembersData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
 
+  const loadMembers = async () => {
+    try {
+      setLoading(true);
+      const params = {
+        page,
+        limit: pageSize,
+        search: filters.memberId || filters.name || filters.mobile,
+        status: filters.status,
+      };
+      const response = await getAllMembersList(params);
+      setMembersData(response.data || []);
+      setPagination(response.pagination || { total: 0, page: 1, limit: 10, pages: 1 });
+    } catch (error) {
+      setMembersData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadMembers();
-  }, []);
+  }, [page, pageSize]);
+
+  const handleSearch = () => {
+    setPage(1);
+    loadMembers();
+  };
 
   const handleFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
   };
-
-  const filteredMembers = useMemo(() => {
-    return membersData.filter((member) => {
-      const joinDateValue = member.joinDateRaw ? new Date(member.joinDateRaw).toISOString().slice(0, 10) : '';
-
-      const bySponsor = !filters.sponsorId || member.sponsorId.toLowerCase().includes(filters.sponsorId.toLowerCase());
-      const byMember = !filters.memberId || member.memberId.toLowerCase().includes(filters.memberId.toLowerCase());
-      const byName = !filters.name || member.name.toLowerCase().includes(filters.name.toLowerCase());
-      const byMobile = !filters.mobile || member.mobile.toLowerCase().includes(filters.mobile.toLowerCase());
-      const byCity = !filters.city || member.city.toLowerCase().includes(filters.city.toLowerCase());
-      const byStatus = !filters.status || member.status === filters.status;
-      const byStartDate = !filters.startDate || joinDateValue >= filters.startDate;
-      const byEndDate = !filters.endDate || joinDateValue <= filters.endDate;
-
-      return bySponsor && byMember && byName && byMobile && byCity && byStatus && byStartDate && byEndDate;
-    });
-  }, [filters, membersData]);
 
   const formatJoinDate = (joinDateRaw, fallbackDate) => {
     if (!joinDateRaw) return fallbackDate || '---';
@@ -72,7 +71,8 @@ const AllMembersList = () => {
     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
   };
 
-  const visibleMembers = filteredMembers.slice(0, Number(pageSize));
+  // Removed client-side filteredMembers and visibleMembers
+  // Data is now fetched directly from server with pagination
 
   const handleLoginAsUser = async (memberId) => {
     try {
@@ -114,12 +114,12 @@ const AllMembersList = () => {
           </select>
           <input className="text-input" style={{ maxWidth: '120px' }} placeholder="START DATE" type="date" value={filters.startDate} onChange={handleFilterChange('startDate')} />
           <input className="text-input" style={{ maxWidth: '110px' }} placeholder="END DATE" type="date" value={filters.endDate} onChange={handleFilterChange('endDate')} />
-          <select className="select-input" style={{ maxWidth: '84px' }} value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
+          <select className="select-input" style={{ maxWidth: '84px' }} value={pageSize} onChange={(event) => { setPageSize(event.target.value); setPage(1); }}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary" type="button">SEARCH</button>
+          <button className="btn-primary" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         {loginError && (
@@ -150,7 +150,7 @@ const AllMembersList = () => {
                 <tr>
                   <td colSpan="14">Loading...</td>
                 </tr>
-              ) : visibleMembers.length > 0 ? visibleMembers.map((member) => (
+              ) : membersData.length > 0 ? membersData.map((member) => (
                 <tr key={member.sNo}>
                   <td>{member.sNo}</td>
                   <td>{member.sponsorId}</td>
@@ -203,20 +203,31 @@ const AllMembersList = () => {
 
         <div className="table-footer" style={{ justifyContent: 'space-between', marginTop: '12px', marginBottom: '40px' }}>
           <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
-            Total: {filteredMembers.length} members
+            Total: {pagination.total} members
           </span>
           <div className="pagination">
-            <button className="page-btn">&laquo;</button>
-            <button className="page-btn">&lsaquo;</button>
-            <button className="page-btn active">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">4</button>
-            <button className="page-btn">5</button>
-            <button className="page-btn">6</button>
-            <button className="page-btn">7</button>
-            <button className="page-btn">&rsaquo;</button>
-            <button className="page-btn">&raquo;</button>
+            <button className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
+            <button className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
+            
+            {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
+              let start = Math.max(1, page - 2);
+              if (start + 4 > pagination.pages) start = Math.max(1, pagination.pages - 4);
+              const pageNum = start + i;
+              if (pageNum > pagination.pages) return null;
+              
+              return (
+                <button 
+                  key={pageNum} 
+                  className={`page-btn ${page === pageNum ? 'active' : ''}`}
+                  onClick={() => setPage(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+            
+            <button className="page-btn" onClick={() => setPage(p => Math.min(pagination.pages, p + 1))} disabled={page === pagination.pages || pagination.pages === 0}>&rsaquo;</button>
+            <button className="page-btn" onClick={() => setPage(pagination.pages)} disabled={page === pagination.pages || pagination.pages === 0}>&raquo;</button>
           </div>
         </div>
 

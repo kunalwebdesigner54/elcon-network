@@ -1,8 +1,7 @@
 import apiClient from './config';
 
-export const getAdminKycRequests = async (status = 'PENDING') => {
-  const url = status ? `/members/kyc-requests?status=${status}` : '/members/kyc-requests';
-  const response = await apiClient.get(url);
+export const getAdminKycRequests = async (params = {}) => {
+  const response = await apiClient.get('/members/kyc-requests', { params });
   return response.data;
 };
 
@@ -11,8 +10,8 @@ export const updateAdminKycStatus = async (memberId, statusData) => {
   return response.data;
 };
 
-export const getAllMembersList = async () => {
-  const response = await apiClient.get('/members/all-members');
+export const getAllMembersList = async (params = {}) => {
+  const response = await apiClient.get('/members/all-members', { params });
   return response.data;
 };
 
@@ -21,8 +20,8 @@ export const updateBlockStatus = async (memberId, isBlocked) => {
   return response.data;
 };
 
-export const getMembersLocation = async () => {
-  const response = await apiClient.get('/members/locations');
+export const getMembersLocation = async (params = {}) => {
+  const response = await apiClient.get('/members/locations', { params });
   return response.data;
 };
 

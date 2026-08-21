@@ -56,15 +56,26 @@ exports.getAdminKycRequests = async (req, res) => {
       query.kycStatus = status;
     }
 
-    const users = await User.find(query).sort({ kycSubmittedAt: -1, createdAt: -1 });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await User.countDocuments(query);
+    const users = await User.find(query).sort({ kycSubmittedAt: -1, createdAt: -1 }).skip(skip).limit(limit);
     const rows = users.map((user, index) => ({
       ...getKycSnapshot(user),
-      sNo: index + 1,
+      sNo: skip + index + 1,
     }));
 
     res.status(200).json({
       success: true,
       data: rows,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
     res.status(500).json({
@@ -187,12 +198,39 @@ exports.updateBlockStatus = async (req, res) => {
 exports.getAllMembersList = async (req, res) => {
   try {
     const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
-    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('+plainPassword +plainTransactionPassword').sort({ createdAt: -1 }).lean();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    const depthMap = calculateLevelDepths(users, adminMemberId);
+    const query = { role: 'user', email: { $ne: 'admin@gmail.com' } };
+    
+    // Add filtering based on frontend keys if needed here, but standardizing on simple pagination first
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, 'i');
+      query.$or = [
+        { memberId: searchRegex },
+        { name: searchRegex },
+        { contactNo: searchRegex }
+      ];
+    }
+    if (req.query.status) {
+      query.accountStatus = req.query.status;
+    }
+
+    const total = await User.countDocuments(query);
+    const users = await User.find(query)
+      .select('+plainPassword +plainTransactionPassword')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    // Fetch light graph to calculate depth
+    const allUsersLight = await User.find({ role: 'user' }).select('memberId sponsorId -_id').lean();
+    const depthMap = calculateLevelDepths(allUsersLight, adminMemberId);
 
     const rows = users.map((user, index) => ({
-      sNo: index + 1,
+      sNo: skip + index + 1,
       sponsorId: (user.sponsorId && user.sponsorId !== adminMemberId) ? user.sponsorId : '---',
       memberId: user.memberId || '---',
       name: user.name || '---',
@@ -205,7 +243,6 @@ exports.getAllMembersList = async (req, res) => {
       password: user.plainPassword || '********',
       transPassword: user.plainTransactionPassword || '********',
       wallet: Number(user.walletBalance || 0).toFixed(2),
-      // New member info fields
       epin: user.epin || '---',
       joiningPackage: user.joiningPackage || '---',
       joiningAmount: user.joiningAmount || 0,
@@ -218,6 +255,12 @@ exports.getAllMembersList = async (req, res) => {
     res.status(200).json({
       success: true,
       data: rows,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
     res.status(500).json({
@@ -230,10 +273,26 @@ exports.getAllMembersList = async (req, res) => {
 
 exports.getMembersLocation = async (req, res) => {
   try {
-    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const query = { role: 'user', email: { $ne: 'admin@gmail.com' } };
+    
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, 'i');
+      query.$or = [
+        { memberId: searchRegex },
+        { name: searchRegex },
+        { contactNo: searchRegex }
+      ];
+    }
+
+    const total = await User.countDocuments(query);
+    const users = await User.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
 
     const rows = users.map((user, index) => ({
-      srNo: String(index + 1),
+      srNo: String(skip + index + 1),
       memberId: user.memberId || '---',
       name: user.name || '---',
       mobile: user.contactNo || '---',
@@ -254,6 +313,12 @@ exports.getMembersLocation = async (req, res) => {
     res.status(200).json({
       success: true,
       data: rows,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
     res.status(500).json({

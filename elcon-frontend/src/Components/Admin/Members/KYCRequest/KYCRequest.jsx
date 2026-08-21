@@ -37,21 +37,40 @@ function KYCRequest() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('PENDING');
 
-  useEffect(() => {
-    const loadKycRequests = async () => {
-      try {
-        setLoading(true);
-        const response = await getAdminKycRequests(activeTab);
-        setKycRows(response.data || []);
-      } catch (error) {
-        setKycRows([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
 
-    loadKycRequests();
+  const loadKycRequests = async () => {
+    try {
+      setLoading(true);
+      const params = {
+        page,
+        limit: pageSize,
+        search: filters.memberId || filters.name || filters.mobile || filters.adharNo || filters.panNo,
+        status: activeTab === 'ALL' ? '' : activeTab
+      };
+      const response = await getAdminKycRequests(params);
+      setKycRows(response.data || []);
+      setPagination(response.pagination || { total: 0, page: 1, limit: 10, pages: 1 });
+    } catch (error) {
+      setKycRows([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setPage(1); // Reset page when tab changes
   }, [activeTab]);
+
+  useEffect(() => {
+    loadKycRequests();
+  }, [page, pageSize, activeTab]);
+
+  const handleSearch = () => {
+    setPage(1);
+    loadKycRequests();
+  };
 
   const handleUpdateStatus = async (memberId, newStatus) => {
     if (!window.confirm(`Are you sure you want to ${newStatus} this KYC request?`)) return;
@@ -90,20 +109,8 @@ function KYCRequest() {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
   };
 
-  const filteredRows = useMemo(() => {
-    return kycRows.filter((row) => {
-      const byMember = !filters.memberId || row.memberId.toLowerCase().includes(filters.memberId.toLowerCase());
-      const byName = !filters.name || row.name.toLowerCase().includes(filters.name.toLowerCase());
-      const byMobile = !filters.mobile || row.mobile.toLowerCase().includes(filters.mobile.toLowerCase());
-      const byAadhar = !filters.adharNo || row.adharNo.toLowerCase().includes(filters.adharNo.toLowerCase());
-      const byPan = !filters.panNo || row.panNo.toLowerCase().includes(filters.panNo.toLowerCase());
-      const byStatus = !filters.status || row.status === filters.status;
-
-      return byMember && byName && byMobile && byAadhar && byPan && byStatus;
-    });
-  }, [filters, kycRows]);
-
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
+  // Removed client-side filteredRows and visibleRows
+  // Data is now fetched directly from server with pagination
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
     row.sNo,
@@ -206,12 +213,12 @@ function KYCRequest() {
                 <option value="PENDING">PENDING</option>
                 <option value="REJECT">REJECT</option>
               </select>
-          <select className="select-input" style={{ maxWidth: '84px' }} value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
+          <select className="select-input" style={{ maxWidth: '84px' }} value={pageSize} onChange={(event) => { setPageSize(event.target.value); setPage(1); }}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary" type="button">Search</button>
+          <button className="btn-primary" type="button" onClick={handleSearch}>Search</button>
         </div>
 
         <div className="btn-row" style={{ justifyContent: 'flex-end', marginBottom: '14px' }}>
@@ -248,7 +255,7 @@ function KYCRequest() {
                   <tr>
                     <td colSpan="17">Loading...</td>
                   </tr>
-                ) : visibleRows.length > 0 ? visibleRows.map((row) => (
+                ) : kycRows.length > 0 ? kycRows.map((row) => (
                   <tr key={row.sNo}>
                     <td>{row.sNo}</td>
                     <td>
@@ -301,19 +308,33 @@ function KYCRequest() {
             </table>
           </div>
 
-          <div className="table-footer" style={{ justifyContent: 'center', marginTop: '12px' }}>
+          <div className="table-footer" style={{ justifyContent: 'space-between', marginTop: '12px' }}>
+            <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
+              Total: {pagination.total} requests
+            </span>
             <div className="pagination">
-              <button className="page-btn">&laquo;</button>
-              <button className="page-btn">&lsaquo;</button>
-              <button className="page-btn active">1</button>
-              <button className="page-btn">2</button>
-              <button className="page-btn">3</button>
-              <button className="page-btn">4</button>
-              <button className="page-btn">5</button>
-              <button className="page-btn">6</button>
-              <button className="page-btn">7</button>
-              <button className="page-btn">&rsaquo;</button>
-              <button className="page-btn">&raquo;</button>
+              <button className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
+              <button className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
+              
+              {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
+                let start = Math.max(1, page - 2);
+                if (start + 4 > pagination.pages) start = Math.max(1, pagination.pages - 4);
+                const pageNum = start + i;
+                if (pageNum > pagination.pages) return null;
+                
+                return (
+                  <button 
+                    key={pageNum} 
+                    className={`page-btn ${page === pageNum ? 'active' : ''}`}
+                    onClick={() => setPage(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              
+              <button className="page-btn" onClick={() => setPage(p => Math.min(pagination.pages, p + 1))} disabled={page === pagination.pages || pagination.pages === 0}>&rsaquo;</button>
+              <button className="page-btn" onClick={() => setPage(pagination.pages)} disabled={page === pagination.pages || pagination.pages === 0}>&raquo;</button>
             </div>
           </div>
         </section>

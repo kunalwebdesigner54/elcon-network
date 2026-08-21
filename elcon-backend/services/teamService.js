@@ -61,7 +61,7 @@ const collectDescendants = (memberId, childrenBySponsor) => {
  */
 const getTeamStats = async (memberId) => {
   const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
-  const allUsers = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).lean();
+  const allUsers = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('memberId sponsorId -_id').lean();
   
   const childrenBySponsor = buildReferralGraph(allUsers, adminMemberId);
   
@@ -84,8 +84,8 @@ const getTeamStats = async (memberId) => {
  */
 const getAllUsersTeamStats = async () => {
     const adminMemberId = await User.findOne({ role: 'admin' }).select('memberId').then(a => a?.memberId);
-    // Use .lean() here too for performance
-    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).lean();
+    // Use .lean() and select only required fields for performance
+    const users = await User.find({ role: 'user', email: { $ne: 'admin@gmail.com' } }).select('memberId sponsorId -_id').lean();
     const childrenBySponsor = buildReferralGraph(users, adminMemberId);
 
     const statsMap = new Map();
