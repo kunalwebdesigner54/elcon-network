@@ -106,7 +106,7 @@ function MyTeam() {
           <input type="text" placeholder="MEMBER ID" value={filterMemberId} onChange={(e) => setFilterMemberId(e.target.value)} />
           <input type="text" placeholder="MEMBER NAME" value={filterMemberName} onChange={(e) => setFilterMemberName(e.target.value)} />
           <select value={filterLevel} onChange={(e) => setFilterLevel(e.target.value)}>
-            <option value="">LEVEL (Depth)</option>
+            <option value="">LEVEL DEPTH</option>
             {levelOptions.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
           <select value={filterUnlock} onChange={(e) => setFilterUnlock(e.target.value)}>
@@ -143,7 +143,7 @@ function MyTeam() {
                     <th>S.NO</th>
                     <th>MEMBER ID</th>
                     <th>MEMBER NAME</th>
-                    <th>LEVEL (DEPTH)</th>
+                    <th>LEVEL DEPTH</th>
                     <th>JOIN DATE</th>
                     <th>UNLOCK LEVEL</th>
                     <th>CITY</th>
