@@ -50,7 +50,7 @@ exports.getAdminKycRequests = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const total = await User.countDocuments(query);
-    const users = await User.find(query).sort({ kycSubmittedAt: -1, createdAt: -1 }).skip(skip).limit(limit);
+    const users = await User.find(query).sort({ kycSubmittedAt: -1 }).skip(skip).limit(limit);
     const rows = users.map((user, index) => ({
       ...getKycSnapshot(user),
       sNo: skip + index + 1,

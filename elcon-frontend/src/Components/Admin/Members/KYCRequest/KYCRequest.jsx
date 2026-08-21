@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import './KYCRequest.css';
 import { getAdminKycRequests, updateAdminKycStatus } from '../../../../api/membersService';
+import { formatDate } from '../../../../utils/dateFormatter';
 
 const exportColumns = [
   'S.NO',
+  'SUBMITTED AT',
   'STATUS',
   'MEMBER ID',
   'NAME',
@@ -114,6 +116,7 @@ function KYCRequest() {
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
     row.sNo,
+    formatDate(row.createdAt),
     row.status,
     row.memberId,
     row.name,
@@ -233,6 +236,7 @@ function KYCRequest() {
                 <tr>
                   <th>S.NO</th>
                   <th>ACTION</th>
+                  <th>SUBMITTED AT</th>
                   <th>STATUS</th>
                   <th>MEMBER ID</th>
                   <th>NAME</th>
@@ -278,6 +282,7 @@ function KYCRequest() {
                         </button>
                       </div>
                     </td>
+                    <td>{formatDate(row.createdAt)}</td>
                     <td>{row.status}</td>
                     <td>{row.memberId}</td>
                     <td>{row.name}</td>

@@ -356,4 +356,7 @@ userSchema.methods.matchTransactionPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.transactionPassword);
 };
 
+// Compound index for efficient KYC request querying
+userSchema.index({ kycStatus: 1, kycSubmittedAt: -1, createdAt: -1 });
+
 module.exports = mongoose.model('User', userSchema);
