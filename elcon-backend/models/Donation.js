@@ -27,6 +27,7 @@ const donationSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     fromName: {
       type: String,
@@ -38,6 +39,7 @@ const donationSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     toName: {
       type: String,
@@ -54,11 +56,13 @@ const donationSchema = new mongoose.Schema(
       required: true,
       min: 1,
       max: 10,
+      index: true,
     },
     status: {
       type: String,
       enum: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION', 'APPROVED', 'COMPLETED', 'REJECTED'],
       default: 'PENDING',
+      index: true,
     },
     // UTR / transaction reference for P2P direct-payment tracking
     utrNumber: {

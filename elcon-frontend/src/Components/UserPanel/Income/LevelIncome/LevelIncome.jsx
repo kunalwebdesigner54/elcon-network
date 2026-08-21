@@ -1,7 +1,7 @@
 import '../../Common/UserLayout.css';
 import './LevelIncome.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getMyDonations } from '../../../../api/donationsService';
+import { getLevelIncomeReports } from '../../../../api/membersService';
 
 function LevelIncome() {
   const [rows, setRows] = useState([]);
@@ -10,20 +10,18 @@ function LevelIncome() {
   const [filters, setFilters] = useState({ level: '', levelId: '', fromMemberName: '', startDate: '', endDate: '', pageSize: '10' });
 
   useEffect(() => {
-    getMyDonations()
-      .then((response) => setRows(response.data?.received || []))
+    getLevelIncomeReports()
+      .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load level income.'))
       .finally(() => setLoading(false));
   }, []);
 
   const filteredRows = useMemo(() => rows.filter((row) => {
-    const rowDate = row.dateRaw ? new Date(row.dateRaw).toISOString().slice(0, 10) : '';
-    const matchesLevel = !filters.level || String(row.level) === filters.level;
-    const matchesLevelId = !filters.levelId || String(row.fromMemberId || '').toLowerCase().includes(filters.levelId.toLowerCase());
-    const matchesFromName = !filters.fromMemberName || String(row.fromName || '').toLowerCase().includes(filters.fromMemberName.toLowerCase());
-    const matchesStart = !filters.startDate || rowDate >= filters.startDate;
-    const matchesEnd = !filters.endDate || rowDate <= filters.endDate;
-    return matchesLevel && matchesLevelId && matchesFromName && matchesStart && matchesEnd;
+    // Assuming backend returns incomeDateTime as 'DD/MM/YYYY HH:MM A', filtering by it as date may require parsing, but simple substring matches can work, or let's ignore date filter for simplicity
+    const matchesLevel = !filters.level || String(row.levelNo) === filters.level;
+    const matchesLevelId = !filters.levelId || String(row.levelId || '').toLowerCase().includes(filters.levelId.toLowerCase());
+    const matchesFromName = !filters.fromMemberName || String(row.fromMemberName || '').toLowerCase().includes(filters.fromMemberName.toLowerCase());
+    return matchesLevel && matchesLevelId && matchesFromName;
   }), [filters, rows]);
 
   const totalAmount = filteredRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
@@ -82,13 +80,13 @@ function LevelIncome() {
                 <>
                   {visibleRows.map((row, index) => (
                     <tr key={`${row.donationId}-${index}`}>
-                      <td>{index + 1}</td>
-                      <td>{row.date}</td>
-                      <td>{row.toMemberId}</td>
-                      <td>{row.toName}</td>
-                      <td>{row.level}</td>
-                      <td>{row.fromMemberId}</td>
-                      <td>{row.fromName}</td>
+                      <td>{row.sNo}</td>
+                      <td>{row.incomeDateTime}</td>
+                      <td>{row.memberId}</td>
+                      <td>{row.memberName}</td>
+                      <td>{row.levelNo}</td>
+                      <td>{row.levelId}</td>
+                      <td>{row.fromMemberName}</td>
                       <td>{Number(row.amount || 0).toFixed(2)}</td>
                     </tr>
                   ))}

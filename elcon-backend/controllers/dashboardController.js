@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Donation = require('../models/Donation');
 const Epin = require('../models/Epin');
 const Order = require('../models/Order');
+const LevelIncome = require('../models/LevelIncome');
 const { getTeamStats } = require('../services/teamService');
 
 // @desc Admin dashboard metrics
@@ -72,7 +73,7 @@ exports.userDashboard = async (req, res) => {
     const endOfYesterday = new Date(yesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    const [donationsSent, donationsReceived, yesterdayReceived] = await Promise.all([
+    const [donationsSent, donationsReceived, yesterdayReceived, levelIncomeSent, yestLevelIncomeList] = await Promise.all([
       Donation.find({ fromMemberId: memberId, status: 'COMPLETED' }),
       Donation.find({ toMemberId: memberId, status: 'COMPLETED' }),
       Donation.find({
@@ -80,11 +81,20 @@ exports.userDashboard = async (req, res) => {
         status: 'COMPLETED',
         createdAt: { $gte: yesterday, $lte: endOfYesterday },
       }),
+      LevelIncome.find({ recipientMemberId: memberId, status: 'CREDITED' }),
+      LevelIncome.find({
+        recipientMemberId: memberId,
+        status: 'CREDITED',
+        createdAt: { $gte: yesterday, $lte: endOfYesterday },
+      }),
     ]);
 
     const totalGivenHelp = donationsSent.reduce((s, d) => s + d.amount, 0);
     const totalReceivedHelp = donationsReceived.reduce((s, d) => s + d.amount, 0);
     const yesterdayReceivedHelp = yesterdayReceived.reduce((s, d) => s + d.amount, 0);
+
+    const totalLevelIncome = (levelIncomeSent || []).reduce((s, d) => s + d.amount, 0);
+    const yesterdayLevelInc = (yestLevelIncomeList || []).reduce((s, d) => s + d.amount, 0);
 
     const fmt = (n) => `₹ ${n.toLocaleString('en-IN')}`;
 
@@ -103,12 +113,12 @@ exports.userDashboard = async (req, res) => {
         givenHelp: fmt(totalGivenHelp),
         receivedHelp: fmt(totalReceivedHelp),
         yesterdayReceivedHelp: fmt(yesterdayReceivedHelp),
-        levelIncome: fmt(0),
-        yesterdayLevelIncome: fmt(0),
+        levelIncome: fmt(totalLevelIncome),
+        yesterdayLevelIncome: fmt(yesterdayLevelInc),
         repurchaseIncome: fmt(0),
         yesterdayRepurchaseIncome: fmt(0),
-        totalLRIncome: fmt(0),
-        yesterdayTotalIncome: fmt(yesterdayReceivedHelp),
+        totalLRIncome: fmt(totalLevelIncome),
+        yesterdayTotalIncome: fmt(yesterdayReceivedHelp + yesterdayLevelInc),
         totalTeam: totalTeamCount,
         yesterdayJoining: 0,
         unlockLevel: user.unlockLevel || 1,

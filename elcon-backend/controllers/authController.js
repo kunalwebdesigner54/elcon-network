@@ -178,6 +178,12 @@ exports.registerUser = async (req, res) => {
         role: user.role,
       },
     });
+
+    // Distribute level income asynchronously (catch errors so they don't break the response)
+    const { distributeLevelIncome } = require('../services/levelIncomeService');
+    distributeLevelIncome(user.memberId, user.name, user.sponsorId).catch(err => {
+      console.error('Failed to distribute level income:', err);
+    });
   } catch (error) {
     // Handle unique constraint violations
     if (error.code === 11000) {

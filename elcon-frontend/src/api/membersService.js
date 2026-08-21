@@ -30,6 +30,11 @@ export const getMemberPerformance = async () => {
   return response.data;
 };
 
+export const getLevelIncomeReports = async (params = {}) => {
+  const response = await apiClient.get('/level-income/reports', { params });
+  return response.data;
+};
+
 export const submitKycRequest = async (kycData) => {
   const response = await apiClient.put('/profile/kyc-request', kycData);
   return response.data;

@@ -112,7 +112,7 @@ const ReceivedHelp = () => {
                     <th>RANK</th>
                     <th>REQUEST DATE</th>
                     <th>TRASACTION ID</th>
-                    <th>PAYMENT PROOF</th>
+                    <th>UTR NUMBER</th>
                     <th>ACTION</th>
                 <th>STATUS</th>
               </tr>
@@ -127,7 +127,7 @@ const ReceivedHelp = () => {
                   <td>{row.rank}</td>
                   <td>{row.requestDate}</td>
                   <td>{row.transactionId}</td>
-                  <td><button className="user-btn-blue3">VIEW</button></td>
+                  <td>{row.utrNumber}</td>
                   <td>
                     {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
                       <>

@@ -19,13 +19,21 @@ const getActualCompletedLevel = async (memberId) => {
   const donations = await Donation.find({
     fromMemberId: memberId,
     status: { $in: ['APPROVED', 'COMPLETED'] }
-  });
+  }).select('level').lean();
+  
   if (!donations || donations.length === 0) return 0;
   
+  const levels = new Set(donations.map(d => d.level));
   let maxLevel = 0;
-  donations.forEach(d => {
-    if (d.level > maxLevel) maxLevel = d.level;
-  });
+  
+  // Enforce sequential levels: if Level 2 is missing, Level 3 is not valid.
+  for (let i = 1; i <= 10; i++) {
+    if (levels.has(i)) {
+      maxLevel = i;
+    } else {
+      break;
+    }
+  }
   return maxLevel;
 };
 
@@ -44,10 +52,10 @@ const findEligibleUpline = async (startMemberId, targetLevel) => {
   // For Level 1, loops 0 times (starts check at 1st upline).
   // For Level 2, loops 1 time (starts check at 2nd upline).
   for (let i = 1; i < targetLevel; i++) {
-    const currentUser = await User.findOne({ memberId: currentMemberId });
+    const currentUser = await User.findOne({ memberId: currentMemberId }).select('sponsorId').lean();
     if (!currentUser || !currentUser.sponsorId) {
       // Reached the top before finding the Nth upline
-      const admin = await User.findOne({ role: 'admin' });
+      const admin = await User.findOne({ role: 'admin' }).select('memberId role name contactNo paymentDetails bankDetails').lean();
       return { upline: admin, skipped: [] };
     }
     currentMemberId = currentUser.sponsorId;
@@ -55,10 +63,10 @@ const findEligibleUpline = async (startMemberId, targetLevel) => {
 
   const MAX_DEPTH = 50;
   for (let depth = 0; depth < MAX_DEPTH; depth++) {
-    const currentUser = await User.findOne({ memberId: currentMemberId });
+    const currentUser = await User.findOne({ memberId: currentMemberId }).select('sponsorId').lean();
     if (!currentUser || !currentUser.sponsorId) break;
 
-    const upline = await User.findOne({ memberId: currentUser.sponsorId });
+    const upline = await User.findOne({ memberId: currentUser.sponsorId }).select('memberId role name contactNo paymentDetails bankDetails').lean();
     if (!upline) break;
 
     // If upline is admin, always accept as eligible
@@ -77,7 +85,7 @@ const findEligibleUpline = async (startMemberId, targetLevel) => {
   }
 
   // Fall back to admin
-  const admin = await User.findOne({ role: 'admin' });
+  const admin = await User.findOne({ role: 'admin' }).select('memberId role name contactNo paymentDetails bankDetails').lean();
   return { upline: admin, skipped };
 };
 
@@ -360,8 +368,8 @@ exports.getMyDonations = async (req, res) => {
   try {
     const memberId = req.user.memberId;
 
-    const sent = await Donation.find({ fromMemberId: memberId }).sort({ createdAt: -1 });
-    const received = await Donation.find({ toMemberId: memberId }).sort({ createdAt: -1 });
+    const sent = await Donation.find({ fromMemberId: memberId }).sort({ createdAt: -1 }).lean();
+    const received = await Donation.find({ toMemberId: memberId }).sort({ createdAt: -1 }).lean();
 
     const mapRow = (d, type) => ({
       sNo: 0,
@@ -418,7 +426,7 @@ exports.getAllDonations = async (req, res) => {
       filter.$or = [{ fromMemberId: id }, { toMemberId: id }];
     }
 
-    const donations = await Donation.find(filter).sort({ createdAt: -1 });
+    const donations = await Donation.find(filter).sort({ createdAt: -1 }).lean();
 
     const rows = donations.map((d, index) => ({
       sNo: index + 1,
@@ -465,7 +473,7 @@ exports.getDonationStats = async (req, res) => {
     }
 
     const [completed, pending, byLevel] = await Promise.all([
-      Donation.find(completedFilter),
+      Donation.find(completedFilter).lean(),
       Donation.countDocuments({ status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] } }),
       Donation.aggregate([
         { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
@@ -521,7 +529,7 @@ exports.getMyStatus = async (req, res) => {
     const activeDonation = await Donation.findOne({
       fromMemberId: memberId,
       status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] }
-    });
+    }).lean();
     res.status(200).json({
       success: true,
       data: {

@@ -1,6 +1,6 @@
 import './LevelIncomeReports.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getMemberPerformance } from '../../../../api/membersService';
+import { getLevelIncomeReports } from '../../../../api/membersService';
 
 function LevelIncomeReports() {
   const [rows, setRows] = useState([]);
@@ -8,7 +8,7 @@ function LevelIncomeReports() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    getMemberPerformance()
+    getLevelIncomeReports()
       .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load level income reports.'))
       .finally(() => setLoading(false));
@@ -16,14 +16,14 @@ function LevelIncomeReports() {
 
   const levelIncomeReportsData = useMemo(() => rows.map((row) => ({
     sNo: row.sNo,
-    incomeDateTime: row.joinDate,
+    incomeDateTime: row.incomeDateTime,
     memberId: row.memberId,
     memberName: row.memberName,
-    unlockLevel: row.unlockLevel,
-    levelNo: row.joiningLevel,
-    levelId: row.memberId,
-    fromMemberName: row.memberName,
-    amount: Number(row.levelIncome || 0),
+    unlockLevel: '---', // or we can remove this column, but I will just put ---
+    levelNo: row.levelNo,
+    levelId: row.levelId,
+    fromMemberName: row.fromMemberName,
+    amount: Number(row.amount || 0),
   })), [rows]);
 
   const totalAmount = levelIncomeReportsData.reduce((sum, row) => sum + Number(row.amount || 0), 0);

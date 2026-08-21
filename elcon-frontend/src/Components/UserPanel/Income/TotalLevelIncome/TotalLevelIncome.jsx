@@ -1,7 +1,7 @@
 import '../../Common/UserLayout.css';
 import './TotalLevelIncome.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getMyDonations } from '../../../../api/donationsService';
+import { getLevelIncomeReports } from '../../../../api/membersService';
 
 function TotalLevelIncome() {
   const [rows, setRows] = useState([]);
@@ -9,8 +9,8 @@ function TotalLevelIncome() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    getMyDonations()
-      .then((response) => setRows(response.data?.received || []))
+    getLevelIncomeReports()
+      .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load total level income.'))
       .finally(() => setLoading(false));
   }, []);
@@ -19,7 +19,7 @@ function TotalLevelIncome() {
     const grouped = new Map();
 
     rows.forEach((row) => {
-      const level = String(row.level || '0');
+      const level = String(row.levelNo || '0');
       grouped.set(level, (grouped.get(level) || 0) + Number(row.amount || 0));
     });
 
