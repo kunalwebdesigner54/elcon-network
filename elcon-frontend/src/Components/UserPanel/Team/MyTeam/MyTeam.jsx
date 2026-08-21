@@ -1,3 +1,4 @@
+import { formatDate } from '../../../../utils/dateFormatter';
 import { useState, useEffect, useMemo } from 'react';
 import '../../Common/UserLayout.css';
 import './MyTeam.css';
@@ -11,17 +12,7 @@ function flattenDescendants(node, depth = 0, acc = []) {
       memberId: child.memberId,
       name: child.name,
       level: depth + 1,
-      joinDate: child.joinDateRaw ? (() => {
-        const d = new Date(child.joinDateRaw);
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        const seconds = String(d.getSeconds()).padStart(2, '0');
-        const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
-        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}${ampm}`;
-      })() : (child.joinDate || '---'),
+      joinDate: child.joinDateRaw ? formatDate(child.joinDateRaw) : (child.joinDate || '---'),
       joinDateRaw: child.joinDateRaw,
       unlockLevel: child.unlockLevel || 1,
       city: child.city || '---',

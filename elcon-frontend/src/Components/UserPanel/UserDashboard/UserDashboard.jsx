@@ -10,6 +10,7 @@ import dashboard4 from '../../../Assets/Pictures/dashbaord4.jpeg';
 import dashboard5 from '../../../Assets/Pictures/dashbaord5.jpeg';
 import productPads from '../../../Assets/Pictures/pads.jpeg';
 import productAirpods from '../../../Assets/Pictures/airpods.jpeg';
+import { formatDate } from '../../../utils/dateFormatter';
 
 const bannerSlides = [dashboard1, dashboard2, dashboard3, dashboard4, dashboard5];
 
@@ -124,7 +125,7 @@ function MemberDashboard() {
           <div className="user-dashboard1-member-dashboard-profile-card">
             <div className="user-dashboard1-member-dashboard-profile-info">
               <div className="user-dashboard1-member-dashboard-profile-name">{memberInfo?.name || 'Member Name'}</div>
-              <div className="user-dashboard1-member-dashboard-profile-meta">MEMBER ID : {memberInfo?.memberId || '---'} | REGISTER DATE : {memberInfo?.registeredAt ? new Date(memberInfo.registeredAt).toLocaleDateString() : '---'}</div>
+              <div className="user-dashboard1-member-dashboard-profile-meta">MEMBER ID : {memberInfo?.memberId || '---'} | REGISTER DATE : {memberInfo?.registeredAt ? formatDate(memberInfo.registeredAt) : '---'}</div>
             </div>
           </div>
           <div className="user-dashboard1-member-dashboard-actions">

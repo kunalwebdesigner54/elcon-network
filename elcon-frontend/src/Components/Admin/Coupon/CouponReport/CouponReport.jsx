@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { getAllCoupons } from '../../../../api/couponsService';
 import './CouponReport.css';
+import { formatDate } from '../../../../utils/dateFormatter';
 
 const statusClass = {
   ACTIVE: 'status-pill status-pill-active',
@@ -30,8 +31,8 @@ function CouponReport() {
         memberName: coupon.memberId?.userName || 'N/A',
         amount: coupon.amount || '0',
         usedInOrder: coupon.usedInOrder || '-',
-        usedDate: coupon.usedDate ? new Date(coupon.usedDate).toLocaleDateString('en-IN') : '-',
-        expiryDate: coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString('en-IN') : '-',
+        usedDate: coupon.usedDate ? formatDate(coupon.usedDate) : '-',
+        expiryDate: coupon.expiryDate ? formatDate(coupon.expiryDate) : '-',
         status: coupon.status || 'ACTIVE'
       })));
       setError('');

@@ -1,17 +1,6 @@
 const Coupon = require('../models/Coupon');
 
-const formatDate = (value) => {
-  if (!value) {
-    return '---';
-  }
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return '---';
-  }
-
-  return date.toLocaleDateString('en-GB');
-};
+const { formatDate, formatDateOnly } = require('../utils/dateFormatter');
 
 const formatCoupon = (coupon, index = 0) => ({
   sNo: index + 1,

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import "./AllMembersList.css";
 import { getAllMembersList } from '../../../../api/membersService';
 import { loginAsUser } from '../../../../api/authService';
+import { formatDate } from '../../../../utils/dateFormatter';
 
 const AllMembersList = () => {
   const [membersData, setMembersData] = useState([]);
@@ -59,16 +60,7 @@ const AllMembersList = () => {
 
   const formatJoinDate = (joinDateRaw, fallbackDate) => {
     if (!joinDateRaw) return fallbackDate || '---';
-    const d = new Date(joinDateRaw);
-    if (isNaN(d.getTime())) return fallbackDate || '---';
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    const seconds = String(d.getSeconds()).padStart(2, '0');
-    const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
-    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+    return formatDate(joinDateRaw);
   };
 
   // Removed client-side filteredMembers and visibleMembers

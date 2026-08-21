@@ -1,21 +1,7 @@
 const LevelIncome = require('../models/LevelIncome');
 const User = require('../models/User');
 
-const formatDate = (value) => {
-  if (!value) return '---';
-  // format dd/mm/yyyy hh:mm a
-  const d = new Date(value);
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const yyyy = d.getFullYear();
-  let hours = d.getHours();
-  const minutes = String(d.getMinutes()).padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  const strTime = hours + ':' + minutes + ' ' + ampm;
-  return `${dd}/${mm}/${yyyy} ${strTime}`;
-};
+const { formatDate, formatDateOnly } = require('../utils/dateFormatter');
 
 /**
  * Get Level Income reports (for Admin: all members, for User: only their income)

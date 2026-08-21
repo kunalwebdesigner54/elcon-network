@@ -10,10 +10,7 @@ const generateDonationId = () => {
   return `DON${ts}${rand}`;
 };
 
-const formatDate = (value) => {
-  if (!value) return '---';
-  return new Date(value).toLocaleDateString('en-GB');
-};
+const { formatDate, formatDateOnly } = require('../utils/dateFormatter');
 
 const getActualCompletedLevel = async (memberId) => {
   const donations = await Donation.find({

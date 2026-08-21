@@ -3,6 +3,7 @@ import "./GivenHelp.css";
 import "../Payment/PaymentRequest/HelpInfo.css";
 import { getDonationTarget, submitDonation, getMyStatus } from "../../../api/donationsService";
 import apiClient from "../../../api/config";
+import { formatDate } from '../../../utils/dateFormatter';
 
 const DONATION_AMOUNTS = {
   1: 300, 2: 1000, 3: 2000, 4: 4000, 5: 8000,
@@ -216,7 +217,7 @@ const GivenHelp = () => {
               <div className="section-title21">Donation / Help Details</div>
               <div className="help-info-row21"><span className="help-info-label">Amount :</span> <span className="help-info-value amount">₹ {DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}.00</span></div>
               <div className="help-info-row21"><span className="help-info-label">Upgrade Level :</span> <span className="help-info-value">Level {nextLevel}</span></div>
-              <div className="help-info-row21"><span className="help-info-label">Donation Date :</span> <span className="help-info-value">{new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}</span></div>
+              <div className="help-info-row21"><span className="help-info-label">Donation Date :</span> <span className="help-info-value">{formatDate(new Date())}</span></div>
               <div className="help-info-row21"><span className="help-info-label">Donation Status :</span> <span className="help-info-value" style={{ color: "#f39c12", fontWeight: 600 }}>PENDING</span></div>
             </div>
 

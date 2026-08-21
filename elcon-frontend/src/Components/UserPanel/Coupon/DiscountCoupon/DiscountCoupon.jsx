@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getMyCoupons } from '../../../../api/couponsService';
 import './DiscountCoupon.css';
+import { formatDate } from '../../../../utils/dateFormatter';
 
 const statusClass = {
   ACTIVE: 'history-status history-status-active',
@@ -29,10 +30,10 @@ function DiscountCoupon() {
         const status = coupon.status || 'ACTIVE';
         const themeClass = `coupon-card-${status.toLowerCase()}`;
         const dateText = status === 'USED' 
-          ? `Used on ${coupon.usedDate ? new Date(coupon.usedDate).toLocaleDateString('en-IN') : 'N/A'}`
+          ? `Used on ${coupon.usedDate ? formatDate(coupon.usedDate) : 'N/A'}`
           : status === 'EXPIRED'
-          ? `Expired on ${coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString('en-IN') : 'N/A'}`
-          : `Valid Till ${coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString('en-IN') : 'N/A'}`;
+          ? `Expired on ${coupon.expiryDate ? formatDate(coupon.expiryDate) : 'N/A'}`
+          : `Valid Till ${coupon.expiryDate ? formatDate(coupon.expiryDate) : 'N/A'}`;
 
         return {
           id: coupon.couponCode || `CPN${coupon._id}`,
@@ -52,9 +53,9 @@ function DiscountCoupon() {
       const history = coupons.map((coupon) => ({
         id: coupon.couponCode || `CPN${coupon._id}`,
         amount: `₹${coupon.amount || 0}.00`,
-        createdDate: coupon.createdAt ? new Date(coupon.createdAt).toLocaleDateString('en-IN') : 'N/A',
-        expiryDate: coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString('en-IN') : 'N/A',
-        usedDate: coupon.usedDate ? new Date(coupon.usedDate).toLocaleDateString('en-IN') : '-',
+        createdDate: coupon.createdAt ? formatDate(coupon.createdAt) : 'N/A',
+        expiryDate: coupon.expiryDate ? formatDate(coupon.expiryDate) : 'N/A',
+        usedDate: coupon.usedDate ? formatDate(coupon.usedDate) : '-',
         usedInOrder: coupon.usedInOrder || '-',
         status: coupon.status || 'ACTIVE'
       }));

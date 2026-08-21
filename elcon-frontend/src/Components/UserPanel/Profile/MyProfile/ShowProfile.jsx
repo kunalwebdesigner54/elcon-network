@@ -1,3 +1,4 @@
+import { formatDate } from '../../../../utils/dateFormatter';
 import '../../Common/UserLayout.css';
 import '../../../Public/Register/Register.css';
 import userprofile from '../../../../Assets/Pictures/images.png';
