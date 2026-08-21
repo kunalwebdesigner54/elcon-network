@@ -41,10 +41,12 @@ function KYCRequest() {
 
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
+  const [apiError, setApiError] = useState(null);
 
   const loadKycRequests = async () => {
     try {
       setLoading(true);
+      setApiError(null);
       const searchQuery = filters.memberId || filters.name || filters.mobile || filters.adharNo || filters.panNo;
       const params = {
         page,
@@ -58,6 +60,7 @@ function KYCRequest() {
       setKycRows(response.data || []);
       setPagination(response.pagination || { total: 0, page: 1, limit: 10, pages: 1 });
     } catch (error) {
+      setApiError("Unable to load KYC requests. Please try again.");
       setKycRows([]);
     } finally {
       setLoading(false);
@@ -261,6 +264,10 @@ function KYCRequest() {
                 {loading ? (
                   <tr>
                     <td colSpan="17">Loading...</td>
+                  </tr>
+                ) : apiError ? (
+                  <tr>
+                    <td colSpan="17" style={{ color: 'red' }}>{apiError}</td>
                   </tr>
                 ) : kycRows.length > 0 ? kycRows.map((row) => (
                   <tr key={row.sNo}>
