@@ -32,7 +32,7 @@ const getKycSnapshot = (user) => ({
 
 exports.getAdminKycRequests = async (req, res) => {
   try {
-    const { status } = req.query;
+    const { status, search } = req.query;
 
     const query = { 
       role: 'user', 
@@ -45,12 +45,30 @@ exports.getAdminKycRequests = async (req, res) => {
       query.kycStatus = status;
     }
 
+    if (search) {
+      const searchRegex = new RegExp(search, 'i');
+      query.$or = [
+        { memberId: searchRegex },
+        { name: searchRegex },
+        { contactNo: searchRegex },
+        { 'kycDetails.aadharCardNumber': searchRegex },
+        { 'kycDetails.panNo': searchRegex }
+      ];
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
     const total = await User.countDocuments(query);
-    const users = await User.find(query).sort({ kycSubmittedAt: -1 }).skip(skip).limit(limit);
+    const users = await User.find(query)
+      .select('kycStatus memberId name contactNo bankDetails kycDetails kycRemark kycSubmittedAt createdAt paymentDetails panNo aadharNo')
+      .lean()
+      .hint(status && status !== 'ALL' ? { kycStatus: 1, kycSubmittedAt: -1, createdAt: -1 } : { kycSubmittedAt: -1 })
+      .sort({ kycSubmittedAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
     const rows = users.map((user, index) => ({
       ...getKycSnapshot(user),
       sNo: skip + index + 1,

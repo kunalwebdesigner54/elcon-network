@@ -45,12 +45,15 @@ function KYCRequest() {
   const loadKycRequests = async () => {
     try {
       setLoading(true);
+      const searchQuery = filters.memberId || filters.name || filters.mobile || filters.adharNo || filters.panNo;
       const params = {
         page,
         limit: pageSize,
-        search: filters.memberId || filters.name || filters.mobile || filters.adharNo || filters.panNo,
         status: activeTab === 'ALL' ? '' : activeTab
       };
+      if (searchQuery) {
+        params.search = searchQuery;
+      }
       const response = await getAdminKycRequests(params);
       setKycRows(response.data || []);
       setPagination(response.pagination || { total: 0, page: 1, limit: 10, pages: 1 });
