@@ -225,9 +225,31 @@ exports.getAllMembersList = async (req, res) => {
       .limit(limit)
       .lean();
 
-    // Fetch light graph to calculate depth
-    const allUsersLight = await User.find({ role: 'user' }).select('memberId sponsorId -_id').lean();
-    const depthMap = calculateLevelDepths(allUsersLight, adminMemberId);
+    // Optimize depth calculation by only fetching ancestors of the paginated users
+    const depthMap = new Map();
+    const sponsorCache = new Map();
+    
+    const getSponsor = async (mId) => {
+      if (sponsorCache.has(mId)) return sponsorCache.get(mId);
+      const doc = await User.findOne({ memberId: mId }).select('sponsorId -_id').lean();
+      const sId = doc ? (doc.sponsorId || null) : null;
+      sponsorCache.set(mId, sId);
+      return sId;
+    };
+
+    for (const u of users) {
+      let depth = 0;
+      let curr = u.memberId;
+      const visited = new Set();
+      while (curr && curr !== adminMemberId && !visited.has(curr)) {
+        visited.add(curr);
+        const sId = curr === u.memberId ? u.sponsorId : await getSponsor(curr);
+        if (!sId) break;
+        curr = sId;
+        depth++;
+      }
+      depthMap.set(u.memberId, depth);
+    }
 
     const rows = users.map((user, index) => ({
       sNo: skip + index + 1,
