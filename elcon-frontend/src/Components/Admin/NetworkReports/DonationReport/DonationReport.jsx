@@ -4,7 +4,7 @@ import './DonationReport.css';
 
 const exportColumns = [
   'S.No', 'Donor Member ID', 'Donor Member Name', 'Receiver Member ID', 'Receiver Member Name', 'D. Amount',
-  'Rank', 'Request Date', 'Approve Date', 'Transaction ID', 'Slip', 'Status'
+  'Rank', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
 ];
 
 const rankLabels = {
@@ -251,7 +251,7 @@ function DonationReport() {
                     <th>REQUEST DATE</th>
                     <th>APPROVE DATE</th>
                     <th>TRANSACTION ID</th>
-                    <th>SLIP</th>
+                    <th>UTR NUMBER</th>
                     <th>STATUS</th>
                     <th>ACTION</th>
                   </tr>
