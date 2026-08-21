@@ -226,7 +226,7 @@ exports.getAllMembersList = async (req, res) => {
 
     const total = await User.countDocuments(query);
     const users = await User.find(query)
-      .select('+plainPassword +plainTransactionPassword')
+      .select('+plainPassword +plainTransactionPassword -kycDetails.aadharFrontImage -kycDetails.aadharBackImage -kycDetails.panImage')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)

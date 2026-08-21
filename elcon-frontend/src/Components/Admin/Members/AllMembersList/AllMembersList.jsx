@@ -26,18 +26,18 @@ const AllMembersList = () => {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
 
-  const loadMembers = async () => {
+  const loadMembers = async (currentPage = page, currentLimit = pageSize) => {
     try {
       setLoading(true);
       const params = {
-        page,
-        limit: pageSize,
+        page: currentPage,
+        limit: currentLimit,
         search: filters.memberId || filters.name || filters.mobile,
         status: filters.status,
       };
       const response = await getAllMembersList(params);
       setMembersData(response.data || []);
-      setPagination(response.pagination || { total: 0, page: 1, limit: 10, pages: 1 });
+      setPagination(response.pagination || { total: 0, page: 1, limit: currentLimit, pages: 1 });
     } catch (error) {
       setMembersData([]);
     } finally {
@@ -46,12 +46,15 @@ const AllMembersList = () => {
   };
 
   useEffect(() => {
-    loadMembers();
+    loadMembers(page, pageSize);
   }, [page, pageSize]);
 
   const handleSearch = () => {
-    setPage(1);
-    loadMembers();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      loadMembers(1, pageSize);
+    }
   };
 
   const handleFilterChange = (key) => (event) => {
