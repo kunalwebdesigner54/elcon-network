@@ -43,15 +43,15 @@ function KYCRequest() {
   const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
   const [apiError, setApiError] = useState(null);
 
-  const loadKycRequests = async () => {
+  const loadKycRequests = async (currentPage = page, currentStatus = activeTab) => {
     try {
       setLoading(true);
       setApiError(null);
       const searchQuery = filters.memberId || filters.name || filters.mobile || filters.adharNo || filters.panNo;
       const params = {
-        page,
+        page: currentPage,
         limit: pageSize,
-        status: activeTab === 'ALL' ? '' : activeTab
+        status: currentStatus === 'ALL' ? '' : currentStatus
       };
       if (searchQuery) {
         params.search = searchQuery;
@@ -68,16 +68,22 @@ function KYCRequest() {
   };
 
   useEffect(() => {
-    setPage(1); // Reset page when tab changes
-  }, [activeTab]);
-
-  useEffect(() => {
-    loadKycRequests();
-  }, [page, pageSize, activeTab]);
+    loadKycRequests(page, activeTab);
+  }, [page, activeTab]);
 
   const handleSearch = () => {
-    setPage(1);
-    loadKycRequests();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      loadKycRequests(1, activeTab);
+    }
+  };
+
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    if (page !== 1) {
+      setPage(1);
+    }
   };
 
   const handleUpdateStatus = async (memberId, newStatus) => {
@@ -200,7 +206,7 @@ function KYCRequest() {
           <button 
             key={tab}
             className={`kyc-tab-btn ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => handleTabChange(tab)}
           >
             {tab === 'ALL' ? 'All History' : `${tab} Requests`}
           </button>
