@@ -224,8 +224,12 @@ exports.getAllMembersList = async (req, res) => {
       query.accountStatus = req.query.status;
     }
 
-    if (req.query.levelDepth) {
-      query.levelDepth = Number(req.query.levelDepth);
+    if (req.query.levelDepth !== undefined && req.query.levelDepth !== '') {
+      if (req.query.levelDepth === 'INVALID' || req.query.levelDepth === '-1') {
+        query.levelDepth = -1;
+      } else {
+        query.levelDepth = Number(req.query.levelDepth);
+      }
     }
 
     const total = await User.countDocuments(query);
@@ -244,7 +248,7 @@ exports.getAllMembersList = async (req, res) => {
       mobile: user.contactNo || '---',
       joinDate: formatDate(user.createdAt),
       joinDateRaw: user.createdAt,
-      levelDepth: user.levelDepth !== undefined ? user.levelDepth : 'N/A',
+      levelDepth: (user.levelDepth !== undefined && user.levelDepth !== -1) ? user.levelDepth : 'INVALID',
       city: user.city || '---',
       status: user.accountStatus || 'ACTIVE',
       password: user.plainPassword || '********',
