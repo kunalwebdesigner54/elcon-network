@@ -124,6 +124,15 @@ exports.registerUser = async (req, res) => {
       }
     }
 
+    // Calculate physical level depth
+    let levelDepth = -1;
+    if (sponsorId) {
+      const sponsor = await User.findOne({ memberId: sponsorId });
+      if (sponsor && sponsor.levelDepth !== undefined && sponsor.levelDepth !== -1) {
+        levelDepth = sponsor.levelDepth + 1;
+      }
+    }
+
     // Create new user with role='user'
     const user = await User.create({
       sponsorId,
@@ -132,6 +141,7 @@ exports.registerUser = async (req, res) => {
       contactNo,
       dateOfBirth,
       email,
+      levelDepth,
       aadharNo,
       address,
       country,

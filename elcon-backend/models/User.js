@@ -112,7 +112,7 @@ const userSchema = new mongoose.Schema(
     },
     levelDepth: {
       type: Number,
-      default: 0,
+      default: -1,
     },
     unlockLevel: {
       type: Number,

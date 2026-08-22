@@ -7,8 +7,7 @@ async function run() {
   await mongoose.connect(process.env.MONGODB_URI);
   console.log("Connected.");
   
-  // Use select to only fetch what we need (prevents MTU network drop issues on large datasets)
-  const users = await User.find({}).select('_id memberId sponsorId role levelDepth').lean();
+  const users = await User.find({}).select('_id memberId sponsorId role levelDepth name').lean();
   console.log(`Fetched ${users.length} users.`);
   
   const sponsorMap = new Map();
@@ -16,6 +15,7 @@ async function run() {
   
   const admin = users.find(u => u.role === 'admin');
   const adminId = admin ? admin.memberId : null;
+  console.log(`Root/Company identified as: ${adminId}`);
   
   let corrected = 0;
   let already = 0;
@@ -31,19 +31,26 @@ async function run() {
     const visited = new Set();
     let isInvalid = false;
     let isCircular = false;
+    let chain = [];
     
     while (curr) {
-      if (curr === adminId) break;
+      if (curr === adminId) {
+        chain.push(adminId);
+        break;
+      }
       if (visited.has(curr)) {
          isCircular = true;
+         chain.push(curr + ' (CIRCULAR)');
          break;
       }
       visited.add(curr);
+      chain.push(curr);
       
       const sId = curr === user.memberId ? user.sponsorId : sponsorMap.get(curr);
       
       if (!sId || (sId !== adminId && !sponsorMap.has(sId))) {
         if (curr !== adminId && user.role !== 'admin') isInvalid = true;
+        chain.push(sId ? sId + ' (INVALID)' : '(NO SPONSOR)');
         break;
       }
       
@@ -57,24 +64,40 @@ async function run() {
     
     if (user.role === 'admin') depth = 0;
     
-    if (isCircular) {
-      circular++;
-      discrepancies.push({ memberId: user.memberId, sponsorId: user.sponsorId, stored: user.levelDepth, calc: 'N/A', status: 'Circular Chain' });
-    } else if (isInvalid) {
-      invalid++;
-      discrepancies.push({ memberId: user.memberId, sponsorId: user.sponsorId, stored: user.levelDepth, calc: 'N/A', status: 'Invalid Sponsor' });
-    } else if (user.levelDepth !== depth) {
-      corrected++;
-      bulkOps.push({
-        updateOne: {
-          filter: { _id: user._id },
-          update: { $set: { levelDepth: depth } }
-        }
-      });
-      discrepancies.push({ memberId: user.memberId, sponsorId: user.sponsorId, stored: user.levelDepth, calc: depth, status: 'Corrected' });
+    // For invalid/circular chains, we assign depth -1 so they don't fallback to 0 (admin level)
+    const finalDepthToSave = (isInvalid || isCircular) ? -1 : depth;
+    const dbDepth = user.levelDepth;
+    
+    let status = 'Correct';
+    if (dbDepth !== finalDepthToSave) {
+       status = 'Needs Correction';
+       corrected++;
+       bulkOps.push({
+         updateOne: {
+           filter: { _id: user._id },
+           update: { $set: { levelDepth: finalDepthToSave } }
+         }
+       });
+       discrepancies.push({ 
+           memberId: user.memberId, 
+           sponsorId: user.sponsorId, 
+           calc: finalDepthToSave,
+           stored: dbDepth, 
+           status: isInvalid ? 'Corrected (Was Invalid)' : (isCircular ? 'Corrected (Was Circular)' : 'Corrected'),
+           chain: chain.join(' -> ')
+       });
     } else {
-      already++;
-      if (already <= 5) discrepancies.push({ memberId: user.memberId, sponsorId: user.sponsorId, stored: user.levelDepth, calc: depth, status: 'Already Correct' });
+       already++;
+       if (isInvalid) invalid++;
+       if (isCircular) circular++;
+       if (already <= 5) discrepancies.push({ 
+           memberId: user.memberId, 
+           sponsorId: user.sponsorId, 
+           calc: finalDepthToSave, 
+           stored: dbDepth, 
+           status: 'Already Correct',
+           chain: chain.join(' -> ')
+       });
     }
   }
   
@@ -92,11 +115,11 @@ async function run() {
   console.log(`Circular Chains: ${circular}`);
   
   console.log('\n--- SAMPLE RECORDS ---');
-  console.log('Member ID | Sponsor ID | Calculated Physical Depth | Stored Depth | Status');
-  console.log('-'.repeat(80));
+  console.log('Member ID | Sponsor ID | Calculated Physical Depth | Stored Depth | Status | Chain');
+  console.log('-'.repeat(120));
   
   discrepancies.slice(0, 20).forEach(d => {
-    console.log(`${d.memberId} | ${d.sponsorId} | ${d.calc} | ${d.stored || 0} | ${d.status}`);
+    console.log(`${d.memberId} | ${d.sponsorId} | ${d.calc} | ${d.stored !== undefined ? d.stored : 'undefined'} | ${d.status} | ${d.chain}`);
   });
   
   process.exit(0);

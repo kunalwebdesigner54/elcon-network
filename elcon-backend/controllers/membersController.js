@@ -244,7 +244,7 @@ exports.getAllMembersList = async (req, res) => {
       mobile: user.contactNo || '---',
       joinDate: formatDate(user.createdAt),
       joinDateRaw: user.createdAt,
-      levelDepth: user.levelDepth || 0,
+      levelDepth: user.levelDepth !== undefined ? user.levelDepth : 'N/A',
       city: user.city || '---',
       status: user.accountStatus || 'ACTIVE',
       password: user.plainPassword || '********',
