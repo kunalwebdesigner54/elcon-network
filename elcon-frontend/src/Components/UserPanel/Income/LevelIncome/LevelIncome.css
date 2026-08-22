@@ -5,17 +5,31 @@
   flex-wrap: wrap;
   gap: 10px;
   margin: 14px 0;
+  align-items: center; /* Ensures vertical alignment */
 }
 
-.level-income-filters input,
-.level-income-filters select {
+.level-income-input {
+  flex: 1 1 auto;
   border: 1px solid #ccd3db;
-  border-radius: 10px;
-  padding: 10px 12px;
-  min-height: 42px;
+  border-radius: 4px; /* Consistent 4px border radius */
+  padding: 0 12px;
+  height: 40px; /* Fixed consistent height */
   font-size: 14px;
   background: var(--card-bg);
   color: var(--text-main);
+  box-sizing: border-box;
+}
+
+.level-income-search-btn {
+  height: 40px; /* Exact same height as inputs */
+  padding: 0 20px;
+  border-radius: 4px; /* Consistent border radius */
+  font-size: 14px;
+  font-weight: 600;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .table-toolbar {

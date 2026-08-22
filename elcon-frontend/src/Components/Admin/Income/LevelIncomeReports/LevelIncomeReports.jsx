@@ -119,7 +119,10 @@ function LevelIncomeReports() {
         <div className="level-income-filter-row">
           <input name="memberId" value={filters.memberId} onChange={handleFilterChange} className="text-input level-income-filter-input" placeholder="MEMBER ID" />
           <input name="memberName" value={filters.memberName} onChange={handleFilterChange} className="text-input level-income-filter-input" placeholder="MEMBER NAME" />
-          <input name="levelNo" value={filters.levelNo} onChange={handleFilterChange} className="text-input level-income-filter-input" placeholder="LEVEL DEPTH" />
+          <select name="levelNo" value={filters.levelNo} onChange={handleFilterChange} className="select-input level-income-filter-input">
+            <option value="">ALL LEVELS</option>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => <option key={value} value={value}>Level {value}</option>)}
+          </select>
           <input name="levelId" value={filters.levelId} onChange={handleFilterChange} className="text-input level-income-filter-input" placeholder="LEVEL ID" />
           <input name="startDate" value={filters.startDate} onChange={handleFilterChange} className="text-input level-income-filter-input" type="date" placeholder="START DATE" />
           <input name="endDate" value={filters.endDate} onChange={handleFilterChange} className="text-input level-income-filter-input" type="date" placeholder="END DATE" />

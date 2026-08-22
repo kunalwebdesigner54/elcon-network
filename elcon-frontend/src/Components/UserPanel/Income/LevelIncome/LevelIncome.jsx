@@ -102,19 +102,19 @@ function LevelIncome() {
         <h3>Total Level Income : {totalAmount.toFixed(2)}</h3>
 
         <div className="level-income-filters">
-          <select aria-label="Level Number" name="levelNo" value={filters.levelNo} onChange={handleFilterChange}>
-            <option value="">LEVEL DEPTH</option>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => <option key={value} value={value}>{value}</option>)}
+          <select aria-label="Level Number" name="levelNo" value={filters.levelNo} onChange={handleFilterChange} className="level-income-input">
+            <option value="">ALL LEVELS</option>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => <option key={value} value={value}>Level {value}</option>)}
           </select>
-          <input type="text" placeholder="LEVEL ID" aria-label="Level ID" name="levelId" value={filters.levelId} onChange={handleFilterChange} />
-          <input type="date" placeholder="START DATE" aria-label="Start Date" name="startDate" value={filters.startDate} onChange={handleFilterChange} />
-          <input type="date" placeholder="END DATE" aria-label="End Date" name="endDate" value={filters.endDate} onChange={handleFilterChange} />
-          <select aria-label="Rows per page" name="limit" value={filters.limit} onChange={handleFilterChange}>
+          <input type="text" placeholder="LEVEL ID" aria-label="Level ID" name="levelId" value={filters.levelId} onChange={handleFilterChange} className="level-income-input" />
+          <input type="date" placeholder="START DATE" aria-label="Start Date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="level-income-input" />
+          <input type="date" placeholder="END DATE" aria-label="End Date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="level-income-input" />
+          <select aria-label="Rows per page" name="limit" value={filters.limit} onChange={handleFilterChange} className="level-income-input">
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button onClick={handleSearch} className="user-btn-blue" type="button">SEARCH</button>
+          <button onClick={handleSearch} className="user-btn-blue level-income-search-btn" type="button">SEARCH</button>
         </div>
 
         <div className="table-toolbar">

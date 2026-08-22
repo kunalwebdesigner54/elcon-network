@@ -36,15 +36,24 @@
 .level-income-filter-input {
   flex: 1 1 170px;
   min-width: 150px;
+  height: 40px;
+  box-sizing: border-box;
 }
 
 .level-income-size-select {
   flex: 0 0 92px;
   min-width: 92px;
+  height: 40px;
+  box-sizing: border-box;
 }
 
 .level-income-search-btn {
   min-width: 110px;
+  height: 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Table wrapper for responsive scrolling */
