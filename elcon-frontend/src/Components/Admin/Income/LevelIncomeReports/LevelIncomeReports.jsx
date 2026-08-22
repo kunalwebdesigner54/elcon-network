@@ -24,6 +24,7 @@ function LevelIncomeReports() {
     levelId: row.levelId,
     fromMemberName: row.fromMemberName,
     amount: Number(row.amount || 0),
+    transactionId: row.transactionId,
   })), [rows]);
 
   const totalAmount = levelIncomeReportsData.reduce((sum, row) => sum + Number(row.amount || 0), 0);
@@ -78,7 +79,7 @@ function LevelIncomeReports() {
               ) : (
                 <>
                   {levelIncomeReportsData.map((row) => (
-                    <tr key={row.memberId}>
+                    <tr key={row.transactionId || row.sNo}>
                       <td>{row.sNo}</td>
                       <td>{row.incomeDateTime}</td>
                       <td>{row.memberId}</td>

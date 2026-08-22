@@ -48,7 +48,7 @@ function DirectList() {
                     <th>SR. NO.</th>
                     <th>MEMBER ID</th>
                     <th>MEMBER NAME</th>
-                    <th>UNLOCK LEVEL</th>
+                    <th>UPGRADE LEVEL</th>
                     <th>DIRECTS</th>
                     <th>TOTAL TEAM</th>
                     <th>STATUS</th>

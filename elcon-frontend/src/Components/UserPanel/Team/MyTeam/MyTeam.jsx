@@ -16,7 +16,7 @@ function flattenDescendants(node, depth = 0, acc = []) {
       joinDateRaw: child.joinDateRaw,
       unlockLevel: child.unlockLevel || 1,
       city: child.city || '---',
-      rankNo: child.rank || '---',
+      directs: child.directCount || 0,
       status: child.status,
     });
     flattenDescendants(child, depth + 1, acc);
@@ -101,7 +101,7 @@ function MyTeam() {
             {levelOptions.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
           <select value={filterUnlock} onChange={(e) => setFilterUnlock(e.target.value)}>
-            <option value="">UNLOCK LEVEL</option>
+            <option value="">UPGRADE LEVEL</option>
             {levelOptions.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
           <input type="date" placeholder="START DATE" value={filterStartDate} onChange={(e) => setFilterStartDate(e.target.value)} />
@@ -136,10 +136,10 @@ function MyTeam() {
                     <th>MEMBER NAME</th>
                     <th>LEVEL DEPTH</th>
                     <th>JOIN DATE</th>
-                    <th>UNLOCK LEVEL</th>
+                    <th>UPGRADE LEVEL</th>
                     <th>CITY</th>
                     <th>STATUS</th>
-                    <th>RANK NO</th>
+                    <th>DIRECTS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -160,7 +160,7 @@ function MyTeam() {
                             {item.status}
                           </span>
                         </td>
-                        <td>{item.rankNo}</td>
+                        <td>{item.directs}</td>
                       </tr>
                     ))
                   )}

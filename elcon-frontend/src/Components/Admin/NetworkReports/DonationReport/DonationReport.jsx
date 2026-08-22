@@ -4,7 +4,7 @@ import './DonationReport.css';
 
 const exportColumns = [
   'S.No', 'Donor Member ID', 'Donor Member Name', 'Receiver Member ID', 'Receiver Member Name', 'D. Amount',
-  'Rank', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
+  'Upgrade Level', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
 ];
 
 const rankLabels = {
@@ -201,7 +201,7 @@ function DonationReport() {
               <input className="text-input" style={{ maxWidth: '160px' }} placeholder="RECEIVER MEMBER ID" value={filters.receiverMemberId} onChange={handleFilterChange('receiverMemberId')} />
               <input className="text-input" style={{ maxWidth: '110px' }} placeholder="D. AMOUNT" value={filters.amount} onChange={handleFilterChange('amount')} />
               <select className="select-input" style={{ maxWidth: '98px' }} value={filters.rank} onChange={handleFilterChange('rank')}>
-                <option value="">RANK</option>
+                <option value="">UPGRADE LEVEL</option>
                 {Object.keys(rankLabels).map((rankKey) => (
                   <option key={rankKey} value={rankKey}>{rankKey}</option>
                 ))}
@@ -239,7 +239,7 @@ function DonationReport() {
                     <th>RECEIVER MID</th>
                     <th>RECEIVER MEMBER NAME</th>
                     <th>D. AMOUNT</th>
-                    <th>RANK</th>
+                    <th>UPGRADE LEVEL</th>
                     <th>REQUEST DATE</th>
                     <th>APPROVE DATE</th>
                     <th>TRANSACTION ID</th>

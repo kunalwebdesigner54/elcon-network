@@ -79,7 +79,7 @@ function LevelIncome() {
               ) : (
                 <>
                   {visibleRows.map((row, index) => (
-                    <tr key={`${row.donationId}-${index}`}>
+                    <tr key={row.transactionId || row.sNo || index}>
                       <td>{row.sNo}</td>
                       <td>{row.incomeDateTime}</td>
                       <td>{row.memberId}</td>
