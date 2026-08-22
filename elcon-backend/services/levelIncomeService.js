@@ -52,10 +52,8 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
       const requiredDirects = physicalDepth; // U2 needs 2, U3 needs 3, etc.
       let isEligible = false;
 
-      // Check eligibility
-      if (isAdmin) {
-        isEligible = true; // Admin gets everything
-      } else if (isUplineValid) {
+      // Check eligibility (Enforce requirements on ALL members including Admin)
+      if (isUplineValid) {
         // Count ACTIVE and unblocked direct referrals for this upline
         // Use $ne to handle older documents that might be missing these fields in MongoDB
         const activeDirectsCount = await User.countDocuments({
@@ -71,7 +69,8 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
 
       // If eligible, process the payout
       if (isEligible) {
-        const payoutLevel = physicalDepth; // Record the actual physical depth
+        // Record the contiguous slot for UI/DB (starts at 2)
+        const payoutLevel = successfulSlots + 2;
         
         // Idempotency / Duplicate Prevention:
         const existingIncome = await LevelIncome.findOne({
