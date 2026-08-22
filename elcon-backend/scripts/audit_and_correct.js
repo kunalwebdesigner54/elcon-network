@@ -7,7 +7,8 @@ async function run() {
   await mongoose.connect(process.env.MONGODB_URI);
   console.log("Connected.");
   
-  const users = await User.find({}).lean();
+  // Use select to only fetch what we need (prevents MTU network drop issues on large datasets)
+  const users = await User.find({}).select('_id memberId sponsorId role levelDepth').lean();
   console.log(`Fetched ${users.length} users.`);
   
   const sponsorMap = new Map();
@@ -22,10 +23,8 @@ async function run() {
   let circular = 0;
   
   const discrepancies = [];
+  const bulkOps = [];
   
-  console.log("Auditing depths...");
-  
-  let i = 0;
   for (const user of users) {
     let depth = 0;
     let curr = user.memberId;
@@ -50,7 +49,7 @@ async function run() {
       
       curr = sId;
       depth++;
-      if (depth > 100) {
+      if (depth > 1000) {
         isCircular = true;
         break;
       }
@@ -66,26 +65,40 @@ async function run() {
       discrepancies.push({ memberId: user.memberId, sponsorId: user.sponsorId, stored: user.levelDepth, calc: 'N/A', status: 'Invalid Sponsor' });
     } else if (user.levelDepth !== depth) {
       corrected++;
-      await User.updateOne({ _id: user._id }, { $set: { levelDepth: depth } });
+      bulkOps.push({
+        updateOne: {
+          filter: { _id: user._id },
+          update: { $set: { levelDepth: depth } }
+        }
+      });
       discrepancies.push({ memberId: user.memberId, sponsorId: user.sponsorId, stored: user.levelDepth, calc: depth, status: 'Corrected' });
     } else {
       already++;
       if (already <= 5) discrepancies.push({ memberId: user.memberId, sponsorId: user.sponsorId, stored: user.levelDepth, calc: depth, status: 'Already Correct' });
     }
-    
-    i++;
-    if (i % 10 === 0) console.log(`Processed ${i} / ${users.length}`);
   }
   
-  console.log('\nTotal Members:', users.length);
-  console.log('Already Correct:', already);
-  console.log('Corrected:', corrected);
-  console.log('Invalid/Missing Sponsor:', invalid);
-  console.log('Circular Chains:', circular);
+  if (bulkOps.length > 0) {
+    console.log(`Writing ${bulkOps.length} updates to database via bulkWrite...`);
+    await User.bulkWrite(bulkOps);
+    console.log('Database updated.');
+  }
   
-  console.log('\n--- SAMPLES ---');
-  discrepancies.slice(0, 15).forEach(d => console.log(`${d.memberId} | Sponsor: ${d.sponsorId} | Calc Depth: ${d.calc} | Stored: ${d.stored || 0} | Status: ${d.status}`));
+  console.log('\n--- FINAL VERIFICATION REPORT ---');
+  console.log(`Total Members Checked: ${users.length}`);
+  console.log(`Already Correct: ${already}`);
+  console.log(`Corrected: ${corrected}`);
+  console.log(`Invalid/Missing Sponsor: ${invalid}`);
+  console.log(`Circular Chains: ${circular}`);
+  
+  console.log('\n--- SAMPLE RECORDS ---');
+  console.log('Member ID | Sponsor ID | Calculated Physical Depth | Stored Depth | Status');
+  console.log('-'.repeat(80));
+  
+  discrepancies.slice(0, 20).forEach(d => {
+    console.log(`${d.memberId} | ${d.sponsorId} | ${d.calc} | ${d.stored || 0} | ${d.status}`);
+  });
   
   process.exit(0);
 }
-run();
+run().catch(e => { console.error(e); process.exit(1); });
