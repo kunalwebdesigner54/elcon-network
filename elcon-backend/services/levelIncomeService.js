@@ -57,10 +57,11 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
         isEligible = true; // Admin gets everything
       } else if (isUplineValid) {
         // Count ACTIVE and unblocked direct referrals for this upline
+        // Use $ne to handle older documents that might be missing these fields in MongoDB
         const activeDirectsCount = await User.countDocuments({
           sponsorId: currentSponsorId,
-          accountStatus: 'ACTIVE',
-          isBlocked: false,
+          accountStatus: { $ne: 'IN-ACTIVE' },
+          isBlocked: { $ne: true },
         });
 
         if (activeDirectsCount >= requiredDirects) {
