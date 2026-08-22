@@ -49,7 +49,7 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
       const isAdmin = upline.role === 'admin';
       const isUplineValid = isAdmin || (upline.accountStatus === 'ACTIVE' && upline.isBlocked === false);
 
-      const requiredDirects = physicalDepth; // U2 needs 2, U3 needs 3, etc.
+      const requiredDirects = successfulSlots + 2; // Slot requirement is based on successful payouts
       let isEligible = false;
 
       // Check eligibility (Enforce requirements on ALL members including Admin)
@@ -65,6 +65,8 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
         if (activeDirectsCount >= requiredDirects) {
           isEligible = true;
         }
+
+        console.log(`[TRACE] Member: ${currentSponsorId} | Physical Depth: ${physicalDepth} | Successful Slot: ${successfulSlots + 2} | Req Directs: ${requiredDirects} | Act Directs: ${activeDirectsCount} | Status: ${isEligible ? 'QUALIFIED' : 'SKIPPED'} | Payout: ${isEligible ? '₹20' : '₹0'}`);
       }
 
       // If eligible, process the payout
