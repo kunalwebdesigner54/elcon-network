@@ -208,7 +208,7 @@ function KYCRequest() {
             className={`kyc-tab-btn ${activeTab === tab ? 'active' : ''}`}
             onClick={() => handleTabChange(tab)}
           >
-            {tab === 'ALL' ? 'All History' : `${tab} Requests`}
+            {tab === 'ALL' ? 'ALL HISTORY' : tab}
           </button>
         ))}
       </div>

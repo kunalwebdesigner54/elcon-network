@@ -21,7 +21,7 @@ function DirectList() {
           totalTeam: countDescendants(child),
           totalIncome: 0,
           status: child.status,
-          unlockLevel: child.unlockLevel,
+          upgradeLevel: child.upgradeLevel,
         }));
         setRows(directs);
       })
@@ -63,7 +63,7 @@ function DirectList() {
                         <td>{item.sNo}</td>
                         <td>{item.memberId}</td>
                         <td>{item.memberName}</td>
-                        <td>{item.unlockLevel}</td>
+                        <td>{item.upgradeLevel}</td>
                         <td>{item.directs}</td>
                         <td>{item.totalTeam}</td>
                         <td>

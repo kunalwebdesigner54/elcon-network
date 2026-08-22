@@ -75,7 +75,7 @@ const ReceivedHelp = () => {
             >
               <input className="text-input" placeholder="DONAR MEMBER ID" />
               <select className="select-input">
-                <option value="">RANK</option>
+                <option value="">UPGRADE LEVEL</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -109,7 +109,7 @@ const ReceivedHelp = () => {
                     <th>DONAR MEMBER ID</th>
                     <th>DONAR MEMBER NAME</th>
                     <th>AMOUNT</th>
-                    <th>RANK</th>
+                    <th>UPGRADE LEVEL</th>
                     <th>REQUEST DATE</th>
                     <th>TRASACTION ID</th>
                     <th>UTR NUMBER</th>

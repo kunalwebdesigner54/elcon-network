@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Donation = require('../models/Donation');
 const {
   buildReferralGraph,
   collectDescendants,
@@ -362,6 +363,14 @@ exports.getTeamTree = async (req, res) => {
     const { users: allUsers, childrenBySponsor, adminMemberId } = await getAllUsersTeamStats();
     const memberIds = new Set(allUsers.map((user) => user.memberId));
 
+    // Fetch the maximum approved donation level for all users
+    const allApprovedDonations = await Donation.aggregate([
+      { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
+      { $group: { _id: '$fromMemberId', maxLevel: { $max: '$level' } } }
+    ]);
+    const maxDonationLevelMap = new Map();
+    allApprovedDonations.forEach(d => maxDonationLevelMap.set(d._id, d.maxLevel));
+
     const buildNode = (memberId, depth = 0, visited = new Set()) => {
       if (visited.has(memberId)) return null; // guard against circular references
       if (depth > 1000) return null; // guard against extremely deep trees
@@ -388,6 +397,7 @@ exports.getTeamTree = async (req, res) => {
         city: user.city || '---',
         status: user.accountStatus || 'ACTIVE',
         unlockLevel: user.unlockLevel || 1,
+        upgradeLevel: maxDonationLevelMap.get(user.memberId) || 0,
         rank: user.rank || '---',
         directCount: children.length,
         children,
@@ -409,6 +419,7 @@ exports.getTeamTree = async (req, res) => {
           joinDate: formatDate(new Date()),
           status: 'ACTIVE',
           unlockLevel: 10,
+          upgradeLevel: 10,
           rank: '---',
           directCount: rootNodes.length,
           children: rootNodes,
