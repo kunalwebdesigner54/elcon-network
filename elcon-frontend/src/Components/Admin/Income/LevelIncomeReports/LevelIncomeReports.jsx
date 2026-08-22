@@ -37,7 +37,7 @@ function LevelIncomeReports() {
         <div className="level-income-filter-row">
           <input className="text-input level-income-filter-input" placeholder="MEMBER ID" />
           <input className="text-input level-income-filter-input" placeholder="MEMBER NAME" />
-          <input className="text-input level-income-filter-input" placeholder="LEVEL NO" />
+          <input className="text-input level-income-filter-input" placeholder="LEVEL DEPTH" />
           <input className="text-input level-income-filter-input" placeholder="LEVEL ID" />
           <input className="text-input level-income-filter-input" type="date" placeholder="START DATE" />
           <input className="text-input level-income-filter-input" type="date" placeholder="END DATE" />
@@ -62,8 +62,8 @@ function LevelIncomeReports() {
                 <th>INCOME DATE & TIME</th>
                 <th>MEMBER ID</th>
                 <th>MEMBER NAME</th>
-                <th>UNLOCK LEVEL</th>
-                <th>LEVEL NO</th>
+                <th>DIRECTS</th>
+                <th>LEVEL DEPTH</th>
                 <th>LEVEL ID</th>
                 <th>FROM MEMBER NAME</th>
                 <th>AMOUNT</th>

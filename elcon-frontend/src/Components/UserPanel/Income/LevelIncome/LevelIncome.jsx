@@ -35,7 +35,7 @@ function LevelIncome() {
 
         <div className="level-income-filters">
           <select aria-label="Level Number" value={filters.level} onChange={(event) => setFilters((prev) => ({ ...prev, level: event.target.value }))}>
-            <option value="">LEVEL NO</option>
+            <option value="">LEVEL DEPTH</option>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
           <input type="text" placeholder="LEVEL ID" aria-label="Level ID" value={filters.levelId} onChange={(event) => setFilters((prev) => ({ ...prev, levelId: event.target.value }))} />
@@ -63,7 +63,7 @@ function LevelIncome() {
                 <th>INCOME DATE & TIME</th>
                 <th>MEMBER ID</th>
                 <th>MEMBER NAME</th>
-                <th>LEVEL NO</th>
+                <th>LEVEL DEPTH</th>
                 <th>LEVEL ID</th>
                 <th>FROM MEMBER NAME</th>
                 <th>AMOUNT</th>
