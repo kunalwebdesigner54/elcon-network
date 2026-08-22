@@ -14,30 +14,34 @@ const LevelIncome = require('../models/LevelIncome');
 const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsorId) => {
   if (!sponsorId) return;
 
-  const MAX_SLOT = 10;
+  const MAX_PHYSICAL_DEPTH = 10;
+  const MAX_SLOTS = 9;
   const INCOME_AMOUNT = 20;
 
   try {
-    // 1. Get immediate sponsor (1st Upline). They are skipped for Level Income.
-    const immediateSponsor = await User.findOne({ memberId: sponsorId });
-    if (!immediateSponsor || !immediateSponsor.sponsorId) {
-      return; // No further upline to pay
-    }
-
-    let currentSponsorId = immediateSponsor.sponsorId;
-    let currentSlot = 2; // Payout starts from Slot 2
+    let currentSponsorId = sponsorId; // Starts at U1
+    let physicalDepth = 0;
+    let successfulSlots = 0;
     const visited = new Set();
     
-    // Continue traversing until we hit the maximum slot or run out of uplines
-    while (currentSponsorId && currentSlot <= MAX_SLOT) {
+    while (currentSponsorId && physicalDepth < MAX_PHYSICAL_DEPTH && successfulSlots < MAX_SLOTS) {
       if (visited.has(currentSponsorId)) {
         console.warn(`Circular sponsor dependency detected at ${currentSponsorId}`);
         break;
       }
       visited.add(currentSponsorId);
 
+      physicalDepth++;
+
       // Find the current upline in the chain
       const upline = await User.findOne({ memberId: currentSponsorId });
+      
+      // If U1 (Sponsor), skip payment but move to next upline
+      if (physicalDepth === 1) {
+        currentSponsorId = upline ? upline.sponsorId : null;
+        continue;
+      }
+
       if (!upline) {
         break; // Upline not found, chain broken
       }
@@ -45,6 +49,7 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
       const isAdmin = upline.role === 'admin';
       const isUplineValid = isAdmin || (upline.accountStatus === 'ACTIVE' && upline.isBlocked === false);
 
+      const requiredDirects = physicalDepth; // U2 needs 2, U3 needs 3, etc.
       let isEligible = false;
 
       // Check eligibility
@@ -58,19 +63,19 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
           isBlocked: false,
         });
 
-        // Slot requirement: Slot N needs N direct active joinings
-        if (activeDirectsCount >= currentSlot) {
+        if (activeDirectsCount >= requiredDirects) {
           isEligible = true;
         }
       }
 
-      // If eligible, process the payout for this slot
+      // If eligible, process the payout
       if (isEligible) {
+        const payoutLevel = physicalDepth; // Record the actual physical depth
+        
         // Idempotency / Duplicate Prevention:
-        // Check if THIS joining event has already paid out THIS specific slot.
         const existingIncome = await LevelIncome.findOne({
           joiningMemberId,
-          level: currentSlot // We store the payout slot as 'level'
+          level: payoutLevel
         });
 
         // If not already paid, distribute it
@@ -83,7 +88,7 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
               recipientMemberId: currentSponsorId,
               joiningMemberId,
               joiningMemberName: joiningMemberName || '---',
-              level: currentSlot, // The slot number (2 to 10)
+              level: payoutLevel,
               amount: INCOME_AMOUNT,
               transactionId
             });
@@ -95,17 +100,15 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
             );
           } catch (error) {
             if (error.code !== 11000) {
-              console.error(`Error distributing level income for slot ${currentSlot}:`, error);
+              console.error(`Error distributing level income for level ${payoutLevel}:`, error);
             }
           }
         }
         
-        // Slot is fulfilled (either just paid or previously paid in a retry).
-        // Move requirement to the NEXT slot.
-        currentSlot++;
+        successfulSlots++;
       }
 
-      // Move to next upline (whether current was eligible or skipped)
+      // Move to next physical upline (whether current was eligible or skipped)
       currentSponsorId = upline.sponsorId;
     }
   } catch (error) {
