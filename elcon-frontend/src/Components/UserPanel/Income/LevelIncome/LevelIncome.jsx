@@ -7,25 +7,93 @@ function LevelIncome() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [filters, setFilters] = useState({ level: '', levelId: '', fromMemberName: '', startDate: '', endDate: '', pageSize: '10' });
+  
+  const [filters, setFilters] = useState({
+    levelNo: '',
+    levelId: '',
+    memberName: '', // User panel doesn't have fromMemberName in backend query, but memberName applies to joiningMemberName in our logic if we adjust it, wait backend only uses memberName for recipient! Let's pass it anyway or map fromMemberName to something? Actually the backend only supports memberId, memberName(recipient), levelNo, levelId, startDate, endDate. I'll just pass levelId, levelNo, startDate, endDate.
+    startDate: '',
+    endDate: '',
+    limit: '10'
+  });
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    getLevelIncomeReports()
-      .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
+  const fetchReports = () => {
+    setLoading(true);
+    setError('');
+    
+    const params = {
+      page: currentPage,
+      limit: filters.limit,
+      levelNo: filters.levelNo,
+      levelId: filters.levelId,
+      startDate: filters.startDate,
+      endDate: filters.endDate
+    };
+
+    getLevelIncomeReports(params)
+      .then((response) => {
+        setRows(Array.isArray(response.data) ? response.data : []);
+        if (response.pagination) {
+          setTotalPages(response.pagination.pages || 1);
+        }
+      })
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load level income.'))
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  const filteredRows = useMemo(() => rows.filter((row) => {
-    // Assuming backend returns incomeDateTime as 'DD/MM/YYYY HH:MM A', filtering by it as date may require parsing, but simple substring matches can work, or let's ignore date filter for simplicity
-    const matchesLevel = !filters.level || String(row.levelNo) === filters.level;
-    const matchesLevelId = !filters.levelId || String(row.levelId || '').toLowerCase().includes(filters.levelId.toLowerCase());
-    const matchesFromName = !filters.fromMemberName || String(row.fromMemberName || '').toLowerCase().includes(filters.fromMemberName.toLowerCase());
-    return matchesLevel && matchesLevelId && matchesFromName;
-  }), [filters, rows]);
+  useEffect(() => {
+    fetchReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
-  const totalAmount = filteredRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-  const visibleRows = filteredRows.slice(0, Number(filters.pageSize));
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearch = () => {
+    if (currentPage === 1) {
+      fetchReports();
+    } else {
+      setCurrentPage(1);
+    }
+  };
+
+  const totalAmount = rows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+  const renderPagination = () => {
+    const pages = [];
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 2);
+    
+    if (startPage > 1) {
+      pages.push(<button key="1" type="button" onClick={() => setCurrentPage(1)} className="level-income-page-btn">1</button>);
+      if (startPage > 2) pages.push(<span key="dots1" className="level-income-page-btn">...</span>);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button 
+          key={i} 
+          type="button"
+          onClick={() => setCurrentPage(i)} 
+          className={`level-income-page-btn ${currentPage === i ? 'level-income-page-btn-active' : ''}`}
+        >
+          {i}
+        </button>
+      );
+    }
+    
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) pages.push(<span key="dots2" className="level-income-page-btn">...</span>);
+      pages.push(<button key={totalPages} type="button" onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">{totalPages}</button>);
+    }
+    
+    return pages;
+  };
 
   return (
     <div>
@@ -34,20 +102,19 @@ function LevelIncome() {
         <h3>Total Level Income : {totalAmount.toFixed(2)}</h3>
 
         <div className="level-income-filters">
-          <select aria-label="Level Number" value={filters.level} onChange={(event) => setFilters((prev) => ({ ...prev, level: event.target.value }))}>
+          <select aria-label="Level Number" name="levelNo" value={filters.levelNo} onChange={handleFilterChange}>
             <option value="">LEVEL DEPTH</option>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
-          <input type="text" placeholder="LEVEL ID" aria-label="Level ID" value={filters.levelId} onChange={(event) => setFilters((prev) => ({ ...prev, levelId: event.target.value }))} />
-          <input type="text" placeholder="FROM MEMBER NAME" aria-label="From Member Name" value={filters.fromMemberName} onChange={(event) => setFilters((prev) => ({ ...prev, fromMemberName: event.target.value }))} />
-          <input type="date" placeholder="START DATE" aria-label="Start Date" value={filters.startDate} onChange={(event) => setFilters((prev) => ({ ...prev, startDate: event.target.value }))} />
-          <input type="date" placeholder="END DATE" aria-label="End Date" value={filters.endDate} onChange={(event) => setFilters((prev) => ({ ...prev, endDate: event.target.value }))} />
-          <select aria-label="Rows per page" value={filters.pageSize} onChange={(event) => setFilters((prev) => ({ ...prev, pageSize: event.target.value }))}>
+          <input type="text" placeholder="LEVEL ID" aria-label="Level ID" name="levelId" value={filters.levelId} onChange={handleFilterChange} />
+          <input type="date" placeholder="START DATE" aria-label="Start Date" name="startDate" value={filters.startDate} onChange={handleFilterChange} />
+          <input type="date" placeholder="END DATE" aria-label="End Date" name="endDate" value={filters.endDate} onChange={handleFilterChange} />
+          <select aria-label="Rows per page" name="limit" value={filters.limit} onChange={handleFilterChange}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="user-btn-blue" type="button">SEARCH</button>
+          <button onClick={handleSearch} className="user-btn-blue" type="button">SEARCH</button>
         </div>
 
         <div className="table-toolbar">
@@ -73,12 +140,12 @@ function LevelIncome() {
               {loading ? (
                 <tr><td colSpan={8}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={8}>{error}</td></tr>
-              ) : visibleRows.length === 0 ? (
+                <tr><td colSpan={8} style={{color: 'red'}}>{error}</td></tr>
+              ) : rows.length === 0 ? (
                 <tr><td colSpan={8}>No level income records found.</td></tr>
               ) : (
                 <>
-                  {visibleRows.map((row, index) => (
+                  {rows.map((row, index) => (
                     <tr key={row.transactionId || row.sNo || index}>
                       <td>{row.sNo}</td>
                       <td>{row.incomeDateTime}</td>
@@ -91,7 +158,7 @@ function LevelIncome() {
                     </tr>
                   ))}
                   <tr className="level-income-total-row">
-                    <td colSpan={7}>TOTAL AMOUNT</td>
+                    <td colSpan={7}>PAGE TOTAL</td>
                     <td>{totalAmount.toFixed(2)}</td>
                   </tr>
                 </>
@@ -101,23 +168,11 @@ function LevelIncome() {
         </div>
 
         <div className="level-income-pagination" aria-label="Pagination">
-          <button type="button" className="level-income-page-btn" disabled>
-            «
-          </button>
-          <button type="button" className="level-income-page-btn" disabled>
-            ‹
-          </button>
-          <button type="button" className="level-income-page-btn level-income-page-btn-active">
-            1
-          </button>
-          <button type="button" className="level-income-page-btn">2</button>
-          <button type="button" className="level-income-page-btn">3</button>
-          <button type="button" className="level-income-page-btn">4</button>
-          <button type="button" className="level-income-page-btn">5</button>
-          <button type="button" className="level-income-page-btn">6</button>
-          <button type="button" className="level-income-page-btn">7</button>
-          <button type="button" className="level-income-page-btn">›</button>
-          <button type="button" className="level-income-page-btn">»</button>
+          <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage(1)} className="level-income-page-btn">«</button>
+          <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="level-income-page-btn">‹</button>
+          {renderPagination()}
+          <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="level-income-page-btn">›</button>
+          <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">»</button>
         </div>
       </div>
     </div>
