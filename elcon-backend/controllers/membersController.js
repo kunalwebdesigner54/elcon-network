@@ -224,6 +224,10 @@ exports.getAllMembersList = async (req, res) => {
       query.accountStatus = req.query.status;
     }
 
+    if (req.query.levelDepth) {
+      query.levelDepth = Number(req.query.levelDepth);
+    }
+
     const total = await User.countDocuments(query);
     const users = await User.find(query)
       .select('+plainPassword +plainTransactionPassword -kycDetails.aadharFrontImage -kycDetails.aadharBackImage -kycDetails.panImage')
@@ -231,32 +235,6 @@ exports.getAllMembersList = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .lean();
-
-    // Optimize depth calculation by only fetching ancestors of the paginated users
-    const depthMap = new Map();
-    const sponsorCache = new Map();
-    
-    const getSponsor = async (mId) => {
-      if (sponsorCache.has(mId)) return sponsorCache.get(mId);
-      const doc = await User.findOne({ memberId: mId }).select('sponsorId -_id').lean();
-      const sId = doc ? (doc.sponsorId || null) : null;
-      sponsorCache.set(mId, sId);
-      return sId;
-    };
-
-    for (const u of users) {
-      let depth = 0;
-      let curr = u.memberId;
-      const visited = new Set();
-      while (curr && curr !== adminMemberId && !visited.has(curr)) {
-        visited.add(curr);
-        const sId = curr === u.memberId ? u.sponsorId : await getSponsor(curr);
-        if (!sId) break;
-        curr = sId;
-        depth++;
-      }
-      depthMap.set(u.memberId, depth);
-    }
 
     const rows = users.map((user, index) => ({
       sNo: skip + index + 1,
@@ -266,7 +244,7 @@ exports.getAllMembersList = async (req, res) => {
       mobile: user.contactNo || '---',
       joinDate: formatDate(user.createdAt),
       joinDateRaw: user.createdAt,
-      levelDepth: depthMap.get(user.memberId) || 0,
+      levelDepth: user.levelDepth || 0,
       city: user.city || '---',
       status: user.accountStatus || 'ACTIVE',
       password: user.plainPassword || '********',

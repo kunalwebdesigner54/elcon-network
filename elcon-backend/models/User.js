@@ -110,6 +110,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    levelDepth: {
+      type: Number,
+      default: 0,
+    },
     unlockLevel: {
       type: Number,
       default: 1,
