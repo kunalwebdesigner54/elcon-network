@@ -359,4 +359,7 @@ userSchema.methods.matchTransactionPassword = async function (enteredPassword) {
 // Compound index for efficient KYC request querying
 userSchema.index({ kycStatus: 1, kycSubmittedAt: -1, createdAt: -1 });
 
+// Compound index to optimize finding active unblocked direct referrals for Level Income
+userSchema.index({ sponsorId: 1, accountStatus: 1, isBlocked: 1 });
+
 module.exports = mongoose.model('User', userSchema);
