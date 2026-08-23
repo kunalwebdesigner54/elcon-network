@@ -399,7 +399,7 @@ exports.getTeamTree = async (req, res) => {
         unlockLevel: user.unlockLevel || 1,
         upgradeLevel: maxDonationLevelMap.get(user.memberId) || 0,
         rank: user.rank || '---',
-        directCount: children.length,
+        directCount: children.filter(c => c.status === 'ACTIVE').length,
         children,
       };
     };

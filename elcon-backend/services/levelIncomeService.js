@@ -91,6 +91,7 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
               joiningMemberId,
               joiningMemberName: joiningMemberName || '---',
               level: payoutLevel,
+              physicalDepth,
               amount: INCOME_AMOUNT,
               transactionId
             });

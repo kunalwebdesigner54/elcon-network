@@ -19,6 +19,10 @@ const levelIncomeSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    physicalDepth: {
+      type: Number,
+      default: 0,
+    },
     amount: {
       type: Number,
       required: true,
@@ -40,7 +44,7 @@ const levelIncomeSchema = new mongoose.Schema(
   }
 );
 
-// Compound unique index to strictly prevent duplicate income for the same joining event + level + recipient
-levelIncomeSchema.index({ joiningMemberId: 1, level: 1, recipientMemberId: 1 }, { unique: true });
+// Compound unique index to strictly prevent duplicate income for the same joining event + level
+levelIncomeSchema.index({ joiningMemberId: 1, level: 1 }, { unique: true });
 
 module.exports = mongoose.model('LevelIncome', levelIncomeSchema);

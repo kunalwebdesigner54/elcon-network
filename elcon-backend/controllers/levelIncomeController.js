@@ -88,6 +88,7 @@ exports.getLevelIncomeReports = async (req, res) => {
       levelNo: record.level,
       levelId: record.joiningMemberId,
       fromMemberName: record.joiningMemberName || '---',
+      physicalDepth: record.physicalDepth || 'N/A',
       amount: record.amount,
       status: record.status,
       transactionId: record.transactionId

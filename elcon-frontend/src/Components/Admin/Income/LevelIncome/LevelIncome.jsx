@@ -1,58 +1,76 @@
 import './LevelIncome.css';
-import { useEffect, useMemo, useState } from 'react';
-import { getMemberPerformance } from '../../../../api/membersService';
+import { useEffect, useState } from 'react';
+import { getLevelIncomeReports } from '../../../../api/levelIncomeService';
 
 function LevelIncome() {
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [totalAmount, setTotalAmount] = useState(0);
 
-  useEffect(() => {
-    getMemberPerformance()
-      .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [filters, setFilters] = useState({
+    memberId: '',
+    memberName: '',
+    levelNo: '',
+    levelId: '',
+    startDate: '',
+    endDate: ''
+  });
+
+  const fetchReports = () => {
+    setLoading(true);
+    setError('');
+    getLevelIncomeReports({ page, limit, ...filters })
+      .then((response) => {
+        setRows(response.data || []);
+        setTotalPages(response.pagination?.pages || 1);
+        
+        // Calculate total for current page
+        const sum = (response.data || []).reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+        setTotalAmount(sum);
+      })
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load level income report.'))
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  const levelIncomeRows = useMemo(() => rows.map((row) => ({
-    sNo: row.sNo,
-    incomeDate: row.joinDate,
-    memberId: row.memberId,
-    memberName: row.memberName,
-    unlockLevel: row.unlockLevel,
-    levelId: row.memberId,
-    fromMemberName: row.memberName,
-    levelNo: row.joiningLevel,
-    amount: Number(row.levelIncome || 0),
-  })), [rows]);
+  useEffect(() => {
+    fetchReports();
+  }, [page, limit]);
 
-  const totalAmount = levelIncomeRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const handleSearch = () => {
+    setPage(1);
+    fetchReports();
+  };
 
   return (
     <div className="tds-report-page">
       <h2 className="section-title tds-screen-title">Level Income Reports</h2>
 
       <section className="panel tds-panel">
-       
-
         <div className="tds-filter-row">
-          
-          <input className="text-input tds-filter-input" placeholder="MEMBER ID" />
-          <input className="text-input tds-filter-input" placeholder="MEMBER NAME" />
-          <input className="text-input tds-filter-input" placeholder="LEVEL NO" />
-            <input className="text-input tds-filter-input" placeholder="LEVEL ID" />
-          <input className="text-input tds-filter-input" placeholder="START DATE" />
-          <input className="text-input tds-filter-input" placeholder="END DATE" />
-          <select className="select-input tds-filter-input tds-size-select" defaultValue="10">
+          <input className="text-input tds-filter-input" name="memberId" value={filters.memberId} onChange={handleFilterChange} placeholder="MEMBER ID" />
+          <input className="text-input tds-filter-input" name="memberName" value={filters.memberName} onChange={handleFilterChange} placeholder="MEMBER NAME" />
+          <input className="text-input tds-filter-input" name="levelNo" value={filters.levelNo} onChange={handleFilterChange} placeholder="LEVEL NO" />
+          <input className="text-input tds-filter-input" name="levelId" value={filters.levelId} onChange={handleFilterChange} placeholder="LEVEL ID" />
+          <input className="text-input tds-filter-input" name="startDate" type="date" value={filters.startDate} onChange={handleFilterChange} placeholder="START DATE" />
+          <input className="text-input tds-filter-input" name="endDate" type="date" value={filters.endDate} onChange={handleFilterChange} placeholder="END DATE" />
+          <select className="select-input tds-filter-input tds-size-select" value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1); }}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary tds-search-btn" type="button">Search</button>
+          <button className="btn-primary tds-search-btn" type="button" onClick={handleSearch}>Search</button>
         </div>
 
-
-         <div className="btn-row tds-export-row">
+        <div className="btn-row tds-export-row">
           <button type="button" className="btn-outline tds-export-btn">XLS</button>
           <button type="button" className="btn-outline tds-export-btn">PDF</button>
         </div>
@@ -65,38 +83,37 @@ function LevelIncome() {
                 <th>INCOME DATE</th>
                 <th>MEMBER ID</th>
                 <th>MEMBER NAME</th>
-                <th>UNLOCK LEVEL</th>
-               <th>LEVEL NO</th>
-                <th>LEVEL ID</th>
+                <th>INCOME LEVEL</th>
+                <th>LEVEL ID (SOURCE)</th>
                 <th>FROM MEMBER NAME</th>
+                <th>PHYSICAL DEPTH</th>
                 <th>AMOUNT</th>
-                
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr><td colSpan={9}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={9}>{error}</td></tr>
-              ) : levelIncomeRows.length === 0 ? (
+                <tr><td colSpan={9} style={{ color: 'red' }}>{error}</td></tr>
+              ) : rows.length === 0 ? (
                 <tr><td colSpan={9}>No level income records found.</td></tr>
-              ) : levelIncomeRows.map((row) => (
-                <tr key={row.memberId}>
+              ) : rows.map((row) => (
+                <tr key={row.transactionId || row.sNo}>
                   <td>{row.sNo}</td>
-                  <td>{row.incomeDate}</td>
+                  <td>{row.incomeDateTime}</td>
                   <td>{row.memberId}</td>
                   <td>{row.memberName}</td>
-                  <td>{row.unlockLevel}</td>
                   <td>{row.levelNo}</td>
                   <td>{row.levelId}</td>
                   <td>{row.fromMemberName}</td>
+                  <td>{row.physicalDepth}</td>
                   <td>{Number(row.amount || 0).toFixed(2)}</td>
                 </tr>
               ))}
-              {levelIncomeRows.length > 0 && (
+              {rows.length > 0 && (
                 <tr className="level-income-summary-row">
                   <td colSpan="8" style={{ textAlign: 'right', fontWeight: 700 }}>
-                    TOTAL AMOUNT
+                    PAGE TOTAL
                   </td>
                   <td>{totalAmount.toFixed(2)}</td>
                 </tr>

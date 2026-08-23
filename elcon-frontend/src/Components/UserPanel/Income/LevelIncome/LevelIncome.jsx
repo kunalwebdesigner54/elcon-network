@@ -1,7 +1,7 @@
 import '../../Common/UserLayout.css';
 import './LevelIncome.css';
-import { useEffect, useMemo, useState } from 'react';
-import { getLevelIncomeReports } from '../../../../api/membersService';
+import { useEffect, useState } from 'react';
+import { getLevelIncomeReports } from '../../../../api/levelIncomeService';
 
 function LevelIncome() {
   const [rows, setRows] = useState([]);
@@ -11,7 +11,6 @@ function LevelIncome() {
   const [filters, setFilters] = useState({
     levelNo: '',
     levelId: '',
-    memberName: '', // User panel doesn't have fromMemberName in backend query, but memberName applies to joiningMemberName in our logic if we adjust it, wait backend only uses memberName for recipient! Let's pass it anyway or map fromMemberName to something? Actually the backend only supports memberId, memberName(recipient), levelNo, levelId, startDate, endDate. I'll just pass levelId, levelNo, startDate, endDate.
     startDate: '',
     endDate: '',
     limit: '10'
@@ -130,19 +129,20 @@ function LevelIncome() {
                 <th>INCOME DATE & TIME</th>
                 <th>MEMBER ID</th>
                 <th>MEMBER NAME</th>
-                <th>LEVEL DEPTH</th>
-                <th>LEVEL ID</th>
+                <th>INCOME LEVEL</th>
+                <th>LEVEL ID (SOURCE)</th>
                 <th>FROM MEMBER NAME</th>
+                <th>PHYSICAL DEPTH</th>
                 <th>AMOUNT</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8}>Loading...</td></tr>
+                <tr><td colSpan={9}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={8} style={{color: 'red'}}>{error}</td></tr>
+                <tr><td colSpan={9} style={{color: 'red'}}>{error}</td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={8}>No level income records found.</td></tr>
+                <tr><td colSpan={9}>No level income records found.</td></tr>
               ) : (
                 <>
                   {rows.map((row, index) => (
@@ -154,11 +154,12 @@ function LevelIncome() {
                       <td>{row.levelNo}</td>
                       <td>{row.levelId}</td>
                       <td>{row.fromMemberName}</td>
+                      <td>{row.physicalDepth}</td>
                       <td>{Number(row.amount || 0).toFixed(2)}</td>
                     </tr>
                   ))}
                   <tr className="level-income-total-row">
-                    <td colSpan={7}>PAGE TOTAL</td>
+                    <td colSpan={8}>PAGE TOTAL</td>
                     <td>{totalAmount.toFixed(2)}</td>
                   </tr>
                 </>

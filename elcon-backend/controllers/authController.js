@@ -125,10 +125,10 @@ exports.registerUser = async (req, res) => {
     }
 
     // Calculate physical level depth
-    let levelDepth = -1;
+    let levelDepth = 0;
     if (sponsorId) {
       const sponsor = await User.findOne({ memberId: sponsorId });
-      if (sponsor && sponsor.levelDepth !== undefined && sponsor.levelDepth !== -1) {
+      if (sponsor && sponsor.levelDepth !== undefined && sponsor.levelDepth >= 0) {
         levelDepth = sponsor.levelDepth + 1;
       }
     }
