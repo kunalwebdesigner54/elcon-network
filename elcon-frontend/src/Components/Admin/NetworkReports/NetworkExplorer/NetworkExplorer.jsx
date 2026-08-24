@@ -147,7 +147,7 @@ function NetworkExplorer() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5', padding: '12px' }}>
+    <div style={{ minHeight: '100vh', padding: '12px' }}>
       <h1 className="page-title" style={{ fontSize: '42px', marginBottom: '14px' }}>
         Network Explorer
       </h1>
@@ -174,7 +174,7 @@ function NetworkExplorer() {
 
         {/* Instructions */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-          <span style={{ fontSize: '14px', color: '#666' }}>
+          <span style={{ fontSize: '14px', color: '#a0aec0' }}>
             Click on + Sign to Expand Tree and load directs dynamically.
           </span>
         </div>
