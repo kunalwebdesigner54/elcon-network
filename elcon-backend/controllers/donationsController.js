@@ -12,78 +12,30 @@ const generateDonationId = () => {
 
 const { formatDate, formatDateOnly } = require('../utils/dateFormatter');
 
-const getActualCompletedLevel = async (memberId) => {
-  const donations = await Donation.find({
-    fromMemberId: memberId,
-    status: { $in: ['APPROVED', 'COMPLETED'] }
-  }).select('level').lean();
-  
-  if (!donations || donations.length === 0) return 0;
-  
-  const levels = new Set(donations.map(d => d.level));
-  let maxLevel = 0;
-  
-  // Enforce sequential levels: if Level 2 is missing, Level 3 is not valid.
-  for (let i = 1; i <= 10; i++) {
-    if (levels.has(i)) {
-      maxLevel = i;
-    } else {
-      break;
-    }
-  }
-  return maxLevel;
-};
+const { getLogicalUplines, getActualCompletedLevel } = require('../services/uplineEngine');
 
 /**
- * Walk up the sponsor chain from startMemberId to the Nth upline (where N = targetLevel).
- * If the Nth upline hasn't upgraded to targetLevel, they are skipped and added to `skipped` array.
- * We continue checking further uplines until we find one with actual completed level >= targetLevel.
- *
- * If no eligible upline exists the admin receives the donation.
+ * Uses the Central Upline Engine to find the single eligible receiver for the targetLevel donation.
+ * It builds logical levels up to targetLevel and returns the member that successfully claims the targetLevel slot.
  */
 const findEligibleUpline = async (startMemberId, targetLevel) => {
-  const skipped = [];
-  let currentMemberId = startMemberId;
-
-  // 1. Unconditionally skip (targetLevel - 1) uplines.
-  // For Level 1, loops 0 times (starts check at 1st upline).
-  // For Level 2, loops 1 time (starts check at 2nd upline).
-  for (let i = 1; i < targetLevel; i++) {
-    const currentUser = await User.findOne({ memberId: currentMemberId }).select('sponsorId').lean();
-    if (!currentUser || !currentUser.sponsorId) {
-      // Reached the top before finding the Nth upline
-      const admin = await User.findOne({ role: 'admin' }).select('memberId role name contactNo paymentDetails bankDetails').lean();
-      return { upline: admin, skipped: [] };
-    }
-    currentMemberId = currentUser.sponsorId;
+  // We need to calculate logical levels up to targetLevel.
+  // Example: if targetLevel is 3, we traverse finding Logical 1, Logical 2, and Logical 3.
+  // The person who gets Logical 3 is our intended upline.
+  const { receivers, skipped } = await getLogicalUplines(startMemberId, targetLevel, 'DONATION', 1);
+  
+  // The target receiver is the one who qualified for targetLevel
+  const targetReceiver = receivers.find(r => r.logicalLevel === targetLevel);
+  
+  let upline = null;
+  if (targetReceiver) {
+    upline = targetReceiver.member;
+  } else {
+    // Fall back to admin if the chain ended before finding someone for targetLevel
+    upline = await User.findOne({ role: 'admin' }).select('memberId role name contactNo paymentDetails bankDetails').lean();
   }
-
-  const MAX_DEPTH = 50;
-  for (let depth = 0; depth < MAX_DEPTH; depth++) {
-    const currentUser = await User.findOne({ memberId: currentMemberId }).select('sponsorId').lean();
-    if (!currentUser || !currentUser.sponsorId) break;
-
-    const upline = await User.findOne({ memberId: currentUser.sponsorId }).select('memberId role name contactNo paymentDetails bankDetails').lean();
-    if (!upline) break;
-
-    // If upline is admin, always accept as eligible
-    if (upline.role === 'admin') {
-      return { upline, skipped };
-    }
-
-    const uplineActualLevel = await getActualCompletedLevel(upline.memberId);
-    if (uplineActualLevel >= targetLevel) {
-      return { upline, skipped };
-    }
-
-    // This user was the intended target but didn't have the required level
-    skipped.push(upline.memberId);
-    currentMemberId = upline.memberId;
-  }
-
-  // Fall back to admin
-  const admin = await User.findOne({ role: 'admin' }).select('memberId role name contactNo paymentDetails bankDetails').lean();
-  return { upline: admin, skipped };
+  
+  return { upline, skipped };
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

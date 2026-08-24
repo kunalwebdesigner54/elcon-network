@@ -1,12 +1,12 @@
 const User = require('../models/User');
 const LevelIncome = require('../models/LevelIncome');
+const { getLogicalUplines } = require('./uplineEngine');
 
 /**
  * Distribute Level Income for a newly joined member.
- * - Max 9 payouts (Slot 2 to Slot 10)
- * - ₹20 per slot
- * - 1st Upline gets ₹0 (skipped)
- * - Requires X Active Direct Joinings for Slot X
+ * - Uses the Centralized Upline Engine
+ * - Slots 2 to 10 are paid ₹20 each
+ * - Slot 1 (Sponsor) gets ₹0 (skipped essentially, but it consumes Slot 1)
  * @param {String} joiningMemberId
  * @param {String} joiningMemberName
  * @param {String} sponsorId
@@ -14,104 +14,58 @@ const LevelIncome = require('../models/LevelIncome');
 const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsorId) => {
   if (!sponsorId) return;
 
-  const MAX_PHYSICAL_DEPTH = 10;
-  const MAX_SLOTS = 9;
+  const MAX_SLOTS = 10;
   const INCOME_AMOUNT = 20;
 
   try {
-    let currentSponsorId = sponsorId; // Starts at U1
-    let physicalDepth = 0;
-    let successfulSlots = 0;
-    const visited = new Set();
+    // 1. Get all receivers and skips from the central engine up to Logical Level 10
+    const { receivers, skipped } = await getLogicalUplines(joiningMemberId, MAX_SLOTS, 'LEVEL_INCOME', 1);
     
-    // Removed physical depth limit. Traversal stops when 9 slots are filled OR upline chain breaks.
-    while (currentSponsorId && successfulSlots < MAX_SLOTS) {
-      if (visited.has(currentSponsorId)) {
-        console.warn(`Circular sponsor dependency detected at ${currentSponsorId}`);
-        break;
-      }
-      visited.add(currentSponsorId);
-
-      physicalDepth++;
-
-      // Find the current upline in the chain
-      const upline = await User.findOne({ memberId: currentSponsorId });
+    // 2. Iterate through the receivers and pay them (skipping level 1 since payout is 0)
+    for (const receiverData of receivers) {
+      const { logicalLevel, member, physicalDepth } = receiverData;
       
-      // If U1 (Sponsor), skip payment but move to next upline
-      if (physicalDepth === 1) {
-        currentSponsorId = upline ? upline.sponsorId : null;
+      if (logicalLevel === 1) {
+        // Slot 1 is Sponsor. Payout is ₹0. We don't create a transaction.
         continue;
       }
+      
+      // Filter skipped members to only include those who failed at this specific logical slot
+      const relevantSkips = skipped.filter(s => s.failedAtLogicalLevel === logicalLevel);
 
-      if (!upline) {
-        break; // Upline not found, chain broken
-      }
+      // Idempotency / Duplicate Prevention:
+      const existingIncome = await LevelIncome.findOne({
+        joiningMemberId,
+        level: logicalLevel
+      });
 
-      const isAdmin = upline.role === 'admin';
-      const isUplineValid = isAdmin || (upline.accountStatus === 'ACTIVE' && upline.isBlocked === false);
-
-      const requiredDirects = successfulSlots + 2; // Slot requirement is based on successful payouts
-      let isEligible = false;
-
-      // Check eligibility (Enforce requirements on ALL members including Admin)
-      if (isUplineValid) {
-        // Count strictly ACTIVE direct referrals for this upline
-        const activeDirectsCount = await User.countDocuments({
-          sponsorId: currentSponsorId,
-          accountStatus: 'ACTIVE',
-        });
-
-        if (activeDirectsCount >= requiredDirects) {
-          isEligible = true;
-        }
-
-        console.log(`[TRACE] Member: ${currentSponsorId} | Physical Depth: ${physicalDepth} | Successful Slot: ${successfulSlots + 2} | Req Directs: ${requiredDirects} | Act Directs: ${activeDirectsCount} | Status: ${isEligible ? 'QUALIFIED' : 'SKIPPED'} | Payout: ${isEligible ? '₹20' : '₹0'}`);
-      }
-
-      // If eligible, process the payout
-      if (isEligible) {
-        // Record the contiguous slot for UI/DB (starts at 2)
-        const payoutLevel = successfulSlots + 2;
+      if (!existingIncome) {
+        const transactionId = `LVL${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
         
-        // Idempotency / Duplicate Prevention:
-        const existingIncome = await LevelIncome.findOne({
-          joiningMemberId,
-          level: payoutLevel
-        });
+        try {
+          // Create income record
+          await LevelIncome.create({
+            recipientMemberId: member.memberId,
+            joiningMemberId,
+            joiningMemberName: joiningMemberName || '---',
+            level: logicalLevel, // This is the Income Level Slot
+            physicalDepth,
+            amount: INCOME_AMOUNT,
+            transactionId,
+            skippedMembers: relevantSkips
+          });
 
-        // If not already paid, distribute it
-        if (!existingIncome) {
-          const transactionId = `LVL${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
-          
-          try {
-            // 1. Create income record
-            await LevelIncome.create({
-              recipientMemberId: currentSponsorId,
-              joiningMemberId,
-              joiningMemberName: joiningMemberName || '---',
-              level: payoutLevel,
-              physicalDepth,
-              amount: INCOME_AMOUNT,
-              transactionId
-            });
-
-            // 2. Credit wallet atomically
-            await User.updateOne(
-              { memberId: currentSponsorId },
-              { $inc: { walletBalance: INCOME_AMOUNT } }
-            );
-          } catch (error) {
-            if (error.code !== 11000) {
-              console.error(`Error distributing level income for level ${payoutLevel}:`, error);
-            }
+          // Credit wallet atomically
+          await User.updateOne(
+            { memberId: member.memberId },
+            { $inc: { walletBalance: INCOME_AMOUNT } }
+          );
+        } catch (error) {
+          if (error.code !== 11000) { // Ignore mongo duplicate key errors quietly
+            console.error(`Error distributing level income for level ${logicalLevel}:`, error);
           }
         }
-        
-        successfulSlots++;
       }
-
-      // Move to next physical upline (whether current was eligible or skipped)
-      currentSponsorId = upline.sponsorId;
     }
   } catch (error) {
     console.error('Fatal error in distributeLevelIncome:', error);

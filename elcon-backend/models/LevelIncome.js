@@ -38,6 +38,8 @@ const levelIncomeSchema = new mongoose.Schema(
       enum: ['CREDITED'],
       default: 'CREDITED',
     },
+    // Detailed audit trail of skipped members during traversal
+    skippedMembers: [{ type: mongoose.Schema.Types.Mixed }],
   },
   {
     timestamps: true,

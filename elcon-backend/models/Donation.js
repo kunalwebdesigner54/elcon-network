@@ -76,8 +76,8 @@ const donationSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    // Members skipped due to the skip rule
-    skippedMembers: [{ type: String }],
+    // Detailed audit trail of skipped members
+    skippedMembers: [{ type: mongoose.Schema.Types.Mixed }],
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
