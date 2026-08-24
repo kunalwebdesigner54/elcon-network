@@ -432,8 +432,8 @@ exports.getTeamTree = async (req, res) => {
         joinDateRaw: user.createdAt,
         city: user.city || '---',
         status: user.accountStatus || 'ACTIVE',
-        unlockLevel: user.unlockLevel || 1,
-        upgradeLevel: maxDonationLevelMap.get(user.memberId) || 0,
+        unlockLevel: maxDonationLevelMap.get(user.memberId) ?? 0,
+        upgradeLevel: maxDonationLevelMap.get(user.memberId) ?? 0,
         rank: user.rank || '---',
         directCount: children.filter(c => c.status === 'ACTIVE').length,
         children,
@@ -478,6 +478,11 @@ exports.getMemberPerformance = async (req, res) => {
   try {
     const { users, statsMap, adminMemberId } = await getAllUsersTeamStats();
     const depthMap = calculateLevelDepths(users, adminMemberId);
+    const completedDonations = await Donation.aggregate([
+      { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
+      { $group: { _id: '$fromMemberId', maxLevel: { $max: '$level' } } }
+    ]);
+    const upgradeLevelMap = new Map(completedDonations.map((donation) => [donation._id, donation.maxLevel]));
 
     const rows = users.map((user, index) => {
       const stats = statsMap.get(user.memberId);
@@ -501,7 +506,7 @@ exports.getMemberPerformance = async (req, res) => {
         joinDateRaw: user.createdAt,
         status: user.accountStatus || 'ACTIVE',
         levelDepth: depthMap.get(user.memberId) || 0,
-        unlockLevel: user.unlockLevel || 1,
+        unlockLevel: upgradeLevelMap.get(user.memberId) ?? 0,
         rank: user.rank || '---',
         activeTeamCount,
         inactiveTeamCount,

@@ -116,7 +116,7 @@ const userSchema = new mongoose.Schema(
     },
     unlockLevel: {
       type: Number,
-      default: 1,
+      default: 0,
     },
     walletBalance: {
       type: Number,

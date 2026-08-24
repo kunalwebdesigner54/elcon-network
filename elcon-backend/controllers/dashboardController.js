@@ -4,6 +4,7 @@ const Epin = require('../models/Epin');
 const Order = require('../models/Order');
 const LevelIncome = require('../models/LevelIncome');
 const { getTeamStats } = require('../services/teamService');
+const { getActualCompletedLevel } = require('../services/uplineEngine');
 
 // @desc Admin dashboard metrics
 // @route GET /api/dashboard/admin
@@ -73,12 +74,12 @@ exports.userDashboard = async (req, res) => {
     const endOfYesterday = new Date(yesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    const [donationsSent, donationsReceived, yesterdayReceived, levelIncomeSent, yestLevelIncomeList] = await Promise.all([
-      Donation.find({ fromMemberId: memberId, status: 'COMPLETED' }),
-      Donation.find({ toMemberId: memberId, status: 'COMPLETED' }),
+    const [donationsSent, donationsReceived, yesterdayReceived, levelIncomeSent, yestLevelIncomeList, upgradeLevel] = await Promise.all([
+      Donation.find({ fromMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
+      Donation.find({ toMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({
         toMemberId: memberId,
-        status: 'COMPLETED',
+        status: { $in: ['APPROVED', 'COMPLETED'] },
         createdAt: { $gte: yesterday, $lte: endOfYesterday },
       }),
       LevelIncome.find({ recipientMemberId: memberId, status: 'CREDITED' }),
@@ -87,6 +88,7 @@ exports.userDashboard = async (req, res) => {
         status: 'CREDITED',
         createdAt: { $gte: yesterday, $lte: endOfYesterday },
       }),
+      getActualCompletedLevel(memberId),
     ]);
 
     const totalGivenHelp = donationsSent.reduce((s, d) => s + d.amount, 0);
@@ -121,8 +123,8 @@ exports.userDashboard = async (req, res) => {
         yesterdayTotalIncome: fmt(yesterdayReceivedHelp + yesterdayLevelInc),
         totalTeam: totalTeamCount,
         yesterdayJoining: 0,
-        unlockLevel: user.unlockLevel || 1,
-        upgradedLevel: user.unlockLevel || 1,
+        unlockLevel: upgradeLevel,
+        upgradedLevel: upgradeLevel,
         walletBalance: fmt(user.walletBalance || 0),
         rank: user.rank || '---',
       },

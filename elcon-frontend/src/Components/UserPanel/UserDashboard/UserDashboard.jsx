@@ -63,9 +63,9 @@ function MemberDashboard() {
     { label: "Yesterday's Total Income", value: memberInfo?.yesterdayTotalIncome || '---' },
     { label: 'Total Team', value: memberInfo?.totalTeam || '---' },
     { label: "Yesterday's Joining", value: memberInfo?.yesterdayJoining || '---' },
-    { label: 'Unlock Level', value: memberInfo?.unlockLevel || '---' },
+    { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '---' },
     { label: 'My Directs', value: memberInfo?.referralsCount || 0 },
-    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel || '---' },
+    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '---' },
     { label: 'Rank', value: memberInfo?.rank || '---' }
   ];
 
