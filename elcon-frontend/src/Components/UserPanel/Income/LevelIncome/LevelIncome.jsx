@@ -34,10 +34,20 @@ function LevelIncome() {
 
     getLevelIncomeReports(params)
       .then((response) => {
-        setRows(Array.isArray(response.data) ? response.data : []);
-        setGlobalTotalAmount(response.globalTotalAmount || 0);
-        if (response.pagination) {
-          setTotalPages(response.pagination.pages || 1);
+        let rowsData = [];
+        if (Array.isArray(response)) rowsData = response;
+        else if (response && Array.isArray(response.data)) rowsData = response.data;
+        else if (response && response.data && Array.isArray(response.data.data)) rowsData = response.data.data;
+        else if (response && Array.isArray(response.records)) rowsData = response.records;
+        
+        setRows(rowsData);
+        
+        const totalAmt = response?.globalTotalAmount ?? response?.data?.globalTotalAmount ?? 0;
+        setGlobalTotalAmount(totalAmt);
+        
+        const paginationData = response?.pagination || response?.data?.pagination;
+        if (paginationData) {
+          setTotalPages(paginationData.pages || 1);
         }
       })
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load level income.'))

@@ -23,9 +23,8 @@ exports.getLevelIncomeReports = async (req, res) => {
 
     // If a normal user is requesting, they only see their own earnings
     if (req.user && req.user.role === 'user') {
-      const user = await User.findById(req.user.id).select('memberId');
-      if (user) {
-        query.recipientMemberId = user.memberId;
+      if (req.user.memberId) {
+        query.recipientMemberId = req.user.memberId;
       }
     } else {
       // Admin filter by member ID receiving the income
