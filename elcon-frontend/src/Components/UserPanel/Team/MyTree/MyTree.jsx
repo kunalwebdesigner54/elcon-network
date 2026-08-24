@@ -14,17 +14,21 @@ function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
     <li className="org-tree-li">
       <div className="node-card">
         <div className="node-avatar">
-          👤
+          {node.avatar ? (
+             <img src={node.avatar} alt="User" />
+          ) : (
+             <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Generic User" />
+          )}
         </div>
         <div className="node-name" title={node.name}>{node.name}</div>
-        <div className="node-id">{node.memberId}</div>
+        <div className="node-id">ID: {node.memberId}</div>
         
         <div className="node-stats">
           <div className="node-stat-row">
-            Depth: <span className="node-stat-value">{computedDepth}</span>
+            Depth: {computedDepth}
           </div>
           <div className="node-stat-row">
-            Directs: <span className="node-stat-value">{node.activeDirect || 0}/{node.totalDirect || 0}</span>
+            Directs: {node.activeDirect || 0}/{node.totalDirect || 0}
           </div>
         </div>
 
@@ -145,12 +149,16 @@ function MyTree() {
       <div className="user-panel">
         {error && <p style={{ color: 'red', padding: '16px' }}>{error}</p>}
         
-        <div className="network-filters">
+        <div className="network-search-wrapper">
           <input
-            type="text" placeholder="MEMBER ID" aria-label="Member ID"
-            value={searchMemberId} onChange={(e) => setSearchMemberId(e.target.value)}
+            type="text" 
+            placeholder="Search Member ID..." 
+            aria-label="Member ID"
+            className="network-search-input"
+            value={searchMemberId} 
+            onChange={(e) => setSearchMemberId(e.target.value)}
           />
-          <button className="user-btn-blue" type="button" onClick={handleSearch}>Search</button>
+          <button className="network-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="network-actions-row">

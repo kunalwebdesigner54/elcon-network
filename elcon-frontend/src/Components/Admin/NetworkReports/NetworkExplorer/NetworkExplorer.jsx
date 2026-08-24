@@ -13,17 +13,21 @@ function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
     <li className="org-tree-li">
       <div className="node-card">
         <div className="node-avatar">
-          👤
+          {node.avatar ? (
+             <img src={node.avatar} alt="User" />
+          ) : (
+             <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Generic User" />
+          )}
         </div>
         <div className="node-name" title={node.name}>{node.name}</div>
-        <div className="node-id">{node.memberId}</div>
+        <div className="node-id">ID: {node.memberId}</div>
         
         <div className="node-stats">
           <div className="node-stat-row">
-            Depth: <span className="node-stat-value">{computedDepth}</span>
+            Depth: {computedDepth}
           </div>
           <div className="node-stat-row">
-            Directs: <span className="node-stat-value">{node.activeDirect || 0}/{node.totalDirect || 0}</span>
+            Directs: {node.activeDirect || 0}/{node.totalDirect || 0}
           </div>
         </div>
 
@@ -152,37 +156,17 @@ function NetworkExplorer() {
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         
         {/* Filter Row */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <input
-              type="text"
-              placeholder="Member ID"
-              value={searchMemberId}
-              onChange={(e) => setSearchMemberId(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                fontSize: '14px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                width: '150px',
-                fontFamily: 'inherit'
-              }}
-            />
-          </div>
-          
+        <div className="network-search-wrapper">
+          <input
+            type="text"
+            placeholder="Search Member ID..."
+            value={searchMemberId}
+            onChange={(e) => setSearchMemberId(e.target.value)}
+            className="network-search-input"
+          />
           <button
             onClick={handleSearch}
-            style={{
-              padding: '8px 20px',
-              fontSize: '14px',
-              fontWeight: '600',
-              backgroundColor: '#4a7ba7',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
+            className="network-search-btn"
           >
             SEARCH
           </button>
