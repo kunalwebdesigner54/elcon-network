@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getTreeNode } from '../../../../api/membersService';
+import femaleAvatar from '../../../../Assets/Icons/network-female.svg';
+import maleAvatar from '../../../../Assets/Icons/network-male.svg';
 import './NetworkExplorer.css';
 
 function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
@@ -8,14 +10,13 @@ function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
   const isExpanded = node.isExpanded || false;
   const hasChildren = node.hasChildren;
   const isLoading = node.isLoading || false;
+  const avatar = String(node.gender || '').toLowerCase() === 'female' ? femaleAvatar : maleAvatar;
   
   return (
     <li className="org-tree-li">
       <div className="node-card">
         <div className="node-avatar">
-          <svg className="node-avatar-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 12a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2.25c-4.28 0-7.75 2.2-7.75 4.92 0 .46.37.83.83.83h13.84c.46 0 .83-.37.83-.83 0-2.72-3.47-4.92-7.75-4.92Z" />
-          </svg>
+          <img src={avatar} alt="" />
         </div>
         <div className="node-name" title={node.name}>{node.name}</div>
         <div className="node-id">ID: {node.memberId}</div>
