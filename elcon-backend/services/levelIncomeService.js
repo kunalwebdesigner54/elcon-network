@@ -1,12 +1,14 @@
 const User = require('../models/User');
 const LevelIncome = require('../models/LevelIncome');
-const { getLogicalUplines } = require('./uplineEngine');
 
 /**
  * Distribute Level Income for a newly joined member.
- * - Uses the Centralized Upline Engine
- * - Slots 2 to 10 are paid ₹20 each
- * - Slot 1 (Sponsor) gets ₹0 (skipped essentially, but it consumes Slot 1)
+ * - Strictly maps Physical Upline Depth to Income Slot
+ * - Maximum traversal is 10 physical levels
+ * - Slot 1 (Sponsor) gets ₹0 (No transaction created)
+ * - Slots 2 to 10 are paid ₹20 each if they meet required direct counts
+ * - Skips DO NOT shift or compress the slot upwards
+ * 
  * @param {String} joiningMemberId
  * @param {String} joiningMemberName
  * @param {String} sponsorId
@@ -14,58 +16,89 @@ const { getLogicalUplines } = require('./uplineEngine');
 const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsorId) => {
   if (!sponsorId) return;
 
-  const MAX_SLOTS = 10;
+  const MAX_PHYSICAL_DEPTH = 10;
   const INCOME_AMOUNT = 20;
 
   try {
-    // 1. Get all receivers and skips from the central engine up to Logical Level 10
-    const { receivers, skipped } = await getLogicalUplines(joiningMemberId, MAX_SLOTS, 'LEVEL_INCOME', 1);
-    
-    // 2. Iterate through the receivers and pay them (skipping level 1 since payout is 0)
-    for (const receiverData of receivers) {
-      const { logicalLevel, member, physicalDepth } = receiverData;
-      
-      if (logicalLevel === 1) {
-        // Slot 1 is Sponsor. Payout is ₹0. We don't create a transaction.
-        continue;
-      }
-      
-      // Filter skipped members to only include those who failed at this specific logical slot
-      const relevantSkips = skipped.filter(s => s.failedAtLogicalLevel === logicalLevel);
+    let currentMemberId = sponsorId;
+    let physicalDepth = 1;
 
-      // Idempotency / Duplicate Prevention:
-      const existingIncome = await LevelIncome.findOne({
-        joiningMemberId,
-        level: logicalLevel
-      });
+    while (currentMemberId && physicalDepth <= MAX_PHYSICAL_DEPTH) {
+      // 1. Fetch the candidate upline
+      const candidate = await User.findOne({ memberId: currentMemberId }).lean();
+      
+      // If we hit the absolute top of the tree, break out.
+      if (!candidate) break;
 
-      if (!existingIncome) {
-        const transactionId = `LVL${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
+      // 2. Physical Depth 1 is the immediate sponsor. They always receive ₹0, so we just skip paying them.
+      if (physicalDepth > 1) {
         
-        try {
-          // Create income record
-          await LevelIncome.create({
-            recipientMemberId: member.memberId,
-            joiningMemberId,
-            joiningMemberName: joiningMemberName || '---',
-            level: logicalLevel, // This is the Income Level Slot
-            physicalDepth,
-            amount: INCOME_AMOUNT,
-            transactionId,
-            skippedMembers: relevantSkips
-          });
+        // 3. Admin unconditionally passes checks
+        const isAdmin = candidate.role === 'admin';
+        const isAccountValid = isAdmin || (candidate.accountStatus === 'ACTIVE' && candidate.isBlocked === false);
 
-          // Credit wallet atomically
-          await User.updateOne(
-            { memberId: member.memberId },
-            { $inc: { walletBalance: INCOME_AMOUNT } }
-          );
-        } catch (error) {
-          if (error.code !== 11000) { // Ignore mongo duplicate key errors quietly
-            console.error(`Error distributing level income for level ${logicalLevel}:`, error);
+        if (isAccountValid) {
+          let isEligible = false;
+
+          if (isAdmin) {
+            isEligible = true;
+          } else {
+            // Check their Active Directs
+            const activeDirectsCount = await User.countDocuments({
+              sponsorId: currentMemberId,
+              accountStatus: 'ACTIVE'
+            });
+
+            const requiredDirects = physicalDepth; // 1:1 mapping: Physical Depth = Required Directs
+
+            if (activeDirectsCount >= requiredDirects) {
+              isEligible = true;
+            }
           }
+
+          // 4. If Eligible, process the payout
+          if (isEligible) {
+            // Idempotency check: Ensure we haven't paid this member for this joiner at this level before
+            const existingIncome = await LevelIncome.findOne({
+              joiningMemberId,
+              level: physicalDepth
+            });
+
+            if (!existingIncome) {
+              const transactionId = `LVL${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
+              
+              try {
+                // Create income record exactly matching the physical slot
+                await LevelIncome.create({
+                  recipientMemberId: currentMemberId,
+                  joiningMemberId,
+                  joiningMemberName: joiningMemberName || '---',
+                  level: physicalDepth, // This is the Income Level Slot
+                  physicalDepth: physicalDepth, // For historical context, now same as level
+                  amount: INCOME_AMOUNT,
+                  transactionId,
+                  skippedMembers: [] // Removed tracking of skipped members internally to simplify
+                });
+
+                // Credit wallet atomically
+                await User.updateOne(
+                  { memberId: currentMemberId },
+                  { $inc: { walletBalance: INCOME_AMOUNT } }
+                );
+              } catch (error) {
+                if (error.code !== 11000) { // Ignore mongo duplicate key errors quietly
+                  console.error(`Error distributing level income for physical depth ${physicalDepth}:`, error);
+                }
+              }
+            }
+          }
+          // IF NOT ELIGIBLE -> DO NOTHING (No fake record, no wallet credit, no slot shifting)
         }
       }
+
+      // 5. Advance up the physical chain for the NEXT income slot check
+      physicalDepth++;
+      currentMemberId = candidate.sponsorId;
     }
   } catch (error) {
     console.error('Fatal error in distributeLevelIncome:', error);
