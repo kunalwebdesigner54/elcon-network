@@ -3,9 +3,10 @@
 .network-tree-container {
   overflow-x: auto;
   text-align: center;
-  padding: 20px;
-  background: #f8f9fa;
+  padding: 30px;
+  background: var(--card-bg, #111827);
   min-height: 500px;
+  border-radius: 12px;
 }
 
 .network-tree-container::-webkit-scrollbar {
@@ -13,15 +14,15 @@
   width: 8px;
 }
 .network-tree-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
 }
 .network-tree-container::-webkit-scrollbar-thumb {
-  background: #888;
+  background: rgba(0, 220, 255, 0.3);
   border-radius: 4px;
 }
 .network-tree-container::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgba(0, 220, 255, 0.6);
 }
 
 /* Horizontal Org Tree Structure */
@@ -34,7 +35,7 @@
 .org-tree-ul {
   display: flex;
   justify-content: center;
-  padding-top: 20px;
+  padding-top: 30px;
   position: relative;
   margin: 0;
   padding-left: 0;
@@ -47,8 +48,8 @@
   position: absolute;
   top: 0;
   left: 50%;
-  border-left: 2px solid #b0b8c1;
-  height: 20px;
+  border-left: 2px solid rgba(0, 220, 255, 0.4);
+  height: 30px;
   transform: translateX(-50%);
 }
 
@@ -57,7 +58,7 @@
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding: 20px 10px 0 10px;
+  padding: 30px 15px 0 15px;
 }
 
 /* Horizontal connector line across siblings */
@@ -67,7 +68,7 @@
   top: 0;
   left: 0;
   right: 0;
-  border-top: 2px solid #b0b8c1;
+  border-top: 2px solid rgba(0, 220, 255, 0.4);
 }
 
 /* Fix horizontal line for first child */
@@ -91,8 +92,8 @@
   position: absolute;
   top: 0;
   left: 50%;
-  border-left: 2px solid #b0b8c1;
-  height: 20px;
+  border-left: 2px solid rgba(0, 220, 255, 0.4);
+  height: 30px;
   transform: translateX(-50%);
 }
 
@@ -113,45 +114,53 @@
 
 /* Card Design */
 .node-card {
-  width: 150px;
-  background: white;
-  border: 1px solid #dce1e6;
+  width: 160px;
+  background: #1f2937; /* Dark navy panel */
+  border: 1px solid rgba(0, 220, 255, 0.25);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px 10px 20px 10px;
+  padding: 16px 12px 20px 12px;
   position: relative;
   z-index: 2;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .node-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  border-color: #c0c8d1;
+  box-shadow: 0 8px 16px rgba(0, 220, 255, 0.15);
+  border-color: rgba(0, 220, 255, 0.6);
+}
+
+/* Root Node Specific Styling */
+.tree-root > .org-tree-ul > .org-tree-li > .node-card {
+  width: 180px;
+  border: 2px solid rgba(0, 220, 255, 0.6);
+  box-shadow: 0 0 20px rgba(0, 220, 255, 0.2);
+  background: #111827;
 }
 
 .node-avatar {
   width: 48px;
   height: 48px;
-  background: #f0f4f8;
+  background: rgba(0, 220, 255, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  margin-bottom: 10px;
-  color: #555;
-  border: 2px solid #e2e8f0;
+  margin-bottom: 12px;
+  color: #00dcff;
+  border: 1px solid rgba(0, 220, 255, 0.3);
 }
 
 .node-name {
   font-size: 14px;
   font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 4px;
+  color: #ffffff; /* White text for contrast */
+  margin-bottom: 6px;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -160,60 +169,61 @@
 }
 
 .node-id {
-  font-size: 11px;
-  color: #64748b;
-  margin-bottom: 6px;
+  font-size: 12px;
+  color: #00dcff; /* Cyan ID */
+  margin-bottom: 12px;
   font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .node-stats {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  background: #f8fafc;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.2);
   width: 100%;
-  padding: 6px 0;
+  padding: 8px 0;
   border-radius: 6px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .node-stat-row {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  color: #475569;
+  color: #94a3b8; /* Muted light text */
 }
 
 .node-stat-value {
-  color: #0f172a;
+  color: #e2e8f0;
 }
 
 /* Expand / Collapse Button */
 .node-expand-btn {
   position: absolute;
-  bottom: -12px;
+  bottom: -14px;
   left: 50%;
   transform: translateX(-50%);
-  width: 24px;
-  height: 24px;
-  background: white;
-  border: 1px solid #cbd5e1;
+  width: 28px;
+  height: 28px;
+  background: #111827;
+  border: 1px solid #00dcff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 3;
-  color: #334155;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  color: #00dcff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: all 0.2s ease;
   font-family: monospace;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1;
 }
 
 .node-expand-btn:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background: #00dcff;
+  color: #111827;
+  box-shadow: 0 0 10px rgba(0, 220, 255, 0.4);
 }

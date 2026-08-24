@@ -196,19 +196,7 @@ function NetworkExplorer() {
         </div>
 
         {/* Tree Container */}
-        <div
-          className="network-tree-container tree-root"
-          style={{
-            backgroundColor: '#fff',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            padding: '12px',
-            maxHeight: '600px',
-            overflowY: 'auto',
-            fontSize: '14px',
-            lineHeight: '1.8'
-          }}
-        >
+        <div className="network-tree-container tree-root">
           {loading && !rootNode ? (
             <div style={{ color: '#666', padding: '20px', textAlign: 'center' }}>Loading network data...</div>
           ) : rootNode ? (

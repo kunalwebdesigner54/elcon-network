@@ -157,7 +157,7 @@ function MyTree() {
           <div className="network-tree-help">Click on ⊕ sign to expand tree</div>
         </div>
 
-        <div className="network-tree-card tree-root" role="tree" aria-label="Network Tree" style={{ backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '4px', padding: '12px', maxHeight: '600px', overflowX: 'auto', overflowY: 'auto' }}>
+        <div className="network-tree-container tree-root" role="tree" aria-label="Network Tree">
           {loading && !rootNode ? (
             <p style={{ padding: '16px', textAlign: 'center' }}>Loading network data...</p>
           ) : rootNode ? (
