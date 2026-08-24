@@ -8,6 +8,7 @@ const {
   getMembersLocation,
   getMemberPerformance,
   getTeamTree,
+  getTreeNode,
 } = require('../controllers/membersController');
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.get('/all-members', authorize('admin'), getAllMembersList);
 router.get('/locations', authorize('admin'), getMembersLocation);
 router.get('/performance', authorize('admin'), getMemberPerformance);
 router.get('/team-tree', getTeamTree);
+router.get('/tree-node', getTreeNode);
 
 module.exports = router;

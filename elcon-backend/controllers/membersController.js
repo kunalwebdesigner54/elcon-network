@@ -212,7 +212,26 @@ exports.getAllMembersList = async (req, res) => {
 
     const query = { role: 'user', email: { $ne: 'admin@gmail.com' } };
     
-    // Add filtering based on frontend keys if needed here, but standardizing on simple pagination first
+    if (req.query.memberId) {
+      query.memberId = new RegExp(req.query.memberId, 'i');
+    }
+    if (req.query.name) {
+      query.name = new RegExp(req.query.name, 'i');
+    }
+    if (req.query.mobile) {
+      query.contactNo = new RegExp(req.query.mobile, 'i');
+    }
+    if (req.query.sponsorId) {
+      query.sponsorId = new RegExp(req.query.sponsorId, 'i');
+    }
+    if (req.query.city) {
+      query.city = new RegExp(req.query.city, 'i');
+    }
+    if (req.query.status) {
+      query.accountStatus = req.query.status;
+    }
+    
+    // Fallback for generic search
     if (req.query.search) {
       const searchRegex = new RegExp(req.query.search, 'i');
       query.$or = [
@@ -221,15 +240,22 @@ exports.getAllMembersList = async (req, res) => {
         { contactNo: searchRegex }
       ];
     }
-    if (req.query.status) {
-      query.accountStatus = req.query.status;
-    }
 
     if (req.query.levelDepth !== undefined && req.query.levelDepth !== '') {
       if (req.query.levelDepth === 'INVALID' || req.query.levelDepth === '-1') {
         query.levelDepth = -1;
       } else {
         query.levelDepth = Number(req.query.levelDepth);
+      }
+    }
+
+    if (req.query.startDate || req.query.endDate) {
+      query.createdAt = {};
+      if (req.query.startDate) query.createdAt.$gte = new Date(req.query.startDate);
+      if (req.query.endDate) {
+        const eDate = new Date(req.query.endDate);
+        eDate.setHours(23, 59, 59, 999);
+        query.createdAt.$lte = eDate;
       }
     }
 
@@ -241,6 +267,15 @@ exports.getAllMembersList = async (req, res) => {
       .limit(limit)
       .lean();
 
+    // Attach direct counts
+    const userIds = users.map(u => u.memberId);
+    const directCounts = await User.aggregate([
+      { $match: { sponsorId: { $in: userIds }, accountStatus: 'ACTIVE' } },
+      { $group: { _id: '$sponsorId', count: { $sum: 1 } } }
+    ]);
+    const directCountMap = {};
+    directCounts.forEach(dc => { directCountMap[dc._id] = dc.count; });
+
     const rows = users.map((user, index) => ({
       sNo: skip + index + 1,
       sponsorId: (user.sponsorId && user.sponsorId !== adminMemberId) ? user.sponsorId : '---',
@@ -250,6 +285,7 @@ exports.getAllMembersList = async (req, res) => {
       joinDate: formatDate(user.createdAt),
       joinDateRaw: user.createdAt,
       levelDepth: (user.levelDepth !== undefined && user.levelDepth !== -1) ? user.levelDepth : 'INVALID',
+      directCount: directCountMap[user.memberId] || 0,
       city: user.city || '---',
       status: user.accountStatus || 'ACTIVE',
       password: user.plainPassword || '********',
@@ -487,5 +523,70 @@ exports.getMemberPerformance = async (req, res) => {
       message: 'Error fetching member performance',
       error: error.message,
     });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/members/tree-node  — get a single member and their immediate directs
+// ─────────────────────────────────────────────────────────────────────────────
+exports.getTreeNode = async (req, res) => {
+  try {
+    let rootMemberId = req.user.role === 'admin' && req.query.memberId
+      ? req.query.memberId.toUpperCase()
+      : req.user.memberId;
+
+    if (!rootMemberId && req.user?.id) {
+      const currentUser = await User.findById(req.user.id).select('memberId');
+      rootMemberId = currentUser?.memberId;
+    }
+
+    if (!rootMemberId) {
+      return res.status(400).json({ success: false, message: 'Member ID not found' });
+    }
+
+    const nodeUser = await User.findOne({ memberId: rootMemberId }).lean();
+    if (!nodeUser) {
+      return res.status(404).json({ success: false, message: 'Member not found' });
+    }
+
+    // Get immediate directs
+    const directs = await User.find({ sponsorId: rootMemberId }).sort({ createdAt: 1 }).lean();
+    
+    // Count their directs to determine if they can be expanded
+    const childIds = directs.map(d => d.memberId);
+    const grandChildrenCounts = await User.aggregate([
+      { $match: { sponsorId: { $in: childIds } } },
+      { $group: { _id: '$sponsorId', count: { $sum: 1 }, activeCount: { $sum: { $cond: [{ $eq: ['$accountStatus', 'ACTIVE'] }, 1, 0] } } } }
+    ]);
+    const gcMap = {};
+    grandChildrenCounts.forEach(gc => { gcMap[gc._id] = gc; });
+
+    const formatUser = (user, gcCount = 0, gcActive = 0) => ({
+      memberId: user.memberId,
+      name: user.name,
+      mobile: user.contactNo || '---',
+      joinDate: formatDate(user.createdAt),
+      joinDateRaw: user.createdAt,
+      city: user.city || '---',
+      status: user.accountStatus || 'ACTIVE',
+      levelDepth: user.levelDepth !== undefined && user.levelDepth !== -1 ? user.levelDepth : 0,
+      totalDirect: gcCount,
+      activeDirect: gcActive,
+      sponsorId: user.sponsorId,
+      hasChildren: gcCount > 0
+    });
+
+    const rootTotalDirect = directs.length;
+    const rootActiveDirect = directs.filter(d => d.accountStatus === 'ACTIVE').length;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...formatUser(nodeUser, rootTotalDirect, rootActiveDirect),
+        children: directs.map(d => formatUser(d, gcMap[d.memberId]?.count || 0, gcMap[d.memberId]?.activeCount || 0))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

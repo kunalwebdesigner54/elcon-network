@@ -1,171 +1,175 @@
 import '../../Common/UserLayout.css';
-import { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './MyTree.css';
-import { getTeamTree } from '../../../../api/donationsService';
+import { getTreeNode } from '../../../../api/membersService';
 
-// Convert nested API tree to flat rows with parentId for the existing tree renderer
-function flattenTree(node, parentId = null, level = 0, acc = []) {
-  if (!node) return acc;
-  acc.push({
-    memberId: node.memberId,
-    memberName: node.name,
-    parentId: parentId || '',
-    level,
-    unlockLevel: node.unlockLevel,
-    status: node.status,
-  });
-  (node.children || []).forEach((child) => flattenTree(child, node.memberId, level + 1, acc));
-  return acc;
+function NetworkTreeNode({ node, onToggleExpand }) {
+  if (!node) return null;
+
+  const isExpanded = node.isExpanded || false;
+  const hasChildren = node.hasChildren;
+  const isLoading = node.isLoading || false;
+  
+  return (
+    <div style={{ marginLeft: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '4px 0' }}>
+        {hasChildren ? (
+          <span
+            onClick={() => onToggleExpand(node)}
+            style={{
+              cursor: 'pointer',
+              userSelect: 'none',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              width: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              marginRight: '4px'
+            }}
+          >
+            {isExpanded ? '⊟' : '⊕'}
+          </span>
+        ) : (
+          <span style={{ width: '16px', marginRight: '4px' }}></span>
+        )}
+        <span style={{ fontSize: '14px', color: '#333' }}>
+          {hasChildren && <span style={{ marginRight: '4px' }}>📁</span>}
+          <strong>{node.memberId}</strong> - {node.name} 
+          <span style={{color: '#666', fontSize: '12px', marginLeft: '8px'}}>
+            (Depth: {node.levelDepth}, Directs: {node.activeDirect}/{node.totalDirect})
+          </span>
+          {isLoading && <span style={{ marginLeft: '8px', color: '#888', fontSize: '12px' }}>Loading...</span>}
+        </span>
+      </div>
+      {isExpanded && node.children && node.children.length > 0 && (
+        <div>
+          {node.children.map((child) => (
+            <NetworkTreeNode
+              key={child.memberId}
+              node={child}
+              onToggleExpand={onToggleExpand}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function MyTree() {
-  const [allRows, setAllRows] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [searchMemberId, setSearchMemberId] = useState('');
+  const [rootNode, setRootNode] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const [memberIdQuery, setMemberIdQuery] = useState('');
-  const [levelQuery, setLevelQuery] = useState('');
-  const [appliedMemberId, setAppliedMemberId] = useState('');
-  const [appliedLevel, setAppliedLevel] = useState('');
-  const [expandedNodes, setExpandedNodes] = useState(() => new Set());
+  const fetchNode = async (memberId = '') => {
+    try {
+      const response = await getTreeNode(memberId);
+      if (response.success && response.data) {
+        return response.data;
+      }
+      throw new Error(response.message || 'Failed to load member');
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const loadRoot = async (memberId = '') => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await fetchNode(memberId);
+      data.isExpanded = true; 
+      setRootNode(data);
+    } catch (err) {
+      setError(err?.response?.data?.message || err.message || 'Failed to load network tree data');
+      setRootNode(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getTeamTree()
-      .then((data) => {
-        const flat = flattenTree(data.data);
-        setAllRows(flat);
-      })
-      .catch((err) => setError(err?.response?.data?.message || 'Failed to load team tree.'))
-      .finally(() => setLoading(false));
+    loadRoot();
   }, []);
 
-  const filteredRows = useMemo(() => {
-    return allRows.filter((row) => {
-      const memberMatch = !appliedMemberId || row.memberId.toLowerCase().includes(appliedMemberId.toLowerCase());
-      const levelMatch = !appliedLevel || String(row.level) === appliedLevel;
-      return memberMatch && levelMatch;
-    });
-  }, [allRows, appliedLevel, appliedMemberId]);
-
-  const rowById = useMemo(() => {
-    const map = new Map();
-    filteredRows.forEach((row) => map.set(row.memberId, row));
-    return map;
-  }, [filteredRows]);
-
-  const childrenMap = useMemo(() => {
-    const map = new Map();
-    filteredRows.forEach((row) => {
-      if (!map.has(row.memberId)) map.set(row.memberId, []);
-    });
-    filteredRows.forEach((row) => {
-      if (row.parentId && rowById.has(row.parentId)) {
-        map.get(row.parentId).push(row.memberId);
-      }
-    });
-    return map;
-  }, [filteredRows, rowById]);
-
-  const rootIds = useMemo(() => {
-    return filteredRows
-      .filter((row) => !row.parentId || !rowById.has(row.parentId))
-      .map((row) => row.memberId);
-  }, [filteredRows, rowById]);
-
-  const expandableIds = useMemo(() => {
-    return Array.from(childrenMap.entries())
-      .filter(([, children]) => children.length > 0)
-      .map(([id]) => id);
-  }, [childrenMap]);
-
   const handleSearch = () => {
-    setAppliedMemberId(memberIdQuery.trim());
-    setAppliedLevel(levelQuery);
-    setExpandedNodes(new Set());
+    if (searchMemberId.trim()) {
+      loadRoot(searchMemberId.trim());
+    } else {
+      loadRoot();
+    }
   };
 
-  const handleOpenAll = () => setExpandedNodes(new Set(expandableIds));
-  const handleCloseAll = () => setExpandedNodes(new Set());
-
-  const toggleNode = (memberId) => {
-    setExpandedNodes((prev) => {
-      const next = new Set(prev);
-      next.has(memberId) ? next.delete(memberId) : next.add(memberId);
-      return next;
-    });
+  const updateNodeInTree = (currentNode, targetId, updater) => {
+    if (currentNode.memberId === targetId) {
+      return updater({ ...currentNode });
+    }
+    if (currentNode.children) {
+      return {
+        ...currentNode,
+        children: currentNode.children.map(child => updateNodeInTree(child, targetId, updater))
+      };
+    }
+    return currentNode;
   };
 
-  const renderTree = (memberId, depth = 0) => {
-    const item = rowById.get(memberId);
-    if (!item) return null;
-    const children = childrenMap.get(memberId) || [];
-    const hasChildren = children.length > 0;
-    const isExpanded = expandedNodes.has(memberId);
+  const toggleExpand = async (node) => {
+    if (node.isExpanded) {
+      setRootNode(prev => updateNodeInTree(prev, node.memberId, n => ({ ...n, isExpanded: false })));
+      return;
+    }
 
-    return (
-      <div key={memberId}>
-        <div className="network-tree-row" style={{ paddingLeft: `${12 + depth * 24}px` }}>
-          {hasChildren ? (
-            <button
-              type="button"
-              className="network-node-toggle"
-              onClick={() => toggleNode(memberId)}
-              aria-label={isExpanded ? 'Collapse node' : 'Expand node'}
-            >
-              {isExpanded ? '-' : '+'}
-            </button>
-          ) : (
-            <span className="network-node-spacer" />
-          )}
-          <span className="network-node-label">
-            {item.memberId} — {item.memberName}
-            <span style={{ marginLeft: 8, fontSize: '0.8em', color: '#888' }}>
-              (Lvl {item.unlockLevel})
-            </span>
-          </span>
-        </div>
-        {hasChildren && isExpanded && children.map((childId) => renderTree(childId, depth + 1))}
-      </div>
-    );
+    if (node.children && node.children.length > 0) {
+      setRootNode(prev => updateNodeInTree(prev, node.memberId, n => ({ ...n, isExpanded: true })));
+      return;
+    }
+
+    setRootNode(prev => updateNodeInTree(prev, node.memberId, n => ({ ...n, isLoading: true })));
+    try {
+      const data = await fetchNode(node.memberId);
+      setRootNode(prev => updateNodeInTree(prev, node.memberId, n => ({ 
+        ...n, 
+        isLoading: false, 
+        isExpanded: true, 
+        children: data.children 
+      })));
+    } catch (err) {
+      setRootNode(prev => updateNodeInTree(prev, node.memberId, n => ({ ...n, isLoading: false })));
+      alert('Failed to load downlines: ' + (err?.response?.data?.message || err.message));
+    }
   };
 
   return (
     <div>
       <h1 className="user-page-title">Network Explorer</h1>
       <div className="user-panel">
-        {loading && <p style={{ padding: '16px' }}>Loading team tree…</p>}
         {error && <p style={{ color: 'red', padding: '16px' }}>{error}</p>}
+        
+        <div className="network-filters">
+          <input
+            type="text" placeholder="MEMBER ID" aria-label="Member ID"
+            value={searchMemberId} onChange={(e) => setSearchMemberId(e.target.value)}
+          />
+          <button className="user-btn-blue" type="button" onClick={handleSearch}>Search</button>
+        </div>
 
-        {!loading && !error && (
-          <>
-            <div className="network-filters">
-              <input
-                type="text" placeholder="MEMBER ID" aria-label="Member ID"
-                value={memberIdQuery} onChange={(e) => setMemberIdQuery(e.target.value)}
-              />
-              <select aria-label="Level" value={levelQuery} onChange={(e) => setLevelQuery(e.target.value)}>
-                <option value="">LEVEL</option>
-                {[0,1,2,3,4,5,6,7,8,9].map((l) => <option key={l} value={l}>{l === 0 ? 'Root' : l}</option>)}
-              </select>
-              <button className="user-btn-blue" type="button" onClick={handleSearch}>Search</button>
-            </div>
+        <div className="network-actions-row">
+          <div className="network-tree-help">Click on ⊕ sign to expand tree</div>
+        </div>
 
-            <div className="network-actions-row">
-              <div className="network-tree-help">Click on + sign to expand tree</div>
-              <div className="network-tree-toggle" role="group" aria-label="Tree Controls">
-                <button type="button" className="user-btn-outline" onClick={handleOpenAll}>Open All</button>
-                <button type="button" className="user-btn-outline" onClick={handleCloseAll}>Close All</button>
-              </div>
-            </div>
-
-            <div className="network-tree-card" role="tree" aria-label="Network Tree">
-              {rootIds.length
-                ? rootIds.map((rootId) => renderTree(rootId))
-                : <p style={{ padding: '16px' }}>No network members yet.</p>
-              }
-            </div>
-          </>
-        )}
+        <div className="network-tree-card" role="tree" aria-label="Network Tree" style={{ backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px', padding: '12px', maxHeight: '600px', overflowY: 'auto' }}>
+          {loading && !rootNode ? (
+            <p style={{ padding: '16px' }}>Loading network data...</p>
+          ) : rootNode ? (
+            <NetworkTreeNode
+              node={rootNode}
+              onToggleExpand={toggleExpand}
+            />
+          ) : (
+            <p style={{ padding: '16px' }}>No network members yet.</p>
+          )}
+        </div>
       </div>
     </div>
   );

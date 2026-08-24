@@ -15,7 +15,7 @@ function LevelIncome() {
     endDate: '',
     limit: '10'
   });
-  
+  const [globalTotalAmount, setGlobalTotalAmount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -35,6 +35,7 @@ function LevelIncome() {
     getLevelIncomeReports(params)
       .then((response) => {
         setRows(Array.isArray(response.data) ? response.data : []);
+        setGlobalTotalAmount(response.globalTotalAmount || 0);
         if (response.pagination) {
           setTotalPages(response.pagination.pages || 1);
         }
@@ -61,7 +62,20 @@ function LevelIncome() {
     }
   };
 
-  const totalAmount = rows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+  const handleReset = () => {
+    setFilters({
+      levelNo: '',
+      levelId: '',
+      startDate: '',
+      endDate: '',
+      limit: '10'
+    });
+    if (currentPage === 1) {
+      setTimeout(fetchReports, 0);
+    } else {
+      setCurrentPage(1);
+    }
+  };
 
   const renderPagination = () => {
     const pages = [];
@@ -98,7 +112,7 @@ function LevelIncome() {
     <div>
       <h1 className="user-page-title">Level Income</h1>
       <div className="user-panel">
-        <h3>Total Level Income : {totalAmount.toFixed(2)}</h3>
+        <h3>Total Level Income : {globalTotalAmount.toFixed(2)}</h3>
 
         <div className="level-income-filters">
           <select aria-label="Level Number" name="levelNo" value={filters.levelNo} onChange={handleFilterChange} className="level-income-input">
@@ -114,6 +128,7 @@ function LevelIncome() {
             <option value="100">100</option>
           </select>
           <button onClick={handleSearch} className="user-btn-blue level-income-search-btn" type="button">SEARCH</button>
+          <button onClick={handleReset} className="user-btn-outline level-income-search-btn" type="button" style={{ borderColor: 'var(--text-muted)', color: 'var(--text-muted)' }}>RESET</button>
         </div>
 
         <div className="table-toolbar">
@@ -159,8 +174,8 @@ function LevelIncome() {
                     </tr>
                   ))}
                   <tr className="level-income-total-row">
-                    <td colSpan={8}>PAGE TOTAL</td>
-                    <td>{totalAmount.toFixed(2)}</td>
+                    <td colSpan={8}>TOTAL (All Pages)</td>
+                    <td>{globalTotalAmount.toFixed(2)}</td>
                   </tr>
                 </>
               )}

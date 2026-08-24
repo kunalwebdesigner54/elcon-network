@@ -68,6 +68,14 @@ exports.getLevelIncomeReports = async (req, res) => {
     const skip = (Number(page) - 1) * Number(limit);
     
     const total = await LevelIncome.countDocuments(query);
+    
+    // Calculate global total amount for the matching query
+    const totalAmountAgg = await LevelIncome.aggregate([
+      { $match: query },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]);
+    const globalTotalAmount = totalAmountAgg.length > 0 ? totalAmountAgg[0].total : 0;
+
     const records = await LevelIncome.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -97,6 +105,7 @@ exports.getLevelIncomeReports = async (req, res) => {
     res.status(200).json({
       success: true,
       data,
+      globalTotalAmount,
       pagination: {
         total,
         page: Number(page),

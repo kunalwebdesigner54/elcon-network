@@ -39,3 +39,9 @@ export const submitKycRequest = async (kycData) => {
   const response = await apiClient.put('/profile/kyc-request', kycData);
   return response.data;
 };
+
+export const getTreeNode = async (memberId) => {
+  const params = memberId ? { memberId } : {};
+  const response = await apiClient.get('/members/tree-node', { params });
+  return response.data;
+};

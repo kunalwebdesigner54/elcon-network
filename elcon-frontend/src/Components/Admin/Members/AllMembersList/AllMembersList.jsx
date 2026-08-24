@@ -7,16 +7,18 @@ import { formatDate } from '../../../../utils/dateFormatter';
 
 const AllMembersList = () => {
   const [membersData, setMembersData] = useState([]);
-  const [filters, setFilters] = useState({
+  const initialFilters = {
     sponsorId: '',
     memberId: '',
     name: '',
     mobile: '',
     city: '',
+    levelDepth: '',
     status: '',
     startDate: '',
     endDate: '',
-  });
+  };
+  const [filters, setFilters] = useState(initialFilters);
   const [pageSize, setPageSize] = useState('10');
   const [loading, setLoading] = useState(true);
   const [loginLoadingMember, setLoginLoadingMember] = useState(null);
@@ -32,8 +34,7 @@ const AllMembersList = () => {
       const params = {
         page: currentPage,
         limit: currentLimit,
-        search: filters.memberId || filters.name || filters.mobile,
-        status: filters.status,
+        ...filters
       };
       const response = await getAllMembersList(params);
       setMembersData(response.data || []);
@@ -59,6 +60,26 @@ const AllMembersList = () => {
 
   const handleFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
+  };
+
+  const handleReset = () => {
+    setFilters(initialFilters);
+    setPageSize('10');
+    setPage(1);
+    // Setting state is async, so we manually call load with initial values
+    const params = {
+      page: 1,
+      limit: '10',
+      ...initialFilters
+    };
+    setLoading(true);
+    getAllMembersList(params)
+      .then(response => {
+        setMembersData(response.data || []);
+        setPagination(response.pagination || { total: 0, page: 1, limit: 10, pages: 1 });
+      })
+      .catch(() => setMembersData([]))
+      .finally(() => setLoading(false));
   };
 
   const formatJoinDate = (joinDateRaw, fallbackDate) => {
@@ -101,7 +122,7 @@ const AllMembersList = () => {
           <input className="text-input" style={{ maxWidth: '140px' }} placeholder="NAME" value={filters.name} onChange={handleFilterChange('name')} />
           <input className="text-input" style={{ maxWidth: '130px' }} placeholder="MOBILE" value={filters.mobile} onChange={handleFilterChange('mobile')} />
           <input className="text-input" style={{ maxWidth: '110px' }} placeholder="CITY" value={filters.city} onChange={handleFilterChange('city')} />
-          <input className="text-input" style={{ maxWidth: '80px' }} placeholder="LEVEL" />
+          <input className="text-input" style={{ maxWidth: '80px' }} placeholder="LEVEL" value={filters.levelDepth} onChange={handleFilterChange('levelDepth')} />
           <select className="select-input" style={{ maxWidth: '98px' }} value={filters.status} onChange={handleFilterChange('status')}>
             <option value="">STATUS</option>
             <option value="ACTIVE">ACTIVE</option>
@@ -115,6 +136,7 @@ const AllMembersList = () => {
             <option value="100">100</option>
           </select>
           <button className="btn-primary" type="button" onClick={handleSearch}>SEARCH</button>
+          <button className="btn-outline" type="button" onClick={handleReset} style={{ borderColor: 'var(--text-muted)', color: 'var(--text-muted)' }}>RESET</button>
         </div>
 
         {loginError && (
@@ -130,6 +152,7 @@ const AllMembersList = () => {
                 <th>NAME</th>
                 <th>MOBILE</th>
                 <th>JOIN DATE</th>
+                <th>DIRECTS</th>
                 <th>LEVEL DEPTH</th>
                 <th>CITY</th>
                 <th>STATUS</th>
@@ -153,6 +176,7 @@ const AllMembersList = () => {
                   <td>{member.name}</td>
                   <td>{member.mobile}</td>
                   <td>{formatJoinDate(member.joinDateRaw, member.joinDate)}</td>
+                  <td>{member.directCount || 0}</td>
                   <td>{member.levelDepth}</td>
                   <td>{member.city}</td>
                   <td>

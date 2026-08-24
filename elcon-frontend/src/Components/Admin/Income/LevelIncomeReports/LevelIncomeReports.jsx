@@ -16,7 +16,7 @@ function LevelIncomeReports() {
     endDate: '',
     limit: '10'
   });
-  
+  const [globalTotalAmount, setGlobalTotalAmount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -39,6 +39,7 @@ function LevelIncomeReports() {
     getLevelIncomeReports(params)
       .then((response) => {
         setRows(Array.isArray(response.data) ? response.data : []);
+        setGlobalTotalAmount(response.globalTotalAmount || 0);
         if (response.pagination) {
           setTotalPages(response.pagination.pages || 1);
         }
@@ -65,20 +66,34 @@ function LevelIncomeReports() {
     }
   };
 
+  const handleReset = () => {
+    setFilters({
+      memberId: '',
+      memberName: '',
+      levelNo: '',
+      levelId: '',
+      startDate: '',
+      endDate: '',
+      limit: '10'
+    });
+    if (currentPage === 1) {
+      setTimeout(fetchReports, 0);
+    } else {
+      setCurrentPage(1);
+    }
+  };
+
   const levelIncomeReportsData = useMemo(() => rows.map((row) => ({
     sNo: row.sNo,
     incomeDateTime: row.incomeDateTime,
     memberId: row.memberId,
     memberName: row.memberName,
-    unlockLevel: '---', 
     levelNo: row.levelNo,
     levelId: row.levelId,
     fromMemberName: row.fromMemberName,
     amount: Number(row.amount || 0),
     transactionId: row.transactionId,
   })), [rows]);
-
-  const totalAmount = levelIncomeReportsData.reduce((sum, row) => sum + Number(row.amount || 0), 0);
 
   const renderPagination = () => {
     const pages = [];
@@ -132,6 +147,7 @@ function LevelIncomeReports() {
             <option value="100">100</option>
           </select>
           <button onClick={handleSearch} className="btn-primary level-income-search-btn" type="button">SEARCH</button>
+          <button onClick={handleReset} className="btn-outline level-income-search-btn" type="button" style={{ borderColor: 'var(--text-muted)', color: 'var(--text-muted)' }}>RESET</button>
         </div>
 
         <div className="level-income-export-row">
@@ -147,9 +163,8 @@ function LevelIncomeReports() {
                 <th>INCOME DATE & TIME</th>
                 <th>MEMBER ID</th>
                 <th>MEMBER NAME</th>
-                <th>DIRECTS</th>
-                <th>LEVEL DEPTH</th>
-                <th>LEVEL ID</th>
+                <th>INCOME SLOT</th>
+                <th>TRIGGERED BY ID</th>
                 <th>FROM MEMBER NAME</th>
                 <th>AMOUNT</th>
               </tr>
@@ -169,7 +184,6 @@ function LevelIncomeReports() {
                       <td>{row.incomeDateTime}</td>
                       <td>{row.memberId}</td>
                       <td>{row.memberName}</td>
-                      <td>{row.unlockLevel}</td>
                       <td>{row.levelNo}</td>
                       <td>{row.levelId}</td>
                       <td>{row.fromMemberName}</td>
@@ -177,10 +191,10 @@ function LevelIncomeReports() {
                     </tr>
                   ))}
                   <tr className="level-income-summary-row">
-                    <td colSpan="8" style={{ textAlign: 'right', fontWeight: 700 }}>
-                      TOTAL AMOUNT
+                    <td colSpan="7" style={{ textAlign: 'right', fontWeight: 700 }}>
+                      TOTAL AMOUNT (All Pages)
                     </td>
-                    <td>{totalAmount.toFixed(2)}</td>
+                    <td>{globalTotalAmount.toFixed(2)}</td>
                   </tr>
                 </>
               )}
