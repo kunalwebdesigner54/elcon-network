@@ -24,7 +24,8 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
     let successfulSlots = 0;
     const visited = new Set();
     
-    while (currentSponsorId && physicalDepth < MAX_PHYSICAL_DEPTH && successfulSlots < MAX_SLOTS) {
+    // Removed physical depth limit. Traversal stops when 9 slots are filled OR upline chain breaks.
+    while (currentSponsorId && successfulSlots < MAX_SLOTS) {
       if (visited.has(currentSponsorId)) {
         console.warn(`Circular sponsor dependency detected at ${currentSponsorId}`);
         break;
@@ -54,12 +55,10 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
 
       // Check eligibility (Enforce requirements on ALL members including Admin)
       if (isUplineValid) {
-        // Count ACTIVE and unblocked direct referrals for this upline
-        // Use $ne to handle older documents that might be missing these fields in MongoDB
+        // Count strictly ACTIVE direct referrals for this upline
         const activeDirectsCount = await User.countDocuments({
           sponsorId: currentSponsorId,
-          accountStatus: { $ne: 'IN-ACTIVE' },
-          isBlocked: { $ne: true },
+          accountStatus: 'ACTIVE',
         });
 
         if (activeDirectsCount >= requiredDirects) {
