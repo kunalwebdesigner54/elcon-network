@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import './MyTree.css';
 import { getTreeNode } from '../../../../api/membersService';
 
-function NetworkTreeNode({ node, onToggleExpand }) {
+function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
   if (!node) return null;
 
   const isExpanded = node.isExpanded || false;
@@ -11,50 +11,47 @@ function NetworkTreeNode({ node, onToggleExpand }) {
   const isLoading = node.isLoading || false;
   
   return (
-    <ul className="tree-ul">
-      <li className="tree-li">
-        <div style={{ display: 'flex', alignItems: 'center', padding: '4px 0' }}>
-          {hasChildren ? (
-            <span
-              onClick={() => onToggleExpand(node)}
-              style={{
-                cursor: 'pointer',
-                userSelect: 'none',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                width: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                marginRight: '4px'
-              }}
-            >
-              {isExpanded ? '⊟' : '⊕'}
-            </span>
-          ) : (
-            <span style={{ width: '16px', marginRight: '4px' }}></span>
-          )}
-          <span style={{ fontSize: '14px', color: '#333' }}>
-            {hasChildren && <span style={{ marginRight: '4px' }}>📁</span>}
-            <strong>{node.memberId}</strong> - {node.name} 
-            <span style={{color: '#666', fontSize: '12px', marginLeft: '8px'}}>
-              (Depth: {node.levelDepth}, Directs: {node.activeDirect}/{node.totalDirect})
-            </span>
-            {isLoading && <span style={{ marginLeft: '8px', color: '#888', fontSize: '12px' }}>Loading...</span>}
-          </span>
+    <li className="org-tree-li">
+      <div className="node-card">
+        <div className="node-avatar">
+          👤
         </div>
-        {isExpanded && node.children && node.children.length > 0 && (
-          <div style={{ marginLeft: '4px' }}>
-            {node.children.map((child) => (
-              <NetworkTreeNode
-                key={child.memberId}
-                node={child}
-                onToggleExpand={onToggleExpand}
-              />
-            ))}
+        <div className="node-name" title={node.name}>{node.name}</div>
+        <div className="node-id">{node.memberId}</div>
+        
+        <div className="node-stats">
+          <div className="node-stat-row">
+            Depth: <span className="node-stat-value">{computedDepth}</span>
+          </div>
+          <div className="node-stat-row">
+            Directs: <span className="node-stat-value">{node.activeDirect || 0}/{node.totalDirect || 0}</span>
+          </div>
+        </div>
+
+        {hasChildren && (
+          <div 
+            className="node-expand-btn"
+            onClick={() => onToggleExpand(node)}
+            title={isExpanded ? "Collapse" : "Expand"}
+          >
+            {isLoading ? '...' : (isExpanded ? '-' : '+')}
           </div>
         )}
-      </li>
-    </ul>
+      </div>
+
+      {isExpanded && node.children && node.children.length > 0 && (
+        <ul className="org-tree-ul">
+          {node.children.map((child) => (
+            <NetworkTreeNode
+              key={child.memberId}
+              node={child}
+              onToggleExpand={onToggleExpand}
+              computedDepth={computedDepth + 1}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
   );
 }
 
@@ -160,16 +157,21 @@ function MyTree() {
           <div className="network-tree-help">Click on ⊕ sign to expand tree</div>
         </div>
 
-        <div className="network-tree-card tree-root" role="tree" aria-label="Network Tree" style={{ backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px', padding: '12px', maxHeight: '600px', overflowY: 'auto' }}>
+        <div className="network-tree-card tree-root" role="tree" aria-label="Network Tree" style={{ backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '4px', padding: '12px', maxHeight: '600px', overflowX: 'auto', overflowY: 'auto' }}>
           {loading && !rootNode ? (
-            <p style={{ padding: '16px' }}>Loading network data...</p>
+            <p style={{ padding: '16px', textAlign: 'center' }}>Loading network data...</p>
           ) : rootNode ? (
-            <NetworkTreeNode
-              node={rootNode}
-              onToggleExpand={toggleExpand}
-            />
+            <div className="org-tree">
+              <ul className="org-tree-ul">
+                <NetworkTreeNode
+                  node={rootNode}
+                  onToggleExpand={toggleExpand}
+                  computedDepth={0}
+                />
+              </ul>
+            </div>
           ) : (
-            <p style={{ padding: '16px' }}>No network members yet.</p>
+            <p style={{ padding: '16px', textAlign: 'center' }}>No network members yet.</p>
           )}
         </div>
       </div>
