@@ -383,7 +383,7 @@ exports.getMembersLocation = async (req, res) => {
 exports.getTeamTree = async (req, res) => {
   try {
     // Admin can query any memberId; user sees their own tree
-    let rootMemberId = req.user.role === 'admin' && req.query.memberId
+    let rootMemberId = req.query.memberId
       ? req.query.memberId.toUpperCase()
       : req.user.memberId;
 
@@ -536,7 +536,7 @@ exports.getMemberPerformance = async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 exports.getTreeNode = async (req, res) => {
   try {
-    let rootMemberId = req.user.role === 'admin' && req.query.memberId
+    let rootMemberId = req.query.memberId
       ? req.query.memberId.toUpperCase()
       : req.user.memberId;
 
@@ -603,6 +603,30 @@ exports.getTreeNode = async (req, res) => {
         children: directs.map(d => formatUser(d, gcMap[d.memberId]?.count || 0, gcMap[d.memberId]?.activeCount || 0))
       }
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getMemberProfile = async (req, res) => {
+  try {
+    const user = await User.findOne({ memberId: req.params.memberId }).lean();
+    if (!user) return res.status(404).json({ success: false, message: 'Member not found' });
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.updateMemberProfile = async (req, res) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { memberId: req.params.memberId },
+      { $set: req.body },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ success: false, message: 'Member not found' });
+    res.status(200).json({ success: true, message: 'Profile updated successfully', data: user });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

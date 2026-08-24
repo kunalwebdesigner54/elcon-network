@@ -14,7 +14,7 @@ function flattenDescendants(node, depth = 0, acc = []) {
       level: depth + 1,
       joinDate: child.joinDateRaw ? formatDate(child.joinDateRaw) : (child.joinDate || '---'),
       joinDateRaw: child.joinDateRaw,
-      unlockLevel: child.upgradeLevel ?? child.unlockLevel ?? 0,
+      unlockLevel: child.upgradeLevel ?? 0,
       city: child.city || '---',
       directs: child.directCount || 0,
       status: child.status,
@@ -23,7 +23,6 @@ function flattenDescendants(node, depth = 0, acc = []) {
   });
   return acc;
 }
-
 
 function MyTeam() {
   const [allRows, setAllRows] = useState([]);

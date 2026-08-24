@@ -7,6 +7,7 @@ import Dashboard from './Components/Admin/Dashboard/Dashboard';
 import MembersLocation from './Components/Admin/Members/MembersLocation/MembersLocation';
 import KYCRequest from './Components/Admin/Members/KYCRequest/KYCRequest';
 import AllMemberPerformance from './Components/Admin/Members/AllMemberPerformance/AllMemberPerformance';
+import EditProfile from './Components/Admin/Members/EditProfile/EditProfile';
 import MyDirectReferral from './Components/Admin/Tree/MyDirectReferral/MyDirectReferral';
 import DonationReport from './Components/Admin/NetworkReports/DonationReport/DonationReport';
 import NetworkExplorer from './Components/Admin/NetworkReports/NetworkExplorer/NetworkExplorer';
@@ -243,6 +244,7 @@ function App() {
 
           <Route path="members/all-members-list" element={<AllMembersList />} />
           <Route path="members/member-information" element={<MemberInformation />} />
+          <Route path="members/edit-profile/:memberId" element={<EditProfile />} />
 
           <Route path="network-reports/network-explorer" element={<NetworkExplorer />} />
           <Route path="network-reports/downline-list" element={<MyDirectReferral />} />

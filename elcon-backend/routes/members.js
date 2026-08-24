@@ -9,6 +9,8 @@ const {
   getMemberPerformance,
   getTeamTree,
   getTreeNode,
+  getMemberProfile,
+  updateMemberProfile,
 } = require('../controllers/membersController');
 
 const router = express.Router();
@@ -23,5 +25,7 @@ router.get('/locations', authorize('admin'), getMembersLocation);
 router.get('/performance', authorize('admin'), getMemberPerformance);
 router.get('/team-tree', getTeamTree);
 router.get('/tree-node', getTreeNode);
+router.get('/profile/:memberId', authorize('admin'), getMemberProfile);
+router.put('/profile/:memberId', authorize('admin'), updateMemberProfile);
 
 module.exports = router;

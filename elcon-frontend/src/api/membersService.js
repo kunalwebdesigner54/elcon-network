@@ -20,6 +20,17 @@ export const updateBlockStatus = async (memberId, isBlocked) => {
   return response.data;
 };
 
+export const getMemberProfile = async (memberId) => {
+  const response = await apiClient.get(`/members/profile/${memberId}`);
+  return response.data;
+};
+
+export const updateMemberProfile = async (memberId, data) => {
+  const response = await apiClient.put(`/members/profile/${memberId}`, data);
+  return response.data;
+};
+
+
 export const getMembersLocation = async (params = {}) => {
   const response = await apiClient.get('/members/locations', { params });
   return response.data;
