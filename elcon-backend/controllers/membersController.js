@@ -550,7 +550,19 @@ exports.getTreeNode = async (req, res) => {
     }
 
     // Get immediate directs
-    const directs = await User.find({ sponsorId: rootMemberId }).sort({ createdAt: 1 }).lean();
+    let directsQuery = { sponsorId: rootMemberId };
+    if (nodeUser.role === 'admin') {
+      directsQuery = {
+        $or: [
+          { sponsorId: rootMemberId },
+          { sponsorId: "" },
+          { sponsorId: null },
+          { sponsorId: { $exists: false } }
+        ],
+        role: { $ne: 'admin' }
+      };
+    }
+    const directs = await User.find(directsQuery).sort({ createdAt: 1 }).lean();
     
     // Count their directs to determine if they can be expanded
     const childIds = directs.map(d => d.memberId);

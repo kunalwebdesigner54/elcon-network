@@ -22,3 +22,62 @@
 .network-tree-container::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Tree Structure Styles */
+.tree-ul {
+  list-style-type: none;
+  padding-left: 20px;
+  position: relative;
+  margin: 0;
+}
+
+.tree-ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-left: 1px dashed #999;
+  bottom: 0;
+}
+
+.tree-li {
+  position: relative;
+  padding-left: 20px;
+  margin: 0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.tree-li::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 0;
+  width: 15px;
+  border-top: 1px dashed #999;
+}
+
+.tree-li:last-child::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: -1px;
+  bottom: 0;
+  border-left: 2px solid #fff; /* Hide the vertical line of the UL below the last item */
+  width: 2px;
+}
+
+/* Root node has no lines */
+.tree-root > .tree-ul {
+  padding-left: 0;
+}
+.tree-root > .tree-ul::before {
+  display: none;
+}
+.tree-root > .tree-ul > .tree-li {
+  padding-left: 0;
+}
+.tree-root > .tree-ul > .tree-li::before,
+.tree-root > .tree-ul > .tree-li::after {
+  display: none;
+}
