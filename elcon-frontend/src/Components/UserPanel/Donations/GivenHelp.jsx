@@ -207,7 +207,9 @@ const GivenHelp = () => {
               {receiver.skippedMembers?.length > 0 && (
                 <div className="help-info-row21" style={{ marginTop: 8 }}>
                   <span className="help-info-label" style={{ color: "#e67e22" }}>Skipped ID :</span>
-                  <span className="help-info-value" style={{ color: "#e67e22" }}>{receiver.skippedMembers[0]}</span>
+                  <span className="help-info-value" style={{ color: "#e67e22" }}>
+                    {typeof receiver.skippedMembers[0] === 'object' ? receiver.skippedMembers[0].memberId : receiver.skippedMembers[0]}
+                  </span>
                 </div>
               )}
             </div>
