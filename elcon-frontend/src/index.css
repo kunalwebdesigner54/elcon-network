@@ -426,3 +426,17 @@ button,
 .admin-root ::-webkit-scrollbar-thumb:hover, .user-root ::-webkit-scrollbar-thumb:hover {
 	background: var(--primary);
 }
+
+/* Global Table Drag to Scroll UX */
+.table-wrap, .table-responsive {
+  cursor: grab;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* smooth mobile scroll */
+}
+.table-wrap:active, .table-responsive:active {
+  cursor: grabbing;
+}
+/* Revert cursor for interactive elements within table */
+.table-wrap button, .table-wrap a, .table-wrap input, .table-wrap select, .table-wrap textarea, .table-wrap label, .table-wrap [role="button"] {
+  cursor: pointer;
+}

@@ -118,8 +118,12 @@ import DispatchedOrders from './Components/Admin/ProductOrder/DispatchedOrders/D
 import DeliveredOrders from './Components/Admin/ProductOrder/DeliveredOrders/DeliveredOrders';
 import ReturnedOrders from './Components/Admin/ProductOrder/ReturnedOrders/ReturnedOrders';
 import CancelledOrders from './Components/Admin/ProductOrder/CancelledOrders/CancelledOrders';
+import useGlobalTableDrag from './hooks/useGlobalTableDrag';
 
 function App() {
+  // Initialize global table drag-to-scroll behavior
+  useGlobalTableDrag();
+
   return (
     <BrowserRouter>
       <Routes>
