@@ -114,7 +114,7 @@ const ReceivedHelp = () => {
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
-              <button className="user-btn-blue3" type="button">Search</button>
+              <button className="user-btn-blue3" type="button" style={{ height: '100%', minHeight: '40px', padding: '0' }}>Search</button>
             </div>
             <div className="epin-tools" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 10 }}>
               <button className="btn-outline">Excel</button>
