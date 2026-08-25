@@ -65,7 +65,7 @@ function EditProfile() {
       const response = await updateMemberProfile(memberId, form);
       if (response.success) {
         setSuccessMessage('Profile updated successfully!');
-        setTimeout(() => navigate('/admin/members/all-members-list'), 1500);
+        setTimeout(() => navigate('/members/all-members-list'), 1500);
       } else {
         setError(response.message || 'Failed to update profile');
       }
@@ -124,7 +124,7 @@ function EditProfile() {
             <button type="submit" className="btn-primary" disabled={submitting}>
               {submitting ? 'Saving...' : 'Save Profile'}
             </button>
-            <button type="button" className="btn-secondary" onClick={() => navigate('/admin/members/all-members-list')} style={{ background: '#333', color: 'white', padding: '10px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+            <button type="button" className="btn-secondary" onClick={() => navigate('/members/all-members-list')} style={{ background: '#333', color: 'white', padding: '10px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
               Cancel
             </button>
           </div>
