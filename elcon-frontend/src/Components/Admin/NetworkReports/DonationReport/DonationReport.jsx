@@ -255,6 +255,8 @@ function DonationReport() {
                     <th>TRANSACTION ID</th>
                     <th>UTR NUMBER</th>
                     <th>STATUS</th>
+                    <th>SKIPPED IDs</th>
+                    <th>DATE</th>
                     <th>ACTION</th>
                   </tr>
                 </thead>
@@ -280,12 +282,20 @@ function DonationReport() {
                           '-'
                         )}
                       </td>
-                      <td style={{
-                        color: ['APPROVED', 'COMPLETED'].includes(row.status) ? '#27ae60' : row.status === 'REJECTED' ? '#e74c3c' : '#f39c12',
-                        fontWeight: 500
-                      }}>
+                      <td className={
+                        row.status === 'COMPLETED' ? 'text-success' :
+                        row.status === 'APPROVED' ? 'text-info' :
+                        row.status === 'REJECTED' ? 'text-danger' :
+                        'text-warning'
+                      }>
                         {row.status.replace(/_/g, ' ')}
                       </td>
+                      <td style={{ maxWidth: '150px', wordWrap: 'break-word' }}>
+                        {row.skippedMembers && row.skippedMembers.length > 0 
+                          ? row.skippedMembers.map(s => s.memberId || s).join(', ') 
+                          : '---'}
+                      </td>
+                      <td>{row.date}</td>
                       <td>
                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                           {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) && (

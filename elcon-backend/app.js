@@ -17,6 +17,7 @@ const supportTicketsRoutes = require('./routes/supportTickets');
 const couponsRoutes = require('./routes/coupons');
 const donationsRoutes = require('./routes/donations');
 const levelIncomeRoutes = require('./routes/levelIncome');
+const repurchaseIncomeRoutes = require('./routes/repurchaseIncome');
 
 const app = express();
 
@@ -56,6 +57,7 @@ app.use('/api/support-tickets', supportTicketsRoutes);
 app.use('/api/coupons', couponsRoutes);
 app.use('/api/donations', donationsRoutes);
 app.use('/api/level-income', levelIncomeRoutes);
+app.use('/api/repurchase-income', repurchaseIncomeRoutes);
 app.use('/api', productRoutes);
 
 // Health check

@@ -99,7 +99,8 @@ import UserDatewiseIncome from './Components/UserPanel/Income/DatewiseIncome/Dat
 import UserDailyPayoutReport from './Components/UserPanel/Income/DailyPayoutReport/DailyPayoutReport';
 import AdminDatewiseIncome from './Components/Admin/Income/DatewiseIncome/DatewiseIncome';
 import AdminDailyPayoutReport from './Components/Admin/Income/DailyPayoutReport/DailyPayoutReport';
-import AdminLevelIncomeReports from './Components/Admin/Income/LevelIncomeReports/LevelIncomeReports';
+import LevelIncomeReports from './Components/Admin/Income/LevelIncomeReports/LevelIncomeReports';
+import RepurchaseIncomeReports from './Components/Admin/Income/RepurchaseIncomeReports/RepurchaseIncomeReports';
 import AllWithdrawalRequest from './Components/Admin/Payment/AllWithdrawalRequest/AllWithdrawalRequest';
 import ApproveWithdrawalRequest from './Components/Admin/Payment/ApproveWithdrawalRequest/ApproveWithdrawalRequest';
 import PendingWithdrawalRequest from './Components/Admin/Payment/PendingWithdrawalRequest/PendingWithdrawalRequest';
@@ -256,8 +257,9 @@ function App() {
           <Route path="network-reports/donation-report" element={<Navigate to="/income-reports/donation-report" replace />} />
           <Route path="network-reports/upgrade-reports" element={<Navigate to="/income-reports/donation-report" replace />} />
 
-          <Route path="income-reports/level-income-reports" element={<AdminLevelIncomeReports />} />
-          <Route path="income-reports/donation-report" element={<DonationReport />} />
+          {/* Income Reports */}
+          <Route path="income-reports/level-income-reports" element={<LevelIncomeReports />} />
+          <Route path="income-reports/repurchase-income-reports" element={<RepurchaseIncomeReports />} />
           <Route path="income-report/Repurchase-income" element={<AdminRepurchaseIncome />} />
           <Route path="income-report/Tds-Report" element={<TdsReport />} />
           <Route path="income-report/Datewise-income" element={<AdminDatewiseIncome />} />

@@ -27,6 +27,7 @@ function AddRepurchaseProducts() {
       ['deliveryCharge', 'Delivery Charge'],
       ['levelPoint', 'Level Point'],
       ['bvPoint', 'B.V Point'],
+      ['reserveAmount', 'Reserve Amount'],
       ['size', 'Size'],
       ['color', 'Color'],
       ['weight', 'Weight'],
@@ -89,6 +90,7 @@ function AddRepurchaseProducts() {
       shipping: formData.get('deliveryCharge') || 'free',
       levelPoint: formData.get('levelPoint'),
       bvPoint: formData.get('bvPoint'),
+      reserveAmount: formData.get('reserveAmount'),
       size: formData.get('size'),
       color: formData.get('color'),
       weight: formData.get('weight'),
@@ -254,6 +256,10 @@ function AddRepurchaseProducts() {
               <label className="admin-add-product-row">
                 <span>B.V Point</span>
                 <input name="bvPoint" type="number" defaultValue="0" />
+              </label>
+              <label className="admin-add-product-row">
+                <span>Reserve Amount</span>
+                <input name="reserveAmount" type="number" defaultValue="0" />
               </label>
               <label className="admin-add-product-row">
                 <span>Size</span>

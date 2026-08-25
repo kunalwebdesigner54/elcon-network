@@ -3,6 +3,7 @@ const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 const User = require('../models/User');
 const productSeedData = require('../data/productSeedData');
+const { distributeRepurchaseIncome } = require('../services/repurchaseIncomeService');
 
 const productToApiShape = (product) => ({
   id: product._id,
@@ -35,6 +36,7 @@ const productToApiShape = (product) => ({
   color: product.color,
   weight: product.weight,
   dimension: product.dimension,
+  reserveAmount: product.reserveAmount,
 });
 
 const getQueryType = (req) => String(req.query.type || '').trim().toLowerCase();
@@ -176,6 +178,7 @@ exports.createProduct = async (req, res) => {
       color: payload.color || '',
       weight: payload.weight || '',
       dimension: payload.dimension || '',
+      reserveAmount: toNumber(payload.reserveAmount),
     });
 
     res.status(201).json({ success: true, product: productToApiShape(product) });
@@ -217,6 +220,7 @@ exports.updateProduct = async (req, res) => {
       'color',
       'weight',
       'dimension',
+      'reserveAmount',
     ];
 
     fields.forEach((field) => {
@@ -233,6 +237,7 @@ exports.updateProduct = async (req, res) => {
     if (updates.bvPoint !== undefined) product.bvPoint = toNumber(updates.bvPoint);
     if (updates.levelPoint !== undefined) product.levelPoint = toNumber(updates.levelPoint);
     if (updates.quantity !== undefined) product.quantity = toNumber(updates.quantity);
+    if (updates.reserveAmount !== undefined) product.reserveAmount = toNumber(updates.reserveAmount);
 
     await product.save();
 
@@ -301,6 +306,7 @@ exports.addCartItem = async (req, res) => {
         quantity,
         totalPrice: quantity * product.dpPrice,
         bvPoint: product.bvPoint,
+        reserveAmount: product.reserveAmount,
       });
     }
 
@@ -443,6 +449,7 @@ exports.checkoutCart = async (req, res) => {
     const finalTotal = totalPrice + shippingCharge - discountCoupon;
     const bvPoint = cart.items.reduce((sum, item) => sum + Number(item.bvPoint || 0), 0);
     const lvPoint = cart.items.reduce((sum, item) => sum + Number(item.levelPoint || 0), 0);
+    const totalReserveAmount = cart.items.reduce((sum, item) => sum + (Number(item.reserveAmount || 0) * Number(item.quantity || 1)), 0);
 
     const order = await Order.create({
       userId: req.user.id,
@@ -461,6 +468,7 @@ exports.checkoutCart = async (req, res) => {
       shippingCharge,
       discountCoupon,
       finalTotal,
+      reserveAmount: totalReserveAmount,
       shippingInformation: buildShippingInformation(user),
       items: cart.items.map((item) => ({
         productId: item.productId,
@@ -475,6 +483,13 @@ exports.checkoutCart = async (req, res) => {
 
     cart.items = [];
     await cart.save();
+
+    // Trigger Repurchase Income Distribution asynchronously if reserve amount is present
+    if (totalReserveAmount > 0) {
+      distributeRepurchaseIncome(order, user.sponsorId, totalReserveAmount).catch(err => {
+        console.error('Failed to distribute repurchase income:', err);
+      });
+    }
 
     res.status(201).json({ success: true, order });
   } catch (error) {

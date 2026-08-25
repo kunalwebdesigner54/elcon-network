@@ -23,6 +23,7 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
     let physicalDepth = 1;
     let successfulSlots = 0;
     const visited = new Set();
+    const skippedMembersList = []; // Track skipped members
 
     // Loop until we have distributed 9 slots or run out of physical uplines
     while (currentMemberId && successfulSlots < MAX_SLOTS) {
@@ -59,8 +60,12 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
 
             if (activeDirectsCount >= requiredDirects) {
               isEligible = true;
+            } else {
+              skippedMembersList.push({ memberId: currentMemberId, reason: `Requires ${requiredDirects} active directs, has ${activeDirectsCount}` });
             }
           }
+        } else {
+          skippedMembersList.push({ memberId: currentMemberId, reason: !candidate.accountStatus || candidate.accountStatus !== 'ACTIVE' ? 'Account inactive' : 'Account blocked' });
         }
 
         if (isEligible) {
@@ -81,7 +86,7 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
                 physicalDepth: physicalDepth, // Record actual physical depth for transparency
                 amount: INCOME_AMOUNT,
                 transactionId,
-                skippedMembers: []
+                skippedMembers: [...skippedMembersList]
               });
 
               await User.updateOne(
@@ -125,7 +130,7 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
                 physicalDepth: physicalDepth, // Admin catches whatever depth this fell off
                 amount: INCOME_AMOUNT,
                 transactionId,
-                skippedMembers: []
+                skippedMembers: [...skippedMembersList]
               });
 
               await User.updateOne(

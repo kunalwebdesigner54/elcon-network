@@ -1,93 +1,149 @@
-import "../../Common/UserLayout.css";
-import "./RepurchaseIncome.css";
-import { useEffect, useMemo, useState } from 'react';
-import { getMyDonations } from '../../../../api/donationsService';
+import '../../Common/UserLayout.css';
+import './RepurchaseIncome.css';
+import { useEffect, useState } from 'react';
+import { getRepurchaseIncomeReports } from '../../../../api/membersService';
 
 function RepurchaseIncome() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [filters, setFilters] = useState({ levelNo: '', levelId: '', fromMemberName: '', startDate: '', endDate: '', pageSize: '10' });
+  
+  const [filters, setFilters] = useState({
+    levelNo: '',
+    levelId: '',
+    startDate: '',
+    endDate: '',
+    limit: '10'
+  });
+  const [globalTotalAmount, setGlobalTotalAmount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    getMyDonations()
-      .then((response) => setRows(response.data?.received || []))
+  const fetchReports = () => {
+    setLoading(true);
+    setError('');
+    
+    const params = {
+      page: currentPage,
+      limit: filters.limit,
+      levelNo: filters.levelNo,
+      levelId: filters.levelId,
+      startDate: filters.startDate,
+      endDate: filters.endDate
+    };
+
+    getRepurchaseIncomeReports(params)
+      .then((response) => {
+        let rowsData = [];
+        if (Array.isArray(response)) rowsData = response;
+        else if (response && Array.isArray(response.data)) rowsData = response.data;
+        else if (response && response.data && Array.isArray(response.data.data)) rowsData = response.data.data;
+        else if (response && Array.isArray(response.records)) rowsData = response.records;
+        
+        setRows(rowsData);
+        
+        const totalAmt = response?.globalTotalAmount ?? response?.data?.globalTotalAmount ?? 0;
+        setGlobalTotalAmount(totalAmt);
+        
+        const paginationData = response?.pagination || response?.data?.pagination;
+        if (paginationData) {
+          setTotalPages(paginationData.pages || 1);
+        }
+      })
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load repurchase income.'))
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  const repurchaseIncomeRows = useMemo(() => rows.filter((row) => {
-    const rowDate = row.dateRaw ? new Date(row.dateRaw).toISOString().slice(0, 10) : '';
-    const matchesLevelNo = !filters.levelNo || String(row.level) === filters.levelNo;
-    const matchesLevelId = !filters.levelId || String(row.fromMemberId || '').toLowerCase().includes(filters.levelId.toLowerCase());
-    const matchesFromName = !filters.fromMemberName || String(row.fromName || '').toLowerCase().includes(filters.fromMemberName.toLowerCase());
-    const matchesStart = !filters.startDate || rowDate >= filters.startDate;
-    const matchesEnd = !filters.endDate || rowDate <= filters.endDate;
-    return matchesLevelNo && matchesLevelId && matchesFromName && matchesStart && matchesEnd;
-  }).slice(0, Number(filters.pageSize)).map((row, index) => ({
-    sNo: index + 1,
-    incomeDate: row.date,
-    memberId: row.toMemberId,
-    memberName: row.toName,
-    levelNo: row.level,
-    levelId: row.fromMemberId,
-    fromMemberName: row.fromName,
-    bvPoin: Number(row.amount || 0),
-    repurchaseIncome: Number(row.amount || 0),
-  })), [filters, rows]);
+  useEffect(() => {
+    fetchReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
-  const totalRepurchase = repurchaseIncomeRows.reduce((sum, row) => sum + row.repurchaseIncome, 0);
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
 
-  const updateFilter = (key) => (event) => {
-    setFilters((prev) => ({ ...prev, [key]: event.target.value }));
+  const handleSearch = () => {
+    if (currentPage === 1) {
+      fetchReports();
+    } else {
+      setCurrentPage(1);
+    }
+  };
+
+  const handleReset = () => {
+    setFilters({
+      levelNo: '',
+      levelId: '',
+      startDate: '',
+      endDate: '',
+      limit: '10'
+    });
+    if (currentPage === 1) {
+      setTimeout(fetchReports, 0);
+    } else {
+      setCurrentPage(1);
+    }
+  };
+
+  const renderPagination = () => {
+    const pages = [];
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 2);
+    
+    if (startPage > 1) {
+      pages.push(<button key="1" type="button" onClick={() => setCurrentPage(1)} className="level-income-page-btn">1</button>);
+      if (startPage > 2) pages.push(<span key="dots1" className="level-income-page-btn">...</span>);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button 
+          key={i} 
+          type="button"
+          onClick={() => setCurrentPage(i)} 
+          className={`level-income-page-btn ${currentPage === i ? 'level-income-page-btn-active' : ''}`}
+        >
+          {i}
+        </button>
+      );
+    }
+    
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) pages.push(<span key="dots2" className="level-income-page-btn">...</span>);
+      pages.push(<button key={totalPages} type="button" onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">{totalPages}</button>);
+    }
+    
+    return pages;
   };
 
   return (
     <div>
       <h1 className="user-page-title">Repurchase Income</h1>
       <div className="user-panel">
-        <h3>Total Repurchase Income : {totalRepurchase.toFixed(2)}</h3>
+        <h3>Total Repurchase Income : {globalTotalAmount.toFixed(2)}</h3>
 
-        <div className="report-filters">
-          <select aria-label="Level No" value={filters.levelNo} onChange={updateFilter('levelNo')}>
-            <option value="">LEVEL NO</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
+        <div className="level-income-filters">
+          <select aria-label="Level Number" name="levelNo" value={filters.levelNo} onChange={handleFilterChange} className="level-income-input">
+            <option value="">ALL LEVELS</option>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => <option key={value} value={value}>Level {value}</option>)}
           </select>
-          <input type="text" placeholder="LEVEL ID" aria-label="Level ID" value={filters.levelId} onChange={updateFilter('levelId')} />
-          <input
-            type="text"
-            placeholder="FROM MEMBER NAME"
-            aria-label="From Member Name"
-            value={filters.fromMemberName}
-            onChange={updateFilter('fromMemberName')}
-          />
-          <input type="date" placeholder="START DATE" aria-label="Start Date" value={filters.startDate} onChange={updateFilter('startDate')} />
-          <input type="date" placeholder="END DATE" aria-label="End Date" value={filters.endDate} onChange={updateFilter('endDate')} />
-          <select aria-label="Rows per page" value={filters.pageSize} onChange={updateFilter('pageSize')}>
+          <input type="text" placeholder="LEVEL ID" aria-label="Level ID" name="levelId" value={filters.levelId} onChange={handleFilterChange} className="level-income-input" />
+          <input type="date" placeholder="START DATE" aria-label="Start Date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="level-income-input" />
+          <input type="date" placeholder="END DATE" aria-label="End Date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="level-income-input" />
+          <select aria-label="Rows per page" name="limit" value={filters.limit} onChange={handleFilterChange} className="level-income-input">
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="user-btn-blue" type="button">
-            SEARCH
-          </button>
+          <button onClick={handleSearch} className="user-btn-blue level-income-search-btn" type="button">SEARCH</button>
+          <button onClick={handleReset} className="user-btn-outline level-income-search-btn" type="button" style={{ borderColor: 'var(--text-muted)', color: 'var(--text-muted)' }}>RESET</button>
         </div>
 
         <div className="table-toolbar">
-          <button className="user-btn-outline" type="button">
-            Excel
-          </button>
-          <button className="user-btn-outline" type="button">
-            PDF
-          </button>
+          <button className="user-btn-outline" type="button">Excel</button>
+          <button className="user-btn-outline" type="button">PDF</button>
         </div>
 
         <div className="table-wrap">
@@ -98,77 +154,51 @@ function RepurchaseIncome() {
                 <th>INCOME DATE & TIME</th>
                 <th>MEMBER ID</th>
                 <th>MEMBER NAME</th>
-                <th>LEVEL NO</th>
-                <th>LEVEL ID</th>
+                <th>INCOME SLOT</th>
+                <th>TRIGGERED BY ID</th>
                 <th>FROM MEMBER NAME</th>
-                <th>BV POINT</th>
-                <th>REPURCHASE INCOME</th>
+                <th>SKIPPED IDs</th>
+                <th>AMOUNT</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr><td colSpan={9}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={9}>{error}</td></tr>
-              ) : repurchaseIncomeRows.length === 0 ? (
-                <tr><td colSpan={9}>No repurchase income records found.</td></tr>
-              ) : repurchaseIncomeRows.map((row) => (
-                <tr key={row.sNo}>
-                  <td>{row.sNo}</td>
-                  <td>{row.incomeDate}</td>
-                  <td>{row.memberId}</td>
-                  <td>{row.memberName}</td>
-                  <td>{row.levelNo}</td>
-                  <td>{row.levelId}</td>
-                  <td>{row.fromMemberName}</td>
-                  <td>{row.bvPoin}</td>
-                  <td>{row.repurchaseIncome.toFixed(2)}</td>
-                </tr>
-              ))}
-              <tr className="report-total-row">
-                <td
-                  colSpan="8"
-                  style={{ textAlign: 'end' }}
-                  className="report-total-label"
-                >
-                  TOTAL REPURCHASE INCOME
-                </td>
-                <td className="report-total-value">
-                  {totalRepurchase.toFixed(2)}
-                </td>
-              </tr>
+                <tr><td colSpan={9} style={{color: 'red'}}>{error}</td></tr>
+              ) : rows.length === 0 ? (
+                <tr><td colSpan={10}>No repurchase income records found.</td></tr>
+              ) : (
+                <>
+                  {rows.map((row, index) => (
+                    <tr key={row.transactionId || row.sNo || index}>
+                      <td>{row.sNo}</td>
+                      <td>{row.incomeDateTime}</td>
+                      <td>{row.memberId}</td>
+                      <td>{row.memberName}</td>
+                      <td>{row.levelNo}</td>
+                      <td>{row.levelId}</td>
+                      <td>{row.fromMemberName}</td>
+                      <td style={{ maxWidth: '150px', wordWrap: 'break-word' }}>{row.skippedIds || '---'}</td>
+                      <td>{Number(row.amount || 0).toFixed(2)}</td>
+                    </tr>
+                  ))}
+                  <tr className="level-income-total-row">
+                    <td colSpan={8}>TOTAL (All Pages)</td>
+                    <td>{globalTotalAmount.toFixed(2)}</td>
+                  </tr>
+                </>
+              )}
             </tbody>
           </table>
         </div>
 
-        <div className="pagination-row">
-          <button className="page-btn" type="button">
-            «
-          </button>
-          <button className="page-btn active" type="button">
-            1
-          </button>
-          <button className="page-btn" type="button">
-            2
-          </button>
-          <button className="page-btn" type="button">
-            3
-          </button>
-          <button className="page-btn" type="button">
-            4
-          </button>
-          <button className="page-btn" type="button">
-            5
-          </button>
-          <button className="page-btn" type="button">
-            6
-          </button>
-          <button className="page-btn" type="button">
-            7
-          </button>
-          <button className="page-btn" type="button">
-            »
-          </button>
+        <div className="level-income-pagination" aria-label="Pagination">
+          <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage(1)} className="level-income-page-btn">«</button>
+          <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="level-income-page-btn">‹</button>
+          {renderPagination()}
+          <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="level-income-page-btn">›</button>
+          <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">»</button>
         </div>
       </div>
     </div>

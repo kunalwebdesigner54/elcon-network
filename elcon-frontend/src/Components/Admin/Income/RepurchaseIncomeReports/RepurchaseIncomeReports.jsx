@@ -1,8 +1,8 @@
-import './LevelIncomeReports.css';
+import './RepurchaseIncomeReports.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getLevelIncomeReports } from '../../../../api/membersService';
+import { getRepurchaseIncomeReports } from '../../../../api/membersService';
 
-function LevelIncomeReports() {
+function RepurchaseIncomeReports() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -36,7 +36,7 @@ function LevelIncomeReports() {
       endDate: filters.endDate
     };
 
-    getLevelIncomeReports(params)
+    getRepurchaseIncomeReports(params)
       .then((response) => {
         setRows(Array.isArray(response.data) ? response.data : []);
         setGlobalTotalAmount(response.globalTotalAmount || 0);
@@ -44,7 +44,7 @@ function LevelIncomeReports() {
           setTotalPages(response.pagination.pages || 1);
         }
       })
-      .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load level income reports.'))
+      .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load repurchase income reports.'))
       .finally(() => setLoading(false));
   };
 
@@ -83,7 +83,7 @@ function LevelIncomeReports() {
     }
   };
 
-  const levelIncomeReportsData = useMemo(() => rows.map((row) => ({
+  const repurchaseIncomeReportsData = useMemo(() => rows.map((row) => ({
     sNo: row.sNo,
     incomeDateTime: row.incomeDateTime,
     memberId: row.memberId,
@@ -92,7 +92,7 @@ function LevelIncomeReports() {
     levelId: row.levelId,
     fromMemberName: row.fromMemberName,
     amount: Number(row.amount || 0),
-    transactionId: row.transactionId,
+    orderNo: row.orderNo,
     skippedIds: row.skippedIds || '',
   })), [rows]);
 
@@ -129,7 +129,7 @@ function LevelIncomeReports() {
 
   return (
     <div className="level-income-report-page">
-      <h2 className="level-income-screen-title">Level Income Reports</h2>
+      <h2 className="level-income-screen-title">Repurchase Income Reports</h2>
 
       <section className="panel level-income-panel">
         <div className="level-income-filter-row">
@@ -176,12 +176,12 @@ function LevelIncomeReports() {
                 <tr><td colSpan={9}>Loading...</td></tr>
               ) : error ? (
                 <tr><td colSpan={10} style={{color: 'red'}}>{error}</td></tr>
-              ) : levelIncomeReportsData.length === 0 ? (
-                <tr><td colSpan={10}>No level income reports found.</td></tr>
+              ) : repurchaseIncomeReportsData.length === 0 ? (
+                <tr><td colSpan={10}>No repurchase income reports found.</td></tr>
               ) : (
                 <>
-                  {levelIncomeReportsData.map((row) => (
-                    <tr key={row.transactionId || row.sNo}>
+                  {repurchaseIncomeReportsData.map((row) => (
+                    <tr key={row.orderNo || row.sNo}>
                       <td>{row.sNo}</td>
                       <td>{row.incomeDateTime}</td>
                       <td>{row.memberId}</td>
@@ -219,4 +219,4 @@ function LevelIncomeReports() {
   );
 }
 
-export default LevelIncomeReports;
+export default RepurchaseIncomeReports;

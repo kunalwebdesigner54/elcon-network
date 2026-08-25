@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { getMyDonations, updateDonationStatus } from "../../../../api/donationsService";
 import "./ReceivedHelp.css";
 
-const exportColumns = ['S.NO', 'DONAR MEMBER ID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE LEVEL', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'STATUS'];
+const exportColumns = ['S.NO', 'DONAR MEMBER ID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE LEVEL', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'SKIPPED IDs', 'STATUS'];
 
 const ReceivedHelp = () => {
   const [receivedHelpRows, setReceivedHelpRows] = useState([]);
@@ -33,6 +33,9 @@ const ReceivedHelp = () => {
         dateRaw: donation.dateRaw,
         transactionId: donation.donationId || '-',
         utrNumber: donation.utrNumber || '---',
+        skippedIds: donation.skippedMembers && donation.skippedMembers.length > 0 
+          ? donation.skippedMembers.map(s => s.memberId || s).join(', ') 
+          : '---',
         status: donation.status || 'PENDING'
       }));
 
@@ -92,7 +95,7 @@ const ReceivedHelp = () => {
   const visibleRows = filteredRows.slice(0, Number(pageSize));
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
-    row.sNo, row.memberId, row.name, row.amount, row.rank, row.requestDate, row.transactionId, row.utrNumber, row.status.replace(/_/g, ' ')
+    row.sNo, row.memberId, row.name, row.amount, row.rank, row.requestDate, row.transactionId, row.utrNumber, row.skippedIds, row.status.replace(/_/g, ' ')
   ]));
 
   const handleExportExcel = () => {
@@ -221,8 +224,9 @@ const ReceivedHelp = () => {
                     <th>REQUEST DATE</th>
                     <th>TRASACTION ID</th>
                     <th>UTR NUMBER</th>
+                    <th>SKIPPED IDs</th>
                     <th>ACTION</th>
-                <th>STATUS</th>
+                    <th>STATUS</th>
               </tr>
             </thead>
                 <tbody>
@@ -237,6 +241,7 @@ const ReceivedHelp = () => {
                       <td>{row.requestDate}</td>
                       <td>{row.transactionId}</td>
                       <td>{row.utrNumber}</td>
+                      <td style={{ maxWidth: '150px', wordWrap: 'break-word' }}>{row.skippedIds}</td>
                       <td>
                         {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
                           <div style={{ display: 'flex', gap: '4px' }}>

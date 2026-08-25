@@ -110,6 +110,10 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    reserveAmount: {
+      type: Number,
+      default: 0,
+    },
     startDate: {
       type: String,
       default: '',

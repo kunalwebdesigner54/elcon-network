@@ -157,6 +157,7 @@ function LevelIncome() {
                 <th>INCOME LEVEL</th>
                 <th>LEVEL ID (SOURCE)</th>
                 <th>FROM MEMBER NAME</th>
+                <th>SKIPPED IDs</th>
                 <th>PHYSICAL DEPTH</th>
                 <th>AMOUNT</th>
               </tr>
@@ -165,9 +166,9 @@ function LevelIncome() {
               {loading ? (
                 <tr><td colSpan={9}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={9} style={{color: 'red'}}>{error}</td></tr>
+                <tr><td colSpan={10} style={{color: 'red'}}>{error}</td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={9}>No level income records found.</td></tr>
+                <tr><td colSpan={10}>No level income records found.</td></tr>
               ) : (
                 <>
                   {rows.map((row, index) => (
@@ -179,12 +180,13 @@ function LevelIncome() {
                       <td>{row.levelNo}</td>
                       <td>{row.levelId}</td>
                       <td>{row.fromMemberName}</td>
+                      <td style={{ maxWidth: '150px', wordWrap: 'break-word' }}>{row.skippedIds || '---'}</td>
                       <td>{row.physicalDepth}</td>
                       <td>{Number(row.amount || 0).toFixed(2)}</td>
                     </tr>
                   ))}
                   <tr className="level-income-total-row">
-                    <td colSpan={8}>TOTAL (All Pages)</td>
+                    <td colSpan={9} style={{ textAlign: 'right' }}>TOTAL (All Pages)</td>
                     <td>{globalTotalAmount.toFixed(2)}</td>
                   </tr>
                 </>

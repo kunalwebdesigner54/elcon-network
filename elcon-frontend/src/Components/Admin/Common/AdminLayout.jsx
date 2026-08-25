@@ -46,7 +46,7 @@ const menuItems = [
     label: 'Income Reports',
     children: [
       { label: 'Level Income Reports', to: '/income-reports/level-income-reports' },
-      { label: 'Repurchase Income', to: '/income-report/Repurchase-income' },
+      { label: 'Repurchase Income Reports', to: '/income-reports/repurchase-income-reports' },
       { label: 'Donation Report', to: '/income-reports/donation-report' },
         { label: 'TDS Report', to: '/income-report/Tds-Report' },
         { label: 'Datewise Income', to: '/income-report/Datewise-income' },

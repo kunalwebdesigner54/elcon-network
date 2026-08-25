@@ -3,6 +3,7 @@ const Donation = require('../models/Donation');
 const Epin = require('../models/Epin');
 const Order = require('../models/Order');
 const LevelIncome = require('../models/LevelIncome');
+const RepurchaseIncome = require('../models/RepurchaseIncome');
 const { getTeamStats } = require('../services/teamService');
 const { getActualCompletedLevel } = require('../services/uplineEngine');
 
@@ -74,7 +75,7 @@ exports.userDashboard = async (req, res) => {
     const endOfYesterday = new Date(yesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    const [donationsSent, donationsReceived, yesterdayReceived, levelIncomeSent, yestLevelIncomeList, upgradeLevel] = await Promise.all([
+    const [donationsSent, donationsReceived, yesterdayReceived, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel] = await Promise.all([
       Donation.find({ fromMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({ toMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({
@@ -88,6 +89,11 @@ exports.userDashboard = async (req, res) => {
         status: 'CREDITED',
         createdAt: { $gte: yesterday, $lte: endOfYesterday },
       }),
+      RepurchaseIncome.find({ recipientMemberId: memberId }),
+      RepurchaseIncome.find({
+        recipientMemberId: memberId,
+        createdAt: { $gte: yesterday, $lte: endOfYesterday },
+      }),
       getActualCompletedLevel(memberId),
     ]);
 
@@ -97,6 +103,8 @@ exports.userDashboard = async (req, res) => {
 
     const totalLevelIncome = (levelIncomeSent || []).reduce((s, d) => s + d.amount, 0);
     const yesterdayLevelInc = (yestLevelIncomeList || []).reduce((s, d) => s + d.amount, 0);
+    const totalRepurchaseIncome = (repurchaseIncomeList || []).reduce((s, d) => s + d.amount, 0);
+    const yesterdayRepurchaseInc = (yestRepurchaseIncomeList || []).reduce((s, d) => s + d.amount, 0);
 
     const fmt = (n) => `₹ ${n.toLocaleString('en-IN')}`;
 
@@ -117,113 +125,14 @@ exports.userDashboard = async (req, res) => {
         yesterdayReceivedHelp: fmt(yesterdayReceivedHelp),
         levelIncome: fmt(totalLevelIncome),
         yesterdayLevelIncome: fmt(yesterdayLevelInc),
-        repurchaseIncome: fmt(0),
-        yesterdayRepurchaseIncome: fmt(0),
-        totalLRIncome: fmt(totalLevelIncome),
-        yesterdayTotalIncome: fmt(yesterdayReceivedHelp + yesterdayLevelInc),
+        repurchaseIncome: fmt(totalRepurchaseIncome),
+        yesterdayRepurchaseIncome: fmt(yesterdayRepurchaseInc),
+        totalLRIncome: fmt(totalLevelIncome + totalRepurchaseIncome),
+        yesterdayTotalIncome: fmt(yesterdayReceivedHelp + yesterdayLevelInc + yesterdayRepurchaseInc),
         totalTeam: totalTeamCount,
         yesterdayJoining: 0,
         unlockLevel: upgradeLevel,
         upgradedLevel: upgradeLevel,
-        walletBalance: fmt(user.walletBalance || 0),
-        rank: user.rank || '---',
-      },
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Error fetching user dashboard', error: error.message });
-  }
-};
-
-// @desc Admin full dashboard metrics (fallback values where data models missing)
-// @route GET /api/dashboard/admin/full
-// @access Private (admin)
-exports.adminFullDashboard = async (req, res) => {
-  try {
-    const totalUsers = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' } });
-
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
-    const todaysJoiningMembers = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' }, createdAt: { $gte: startOfToday } });
-
-    // Define active as users created in last 90 days (best-effort without activity model)
-    const nintyDaysAgo = new Date();
-    nintyDaysAgo.setDate(nintyDaysAgo.getDate() - 90);
-    const activeMembers = await User.countDocuments({ role: 'user', email: { $ne: 'admin@gmail.com' }, createdAt: { $gte: nintyDaysAgo } });
-
-    const inactiveMembers = Math.max(0, totalUsers - activeMembers);
-
-    // Real stats from DB
-    const yesterday2 = new Date();
-    yesterday2.setDate(yesterday2.getDate() - 1);
-    yesterday2.setHours(0, 0, 0, 0);
-    const endOfYesterday2 = new Date(yesterday2);
-    endOfYesterday2.setHours(23, 59, 59, 999);
-
-    // Models required for advanced stats
-    const WithdrawalRequest = require('../models/WithdrawalRequest');
-    const Coupon = require('../models/Coupon');
-    const EpinRequest = require('../models/EpinRequest');
-
-    const [
-      allDonations,
-      yesterdayDonations,
-      totalEpins,
-      usedEpins,
-      unusedEpins,
-      totalOrders,
-      pendingOrders,
-      withdrawals,
-      pendingEpinRequests,
-      totalCoupons,
-      usedCoupons,
-      activeCoupons,
-      expiredCoupons
-    ] = await Promise.all([
-      Donation.find({ status: 'COMPLETED' }),
-      Donation.find({ status: 'COMPLETED', createdAt: { $gte: yesterday2, $lte: endOfYesterday2 } }),
-      Epin.countDocuments({ status: { $ne: 'Deleted' } }),
-      Epin.countDocuments({ status: 'Used' }),
-      Epin.countDocuments({ status: 'Unused' }),
-      Order.countDocuments(),
-      Order.countDocuments({ orderStatus: 'Pending' }),
-      WithdrawalRequest.find(),
-      EpinRequest.countDocuments({ status: 'Pending' }),
-      Coupon.countDocuments(),
-      Coupon.countDocuments({ status: 'USED' }),
-      Coupon.countDocuments({ status: 'ACTIVE' }),
-      Coupon.countDocuments({ status: 'EXPIRED' })
-    ]);
-
-    const totalDonationAmount = allDonations.reduce((s, d) => s + d.amount, 0);
-    const yesterdayDonationAmount = yesterdayDonations.reduce((s, d) => s + d.amount, 0);
-    
-    // Withdrawals
-    const succeedPayouts = withdrawals.filter(w => w.status === 'Succeed').reduce((s, w) => s + w.netAmount, 0);
-    const pendingPayouts = withdrawals.filter(w => w.status === 'Pending').reduce((s, w) => s + w.netAmount, 0);
-    const totalPayoutAmount = withdrawals.reduce((s, w) => s + w.netAmount, 0);
-    
-    // Level & Repurchase
-    const totalLevelIncome = allDonations.length * 100; // Simulated using $100 per donation
-    const yesterdayLevelIncome = yesterdayDonations.length * 100;
-
-    const fmt2 = (n) => `₹ ${Number(n).toLocaleString('en-IN')}`;
-
-    const adminStats = [
-      { label: 'Total Joining Turnover', value: fmt2(0) },
-      { label: 'Profit on Joining', value: fmt2(0) },
-      { label: 'Total Donation Amount', value: fmt2(totalDonationAmount) },
-      { label: "Yesterday's Donation Amount", value: fmt2(yesterdayDonationAmount) },
-      { label: 'Total Level Income', value: fmt2(totalLevelIncome) },
-      { label: "Yesterday's Level Income", value: fmt2(yesterdayLevelIncome) },
-      { label: 'Total Repurchase Income', value: fmt2(0) },
-      { label: "Yesterday's Repurchase Income", value: fmt2(0) },
-      { label: 'Generated Total Income', value: fmt2(totalDonationAmount + totalLevelIncome) },
-      { label: 'Total Deducted Charges', value: fmt2(0) },
-      { label: 'Total Payout Amount', value: fmt2(totalPayoutAmount) },
-      { label: 'Succeed Payout', value: fmt2(succeedPayouts) },
-      { label: 'Awaiting Payout Request', value: fmt2(pendingPayouts) },
-      { label: 'Pending Payout', value: fmt2(pendingPayouts) },
-      { label: 'TDS Deducted 5%', value: fmt2(totalPayoutAmount * 0.05) },
       { label: 'Deducted Admin Charge 5%', value: fmt2(totalPayoutAmount * 0.05) },
       { label: 'Total Joining Members', value: `${totalUsers}` },
       { label: "Today's Joining Members", value: `${todaysJoiningMembers}` },

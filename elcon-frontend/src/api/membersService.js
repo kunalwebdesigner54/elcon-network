@@ -46,6 +46,11 @@ export const getLevelIncomeReports = async (params = {}) => {
   return response.data;
 };
 
+export const getRepurchaseIncomeReports = async (params = {}) => {
+  const response = await apiClient.get('/repurchase-income/reports', { params });
+  return response.data;
+};
+
 export const submitKycRequest = async (kycData) => {
   const response = await apiClient.put('/profile/kyc-request', kycData);
   return response.data;
