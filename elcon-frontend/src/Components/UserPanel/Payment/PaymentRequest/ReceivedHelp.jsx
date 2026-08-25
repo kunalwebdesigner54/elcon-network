@@ -225,36 +225,44 @@ const ReceivedHelp = () => {
                 <th>STATUS</th>
               </tr>
             </thead>
-            <tbody>
-              {visibleRows.map((row) => (
-                <tr key={row.sNo}>
-                  <td>{row.sNo}</td>
-                  <td>{row.memberId}</td>
-                  <td>{row.name}</td>
-                  <td>{row.amount}</td>
-                  <td>{row.rank}</td>
-                  <td>{row.requestDate}</td>
-                  <td>{row.transactionId}</td>
-                  <td>{row.utrNumber}</td>
-                  <td>
-                    {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
-                      <>
-                        <button className="user-mini-btn user-accept" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>ACCEPT</button>
-                        <button className="user-mini-btn user-reject" type="button" style={{ marginLeft: 4 }} onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>REJECT</button>
-                      </>
-                    ) : (
-                      <span>-</span>
-                    )}
-                  </td>
-                  <td style={{
-                    color: ['APPROVED', 'COMPLETED'].includes(row.status) ? '#27ae60' : row.status === 'REJECTED' ? '#e74c3c' : '#f39c12',
-                    fontWeight: 500
-                  }}>
-                    {row.status.replace(/_/g, ' ')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+                <tbody>
+                  {visibleRows.length > 0 ? (
+                    visibleRows.map((row) => (
+                    <tr key={row.sNo}>
+                      <td>{row.sNo}</td>
+                      <td>{row.memberId}</td>
+                      <td>{row.name}</td>
+                      <td>{row.amount}</td>
+                      <td>{row.rank}</td>
+                      <td>{row.requestDate}</td>
+                      <td>{row.transactionId}</td>
+                      <td>{row.utrNumber}</td>
+                      <td>
+                        {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            <button className="user-mini-btn user-accept" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>ACCEPT</button>
+                            <button className="user-mini-btn user-reject" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>REJECT</button>
+                          </div>
+                        ) : (
+                          <span>-</span>
+                        )}
+                      </td>
+                      <td style={{
+                        color: ['APPROVED', 'COMPLETED'].includes(row.status) ? '#27ae60' : row.status === 'REJECTED' ? '#e74c3c' : '#f39c12',
+                        fontWeight: 500
+                      }}>
+                        {row.status.replace(/_/g, ' ')}
+                      </td>
+                    </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="10" style={{ textAlign: 'center', padding: '30px', color: '#888', fontSize: '15px' }}>
+                        No donations found for the selected tab or filters.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
           </table>
             </div>
           </>
