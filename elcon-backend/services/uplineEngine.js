@@ -47,7 +47,7 @@ const getLogicalUplines = async (startMemberId, targetLogicalLevel, planType, st
   let physicalDepth = 0;
   
   // Start from the sponsor
-  const startUser = await User.findOne({ memberId: startMemberId }).select('sponsorId').lean();
+  const startUser = await User.findOne({ memberId: startMemberId }).select('sponsorId accountStatus').lean();
   if (!startUser) return { receivers, skipped };
   
   let currentMemberId = startUser.sponsorId;
@@ -77,10 +77,17 @@ const getLogicalUplines = async (startMemberId, targetLogicalLevel, planType, st
       isEligible = true; // Admin gets it unconditionally
     } else {
       // 1. Calculate strictly active direct count
-      const activeDirectsCount = await User.countDocuments({
+      let activeDirectsCount = await User.countDocuments({
         sponsorId: currentMemberId,
         accountStatus: 'ACTIVE'
       });
+      
+      // If the candidate is the direct sponsor of the person making the payment, 
+      // and the person making the payment is NOT active yet (e.g., paying Level 1),
+      // we must count them as 1 direct towards this qualification!
+      if (startUser.sponsorId === currentMemberId && startUser.accountStatus !== 'ACTIVE') {
+        activeDirectsCount += 1;
+      }
       
       const requiredDirects = currentLogicalLevel; // Direct requirement always matches the logical slot level being checked
       
