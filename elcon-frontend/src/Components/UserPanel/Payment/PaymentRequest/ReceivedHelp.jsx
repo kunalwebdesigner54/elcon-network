@@ -4,6 +4,7 @@ import "./ReceivedHelp.css";
 
 const ReceivedHelp = () => {
   const [receivedHelpRows, setReceivedHelpRows] = useState([]);
+  const [activeTab, setActiveTab] = useState('ALL');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -52,9 +53,28 @@ const ReceivedHelp = () => {
       setLoading(false);
     }
   };
+  const visibleRows = receivedHelpRows.filter(row => activeTab === 'ALL' || row.status === activeTab);
+
   return (
     <div>
-      <h1 className="user-page-title">Received  Help (Downline ➔ You)</h1>
+      <h1 className="user-page-title">Received Help (Downline ➔ You)</h1>
+      <div className="donation-tabs">
+        {[
+          { key: 'WAITING_FOR_RECEIVER_CONFIRMATION', label: 'WAITING' },
+          { key: 'APPROVED', label: 'APPROVED' },
+          { key: 'PENDING', label: 'PENDING' },
+          { key: 'REJECTED', label: 'REJECTED' },
+          { key: 'ALL', label: 'ALL HISTORY' }
+        ].map(tab => (
+          <button 
+            key={tab.key}
+            className={`donation-tab-btn ${activeTab === tab.key ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.key)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
       <div className="user-panel">
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         {loading && <div style={{ color: '#666', marginBottom: '14px' }}>Loading...</div>}
@@ -118,7 +138,7 @@ const ReceivedHelp = () => {
               </tr>
             </thead>
             <tbody>
-              {receivedHelpRows.map((row) => (
+              {visibleRows.map((row) => (
                 <tr key={row.sNo}>
                   <td>{row.sNo}</td>
                   <td>{row.memberId}</td>

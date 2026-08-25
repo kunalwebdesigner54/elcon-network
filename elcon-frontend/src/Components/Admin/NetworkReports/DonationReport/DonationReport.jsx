@@ -192,10 +192,9 @@ function DonationReport() {
 
       <div className="donation-tabs">
         {[
-          { key: 'PENDING', label: 'PENDING' },
           { key: 'WAITING_FOR_RECEIVER_CONFIRMATION', label: 'WAITING' },
           { key: 'APPROVED', label: 'APPROVED' },
-          { key: 'COMPLETED', label: 'COMPLETED' },
+          { key: 'PENDING', label: 'PENDING' },
           { key: 'REJECTED', label: 'REJECTED' },
           { key: 'ALL', label: 'ALL HISTORY' }
         ].map(tab => (
