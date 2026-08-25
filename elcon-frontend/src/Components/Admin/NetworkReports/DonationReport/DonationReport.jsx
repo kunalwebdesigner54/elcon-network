@@ -39,12 +39,12 @@ function formatDateTime(value) {
 }
 function DonationReport() {
   const [donationRows, setDonationRows] = useState([]);
+  const [activeTab, setActiveTab] = useState('ALL');
   const [filters, setFilters] = useState({
     donorMemberId: '',
     receiverMemberId: '',
     amount: '',
     rank: '',
-    status: '',
     startDate: '',
     endDate: ''
   });
@@ -103,7 +103,7 @@ function DonationReport() {
       const byReceiverId = !filters.receiverMemberId || row.receiverMemberId.toLowerCase().includes(filters.receiverMemberId.toLowerCase());
       const byAmount = !filters.amount || row.amount.includes(filters.amount);
       const byRank = !filters.rank || row.rank === filters.rank;
-      const byStatus = !filters.status || row.status === filters.status;
+      const byStatus = activeTab === 'ALL' || row.status === activeTab;
 
       const rowDate = parseDate(row.requestDate);
       const byStartDate = !filters.startDate || rowDate >= filters.startDate;
@@ -111,7 +111,7 @@ function DonationReport() {
 
       return byDonorId && byReceiverId && byAmount && byRank && byStatus && byStartDate && byEndDate;
     });
-  }, [filters, donationRows]);
+  }, [filters, donationRows, activeTab]);
 
   const visibleRows = filteredRows.slice(0, Number(pageSize));
 
@@ -190,6 +190,25 @@ function DonationReport() {
     <div>
       <h2 className="section-title tds-screen-title">Donation Report</h2>
 
+      <div className="donation-tabs">
+        {[
+          { key: 'PENDING', label: 'PENDING' },
+          { key: 'WAITING_FOR_RECEIVER_CONFIRMATION', label: 'WAITING' },
+          { key: 'APPROVED', label: 'APPROVED' },
+          { key: 'COMPLETED', label: 'COMPLETED' },
+          { key: 'REJECTED', label: 'REJECTED' },
+          { key: 'ALL', label: 'ALL HISTORY' }
+        ].map(tab => (
+          <button 
+            key={tab.key}
+            className={`donation-tab-btn ${activeTab === tab.key ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.key)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="panel" style={{ borderRadius: '28px', padding: '24px' }}>
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         {loading && <div style={{ color: '#666', marginBottom: '14px' }}>Loading donations...</div>}
@@ -205,14 +224,6 @@ function DonationReport() {
                 {Object.keys(rankLabels).map((rankKey) => (
                   <option key={rankKey} value={rankKey}>{rankKey}</option>
                 ))}
-              </select>
-              <select className="select-input" style={{ maxWidth: '120px' }} value={filters.status} onChange={handleFilterChange('status')}>
-                <option value="">STATUS</option>
-                <option value="PENDING">PENDING</option>
-                <option value="WAITING_FOR_RECEIVER_CONFIRMATION">WAITING</option>
-                <option value="APPROVED">APPROVED</option>
-                <option value="COMPLETED">COMPLETED</option>
-                <option value="REJECTED">REJECTED</option>
               </select>
               <input className="text-input" type="date" style={{ maxWidth: '130px' }} value={filters.startDate} onChange={handleFilterChange('startDate')} />
               <input className="text-input" type="date" style={{ maxWidth: '120px' }} value={filters.endDate} onChange={handleFilterChange('endDate')} />
