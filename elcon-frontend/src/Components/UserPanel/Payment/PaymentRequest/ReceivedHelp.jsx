@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { getMyDonations, updateDonationStatus } from "../../../../api/donationsService";
 import "./ReceivedHelp.css";
+
+const exportColumns = ['S.NO', 'DONAR MEMBER ID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE LEVEL', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'STATUS'];
 
 const ReceivedHelp = () => {
   const [receivedHelpRows, setReceivedHelpRows] = useState([]);
   const [activeTab, setActiveTab] = useState('ALL');
+  const [filters, setFilters] = useState({ donorMemberId: '', rank: '', startDate: '', endDate: '' });
+  const [pageSize, setPageSize] = useState('10');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,6 +30,7 @@ const ReceivedHelp = () => {
         amount: donation.amount || 0,
         rank: donation.level || '-',
         requestDate: donation.dateRaw ? new Date(donation.dateRaw).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : (donation.date || '-'),
+        dateRaw: donation.dateRaw,
         transactionId: donation.donationId || '-',
         utrNumber: donation.utrNumber || '---',
         status: donation.status || 'PENDING'
@@ -53,7 +58,87 @@ const ReceivedHelp = () => {
       setLoading(false);
     }
   };
-  const visibleRows = receivedHelpRows.filter(row => activeTab === 'ALL' || row.status === activeTab);
+
+  const handleFilterChange = (key) => (event) => {
+    setFilters((prev) => ({ ...prev, [key]: event.target.value }));
+  };
+
+  const filteredRows = useMemo(() => {
+    return receivedHelpRows.filter((row) => {
+      const byDonorId = !filters.donorMemberId || row.memberId.toLowerCase().includes(filters.donorMemberId.toLowerCase());
+      const byRank = !filters.rank || String(row.rank) === filters.rank;
+      const byStatus = activeTab === 'ALL' || row.status === activeTab;
+
+      let byStartDate = true;
+      let byEndDate = true;
+      if (row.dateRaw && (filters.startDate || filters.endDate)) {
+        const rowDate = new Date(row.dateRaw);
+        if (filters.startDate) {
+          const start = new Date(filters.startDate);
+          start.setHours(0, 0, 0, 0);
+          byStartDate = rowDate >= start;
+        }
+        if (filters.endDate) {
+          const end = new Date(filters.endDate);
+          end.setHours(23, 59, 59, 999);
+          byEndDate = rowDate <= end;
+        }
+      }
+
+      return byDonorId && byRank && byStatus && byStartDate && byEndDate;
+    });
+  }, [filters, receivedHelpRows, activeTab]);
+
+  const visibleRows = filteredRows.slice(0, Number(pageSize));
+
+  const formatRowsForExport = (rows) => rows.map((row) => ([
+    row.sNo, row.memberId, row.name, row.amount, row.rank, row.requestDate, row.transactionId, row.utrNumber, row.status.replace(/_/g, ' ')
+  ]));
+
+  const handleExportExcel = () => {
+    const csvRows = [exportColumns, ...formatRowsForExport(filteredRows)]
+      .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','))
+      .join('\n');
+    const blob = new Blob([csvRows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'received-help.csv');
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportPdf = () => {
+    const tableRows = formatRowsForExport(filteredRows)
+      .map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`)
+      .join('');
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Received Help</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 16px; }
+            h2 { margin: 0 0 12px 0; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #d6d6d6; padding: 6px; font-size: 14px; text-align: left; }
+            th { background: #e8f6fb; }
+          </style>
+        </head>
+        <body>
+          <h2>Received Help (Downline ➔ You)</h2>
+          <table>
+            <thead><tr>${exportColumns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
 
   return (
     <div>
@@ -88,13 +173,11 @@ const ReceivedHelp = () => {
                 gridTemplateColumns: "repeat(6, minmax(110px, 1fr))",
                 gap: 8,
                 marginBottom: 14,
-                ...(window.innerWidth <= 600
-                  ? { gridTemplateColumns: "1fr", gap: 6 }
-                  : {})
+                ...(window.innerWidth <= 600 ? { gridTemplateColumns: "1fr", gap: 6 } : {})
               }}
             >
-              <input className="text-input" placeholder="DONAR MEMBER ID" />
-              <select className="select-input">
+              <input className="text-input" placeholder="DONAR MEMBER ID" value={filters.donorMemberId} onChange={handleFilterChange('donorMemberId')} />
+              <select className="select-input" value={filters.rank} onChange={handleFilterChange('rank')}>
                 <option value="">UPGRADE LEVEL</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -102,24 +185,29 @@ const ReceivedHelp = () => {
                 <option value="4">4</option>
                 <option value="5">5</option>
                 <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
               </select>
               <label className="filter-field">
-                <input className="text-input" type="date" aria-label="Start Date" />
+                <input className="text-input" type="date" aria-label="Start Date" value={filters.startDate} onChange={handleFilterChange('startDate')} />
               </label>
               <label className="filter-field">
-                <input className="text-input" type="date" aria-label="End Date" />
+                <input className="text-input" type="date" aria-label="End Date" value={filters.endDate} onChange={handleFilterChange('endDate')} />
               </label>
-              <select className="select-input">
+              <select className="select-input" value={pageSize} onChange={(e) => setPageSize(e.target.value)}>
                 <option value="10">10</option>
+                <option value="25">25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
-              <button className="user-btn-blue3" type="button" style={{ height: '100%', minHeight: '40px', padding: '0' }}>Search</button>
+              <button className="user-btn-blue3" type="button" style={{ height: '100%', minHeight: '40px', padding: '0' }} onClick={() => {}}>Search</button>
             </div>
             <div className="epin-tools" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 10 }}>
-              <button className="btn-outline">Excel</button>
-              <button className="btn-outline">PDF</button>
-              <button className="btn-outline">Print</button>
+              <button className="btn-outline" onClick={handleExportExcel}>Excel</button>
+              <button className="btn-outline" onClick={handleExportPdf}>PDF</button>
+              <button className="btn-outline" onClick={handleExportPdf}>Print</button>
             </div>
             <div className="table-wrap">
               <table className="data-table">
