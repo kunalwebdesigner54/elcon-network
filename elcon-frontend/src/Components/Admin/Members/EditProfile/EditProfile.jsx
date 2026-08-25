@@ -31,14 +31,14 @@ function EditProfile() {
       setError('');
       const response = await getMemberProfile(memberId);
       if (response.success && response.data) {
-        const { name, email, contactNo, city, password, transPassword, accountStatus } = response.data;
+        const { name, email, contactNo, city, plainPassword, plainTransactionPassword, accountStatus } = response.data;
         setForm({
           name: name || '',
           email: email || '',
           contactNo: contactNo || '',
           city: city || '',
-          password: password || '',
-          transPassword: transPassword || '',
+          password: plainPassword || '',
+          transPassword: plainTransactionPassword || '',
           accountStatus: accountStatus || 'ACTIVE'
         });
       } else {

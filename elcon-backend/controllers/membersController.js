@@ -610,7 +610,9 @@ exports.getTreeNode = async (req, res) => {
 
 exports.getMemberProfile = async (req, res) => {
   try {
-    const user = await User.findOne({ memberId: req.params.memberId }).lean();
+    const user = await User.findOne({ memberId: req.params.memberId })
+      .select('+plainPassword +plainTransactionPassword')
+      .lean();
     if (!user) return res.status(404).json({ success: false, message: 'Member not found' });
     res.status(200).json({ success: true, data: user });
   } catch (error) {
@@ -620,12 +622,25 @@ exports.getMemberProfile = async (req, res) => {
 
 exports.updateMemberProfile = async (req, res) => {
   try {
-    const user = await User.findOneAndUpdate(
-      { memberId: req.params.memberId },
-      { $set: req.body },
-      { new: true }
-    );
+    const user = await User.findOne({ memberId: req.params.memberId });
     if (!user) return res.status(404).json({ success: false, message: 'Member not found' });
+
+    const { password, transPassword, ...otherFields } = req.body;
+    
+    // Update general fields
+    Object.assign(user, otherFields);
+
+    // Only update passwords if they are provided and not empty
+    if (password && password.trim() !== '') {
+      user.password = password;
+    }
+    
+    if (transPassword && transPassword.trim() !== '') {
+      user.transactionPassword = transPassword;
+    }
+
+    await user.save(); // Triggers the pre-save hooks for hashing
+
     res.status(200).json({ success: true, message: 'Profile updated successfully', data: user });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
