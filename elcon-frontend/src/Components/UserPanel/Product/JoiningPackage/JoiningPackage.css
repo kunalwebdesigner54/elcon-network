@@ -14,7 +14,7 @@
 
 .user-product-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -140,7 +140,7 @@
 .user-product-mrp {
   color: #00c3ff;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -153,12 +153,13 @@
 .user-product-price {
   color: #00c3ff;
   font-size: 18px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .user-product-btn {
   width: 100%;
-  background: #2979FF;
+  background: linear-gradient(90deg, #00dcff 0%, #2979FF 100%);
+  background-size: 200% auto;
   border: none;
   color: #ffffff;
   border-radius: 8px;
@@ -178,13 +179,13 @@
 
 @media (max-width: 1280px) {
   .user-product-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 992px) {
   .user-product-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .user-product-price {
@@ -253,7 +254,8 @@
 
   .user-product-btn {
   width: 100%;
-  background: #2979FF;
+  background: linear-gradient(90deg, #00dcff 0%, #2979FF 100%);
+  background-size: 200% auto;
   border: none;
   color: #ffffff;
   border-radius: 8px;
