@@ -19,15 +19,28 @@ function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
         <div className="node-avatar">
           <img src={avatar} alt="" />
         </div>
-        <div className="node-name" title={node.name}>{node.name}</div>
-        <div className="node-id">ID: {node.memberId}</div>
+        <div className="node-id">ID:{node.memberId}</div>
         
-        <div className="node-stats">
-          <div className="node-stat-row">
-            Depth: {computedDepth}
+        <div className="node-stats-list">
+          <div className="stat-row">
+            <span className="stat-label">DIRECT</span>
+            <span className="stat-colon">:</span>
+            <span className="stat-value">{node.totalDirect || 0}</span>
           </div>
-          <div className="node-stat-row">
-            Directs: {node.activeDirect || 0}/{node.totalDirect || 0}
+          <div className="stat-row">
+            <span className="stat-label">UPGRADE</span>
+            <span className="stat-colon">:</span>
+            <span className="stat-value">{node.upgradeLevel || 0}</span>
+          </div>
+          <div className="stat-row">
+            <span className="stat-label">DEPTH</span>
+            <span className="stat-colon">:</span>
+            <span className="stat-value">{computedDepth}</span>
+          </div>
+          <div className="stat-row">
+            <span className="stat-label">TEAM</span>
+            <span className="stat-colon">:</span>
+            <span className="stat-value">{node.teamSize || 0}</span>
           </div>
         </div>
 
@@ -187,6 +200,7 @@ function MyTree() {
 }
 
 export default MyTree;
+
 
 
 
