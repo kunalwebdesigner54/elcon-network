@@ -172,8 +172,8 @@
 
 .user-product-btn:hover {
   transform: translateY(-2px);
-  background: #0052cc;
-  box-shadow: 0 8px 15px rgba(41, 121, 255, 0.4);
+  background-position: right center;
+  box-shadow: 0 8px 15px rgba(0, 220, 255, 0.4);
 }
 
 @media (max-width: 1280px) {
@@ -265,6 +265,7 @@
   box-shadow: 0 4px 10px rgba(41, 121, 255, 0.3);
 }
 }
+
 
 
 

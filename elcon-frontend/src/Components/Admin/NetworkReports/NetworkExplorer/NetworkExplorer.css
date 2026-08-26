@@ -182,7 +182,8 @@
 }
 
 .stat-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 80px 10px 1fr;
   align-items: center;
   font-size: 13px;
   font-weight: 700;
@@ -191,18 +192,17 @@
 }
 
 .stat-label {
-  flex: 1;
   text-align: left;
   letter-spacing: 0.5px;
 }
 
 .stat-colon {
-  margin: 0 16px;
+  text-align: center;
 }
 
 .stat-value {
-  flex: 1;
   text-align: left;
+  padding-left: 12px;
 }
 
 /* Expand / Collapse Button */
@@ -333,6 +333,7 @@
     min-width: 60px;
   }
 }
+
 
 
 
