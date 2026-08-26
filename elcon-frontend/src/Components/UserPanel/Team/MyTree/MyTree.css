@@ -233,16 +233,35 @@
   background: #00b8d4;
 }
 
-.node-stat-row {
+.node-stats {
+  width: 100%;
+  margin-top: 10px;
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: 100%;
+}
+.stat-item {
   display: flex;
-  justify-content: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 400;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 4px 2px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+.stat-label {
+  font-size: 9px;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stat-val {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  margin-top: 2px;
 }
 
-.stat-divider {
-  color: var(--text-muted);
-  opacity: 0.5;
-}

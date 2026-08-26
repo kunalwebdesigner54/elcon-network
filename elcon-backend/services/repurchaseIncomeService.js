@@ -12,8 +12,8 @@ const RepurchaseIncome = require('../models/RepurchaseIncome');
  * @param {String} sponsorId
  * @param {Number} totalReserveAmount
  */
-const distributeRepurchaseIncome = async (order, sponsorId, totalReserveAmount) => {
-  if (!sponsorId || !totalReserveAmount || totalReserveAmount <= 0) return;
+const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmount) => {
+  if (!purchaserUser || !purchaserUser.sponsorId || !totalReserveAmount || totalReserveAmount <= 0) return;
 
   const MAX_SLOTS = 10; // 10 slots (Level 1 to 10)
   const INCOME_AMOUNT = Number((totalReserveAmount / MAX_SLOTS).toFixed(2));
@@ -21,7 +21,7 @@ const distributeRepurchaseIncome = async (order, sponsorId, totalReserveAmount) 
   if (INCOME_AMOUNT <= 0) return;
 
   try {
-    let currentMemberId = sponsorId;
+    let currentMemberId = purchaserUser.sponsorId;
     let physicalDepth = 1;
     let successfulSlots = 0;
     const visited = new Set();
@@ -62,8 +62,8 @@ const distributeRepurchaseIncome = async (order, sponsorId, totalReserveAmount) 
           try {
             await RepurchaseIncome.create({
               recipientMemberId: currentMemberId,
-              purchasingMemberId: order.userId.memberId || order.userId, // We might need to ensure order passes memberId
-              purchasingMemberName: order.userId.name || '---',
+              purchasingMemberId: purchaserUser.memberId, // We might need to ensure order passes memberId
+              purchasingMemberName: purchaserUser.name,
               level: payoutSlotLevel, 
               physicalDepth: physicalDepth, 
               amount: INCOME_AMOUNT,
@@ -104,8 +104,8 @@ const distributeRepurchaseIncome = async (order, sponsorId, totalReserveAmount) 
             try {
               await RepurchaseIncome.create({
                 recipientMemberId: admin.memberId,
-                purchasingMemberId: order.userId.memberId || order.userId,
-                purchasingMemberName: order.userId.name || '---',
+                purchasingMemberId: purchaserUser.memberId,
+                purchasingMemberName: purchaserUser.name,
                 level: payoutSlotLevel, 
                 physicalDepth: physicalDepth,
                 amount: INCOME_AMOUNT,
@@ -135,3 +135,4 @@ const distributeRepurchaseIncome = async (order, sponsorId, totalReserveAmount) 
 };
 
 module.exports = { distributeRepurchaseIncome };
+

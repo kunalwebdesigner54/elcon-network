@@ -486,7 +486,7 @@ exports.checkoutCart = async (req, res) => {
 
     // Trigger Repurchase Income Distribution asynchronously if reserve amount is present
     if (totalReserveAmount > 0) {
-      distributeRepurchaseIncome(order, user.sponsorId, totalReserveAmount).catch(err => {
+      distributeRepurchaseIncome(order, user, totalReserveAmount).catch(err => {
         console.error('Failed to distribute repurchase income:', err);
       });
     }
