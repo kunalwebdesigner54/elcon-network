@@ -59,11 +59,7 @@ function MyOrders() {
 
   return (
     <div className="user-orders-page">
-      <div className="user-orders-shell">
-      
-
-        <section className="user-orders-card">
-          <h1 className="user-orders-title">My Orders</h1>
+      <h1 className="page-heading">My Orders</h1><div className="user-orders-shell"><section className="user-orders-card">
 
           <div className="table-wrap user-orders-table-wrap">
             <table className="data-table user-orders-table">
@@ -119,4 +115,5 @@ function MyOrders() {
 }
 
 export default MyOrders;
+
 

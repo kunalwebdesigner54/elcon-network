@@ -37,8 +37,8 @@ function RepurchaseProducts() {
 
   return (
     <div className="user-product-page">
+      <h2 className="page-heading">Repurchase Products</h2>
       <div className="user-panel user-product-panel">
-        <h2 className="user-product-heading">Repurchase Products</h2>
 
         <div className="user-product-grid">
           {repurchaseProducts.map((product) => (
@@ -98,4 +98,5 @@ function RepurchaseProducts() {
 }
 
 export default RepurchaseProducts;
+
 

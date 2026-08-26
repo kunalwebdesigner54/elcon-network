@@ -37,8 +37,8 @@ function JoiningPackage() {
 
   return (
     <div className="user-product-page">
+      <h2 className="page-heading">Joining Package</h2>
       <div className="user-panel user-product-panel">
-        <h2 className="user-product-heading">Joining Package</h2>
 
         <div className="user-product-grid">
           {joiningProducts.map((product) => (
@@ -98,4 +98,5 @@ function JoiningPackage() {
 }
 
 export default JoiningPackage;
+
 
