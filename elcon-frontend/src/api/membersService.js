@@ -41,6 +41,11 @@ export const getMemberPerformance = async () => {
   return response.data;
 };
 
+export const getRepurchaseIncomeReports = async (params = {}) => {
+  const response = await apiClient.get('/repurchase-income/reports', { params });
+  return response.data;
+};
+
 export const getLevelIncomeReports = async (params = {}) => {
   const response = await apiClient.get('/level-income/reports', { params });
   return response.data;

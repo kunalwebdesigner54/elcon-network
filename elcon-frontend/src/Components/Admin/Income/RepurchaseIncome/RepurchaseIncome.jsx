@@ -1,6 +1,6 @@
 import './RepurchaseIncome.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getMemberPerformance } from '../../../../api/membersService';
+import { getRepurchaseIncomeReports } from '../../../../api/membersService';
 
 function RepurchaseIncome() {
   const [rows, setRows] = useState([]);
@@ -9,7 +9,7 @@ function RepurchaseIncome() {
   const [filters, setFilters] = useState({ memberId: '', memberName: '', levelNo: '', levelId: '', fromMemberName: '', pageSize: '10' });
 
   useEffect(() => {
-    getMemberPerformance()
+    getRepurchaseIncomeReports()
       .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load repurchase income.'))
       .finally(() => setLoading(false));
