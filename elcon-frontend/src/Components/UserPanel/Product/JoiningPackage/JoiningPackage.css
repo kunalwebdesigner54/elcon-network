@@ -1,8 +1,8 @@
 @import "../../Common/UserLayout.css";
 
 .user-product-panel {
-  background: #f4f7fb;
-  padding: 24px;
+  background: transparent;
+  padding: 0;
 }
 
 .user-product-heading {
@@ -48,7 +48,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-dark);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -212,9 +212,9 @@
 
 @media (max-width: 640px) {
   .user-product-panel {
-    padding: 14px;
-    border-radius: 18px;
-  }
+  background: transparent;
+  padding: 0;
+}
 
   .user-product-card {
   background: var(--card-bg);
@@ -241,7 +241,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-dark);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -255,6 +255,8 @@
     padding: 12px 16px;
   }
 }
+
+
 
 
 
