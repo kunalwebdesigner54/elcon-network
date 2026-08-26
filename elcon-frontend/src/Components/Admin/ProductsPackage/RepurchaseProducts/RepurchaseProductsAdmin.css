@@ -117,19 +117,7 @@
 
 
 
-/* === ADD NEW GRADIENT BUTTON === */
-.admin-add-new-btn {
-  background: linear-gradient(90deg, #00dcff 0%, #2979FF 100%) !important;
-  border: none !important;
-  color: #ffffff !important;
-  background-size: 200% auto !important;
-  transition: all 0.3s ease !important;
-}
-.admin-add-new-btn:hover {
-  background-position: right center !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 220, 255, 0.4);
-}
+
 
 /* === ACTION ICONS KYC STYLE === */
 .kyc-action-group {

@@ -2,7 +2,7 @@ import '../../Common/AdminLayout.css';
 import './ShoppingProductsAdmin.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAdminProducts } from '../../../../api/productsService';
+import { getAdminProducts, deleteAdminProduct } from '../../../../api/productsService';
 
 function ShoppingProductsAdmin() {
   const navigate = useNavigate();
@@ -20,6 +20,20 @@ function ShoppingProductsAdmin() {
 
     loadProducts();
   }, []);
+
+  const handleDelete = async (id) => {
+    if (!id) return;
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        await deleteAdminProduct(id);
+        const response = await getAdminProducts('shopping');
+        setShoppingPackageRows(response.products || []);
+      } catch (error) {
+        console.error("Error deleting product:", error);
+        alert("Failed to delete product.");
+      }
+    }
+  };
 
   return (
     <div>
@@ -103,16 +117,16 @@ function ShoppingProductsAdmin() {
                   <td>{row.quantity}</td>
                   <td>
                       <div className="kyc-action-group" style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                        <button className="kyc-action-btn kyc-action-cyan" aria-label="View" title="View">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        </button>
-                        <button className="kyc-action-btn kyc-action-green" aria-label="Edit" title="Edit">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                        </button>
-                        <button className="kyc-action-btn kyc-action-red" aria-label="Delete" title="Delete">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
-                      </div>
+                      <button className="kyc-action-btn kyc-action-cyan" aria-label="View" title="View" onClick={() => navigate('/products-package/shopping-products/add-new', { state: { product: row, mode: 'view' } })}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      </button>
+                      <button className="kyc-action-btn kyc-action-green" aria-label="Edit" title="Edit" onClick={() => navigate('/products-package/shopping-products/add-new', { state: { product: row, mode: 'edit' } })}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                      </button>
+                      <button className="kyc-action-btn kyc-action-red" aria-label="Delete" title="Delete" onClick={() => handleDelete(row.id || row.productId || row.productCode)}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      </button>
+                    </div>
                   </td>
                   <td>{row.status}</td>
                 </tr>
