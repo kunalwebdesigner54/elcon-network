@@ -1,1 +1,59 @@
 @import '../JoiningPackage/JoiningPackageAdmin.css';
+
+/* === ADD NEW GRADIENT BUTTON === */
+.admin-add-new-btn {
+  background: linear-gradient(90deg, #00dcff 0%, #2979FF 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  background-size: 200% auto !important;
+  transition: all 0.3s ease !important;
+}
+.admin-add-new-btn:hover {
+  background-position: right center !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 220, 255, 0.4);
+}
+
+/* === ACTION ICONS KYC STYLE === */
+.kyc-action-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.kyc-action-btn {
+  border: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.kyc-action-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.kyc-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.kyc-action-cyan {
+  background: #1ac8c3;
+}
+.kyc-action-green {
+  background: #2dd36f;
+}
+.kyc-action-pink {
+  background: #f59e0b;
+}
+.kyc-action-red {
+  background: #ef4444;
+}
