@@ -66,7 +66,7 @@ const getLogicalUplines = async (startMemberId, targetLogicalLevel, planType, st
     
     // Admin bypasses all checks
     const isAdmin = candidate.role === 'admin';
-    const isAccountValid = isAdmin || (candidate.accountStatus === 'ACTIVE' && candidate.isBlocked === false);
+    const isAccountValid = isAdmin || (candidate.accountStatus === 'ACTIVE' && candidate.isBlocked !== true);
     
     let isEligible = false;
     let failReason = '';
