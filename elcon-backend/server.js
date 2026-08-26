@@ -157,7 +157,7 @@ const startServer = async () => {
 
     startListening(preferredPort, maxPortRetries);
   } catch (error) {
-    console.error('✗ Failed to start server:', error.message);
+    console.error('✗ Failed to start server:', error.stack || error);
     process.exit(1);
   }
 };
