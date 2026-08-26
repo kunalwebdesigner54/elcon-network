@@ -260,6 +260,7 @@ function App() {
           {/* Income Reports */}
           <Route path="income-reports/level-income-reports" element={<LevelIncomeReports />} />
           <Route path="income-reports/repurchase-income-reports" element={<RepurchaseIncomeReports />} />
+          <Route path="income-reports/donation-report" element={<DonationReport />} />
           <Route path="income-report/Repurchase-income" element={<AdminRepurchaseIncome />} />
           <Route path="income-report/Tds-Report" element={<TdsReport />} />
           <Route path="income-report/Datewise-income" element={<AdminDatewiseIncome />} />
