@@ -89,7 +89,9 @@
 
 /* Card Design */
 .node-card {
-  width: 140px;
+  min-width: 150px;
+  width: max-content;
+  max-width: 220px;
   background: #1f2937;
   border: 1px solid rgba(0, 220, 255, 0.25);
   border-radius: 12px;
@@ -147,18 +149,32 @@
   font-weight: 500;
 }
 
-.node-stats {
+.node-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  width: 100%;
+  margin-top: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  width: 100%;
 }
 
-.node-stat-row {
-  font-size: 11px;
-  font-weight: 700;
+.stat-item span {
+  font-size: 9px;
   color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.stat-item strong {
+  font-size: 12px;
+  color: #00dcff;
 }
 
 /* Expand / Collapse Button */
@@ -264,4 +280,5 @@
   color: #fff;
   margin-top: 2px;
 }
+
 
