@@ -218,15 +218,24 @@
   margin-bottom: 6px;
 }
 .mc-address-edit {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  background: linear-gradient(90deg, #00dcff 0%, #2979FF 100%);
+  background-size: 200% auto;
+  border: none;
+  color: #ffffff;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(41, 121, 255, 0.3);
+}
+.mc-address-edit:hover {
+  transform: translateY(-2px);
+  background-position: right center;
+  box-shadow: 0 8px 15px rgba(0, 220, 255, 0.4);
 }
 
 .mc-actions {
