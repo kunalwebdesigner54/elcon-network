@@ -89,8 +89,8 @@
 
 /* Card Design */
 .node-card {
-  min-width: 170px;
-  width: max-content;
+  width: 190px;
+  height: 290px;
   background: #1f2937;
   border: 2px solid rgba(0, 220, 255, 0.4);
   border-radius: 16px;
@@ -98,10 +98,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 28px 28px 28px;
+  padding: 24px 20px 24px 20px;
   position: relative;
   z-index: 2;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  box-sizing: border-box;
 }
 
 .node-card:hover {
@@ -159,7 +160,7 @@
 
 .stat-row {
   display: grid;
-  grid-template-columns: 80px 10px 1fr;
+  grid-template-columns: 1fr 10px 1fr;
   align-items: center;
   font-size: 13px;
   font-weight: 700;
@@ -168,7 +169,7 @@
 }
 
 .stat-label {
-  text-align: left;
+  text-align: right;
   letter-spacing: 0.5px;
 }
 
@@ -178,7 +179,7 @@
 
 .stat-value {
   text-align: left;
-  padding-left: 12px;
+  padding-left: 8px;
 }
 
 /* Expand / Collapse Button */
@@ -284,6 +285,7 @@
   color: #fff;
   margin-top: 2px;
 }
+
 
 
 
