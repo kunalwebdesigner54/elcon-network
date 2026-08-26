@@ -447,9 +447,20 @@ exports.checkoutCart = async (req, res) => {
     const shippingCharge = Number(req.body.shippingCharge || 0);
     const discountCoupon = Number(req.body.discountCoupon || 0);
     const finalTotal = totalPrice + shippingCharge - discountCoupon;
-    const bvPoint = cart.items.reduce((sum, item) => sum + Number(item.bvPoint || 0), 0);
-    const lvPoint = cart.items.reduce((sum, item) => sum + Number(item.levelPoint || 0), 0);
-    const totalReserveAmount = cart.items.reduce((sum, item) => sum + (Number(item.reserveAmount || 0) * Number(item.quantity || 1)), 0);
+    
+    let bvPoint = 0;
+    let lvPoint = 0;
+    let totalReserveAmount = 0;
+
+    for (const item of cart.items) {
+      const product = await Product.findById(item.productId);
+      const qty = Number(item.quantity || 1);
+      if (product) {
+        bvPoint += Number(product.bvPoint || 0) * qty;
+        lvPoint += Number(product.levelPoint || 0) * qty;
+        totalReserveAmount += Number(product.reserveAmount || 0) * qty;
+      }
+    }
 
     const order = await Order.create({
       userId: req.user.id,
@@ -620,3 +631,4 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
