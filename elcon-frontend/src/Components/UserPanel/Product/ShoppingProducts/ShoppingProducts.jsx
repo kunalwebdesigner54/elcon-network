@@ -38,7 +38,7 @@ function ShoppingProducts() {
   return (
     <div className="user-product-page">
       <div className="user-panel user-product-panel">
-        <h2 className="user-product-heading">Shopping Products</h2>
+        <h2 className="page-heading">Shopping Products</h2>
 
         <div className="user-product-grid">
           {shoppingProducts.map((product) => (
