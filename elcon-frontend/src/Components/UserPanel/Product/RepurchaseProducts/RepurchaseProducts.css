@@ -22,6 +22,17 @@
 }
 
 .user-product-btn {
-  border-color: var(--user-primary);
+  width: 100%;
+  background: #2979FF;
+  border: none;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(41, 121, 255, 0.3);
 }
+
 
