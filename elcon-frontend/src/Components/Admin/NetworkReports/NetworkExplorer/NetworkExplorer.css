@@ -113,7 +113,7 @@
 
 /* Card Design */
 .node-card {
-  min-width: 220px;
+  min-width: 170px;
   width: max-content;
   background: #1f2937;
   border: 2px solid rgba(0, 220, 255, 0.4);
@@ -122,7 +122,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px 40px 40px 40px;
+  padding: 24px 28px 28px 28px;
   position: relative;
   z-index: 2;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
@@ -135,8 +135,8 @@
 }
 
 .node-avatar {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   overflow: hidden;
   background: rgba(255, 145, 0, 0.16);
@@ -144,6 +144,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 0px;
 }
 
 .node-avatar img {
@@ -165,10 +166,10 @@
 }
 
 .node-id {
-  font-size: 20px;
+  font-size: 18px;
   color: #00dcff;
-  margin-top: 8px;
-  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 12px;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -177,13 +178,13 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 12px;
+  gap: 6px;
 }
 
 .stat-row {
   display: flex;
   align-items: center;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   color: #ffffff;
   width: 100%;
@@ -332,5 +333,6 @@
     min-width: 60px;
   }
 }
+
 
 
