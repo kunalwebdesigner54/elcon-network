@@ -578,20 +578,38 @@ exports.getTreeNode = async (req, res) => {
     const gcMap = {};
     grandChildrenCounts.forEach(gc => { gcMap[gc._id] = gc; });
 
-    const formatUser = (user, gcCount = 0, gcActive = 0) => ({
-      memberId: user.memberId,
-      name: user.name,
-      mobile: user.contactNo || '---',
-      joinDate: formatDate(user.createdAt),
-      joinDateRaw: user.createdAt,
-      city: user.city || '---',
-      status: user.accountStatus || 'ACTIVE',
-      levelDepth: user.levelDepth !== undefined && user.levelDepth !== -1 ? user.levelDepth : 0,
-      totalDirect: gcCount,
-      activeDirect: gcActive,
-      sponsorId: user.sponsorId,
-      hasChildren: gcCount > 0
-    });
+    const { statsMap } = await getAllUsersTeamStats();
+    
+    // Fetch the maximum approved donation level for all users
+    const allApprovedDonations = await Donation.aggregate([
+      { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
+      { $group: { _id: '$fromMemberId', maxLevel: { $max: '$level' } } }
+    ]);
+    const maxDonationLevelMap = new Map();
+    allApprovedDonations.forEach(d => maxDonationLevelMap.set(d._id, d.maxLevel));
+
+    const formatUser = (user, gcCount = 0, gcActive = 0) => {
+      const stats = statsMap.get(user.memberId) || { totalTeamCount: 0 };
+      const teamSize = stats.totalTeamCount;
+      const upgradeLevel = maxDonationLevelMap.get(user.memberId) ?? 0;
+
+      return {
+        memberId: user.memberId,
+        name: user.name,
+        mobile: user.contactNo || '---',
+        joinDate: formatDate(user.createdAt),
+        joinDateRaw: user.createdAt,
+        city: user.city || '---',
+        status: user.accountStatus || 'ACTIVE',
+        levelDepth: user.levelDepth !== undefined && user.levelDepth !== -1 ? user.levelDepth : 0,
+        totalDirect: gcCount,
+        activeDirect: gcActive,
+        teamSize,
+        upgradeLevel,
+        sponsorId: user.sponsorId,
+        hasChildren: gcCount > 0
+      };
+    };
 
     const rootTotalDirect = directs.length;
     const rootActiveDirect = directs.filter(d => d.accountStatus === 'ACTIVE').length;

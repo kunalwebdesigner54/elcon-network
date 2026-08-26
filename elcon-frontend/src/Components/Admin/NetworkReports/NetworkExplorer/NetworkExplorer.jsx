@@ -23,10 +23,14 @@ function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
         
         <div className="node-stats">
           <div className="node-stat-row">
-            Depth: {computedDepth}
+            <span>ULevel: {node.upgradeLevel || 0}</span>
+            <span className="stat-divider">|</span>
+            <span>Directs: {node.totalDirect || 0}</span>
           </div>
           <div className="node-stat-row">
-            Directs: {node.activeDirect || 0}/{node.totalDirect || 0}
+            <span>LDepth: {computedDepth}</span>
+            <span className="stat-divider">|</span>
+            <span>Team: {node.teamSize || 0}</span>
           </div>
         </div>
 
@@ -202,5 +206,6 @@ function NetworkExplorer() {
 }
 
 export default NetworkExplorer;
+
 
 
