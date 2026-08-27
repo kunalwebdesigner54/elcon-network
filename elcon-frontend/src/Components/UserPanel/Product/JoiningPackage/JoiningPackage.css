@@ -158,7 +158,7 @@
 
 .user-product-btn {
   width: 100%;
-  background: #ff9800;
+  background: linear-gradient(90deg, #00d4aa 0%, #5c62d6 100%);
   border: none;
   color: #ffffff;
   border-radius: 8px;
@@ -171,7 +171,7 @@
 
 .user-product-btn:hover {
   transform: translateY(-2px);
-  background: #e68a00;
+  background: linear-gradient(90deg, #00bfa5 0%, #4a50b8 100%);
 }
 
 @media (max-width: 1280px) {
@@ -251,7 +251,7 @@
 
   .user-product-btn {
   width: 100%;
-  background: #ff9800;
+  background: linear-gradient(90deg, #00d4aa 0%, #5c62d6 100%);
   border: none;
   color: #ffffff;
   border-radius: 8px;
