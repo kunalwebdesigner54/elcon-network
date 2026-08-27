@@ -154,11 +154,11 @@ function LevelIncome() {
                 <th>INCOME DATE & TIME</th>
                 <th>MEMBER ID</th>
                 <th>MEMBER NAME</th>
-                <th>INCOME LEVEL</th>
+                <th>INCOME SLOT</th>
                 <th>LEVEL ID (SOURCE)</th>
                 <th>FROM MEMBER NAME</th>
                 <th>SKIPPED IDs</th>
-                <th>PHYSICAL DEPTH</th>
+                <th>LEVEL DEPTH</th>
                 <th>AMOUNT</th>
               </tr>
             </thead>

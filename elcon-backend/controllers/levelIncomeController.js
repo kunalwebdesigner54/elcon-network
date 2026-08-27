@@ -87,19 +87,26 @@ exports.getLevelIncomeReports = async (req, res) => {
     const recipientMap = {};
     recipients.forEach(r => { recipientMap[r.memberId] = r.name; });
 
-    const data = records.map((record, index) => ({
-      sNo: skip + index + 1,
-      incomeDateTime: formatDate(record.createdAt),
-      memberId: record.recipientMemberId,
-      memberName: recipientMap[record.recipientMemberId] || '---',
-      levelNo: record.level,
-      levelId: record.joiningMemberId,
-      fromMemberName: record.joiningMemberName || '---',
-      physicalDepth: record.physicalDepth || 'N/A',
-      amount: record.amount,
-      status: record.status,
-      transactionId: record.transactionId
-    }));
+    const data = records.map((record, index) => {
+      const skippedIds = Array.isArray(record.skippedMembers) && record.skippedMembers.length > 0
+        ? record.skippedMembers.map(s => s.memberId).join(', ')
+        : '---';
+
+      return {
+        sNo: skip + index + 1,
+        incomeDateTime: formatDate(record.createdAt),
+        memberId: record.recipientMemberId,
+        memberName: recipientMap[record.recipientMemberId] || '---',
+        levelNo: record.level,
+        levelId: record.joiningMemberId,
+        fromMemberName: record.joiningMemberName || '---',
+        physicalDepth: record.physicalDepth || 'N/A',
+        amount: record.amount,
+        status: record.status,
+        skippedIds: skippedIds,
+        transactionId: record.transactionId
+      };
+    });
 
     res.status(200).json({
       success: true,
