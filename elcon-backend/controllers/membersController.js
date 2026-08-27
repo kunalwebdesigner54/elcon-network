@@ -147,6 +147,16 @@ exports.updateKycStatus = async (req, res) => {
       });
     }
 
+    if (normalizedStatus === 'APPROVED' && !user.receivedWelcomeCoupon) {
+      const Order = require('../models/Order');
+      const orderCount = await Order.countDocuments({ userId: user._id });
+      if (orderCount > 0) {
+        user.couponWalletBalance += 1000;
+        user.receivedWelcomeCoupon = true;
+        await user.save();
+      }
+    }
+
     res.status(200).json({
       success: true,
       message: 'KYC status updated successfully',

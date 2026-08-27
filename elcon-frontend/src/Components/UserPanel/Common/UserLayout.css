@@ -224,8 +224,7 @@
 .user-top-title {
     color: var(--text-main);
     font-weight: 700;
-    margin-left: 55px;
-    font-size: 14px;
+    margin-left: 0;
 }
 
 .user-menu-btn {

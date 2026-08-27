@@ -266,10 +266,13 @@ exports.deleteProduct = async (req, res) => {
 exports.getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.user.id });
+    const User = require('../models/User');
+    const user = await User.findById(req.user.id);
 
     res.status(200).json({
       success: true,
       cart: cart || { items: [], userId: req.user.id },
+      couponWalletBalance: user?.couponWalletBalance || 0,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -306,6 +309,7 @@ exports.addCartItem = async (req, res) => {
         quantity,
         totalPrice: quantity * product.dpPrice,
         bvPoint: product.bvPoint,
+        discount: product.discount || 0,
         reserveAmount: product.reserveAmount,
       });
     }
@@ -443,14 +447,10 @@ exports.checkoutCart = async (req, res) => {
       hour12: true,
     });
 
-    const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
-    const shippingCharge = Number(req.body.shippingCharge || 0);
-    const discountCoupon = Number(req.body.discountCoupon || 0);
-    const finalTotal = totalPrice + shippingCharge - discountCoupon;
-    
     let bvPoint = 0;
     let lvPoint = 0;
     let totalReserveAmount = 0;
+    let calculatedDiscount = 0;
 
     for (const item of cart.items) {
       const product = await Product.findById(item.productId);
@@ -459,7 +459,28 @@ exports.checkoutCart = async (req, res) => {
         bvPoint += Number(product.bvPoint || 0) * qty;
         lvPoint += Number(product.levelPoint || 0) * qty;
         totalReserveAmount += Number(product.reserveAmount || 0) * qty;
+        calculatedDiscount += Number(product.discount || 0) * qty;
       }
+    }
+
+    let appliedDiscount = Math.min(calculatedDiscount, user.couponWalletBalance || 0);
+    
+    const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+    const shippingCharge = Number(req.body.shippingCharge || 0);
+    const finalTotal = totalPrice + shippingCharge - appliedDiscount;
+    
+    if (appliedDiscount > 0) {
+      user.couponWalletBalance -= appliedDiscount;
+    }
+
+    const previousOrdersCount = await Order.countDocuments({ userId: user._id });
+    if (previousOrdersCount === 0 && user.kycStatus === 'APPROVED' && !user.receivedWelcomeCoupon) {
+      user.couponWalletBalance += 1000;
+      user.receivedWelcomeCoupon = true;
+    }
+    
+    if (appliedDiscount > 0 || (previousOrdersCount === 0 && user.kycStatus === 'APPROVED')) {
+      await user.save();
     }
 
     const order = await Order.create({
@@ -477,7 +498,7 @@ exports.checkoutCart = async (req, res) => {
       startDate: orderDate,
       endDate: orderDate,
       shippingCharge,
-      discountCoupon,
+      discountCoupon: appliedDiscount,
       finalTotal,
       reserveAmount: totalReserveAmount,
       shippingInformation: buildShippingInformation(user),

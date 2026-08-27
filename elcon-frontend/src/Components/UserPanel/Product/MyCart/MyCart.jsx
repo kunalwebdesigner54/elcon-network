@@ -39,13 +39,15 @@ export default function MyCart(){
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [summary, setSummary] = useState({ subtotal: 0, bvPoint: 0 });
+  const [couponWalletBalance, setCouponWalletBalance] = useState(0);
+  const [summary, setSummary] = useState({ subtotal: 0, bvPoint: 0, appliedDiscount: 0 });
 
   const loadCart = async () => {
     setLoading(true);
     try {
       const response = await getCart();
       setCartItems(response.cart?.items || []);
+      setCouponWalletBalance(response.couponWalletBalance || 0);
     } catch (error) {
       setCartItems([]);
     } finally {
@@ -60,8 +62,11 @@ export default function MyCart(){
   useEffect(() => {
     const subtotal = cartItems.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0);
     const bvPoint = cartItems.reduce((sum, item) => sum + Number(item.bvPoint || 0) * Number(item.quantity || 0), 0);
-    setSummary({ subtotal, bvPoint });
-  }, [cartItems]);
+    const totalItemDiscount = cartItems.reduce((sum, item) => sum + (Number(item.discount || 0) * Number(item.quantity || 0)), 0);
+    const appliedDiscount = Math.min(totalItemDiscount, couponWalletBalance);
+    
+    setSummary({ subtotal, bvPoint, appliedDiscount });
+  }, [cartItems, couponWalletBalance]);
   
   const handleOrderNow = () => {
     navigate('/user/payment/complete-payment', {
@@ -117,14 +122,15 @@ export default function MyCart(){
         <div className="mc-row"><span>Total B.V Point =</span><strong>{summary.bvPoint}</strong></div>
 
         <div className="mc-coupon-row">
-          <input className="mc-coupon-input" placeholder="Apply Coupon Code" />
-          <button className="mc-coupon-apply">Apply</button>
+          <div className="mc-coupon-balance" style={{ color: '#00cc66', fontWeight: 'bold' }}>
+            Available Coupon Wallet Balance: ₹ {couponWalletBalance.toFixed(2)}
+          </div>
         </div>
 
         <div className="mc-row"><span>Sub Total</span><strong>₹ {summary.subtotal.toFixed(2)}</strong></div>
         <div className="mc-row"><span>Shipping Charge</span><strong>₹ 0.00</strong></div>
-        <div className="mc-row coupon"><span>Coupon Discount</span><strong>- ₹ 00.00</strong></div>
-        <div className="mc-total-row"><span>Total Amount</span><strong>₹ {summary.subtotal.toFixed(2)}</strong></div>
+        <div className="mc-row coupon"><span>Coupon Discount</span><strong>- ₹ {(summary.appliedDiscount || 0).toFixed(2)}</strong></div>
+        <div className="mc-total-row"><span>Total Amount</span><strong>₹ {(summary.subtotal - (summary.appliedDiscount || 0)).toFixed(2)}</strong></div>
 
         <div className="mc-address">
           <div className="mc-address-head">Product Delivery Address

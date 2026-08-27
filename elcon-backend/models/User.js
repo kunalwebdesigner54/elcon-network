@@ -122,6 +122,14 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    couponWalletBalance: {
+      type: Number,
+      default: 0,
+    },
+    receivedWelcomeCoupon: {
+      type: Boolean,
+      default: false,
+    },
     joiningAmount: {
       type: Number,
       default: 0,

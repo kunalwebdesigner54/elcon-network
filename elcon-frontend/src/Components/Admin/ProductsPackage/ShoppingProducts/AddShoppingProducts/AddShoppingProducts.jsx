@@ -24,6 +24,7 @@ function AddShoppingProducts() {
       ['quantity', 'Stock'],
       ['mrpPrice', 'M.R.P Price'],
       ['dpPrice', 'DP Price'],
+      ['discount', 'Coupon Discount'],
       ['deliveryCharge', 'Delivery Charge'],
       ['levelPoint', 'Level Point'],
       ['bvPoint', 'B.V Point'],
@@ -89,6 +90,7 @@ function AddShoppingProducts() {
       status: Number(formData.get('quantity')) <= 0 ? 'HIDDEN' : 'SHOWING',
       mrp: formData.get('mrpPrice'),
       dpPrice: formData.get('dpPrice'),
+      discount: formData.get('discount'),
       shipping: formData.get('deliveryCharge') || 'free',
       levelPoint: formData.get('levelPoint'),
       bvPoint: formData.get('bvPoint'),
@@ -248,6 +250,10 @@ function AddShoppingProducts() {
               <label className="admin-add-product-row">
                 <span>DP Price</span>
                 <input name="dpPrice" type="number" defaultValue="900" />
+              </label>
+              <label className="admin-add-product-row">
+                <span>Coupon Discount</span>
+                <input name="discount" type="number" defaultValue="0" />
               </label>
               <label className="admin-add-product-row">
                 <span>Delivery Charge</span>

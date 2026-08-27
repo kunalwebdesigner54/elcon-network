@@ -291,8 +291,8 @@ function UserLayout() {
               ☰
             </button>
           )}
-            <span className="user-top-title">
-              {breadcrumb} {userName && <span style={{ fontSize: '0.9em', opacity: 0.9 }}> | Welcome, {userName}</span>}
+            <span className="user-top-title" style={{ fontSize: '15px', fontWeight: '600', lineHeight: '1.2' }}>
+              {userName ? `Welcome, ${userName}` : 'Welcome'}
             </span>
           </div>
           <div className="user-topbar-right">
