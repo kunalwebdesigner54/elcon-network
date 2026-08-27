@@ -11,6 +11,7 @@ function UpdateProfile() {
     email: '',
     address: '',
     city: '',
+    district: '',
     state: '',
     country: 'IN',
     pincode: '',
@@ -44,6 +45,7 @@ function UpdateProfile() {
             email: response.data.email || '',
             address: address || '',
             city: city || '',
+            district: response.data.district || '',
             state: state || '',
             country: country || 'IN',
             pincode: pincode || '',
@@ -86,6 +88,7 @@ function UpdateProfile() {
         dateOfBirth: form.dob,
         address: form.address,
         city: form.city,
+        district: form.district,
         state: form.state,
         country: form.country,
         pincode: form.pincode,
@@ -155,6 +158,10 @@ function UpdateProfile() {
               <div className="register-field">
                 <label htmlFor="city">City</label>
                 <input id="city" name="city" value={form.city} onChange={handleChange} type="text" placeholder="City" />
+              </div>
+              <div className="register-field">
+                <label htmlFor="district">District</label>
+                <input id="district" name="district" value={form.district} onChange={handleChange} type="text" placeholder="District" />
               </div>
               <div className="register-field">
                 <label htmlFor="state">State</label>
