@@ -13,7 +13,7 @@ function GenerateEPin() {
     }
   }, []);
 
-  const [form, setForm] = useState({ epinName: 'Activation', generatedBy: defaultGeneratedBy, qty: '1' });
+  const [form, setForm] = useState({ epinName: 'Activation', generatedBy: defaultGeneratedBy, qty: '1', cost: '10' });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -22,7 +22,7 @@ function GenerateEPin() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await generateEpins({ epinName: form.epinName, generatedBy: form.generatedBy, qty: form.qty, cost: 10 });
+    await generateEpins({ epinName: form.epinName, generatedBy: form.generatedBy, qty: form.qty, cost: form.cost });
   };
 
   return (
@@ -44,14 +44,17 @@ function GenerateEPin() {
           <label className="field-label">Client ID</label>
           <input className="text-input" placeholder="Client ID" name="generatedBy" value={form.generatedBy} onChange={handleChange} />
 
+          <label className="field-label">Amount / Cost</label>
+          <input className="text-input" type="number" min="1" placeholder="Amount / Cost" name="cost" value={form.cost} onChange={handleChange} />
+
           <label className="field-label">Required no.of ePin</label>
           <input className="text-input" type="number" min="1" placeholder="Required no.of ePin" name="qty" value={form.qty} onChange={handleChange} />
-        </form>
 
-        <div className="epin-generate-actions">
-          <button className="btn-danger">Reset</button>
-          <button className="btn-success">Generate</button>
-        </div>
+          <div className="epin-generate-actions" style={{ gridColumn: '1 / -1', display: 'flex', gap: '10px', marginTop: '10px' }}>
+            <button type="button" className="btn-danger" onClick={() => setForm({ epinName: 'Activation', generatedBy: defaultGeneratedBy, qty: '1', cost: '10' })}>Reset</button>
+            <button type="submit" className="btn-success">Generate</button>
+          </div>
+        </form>
       </div>
     </div>
   );

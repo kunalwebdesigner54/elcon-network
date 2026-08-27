@@ -117,11 +117,16 @@ exports.registerUser = async (req, res) => {
     // ========== ALL VALIDATION PASSED - CREATE USER ==========
 
     let joiningAmount = 0;
+    let foundEpin = null;
     if (epin) {
-      const foundEpin = await Epin.findOne({ epinNo: epin });
-      if (foundEpin) {
-        joiningAmount = foundEpin.cost || 0;
+      foundEpin = await Epin.findOne({ epinNo: epin });
+      if (!foundEpin) {
+        return res.status(404).json({ success: false, message: 'E-Pin not found', code: 'EPIN_NOT_FOUND' });
       }
+      if (foundEpin.status !== 'Unused') {
+        return res.status(400).json({ success: false, message: 'E-Pin is already used or deleted', code: 'EPIN_INVALID' });
+      }
+      joiningAmount = foundEpin.cost || 0;
     }
 
     // Calculate physical level depth
@@ -157,6 +162,15 @@ exports.registerUser = async (req, res) => {
       acceptedTerms: acceptedTerms === true || acceptedTerms === 'true',
       role: 'user',
     });
+
+    if (foundEpin) {
+      foundEpin.status = 'Used';
+      foundEpin.usedBy = user.memberId;
+      foundEpin.usedDate = new Date().toLocaleString('en-IN', {
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,
+      });
+      await foundEpin.save();
+    }
 
     // Generate JWT token
     const token = generateToken(user);

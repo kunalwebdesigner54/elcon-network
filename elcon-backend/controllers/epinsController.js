@@ -191,6 +191,10 @@ exports.transferEpin = async (req, res) => {
     if (!toMember) {
       return res.status(400).json({ success: false, message: 'toMember is required' });
     }
+    const targetUser = await User.findOne({ memberId: toMember });
+    if (!targetUser && toMember.toUpperCase() !== 'ADMIN') {
+      return res.status(404).json({ success: false, message: 'Target member not found' });
+    }
     const transfer = await EpinTransfer.create({
       epinNo: epin.epinNo,
       fromMember: String(isAdmin(req) ? req.body.fromMember || epin.currentOwner : epin.currentOwner).trim(),

@@ -13,7 +13,7 @@ const GenerateEPin = () => {
     }
   }, []);
 
-  const [form, setForm] = useState({ epinName: 'Activation', qty: '1', generatedForId: defaultGeneratedForId });
+  const [form, setForm] = useState({ epinName: 'Activation', qty: '1', cost: '10', generatedForId: defaultGeneratedForId });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -22,7 +22,7 @@ const GenerateEPin = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await generateEpins({ epinName: form.epinName, generatedBy: form.generatedForId, currentOwner: form.generatedForId, qty: form.qty, cost: 10 });
+    await generateEpins({ epinName: form.epinName, generatedBy: form.generatedForId, currentOwner: form.generatedForId, qty: form.qty, cost: form.cost });
   };
 
   return (
@@ -37,12 +37,17 @@ const GenerateEPin = () => {
                   <div className="buyepin-form-col" style={{width: '100%'}}>
                     <div className="buyepin-input-group">
                       <label>Required No Of ePins</label>
-                      <input type="text" value="No cash wallet" disabled />
+                      <input type="number" name="qty" min="1" value={form.qty} onChange={handleChange} />
+                    </div>
+                    <div className="buyepin-input-group">
+                      <label>Amount / Cost</label>
+                      <input type="number" name="cost" min="1" value={form.cost} onChange={handleChange} />
                     </div>
                     <div className="buyepin-input-group">
                       <label>Package</label>
                       <select name="epinName" value={form.epinName} onChange={handleChange}>
                         <option value="">Select</option>
+                        <option value="Activation">Activation</option>
                         <option value="basic">Basic</option>
                         <option value="standard">Standard</option>
                         <option value="premium">Premium</option>
