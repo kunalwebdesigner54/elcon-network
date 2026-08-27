@@ -181,26 +181,38 @@ const GivenHelp = () => {
             {selectedLevel < parseInt(nextLevel, 10) ? (
               // Read-only view for past donations
               pastDonation ? (
-                <div className="donation-details-card" style={{ border: '2px solid #27ae60', background: '#fcfcfc' }}>
+                <div className="donation-details-card">
                   <div style={{ textAlign: "center", marginBottom: "16px", color: "#27ae60", fontWeight: "bold", fontSize: "1.1rem" }}>
                     ✓ Level {selectedLevel} Donation Completed
                   </div>
                   
+                  {/* Sender */}
                   <div className="donation-section">
-                    <div className="section-title21">Receiver Details (Help Receiver)</div>
-                    <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{pastDonation.toName}</span></div>
-                    <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{pastDonation.toMemberId}</span></div>
+                    <div className="section-title21">Sender Details (Help Provider)</div>
+                    <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{currentUser?.name || "---"}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{currentUser?.memberId || "---"}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Mobile No :</span> <span className="help-info-value">{currentUser?.contactNo || "---"}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">E-mail ID :</span> <span className="help-info-value">{currentUser?.email || "---"}</span></div>
                   </div>
 
+                  {/* Receiver */}
+                  <div className="donation-section">
+                    <div className="section-title21">Receiver Details (Help Receiver)</div>
+                    <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{pastDonation.toName || "---"}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{pastDonation.toMemberId || "---"}</span></div>
+                  </div>
+
+                  {/* Donation details */}
                   <div className="donation-section">
                     <div className="section-title21">Donation / Help Details</div>
                     <div className="help-info-row21"><span className="help-info-label">Amount :</span> <span className="help-info-value amount">₹ {pastDonation.amount?.toLocaleString("en-IN")}.00</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Upgrade Level :</span> <span className="help-info-value">Level {selectedLevel}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Donation Date :</span> <span className="help-info-value">{pastDonation.dateRaw ? new Date(pastDonation.dateRaw).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : (pastDonation.date || '---')}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Trans. No (UTR) :</span> <span className="help-info-value">{pastDonation.utrNumber}</span></div>
-                    <div className="help-info-row21"><span className="help-info-label">Status :</span> <span className="help-info-value" style={{ color: STATUS_COLORS[pastDonation.status], fontWeight: 600 }}>{pastDonation.status?.replace(/_/g, ' ')}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Donation Status :</span> <span className="help-info-value" style={{ color: STATUS_COLORS[pastDonation.status], fontWeight: 600 }}>{pastDonation.status?.replace(/_/g, ' ')}</span></div>
                   </div>
                   
-                  <div style={{ textAlign: "center", marginTop: "24px", color: "#666", fontSize: "0.9rem" }}>
+                  <div style={{ textAlign: "center", marginTop: "24px", color: "#ccc", fontSize: "0.9rem" }}>
                     You have already completed the donation for Level {selectedLevel}. You cannot re-donate to this level.
                   </div>
                 </div>
