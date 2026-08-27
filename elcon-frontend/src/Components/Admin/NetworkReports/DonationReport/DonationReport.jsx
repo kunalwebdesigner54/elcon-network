@@ -161,7 +161,7 @@ function DonationReport() {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Donation Report</title>
+          <title>Donations Report</title>
           <style>
             body { font-family: Arial, sans-serif; padding: 16px; }
             h2 { margin: 0 0 12px 0; }
@@ -171,7 +171,7 @@ function DonationReport() {
           </style>
         </head>
         <body>
-          <h2>Donation Report</h2>
+          <h2>Donations Report</h2>
           <table>
             <thead>
               <tr>${exportColumns.map((column) => `<th>${column}</th>`).join('')}</tr>
@@ -188,7 +188,7 @@ function DonationReport() {
 
   return (
     <div>
-      <h2 className="section-title tds-screen-title">Donation Report</h2>
+      <h2 className="section-title tds-screen-title">Donations Report</h2>
 
       <div className="donation-tabs">
         {[
