@@ -4,6 +4,7 @@ import { City, Country, State } from 'country-state-city';
 import { getDistricts } from 'india-state-district';
 import PublicPageHeader from '../Common/PublicPageHeader';
 import { registerUser, getSponsorDetails } from '../../../api/authService';
+import Swal from 'sweetalert2';
 import './Register.css';
 
 const INDIA_COUNTRY_CODE = 'IN';
@@ -165,6 +166,17 @@ function Register() {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+      
+      await Swal.fire({
+        title: 'Success!',
+        text: 'Successful Registration. Welcome to Elcon Network!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#00d4aa',
+        background: '#1a1f2c',
+        color: '#fff'
+      });
+      
       navigate('/user/dashboard');
     } catch (requestError) {
       const message = requestError?.response?.data?.message || 'Registration failed';
