@@ -144,6 +144,7 @@ function UserLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [openSection, setOpenSection] = useState(() => getDefaultOpenSection(location.pathname));
   const [memberId, setMemberId] = useState('');
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
     setOpenSection(getDefaultOpenSection(location.pathname));
@@ -175,7 +176,10 @@ function UserLayout() {
     // Try to read cached user from auth utility
     try {
       const stored = getUser();
-      if (stored && stored.memberId) setMemberId(stored.memberId);
+      if (stored) {
+        if (stored.memberId) setMemberId(stored.memberId);
+        if (stored.name) setUserName(stored.name);
+      }
     } catch (err) {
       // ignore
     }
@@ -184,7 +188,10 @@ function UserLayout() {
     (async () => {
       try {
         const res = await getProfile();
-        if (res?.success && res.data?.memberId) setMemberId(res.data.memberId);
+        if (res?.success && res.data) {
+          if (res.data.memberId) setMemberId(res.data.memberId);
+          if (res.data.name) setUserName(res.data.name);
+        }
       } catch (err) {
         // ignore
       }
@@ -284,7 +291,9 @@ function UserLayout() {
               ☰
             </button>
           )}
-            <span className="user-top-title">Dashboard</span>
+            <span className="user-top-title">
+              {breadcrumb} {userName && <span style={{ fontSize: '0.9em', opacity: 0.9 }}> | Welcome, {userName}</span>}
+            </span>
           </div>
           <div className="user-topbar-right">
             <button className="user-topbar-cart-btn" type="button" aria-label="Cart">🛒</button>
