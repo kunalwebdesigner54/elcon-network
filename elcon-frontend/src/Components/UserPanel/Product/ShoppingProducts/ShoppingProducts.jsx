@@ -41,7 +41,12 @@ function ShoppingProducts() {
         <h2 className="page-heading">Shopping Products</h2>
 
         <div className="user-product-grid">
-          {shoppingProducts.map((product) => (
+          {shoppingProducts.map((product) => {
+            const stockStatus = (product.quantity !== undefined && product.quantity !== null && product.quantity !== '') 
+                ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock') 
+                : (product.stock === 'Out of Stock' ? 'Out of Stock' : 'In Stock');
+
+            return (
             <article
               className="user-product-card"
               key={product.id || product.productCode}
@@ -68,8 +73,8 @@ function ShoppingProducts() {
                 <div className="user-product-meta">
                   <h3>{product.productName || product.name}</h3>
                   <div className="user-product-meta-row">
-                    <span className={`user-product-stock ${product.stock === 'In Stock' ? 'in-stock' : 'out-stock'}`}>
-                      {product.stock}
+                    <span className={`user-product-stock ${stockStatus === 'In Stock' ? 'in-stock' : 'out-stock'}`}>
+                      {stockStatus}
                     </span>
                     <span className="user-product-category">Category : {product.category}</span>
                   </div>
@@ -80,15 +85,21 @@ function ShoppingProducts() {
                   </span>
                   <span className="user-product-price">₹ {product.price}</span>
                 </div>
-                <button type="button" className="user-product-btn" onClick={(event) => {
-                  event.stopPropagation();
-                  handleAddToCart(product);
-                }}>
+                <button 
+                  type="button" 
+                  className="user-product-btn" 
+                  disabled={stockStatus === 'Out of Stock'}
+                  style={{ opacity: stockStatus === 'Out of Stock' ? 0.5 : 1, cursor: stockStatus === 'Out of Stock' ? 'not-allowed' : 'pointer' }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    if (stockStatus !== 'Out of Stock') handleAddToCart(product);
+                  }}>
                   Add to cart
                 </button>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

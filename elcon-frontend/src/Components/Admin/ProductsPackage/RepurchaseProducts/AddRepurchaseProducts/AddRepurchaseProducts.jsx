@@ -21,7 +21,7 @@ function AddRepurchaseProducts() {
       ['productName', 'Product Name'],
       ['productCode', 'Product Code'],
       ['hsnCode', 'HSN Code'],
-      ['stock', 'Stock'],
+      ['quantity', 'Stock'],
       ['mrpPrice', 'M.R.P Price'],
       ['dpPrice', 'DP Price'],
       ['deliveryCharge', 'Delivery Charge'],
@@ -34,8 +34,7 @@ function AddRepurchaseProducts() {
       ['dimension', 'Dimension'],
       ['description', 'Description'],
       ['specifications', 'Specifications'],
-      ['features', 'Features & Benefits'],
-      ['quantity', 'Quantity'],
+      ['features', 'Features & Benefits']
     ];
 
     const missingFields = requiredFields
@@ -45,7 +44,7 @@ function AddRepurchaseProducts() {
       })
       .map(([, label]) => label);
 
-    const imageInputs = Array.from(form.querySelectorAll('input[type="file"]'));
+    const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const selectedImages = imageInputs.filter((input) => input.files && input.files.length > 0);
 
     if (missingFields.length || selectedImages.length !== 5) {
@@ -75,8 +74,11 @@ function AddRepurchaseProducts() {
     }
 
     const formData = new FormData(form);
-    const imageInputs = Array.from(form.querySelectorAll('input[type="file"]'));
+    const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const images = await Promise.all(imageInputs.map((input) => readFileAsDataUrl(input.files[0])));
+    
+    const pdfInput = form.querySelector('input[type="file"][accept="application/pdf"]');
+    const brochurePdf = (pdfInput && pdfInput.files.length > 0) ? await readFileAsDataUrl(pdfInput.files[0]) : '';
 
     const payload = {
       type: 'repurchase',
@@ -84,7 +86,7 @@ function AddRepurchaseProducts() {
       productName: formData.get('productName'),
       productCode: formData.get('productCode'),
       hsnCode: formData.get('hsnCode'),
-      status: formData.get('stock') === 'Out of Stock' ? 'HIDDEN' : 'SHOWING',
+      status: Number(formData.get('quantity')) <= 0 ? 'HIDDEN' : 'SHOWING',
       mrp: formData.get('mrpPrice'),
       dpPrice: formData.get('dpPrice'),
       shipping: formData.get('deliveryCharge') || 'free',
@@ -101,6 +103,7 @@ function AddRepurchaseProducts() {
       quantity: formData.get('quantity') || '0',
       imageKey: images[0] || '',
       images,
+      brochurePdf,
     };
 
     try {
@@ -173,10 +176,7 @@ function AddRepurchaseProducts() {
               </label>
               <label className="admin-add-product-row">
                 <span>Stock</span>
-                <select name="stock" defaultValue="In Stock">
-                  <option value="In Stock">In Stock</option>
-                  <option value="Out of Stock">Out of Stock</option>
-                </select>
+                <input name="quantity" type="number" defaultValue="200" required />
               </label>
               <div className="admin-add-product-row" style={{ alignItems: 'flex-start' }}>
                 <span>Product Images</span>
@@ -202,6 +202,10 @@ function AddRepurchaseProducts() {
                     <input type="file" accept="image/*" style={imageUploadFieldStyle} />
                   </label>
                 </div>
+              </div>
+              <div className="admin-add-product-row" style={{ alignItems: 'flex-start', marginTop: '14px' }}>
+                <span>Download PDF (Brochure)</span>
+                <input type="file" name="brochurePdf" accept="application/pdf" style={imageUploadFieldStyle} />
               </div>
               <div style={contentGridStyle}>
                 <label className="admin-add-product-row">
@@ -277,7 +281,6 @@ function AddRepurchaseProducts() {
                 <span>Dimension</span>
                 <input name="dimension" type="text" defaultValue="300mm x 200mm x 100mm" />
               </label>
-              <input name="quantity" type="hidden" defaultValue="500" />
             </div>
           </div>
         </div>

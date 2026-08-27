@@ -44,7 +44,7 @@ const tabConfig = {
   }
 };
 
-const buildDetails = (product) => {
+const buildDetails = (product, stockStatus) => {
   const name = product?.productName || product?.name || 'Product';
   const category = product?.category || 'Health Care Products';
   const price = product?.price ?? 350;
@@ -57,6 +57,7 @@ const buildDetails = (product) => {
   const color = product?.color || (/electronic|watch|head|laptop|phone|pod/i.test(`${name} ${category}`) ? 'Black' : 'Green');
 
   return [
+    { label: 'STOCK STATUS', value: stockStatus },
     { label: 'PRODUCT NAME', value: name },
     { label: 'PRODUCT CODE', value: productCode },
     { label: 'CATEGORY', value: category },
@@ -123,7 +124,13 @@ const ProductDetails = () => {
     ].filter(Boolean).slice(0, 5);
   }, [product]);
 
-  const details = useMemo(() => buildDetails(product), [product]);
+  const stockStatus = useMemo(() => {
+    return (product?.quantity !== undefined && product?.quantity !== null && product?.quantity !== '') 
+      ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock') 
+      : (product?.stock === 'Out of Stock' ? 'Out of Stock' : 'In Stock');
+  }, [product]);
+
+  const details = useMemo(() => buildDetails(product, stockStatus), [product, stockStatus]);
 
   const activeTabData = tabConfig[activeTab];
   const descriptionText = product?.description || activeTabData.content[0];
@@ -241,17 +248,26 @@ const ProductDetails = () => {
             ) : (
               <div className="product-pdf-panel">
                 <p className="product-tab-copy">{activeTabData.content[0]}</p>
-                <p className="product-tab-copy">{activeTabData.content[1]}</p>
-                <button type="button" className="product-pdf-btn">
-                  Download PDF
-                </button>
+                {product?.brochurePdf ? (
+                  <a href={product.brochurePdf} download="Brochure.pdf" target="_blank" rel="noreferrer" className="product-pdf-btn" style={{ display: 'inline-block', textDecoration: 'none', textAlign: 'center' }}>
+                    Download PDF
+                  </a>
+                ) : (
+                  <p style={{ marginTop: '20px', color: '#ff4d4d' }}>No Brochure PDF available for this product.</p>
+                )}
               </div>
             )}
           </div>
         </section>
 
         <div className="product-details-footer">
-          <button type="button" className="product-details-cart-btn" onClick={handleAddToCart}>
+          <button 
+            type="button" 
+            className="product-details-cart-btn" 
+            onClick={handleAddToCart}
+            disabled={stockStatus === 'Out of Stock'}
+            style={{ opacity: stockStatus === 'Out of Stock' ? 0.5 : 1, cursor: stockStatus === 'Out of Stock' ? 'not-allowed' : 'pointer' }}
+          >
             Add To Cart
           </button>
         </div>
