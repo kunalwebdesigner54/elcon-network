@@ -24,6 +24,10 @@ const Withdraw = () => {
     ifscCode: '-',
     upiId: '-',
   });
+  const [memberDetails, setMemberDetails] = useState({
+    name: '',
+    memberId: ''
+  });
 
   useEffect(() => {
     const loadWithdrawData = async () => {
@@ -47,6 +51,11 @@ const Withdraw = () => {
           rWalletBalance: Number(summary.rWalletBalance ?? 0),
           totalEarning: Number(summary.totalEarning ?? profile.walletBalance ?? 0),
           totalWithdrawal: Number(summary.totalWithdrawal ?? 0),
+        });
+
+        setMemberDetails({
+          name: profile.name || '',
+          memberId: profile.memberId || ''
         });
       } catch (error) {
         // Keep fallback values when the profile or summary request fails.
@@ -100,7 +109,14 @@ const Withdraw = () => {
   return (
     <div className="withdraw-wrapper">
       <div className="withdraw-header">
-        <h2>Withdraw</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          <h2>Withdraw</h2>
+          {(memberDetails.name || memberDetails.memberId) && (
+            <div className="member-info-badge" style={{ background: 'rgba(255,255,255,0.1)', padding: '6px 14px', borderRadius: '20px', fontSize: '14px', fontWeight: '600', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
+              {memberDetails.name} {memberDetails.memberId ? `(${memberDetails.memberId})` : ''}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Wallet Balance Cards */}

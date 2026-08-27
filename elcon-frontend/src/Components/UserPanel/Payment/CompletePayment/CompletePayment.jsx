@@ -213,10 +213,9 @@ const CompletePayment = () => {
         <div className="payment-right">
           <div className="order-summary-card">
             <h3 className="summary-title">
-              <span className="rupee-icon">₹</span>
-              Order Amount (₹)
+              Order Amount
             </h3>
-            <div className="amount-display">{isLoadingCart ? 'Loading...' : orderAmount.toFixed(2)}</div>
+            <div className="amount-display">₹ {isLoadingCart ? 'Loading...' : orderAmount.toFixed(2)}</div>
 
             {cartItems.length > 0 && (
               <div className="proof-section" style={{ marginTop: '14px' }}>

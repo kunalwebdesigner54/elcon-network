@@ -75,6 +75,31 @@
 
 .kyc-request-form .text-input {
   min-height: 42px;
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #1a1a2e !important;
+  border: 1.5px solid rgba(0, 229, 255, 0.25) !important;
+}
+
+.kyc-request-form .text-input:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15) !important;
+  background: #ffffff !important;
+}
+
+.kyc-request-form .text-input::placeholder {
+  color: #8a8fa8 !important;
+  opacity: 1;
+}
+
+.kyc-file-input {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #1a1a2e !important;
+  border: 1.5px solid rgba(0, 229, 255, 0.25) !important;
+}
+
+.kyc-file-input:focus {
+  border-color: var(--primary) !important;
+  background: #ffffff !important;
 }
 
 @media (max-width: 992px) {

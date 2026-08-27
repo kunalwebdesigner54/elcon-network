@@ -35,13 +35,12 @@
 }
 .mc-item {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   padding: 10px 8px;
   border-bottom: 1px solid var(--glass-border);
   background: var(--bg-card-hover);
   border-radius: 6px;
   margin: 10px;
-  position: relative;
 }
 .mc-item:last-child {
   border-bottom: none;
@@ -94,42 +93,39 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  width: 160px;
-  position: relative;
+  min-width: 120px;
   padding-left: 8px;
+  gap: 4px;
+}
+.mc-total-row-cart {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .mc-price {
   color: var(--text-muted);
 }
 .mc-delete {
-  position: absolute;
-  right: 0px;
-  top: -29%;
-  transform: translateY(-50%);
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border-light);
+  background: rgba(255, 51, 102, 0.1);
+  border: 1px solid rgba(255, 51, 102, 0.25);
   border-radius: 6px;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  color: var(--accent);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 .mc-delete svg {
   display: block;
 }
-.mc-delete svg path {
-  stroke: var(--text-muted);
-}
 .mc-delete:hover {
-  background: var(--bg-card-hover);
+  background: rgba(255, 51, 102, 0.2);
   border-color: var(--accent);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-.mc-delete:hover svg path {
-  stroke: var(--accent);
+  transform: scale(1.05);
 }
 .mc-total {
   font-weight: 700;
@@ -352,10 +348,8 @@
     font-size: 14px;
   }
   .mc-delete {
-    right: 0px;
-    width: 32px;
-    height: 32px;
-    top: 60px;
+    width: 28px;
+    height: 28px;
   }
 
   /* coupon row stack */

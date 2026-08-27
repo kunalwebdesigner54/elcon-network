@@ -5,6 +5,7 @@ import '../Withdraw/Withdraw.css';
 import '../../Common/UserLayout.css';
 import './AddDepositFunds.css';
 import { createDepositRequest, getMyWithdrawalSummary } from '../../../../api/paymentService';
+import { getProfile } from '../../../../api/authService';
 
 const amountPresets = ['₹1000', '₹2000', '₹5000'];
 const staticBankDetails = {
@@ -26,15 +27,23 @@ function AddDepositFunds() {
   const [transactionPassword, setTransactionPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [walletSummary, setWalletSummary] = useState({ eWalletBalance: 0, rWalletBalance: 0, totalEarning: 0, totalWithdrawal: 0 });
+  const [memberDetails, setMemberDetails] = useState({ name: '', memberId: '' });
 
   const summaryAmount = useMemo(() => Number(amount || 0).toFixed(2), [amount]);
 
   useEffect(() => {
     const loadDepositMeta = async () => {
       try {
-        const summaryResponse = await getMyWithdrawalSummary();
-
+        const [summaryResponse, profileResponse] = await Promise.all([getMyWithdrawalSummary(), getProfile()]);
+        
         setWalletSummary(summaryResponse.data || { eWalletBalance: 0, rWalletBalance: 0, totalEarning: 0, totalWithdrawal: 0 });
+        
+        if (profileResponse?.data) {
+          setMemberDetails({
+            name: profileResponse.data.name || '',
+            memberId: profileResponse.data.memberId || ''
+          });
+        }
       } catch (error) {
         setWalletSummary({ eWalletBalance: 0, rWalletBalance: 0, totalEarning: 0, totalWithdrawal: 0 });
       }
@@ -116,7 +125,14 @@ function AddDepositFunds() {
   return (
     <div className="withdraw-wrapper deposit-funds-page">
       <div className="withdraw-header deposit-funds-header">
-        <h2>Fund Deposit</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <h2>Fund Deposit</h2>
+          {(memberDetails.name || memberDetails.memberId) && (
+            <div className="member-info-badge" style={{ background: 'rgba(255,255,255,0.1)', padding: '6px 14px', borderRadius: '20px', fontSize: '14px', fontWeight: '600', color: 'var(--text-main)', border: '1px solid var(--glass-border)', display: 'inline-block' }}>
+              {memberDetails.name} {memberDetails.memberId ? `(${memberDetails.memberId})` : ''}
+            </div>
+          )}
+        </div>
         <button type="button" className="deposit-history-link" onClick={() => navigate('/user/deposit/history')}>
           + ADD FUND
         </button>

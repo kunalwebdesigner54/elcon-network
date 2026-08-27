@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyCart.css';
 import { clearCart, checkoutCart, getCart, removeCartItem, updateCartItem } from '../../../../api/productsService';
+import { getProfile } from '../../../../api/authService';
 import { resolveProductImage } from '../productImages';
 
 const DeleteIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M3 6h18" stroke="#888" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M8 6v12c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2V6" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M10 11v6" stroke="#888" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M14 11v6" stroke="#888" strokeWidth="2" strokeLinecap="round"/>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V4a1 1 0 011-1h6a1 1 0 011 1v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
 
@@ -28,9 +26,11 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => (
       </div>
     </div>
     <div className="mc-item-right">
-      <div className="mc-price">₹{item.price}x{item.quantity}= </div>
-      <div className="mc-total"> ₹{item.totalPrice}</div>
-      <button className="mc-delete" aria-label="Delete item" onClick={() => onRemove(item)}><DeleteIcon/></button>
+      <div className="mc-price">₹{item.price} x {item.quantity}</div>
+      <div className="mc-total-row-cart">
+        <div className="mc-total">= ₹{item.totalPrice}</div>
+        <button className="mc-delete" aria-label="Delete item" onClick={() => onRemove(item)}><DeleteIcon/></button>
+      </div>
     </div>
   </div>
 )
@@ -41,6 +41,7 @@ export default function MyCart(){
   const [loading, setLoading] = useState(true);
   const [couponWalletBalance, setCouponWalletBalance] = useState(0);
   const [summary, setSummary] = useState({ subtotal: 0, bvPoint: 0, appliedDiscount: 0 });
+  const [deliveryAddress, setDeliveryAddress] = useState(null);
 
   const loadCart = async () => {
     setLoading(true);
@@ -57,7 +58,19 @@ export default function MyCart(){
 
   useEffect(() => {
     loadCart();
+    loadDeliveryAddress();
   }, []);
+
+  const loadDeliveryAddress = async () => {
+    try {
+      const response = await getProfile();
+      if (response?.success && response.data) {
+        setDeliveryAddress(response.data);
+      }
+    } catch (err) {
+      // Address will show fallback text
+    }
+  };
 
   useEffect(() => {
     const subtotal = cartItems.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0);
@@ -139,9 +152,9 @@ export default function MyCart(){
             </button>
           </div>
           <div className="mc-address-body">
-            <div className="mc-deliver">Deliver to : Sonali Shirke</div>
-            <div>Flat no A-201, Oxford Paradise, Vidya Valley School Road Susgaon</div>
-            <div>Maharashtra Pune - 411021</div>
+            <div className="mc-deliver">Deliver to : {deliveryAddress?.name || '---'}</div>
+            <div>{deliveryAddress?.address || 'No address available'}</div>
+            <div>{[deliveryAddress?.state, deliveryAddress?.city].filter(Boolean).join(' ') || ''}{deliveryAddress?.pincode ? ` - ${deliveryAddress.pincode}` : ''}</div>
           </div>
         </div>
 

@@ -331,6 +331,20 @@ button,
 	background: rgba(255, 255, 255, 0.09) !important;
 }
 
+/* Global Public Page Inputs — white text on dark background */
+.public-root input, .public-root select, .public-root textarea {
+	color: #ffffff !important;
+}
+
+.public-root input::placeholder, .public-root textarea::placeholder {
+	color: rgba(255, 255, 255, 0.45) !important;
+}
+
+.public-root select option {
+	color: #1a1a2e;
+	background: #ffffff;
+}
+
 /* Global Dashboard Buttons */
 .admin-root .btn-primary, .user-root .btn-primary,
 .admin-root button[type="submit"], .user-root button[type="submit"] {

@@ -31,7 +31,6 @@ const menuItems = [
     children: [
       { label: 'Level Income', to: '/user/income-report/level-income' },
       { label: 'Repurchase Income', to: '/user/income-report/Repurchase-income' },
-        { label: 'Donations Report', to: '/user/income-report/donations-income' },
         { label: 'Datewise Income', to: '/user/income-report/Datewise-income' },
         { label: 'Daily Payout Report', to: '/user/income-report/Daily-Payout-Report' }
     ]
@@ -41,7 +40,8 @@ const menuItems = [
     label: 'Donations',
     children: [
       { label: 'Given Help', to: '/user/donations/given-help' },
-      { label: 'Recieved Help', to: '/user/donations/recieved-help' }
+      { label: 'Recieved Help', to: '/user/donations/recieved-help' },
+      { label: 'Donations Report', to: '/user/income-report/donations-income' }
     ]
   },
   {

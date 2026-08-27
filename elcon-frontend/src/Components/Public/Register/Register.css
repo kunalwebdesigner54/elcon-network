@@ -55,7 +55,7 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
-  color: var(--public-text);
+  color: #ffffff;
   padding: 12px 14px;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -69,6 +69,11 @@
 
 .register-field select {
   appearance: auto;
+}
+
+.register-field select option {
+  color: #1a1a2e;
+  background: #ffffff;
 }
 
 .register-field textarea {

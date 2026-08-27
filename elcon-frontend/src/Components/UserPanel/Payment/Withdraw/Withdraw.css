@@ -5,10 +5,11 @@
 }
 
 .withdraw-header {
-  background: linear-gradient(135deg, rgba(211, 211, 211, 0.6) 0%, rgba(192, 192, 192, 0.4) 100%);
+  background: var(--bg-card);
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 24px;
+  border: 1px solid var(--glass-border);
 }
 
 .withdraw-header h2 {
@@ -32,8 +33,9 @@
   gap: 12px;
   padding: 16px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
+  border: 1px solid var(--glass-border);
 }
 
 .balance-card:hover {
@@ -41,12 +43,12 @@
 }
 
 .balance-card.primary {
-  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  background: var(--gradient-primary);
   color: white;
 }
 
 .balance-card.secondary {
-  background: white;
+  background: var(--bg-card);
   color: var(--text-main);
 }
 
@@ -73,7 +75,7 @@
 }
 
 .balance-card.secondary .card-amount {
-  color: #00d4aa;
+  color: var(--primary);
 }
 
 /* Withdraw Container */
@@ -90,10 +92,11 @@
 }
 
 .withdrawal-amount-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--glass-border);
 }
 
 .card-title {
@@ -128,24 +131,26 @@
   position: absolute;
   left: 12px;
   font-size: 14px;
-  color: #00d4aa;
+  color: var(--primary);
   font-weight: 600;
 }
 
 .amount-input {
   width: 100%;
   padding: 10px 12px 10px 40px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  background: var(--bg-dark);
+  color: var(--text-main);
 }
 
 .amount-input:focus {
   outline: none;
-  border-color: #00d4aa;
-  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
 }
 
 /* Quick Select Buttons */
@@ -170,19 +175,19 @@
 }
 
 .quick-btn:hover {
-  background: #00d4aa;
-  border-color: #00d4aa;
+  background: var(--primary);
+  border-color: var(--primary);
   color: white;
   transform: translateY(-2px);
 }
 
 /* Withdrawal Summary */
 .withdrawal-summary {
-  background: var(--darker);
+  background: var(--bg-dark);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
-  border-left: 4px solid #00d4aa;
+  border-left: 4px solid var(--primary);
 }
 
 .summary-title {
@@ -203,7 +208,7 @@
 }
 
 .summary-row.highlight {
-  background: rgba(0, 212, 170, 0.05);
+  background: rgba(0, 229, 255, 0.08);
   padding: 10px 8px;
   border-radius: 6px;
   margin-top: 4px;
@@ -225,7 +230,7 @@
 }
 
 .summary-row.highlight .summary-value {
-  color: #00d4aa;
+  color: var(--primary);
   font-weight: 700;
 }
 
@@ -245,25 +250,27 @@
 .password-input {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
   font-size: 14px;
   font-family: Arial, sans-serif;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  background: var(--bg-dark);
+  color: var(--text-main);
 }
 
 .password-input:focus {
   outline: none;
-  border-color: #00d4aa;
-  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
 }
 
 /* Confirm Withdrawal Button */
 .confirm-withdrawal-btn {
   width: 100%;
   padding: 12px 20px;
-  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  background: var(--gradient-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -278,7 +285,7 @@
 
 .confirm-withdrawal-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.25);
 }
 
 .confirm-withdrawal-btn:active {
@@ -292,10 +299,11 @@
 }
 
 .transfer-method-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--glass-border);
 }
 
 /* Transfer Options */
@@ -333,8 +341,8 @@
 }
 
 .transfer-radio:checked + .radio-custom {
-  border-color: #00d4aa;
-  background: #00d4aa;
+  border-color: var(--primary);
+  background: var(--primary);
 }
 
 .transfer-radio:checked + .radio-custom::after {

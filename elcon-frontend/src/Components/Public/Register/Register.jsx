@@ -167,12 +167,29 @@ function Register() {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       
+      const registeredUser = data.user || {};
+      const memberId = registeredUser.memberId || 'Pending';
+      const memberName = registeredUser.name || applicantName;
+
       await Swal.fire({
-        title: 'Success!',
-        text: 'Successful Registration. Welcome to Elcon Network!',
+        title: 'Registration Successful!',
+        html: `
+          <div style="font-size: 16px; margin-bottom: 15px;">Welcome to Elcon Network!</div>
+          <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; text-align: left;">
+            <div style="margin-bottom: 8px; font-size: 15px;">
+              <span style="color: #aaa; margin-right: 8px;">Name:</span> 
+              <strong style="color: #fff;">${memberName}</strong>
+            </div>
+            <div style="font-size: 15px;">
+              <span style="color: #aaa; margin-right: 8px;">Member ID:</span> 
+              <strong style="color: #00e5ff; font-size: 18px;">${memberId}</strong>
+            </div>
+          </div>
+          <div style="margin-top: 15px; font-size: 13px; color: #888;">Please save your Member ID for future login.</div>
+        `,
         icon: 'success',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#00d4aa',
+        confirmButtonText: 'CONTINUE',
+        confirmButtonColor: '#00e5ff',
         background: '#1a1f2c',
         color: '#fff'
       });

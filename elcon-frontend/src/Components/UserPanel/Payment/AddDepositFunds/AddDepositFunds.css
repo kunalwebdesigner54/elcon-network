@@ -6,7 +6,7 @@
 }
 
 .deposit-funds-header {
-  background: linear-gradient(135deg, rgba(211, 211, 211, 0.6) 0%, rgba(192, 192, 192, 0.4) 100%);
+  background: var(--bg-card);
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 24px;
@@ -14,6 +14,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  border: 1px solid var(--glass-border);
 }
 
 .deposit-funds-header h2 {
@@ -25,7 +26,7 @@
 
 .deposit-history-link {
   padding: 12px 18px;
-  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  background: var(--gradient-primary);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -38,7 +39,7 @@
 
 .deposit-history-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.25);
 }
 
 .deposit-stats-grid {
@@ -46,17 +47,17 @@
 }
 
 .deposit-stats-grid .balance-card.primary {
-  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  background: var(--gradient-primary);
   color: white;
 }
 
 .deposit-stats-grid .balance-card.secondary {
-  background: white;
+  background: var(--bg-card);
   color: var(--text-main);
 }
 
 .deposit-stats-grid .balance-card.secondary .card-amount {
-  color: #00d4aa;
+  color: var(--primary);
 }
 
 .deposit-stats-grid .balance-card:hover {
@@ -78,24 +79,24 @@
 }
 
 .deposit-preset-btn {
-  background: var(--darker);
-  border: 1px solid var(--border-color);
+  background: var(--bg-dark);
+  border: 1px solid var(--glass-border);
   color: var(--text-main);
 }
 
 .deposit-preset-btn:hover {
-  background: #00d4aa;
-  border-color: #00d4aa;
+  background: var(--primary);
+  border-color: var(--primary);
   color: white;
   transform: translateY(-2px);
 }
 
 .deposit-summary-box {
-  background: var(--darker);
+  background: var(--bg-dark);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
-  border-left: 4px solid #00d4aa;
+  border-left: 4px solid var(--primary);
 }
 
 .deposit-summary-head {
@@ -112,12 +113,12 @@
 }
 
 .deposit-summary-row strong {
-  color: #00d4aa;
+  color: var(--primary);
 }
 
 .deposit-upload-box {
-  background: linear-gradient(90deg, #e7e7e7 0%, #f7f7f7 100%);
-  border: 1px solid var(--border-color);
+  background: var(--bg-dark);
+  border: 1px dashed var(--glass-border);
 }
 
 .deposit-upload-box span {
@@ -125,27 +126,28 @@
 }
 
 .deposit-text-input {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: var(--bg-dark);
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
+  color: var(--text-main);
 }
 
 .deposit-text-input:focus {
   outline: none;
-  border-color: #00d4aa;
-  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
 }
 
 .deposit-confirm-btn {
   width: 100%;
   margin-top: 8px;
-  background: linear-gradient(135deg, #00d4aa 0%, #00b896 100%);
+  background: var(--gradient-primary);
   border-radius: 8px;
 }
 
 .deposit-confirm-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.25);
 }
 
 .deposit-method-option {
@@ -157,14 +159,14 @@
 .deposit-method-option .transfer-label {
   width: 100%;
   padding: 12px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
-  background: var(--card-bg);
+  background: var(--bg-dark);
 }
 
 .deposit-method-option.is-active .transfer-label {
-  border-color: #00d4aa;
-  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
 }
 
 .deposit-method-option .radio-custom {
@@ -172,8 +174,8 @@
 }
 
 .deposit-method-option .transfer-radio:checked + .radio-custom {
-  border-color: #00d4aa;
-  background: #00d4aa;
+  border-color: var(--primary);
+  background: var(--primary);
 }
 
 .deposit-method-option .transfer-radio:checked + .radio-custom::after {
@@ -239,14 +241,14 @@
 }
 
 .deposit-upi-panel .deposit-copy-btn {
-  color: #00d4aa;
+  color: var(--primary);
   flex: 0 0 auto;
 }
 
 .deposit-bank-title {
-  background: #efefef;
+  background: var(--bg-dark);
   color: var(--text-main);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .deposit-bank-table td {
