@@ -158,8 +158,7 @@
 
 .user-product-btn {
   width: 100%;
-  background: linear-gradient(90deg, #2979FF 0%, #FF8C00 100%);
-  background-size: 200% auto;
+  background: #ff9800;
   border: none;
   color: #ffffff;
   border-radius: 8px;
@@ -168,13 +167,11 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(41, 121, 255, 0.3);
 }
 
 .user-product-btn:hover {
   transform: translateY(-2px);
-  background-position: right center;
-  box-shadow: 0 8px 15px rgba(255, 140, 0, 0.4);
+  background: #e68a00;
 }
 
 @media (max-width: 1280px) {
@@ -254,8 +251,7 @@
 
   .user-product-btn {
   width: 100%;
-  background: linear-gradient(90deg, #2979FF 0%, #FF8C00 100%);
-  background-size: 200% auto;
+  background: #ff9800;
   border: none;
   color: #ffffff;
   border-radius: 8px;
@@ -264,7 +260,6 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(41, 121, 255, 0.3);
 }
 }
 
