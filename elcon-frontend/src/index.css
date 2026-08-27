@@ -315,7 +315,7 @@ button,
 /* Global Inputs & Selects */
 .admin-root input, .admin-root select, .admin-root textarea,
 .user-root input, .user-root select, .user-root textarea {
-	background: rgba(0, 0, 0, 0.2) !important;
+	background: rgba(255, 255, 255, 0.06) !important;
 	border: 1px solid var(--glass-border) !important;
 	color: var(--text-main) !important;
 	border-radius: var(--border-radius-sm) !important;
@@ -328,7 +328,7 @@ button,
 	outline: none !important;
 	border-color: var(--primary) !important;
 	box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.2) !important;
-	background: rgba(0, 0, 0, 0.4) !important;
+	background: rgba(255, 255, 255, 0.09) !important;
 }
 
 /* Global Dashboard Buttons */
