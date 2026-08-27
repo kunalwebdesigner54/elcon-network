@@ -2,7 +2,7 @@ import '../../Common/AdminLayout.css';
 import './ShoppingProductsAdmin.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAdminProducts, deleteAdminProduct } from '../../../../api/productsService';
+import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from '../../../../api/productsService';
 
 function ShoppingProductsAdmin() {
   const navigate = useNavigate();
@@ -32,6 +32,23 @@ function ShoppingProductsAdmin() {
         console.error("Error deleting product:", error);
         alert("Failed to delete product.");
       }
+    }
+  };
+
+  const handleToggleVisibility = async (row) => {
+    const currentStatus = row.status?.toUpperCase() || 'SHOWING';
+    const newStatus = currentStatus === 'SHOWING' ? 'HIDDEN' : 'SHOWING';
+    const id = row.id || row.productId || row.productCode || row._id;
+    
+    if (!id) return;
+
+    try {
+      await updateAdminProduct(id, { ...row, status: newStatus });
+      const response = await getAdminProducts('shopping');
+      setShoppingPackageRows(response.products || []);
+    } catch (error) {
+      console.error("Error toggling product status:", error);
+      alert("Failed to update product status.");
     }
   };
 
@@ -117,8 +134,12 @@ function ShoppingProductsAdmin() {
                   <td>{row.quantity}</td>
                   <td>
                       <div className="kyc-action-group" style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                      <button className="kyc-action-btn kyc-action-cyan" aria-label="View" title="View" onClick={() => navigate('/products-package/shopping-products/add-new', { state: { product: row, mode: 'view' } })}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      <button className="kyc-action-btn kyc-action-cyan" aria-label="Toggle Visibility" title={row.status === 'HIDDEN' ? 'Show' : 'Hide'} onClick={() => handleToggleVisibility(row)}>
+                        {row.status === 'HIDDEN' ? (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        ) : (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        )}
                       </button>
                       <button className="kyc-action-btn kyc-action-green" aria-label="Edit" title="Edit" onClick={() => navigate('/products-package/shopping-products/add-new', { state: { product: row, mode: 'edit' } })}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
