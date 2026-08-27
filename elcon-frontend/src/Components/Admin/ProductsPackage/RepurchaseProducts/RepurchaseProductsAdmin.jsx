@@ -42,12 +42,27 @@ function RepurchaseProductsAdmin() {
     
     if (!id) return;
 
+    // Optimistic UI Update for instant feedback
+    setRepurchasePackageRows(prevRows => 
+      prevRows.map(p => 
+        (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
+          ? { ...p, status: newStatus } 
+          : p
+      )
+    );
+
     try {
       await updateAdminProduct(id, { ...row, status: newStatus });
-      const response = await getAdminProducts('repurchase');
-      setRepurchasePackageRows(response.products || []);
     } catch (error) {
       console.error("Error toggling product status:", error);
+      // Revert on failure
+      setRepurchasePackageRows(prevRows => 
+        prevRows.map(p => 
+          (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
+            ? { ...p, status: currentStatus } 
+            : p
+        )
+      );
       alert("Failed to update product status.");
     }
   };

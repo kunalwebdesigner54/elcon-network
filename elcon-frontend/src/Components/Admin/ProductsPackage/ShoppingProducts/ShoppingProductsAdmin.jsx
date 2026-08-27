@@ -42,12 +42,27 @@ function ShoppingProductsAdmin() {
     
     if (!id) return;
 
+    // Optimistic UI Update for instant feedback
+    setShoppingPackageRows(prevRows => 
+      prevRows.map(p => 
+        (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
+          ? { ...p, status: newStatus } 
+          : p
+      )
+    );
+
     try {
       await updateAdminProduct(id, { ...row, status: newStatus });
-      const response = await getAdminProducts('shopping');
-      setShoppingPackageRows(response.products || []);
     } catch (error) {
       console.error("Error toggling product status:", error);
+      // Revert on failure
+      setShoppingPackageRows(prevRows => 
+        prevRows.map(p => 
+          (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
+            ? { ...p, status: currentStatus } 
+            : p
+        )
+      );
       alert("Failed to update product status.");
     }
   };
