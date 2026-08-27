@@ -35,7 +35,7 @@ function DonationsIncome() {
   }, [rows, appliedFilters]);
 
   const totalDonationIncome = filteredRows
-    .filter((r) => r.status === 'COMPLETED')
+    .filter((r) => ['APPROVED', 'COMPLETED'].includes(r.status))
     .reduce((sum, r) => sum + (r.amount || 0), 0);
 
   const handleSearch = () => {
@@ -99,7 +99,7 @@ function DonationsIncome() {
                       <td>{row.fromMemberId}</td>
                       <td>{row.fromName}</td>
                       <td>{row.level}</td>
-                      <td>₹ {row.amount?.toLocaleString('en-IN')}</td>
+                      <td style={{ color: '#27ae60', fontWeight: 'bold' }}>₹ {row.amount?.toLocaleString('en-IN')}</td>
                       <td>{row.donationId}</td>
                       <td>{row.date}</td>
                       <td>

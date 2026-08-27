@@ -40,6 +40,7 @@ const GivenHelp = () => {
 
   const [currentUser, setCurrentUser] = useState(null);
   const [nextLevel, setNextLevel] = useState(null);
+  const [selectedLevel, setSelectedLevel] = useState(null);
   const [targetData, setTargetData] = useState(null);
 
   const [utrNumber, setUtrNumber] = useState("");
@@ -70,15 +71,17 @@ const GivenHelp = () => {
         }
 
         setNextLevel(next);
+        setSelectedLevel(next);
 
         if (activeDonation) {
           setTargetData({ isActiveDonation: true, ...activeDonation });
-          // Fetch donation history when form is locked
-          fetchDonationHistory();
         } else {
           const target = await getDonationTarget(next);
           setTargetData(target.data);
         }
+
+        // Always fetch donation history to allow viewing past donations
+        fetchDonationHistory();
       } catch (err) {
         setError(err?.response?.data?.message || "Failed to load donation details.");
       } finally {
@@ -125,6 +128,14 @@ const GivenHelp = () => {
     }
   };
 
+  const handleLevelClick = (level) => {
+    if (level <= parseInt(nextLevel, 10)) {
+      setSelectedLevel(level);
+      setError("");
+      setSuccessMsg("");
+    }
+  };
+
   const receiver = targetData || {};
   const payment = receiver.toPaymentDetails || {};
   const bank = receiver.toBankDetails || {};
@@ -142,6 +153,11 @@ const GivenHelp = () => {
       </div>
     );
   }
+
+  // Find historic donation if viewing a past level
+  const pastDonation = selectedLevel < parseInt(nextLevel, 10) 
+    ? donationHistory.find(d => d.level === parseInt(selectedLevel, 10))
+    : null;
 
   return (
     <div>
@@ -162,13 +178,44 @@ const GivenHelp = () => {
 
         {!error && targetData && (
           <>
-            {targetData.isActiveDonation ? (
+            {selectedLevel < parseInt(nextLevel, 10) ? (
+              // Read-only view for past donations
+              pastDonation ? (
+                <div className="donation-details-card" style={{ border: '2px solid #27ae60', background: '#fcfcfc' }}>
+                  <div style={{ textAlign: "center", marginBottom: "16px", color: "#27ae60", fontWeight: "bold", fontSize: "1.1rem" }}>
+                    ✓ Level {selectedLevel} Donation Completed
+                  </div>
+                  
+                  <div className="donation-section">
+                    <div className="section-title21">Receiver Details (Help Receiver)</div>
+                    <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{pastDonation.toName}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{pastDonation.toMemberId}</span></div>
+                  </div>
+
+                  <div className="donation-section">
+                    <div className="section-title21">Donation / Help Details</div>
+                    <div className="help-info-row21"><span className="help-info-label">Amount :</span> <span className="help-info-value amount">₹ {pastDonation.amount?.toLocaleString("en-IN")}.00</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Donation Date :</span> <span className="help-info-value">{pastDonation.dateRaw ? new Date(pastDonation.dateRaw).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : (pastDonation.date || '---')}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Trans. No (UTR) :</span> <span className="help-info-value">{pastDonation.utrNumber}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Status :</span> <span className="help-info-value" style={{ color: STATUS_COLORS[pastDonation.status], fontWeight: 600 }}>{pastDonation.status?.replace(/_/g, ' ')}</span></div>
+                  </div>
+                  
+                  <div style={{ textAlign: "center", marginTop: "24px", color: "#666", fontSize: "0.9rem" }}>
+                    You have already completed the donation for Level {selectedLevel}. You cannot re-donate to this level.
+                  </div>
+                </div>
+              ) : (
+                <div style={{ textAlign: "center", padding: "40px" }}>Loading history for Level {selectedLevel}…</div>
+              )
+            ) : targetData.isActiveDonation ? (
+              // Pending active donation view
               <div style={{ background: "#fff3cd", color: "#856404", padding: "20px", borderRadius: "8px", border: "1px solid #ffeeba", textAlign: "center", marginBottom: "20px" }}>
                 <h3 style={{ margin: "0 0 10px 0" }}>Donation Pending Approval</h3>
                 <p style={{ margin: "0 0 5px 0" }}>Your donation of <b>₹{targetData.amount?.toLocaleString("en-IN")}</b> for Level <b>{targetData.level}</b> to <b>{targetData.toName}</b> is currently <b>{targetData.status?.replace(/_/g, ' ')}</b>.</p>
                 <p style={{ margin: 0 }}>Please wait for the receiver to approve it. Once approved, you will be upgraded to Level {targetData.level}.</p>
               </div>
             ) : (
+              // Active new donation view
               <>
                 <div className="donation-note">
                   <span className="donation-free-will">"I am donating of my own free will"</span>{" "}
@@ -284,22 +331,34 @@ const GivenHelp = () => {
 
             {/* Level progress indicator */}
             <div className="rank-steps">
-              {[...Array(10)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`rank-step${i + 1 <= (currentUser?.unlockLevel ?? 0) ? " active" : ""}${i + 1 === parseInt(nextLevel, 10) ? " next-level" : ""}`}
-                  title={`Level ${i + 1} — ₹${DONATION_AMOUNTS[i + 1]?.toLocaleString("en-IN")}`}
-                >
-                  {i + 1}
-                </div>
-              ))}
+              {[...Array(10)].map((_, i) => {
+                const lvl = i + 1;
+                const isCompleted = lvl < parseInt(nextLevel, 10);
+                const isActive = lvl === parseInt(nextLevel, 10);
+                const isSelected = lvl === parseInt(selectedLevel, 10);
+                return (
+                  <div
+                    key={i}
+                    className={`rank-step${lvl <= (currentUser?.unlockLevel ?? 0) ? " active" : ""}${isActive ? " next-level" : ""}`}
+                    style={{
+                      cursor: (isCompleted || isActive) ? 'pointer' : 'not-allowed',
+                      border: isSelected && isCompleted ? '2px solid #333' : undefined,
+                      transform: isSelected && isCompleted ? 'scale(1.1)' : undefined
+                    }}
+                    title={`Level ${lvl} — ₹${DONATION_AMOUNTS[lvl]?.toLocaleString("en-IN")}`}
+                    onClick={() => handleLevelClick(lvl)}
+                  >
+                    {lvl}
+                  </div>
+                );
+              })}
             </div>
           </>
         )}
       </div>
 
       {/* Donation History — shown when form is locked (active donation pending) */}
-      {targetData?.isActiveDonation && (
+      {targetData?.isActiveDonation && parseInt(selectedLevel, 10) === parseInt(nextLevel, 10) && (
         <div className="given-help-history-section">
           <h2 className="section-title21">Donation History</h2>
           {historyLoading ? (
