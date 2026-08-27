@@ -215,8 +215,8 @@ function DonationReport() {
         {!loading && (
           <>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
-              <input className="text-input" style={{ maxWidth: '150px' }} placeholder="DONAR MEMBER ID" value={filters.donorMemberId} onChange={handleFilterChange('donorMemberId')} />
-              <input className="text-input" style={{ maxWidth: '160px' }} placeholder="RECEIVER MEMBER ID" value={filters.receiverMemberId} onChange={handleFilterChange('receiverMemberId')} />
+              <input className="text-input" style={{ maxWidth: '150px' }} placeholder="DONAR MID" value={filters.donorMemberId} onChange={handleFilterChange('donorMemberId')} />
+              <input className="text-input" style={{ maxWidth: '160px' }} placeholder="RECEIVER MID" value={filters.receiverMemberId} onChange={handleFilterChange('receiverMemberId')} />
               <input className="text-input" style={{ maxWidth: '110px' }} placeholder="D. AMOUNT" value={filters.amount} onChange={handleFilterChange('amount')} />
               <select className="select-input" style={{ maxWidth: '98px' }} value={filters.rank} onChange={handleFilterChange('rank')}>
                 <option value="">UPGRADE LEVEL</option>

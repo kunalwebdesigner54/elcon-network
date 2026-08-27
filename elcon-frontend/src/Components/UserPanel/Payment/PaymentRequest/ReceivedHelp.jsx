@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { getMyDonations, updateDonationStatus } from "../../../../api/donationsService";
 import "./ReceivedHelp.css";
 
-const exportColumns = ['S.NO', 'DONAR MEMBER ID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE LEVEL', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'SKIPPED IDs', 'STATUS'];
+const exportColumns = ['S.NO', 'DONAR MID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE LEVEL', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'SKIPPED IDs', 'STATUS'];
 
 const ReceivedHelp = () => {
   const [receivedHelpRows, setReceivedHelpRows] = useState([]);
@@ -179,7 +179,7 @@ const ReceivedHelp = () => {
                 ...(window.innerWidth <= 600 ? { gridTemplateColumns: "1fr", gap: 6 } : {})
               }}
             >
-              <input className="text-input" placeholder="DONAR MEMBER ID" value={filters.donorMemberId} onChange={handleFilterChange('donorMemberId')} />
+              <input className="text-input" placeholder="DONAR MID" value={filters.donorMemberId} onChange={handleFilterChange('donorMemberId')} />
               <select className="select-input" value={filters.rank} onChange={handleFilterChange('rank')}>
                 <option value="">UPGRADE LEVEL</option>
                 <option value="1">1</option>
@@ -217,7 +217,7 @@ const ReceivedHelp = () => {
                 <thead>
                   <tr>
                     <th>S.NO</th>
-                    <th>DONAR MEMBER ID</th>
+                    <th>DONAR MID</th>
                     <th>DONAR MEMBER NAME</th>
                     <th>AMOUNT</th>
                     <th>UPGRADE LEVEL</th>
