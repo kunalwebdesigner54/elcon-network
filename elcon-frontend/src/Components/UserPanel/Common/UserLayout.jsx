@@ -31,7 +31,7 @@ const menuItems = [
     children: [
       { label: 'Level Income', to: '/user/income-report/level-income' },
       { label: 'Repurchase Income', to: '/user/income-report/Repurchase-income' },
-        { label: 'Donations Income', to: '/user/income-report/donations-income' },
+        { label: 'Donations Report', to: '/user/income-report/donations-income' },
         { label: 'Datewise Income', to: '/user/income-report/Datewise-income' },
         { label: 'Daily Payout Report', to: '/user/income-report/Daily-Payout-Report' }
     ]
@@ -119,13 +119,18 @@ function toTitleCase(text) {
 }
 
 function buildBreadcrumb(pathname) {
+  const BREADCRUMB_OVERRIDES = {
+    'donations-income': 'Donations Report',
+  };
+
   const path = pathname.replace('/user/', '');
   const segments = path.split('/').filter(Boolean);
   if (!segments.length) {
     return 'Dashboard';
   }
 
-  return toTitleCase(segments[segments.length - 1]);
+  const lastSegment = segments[segments.length - 1];
+  return BREADCRUMB_OVERRIDES[lastSegment] || toTitleCase(lastSegment);
 }
 
 function getDefaultOpenSection(pathname) {

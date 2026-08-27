@@ -44,9 +44,9 @@ function DonationsIncome() {
 
   return (
     <div>
-      <h1 className="user-page-title">Donations Income</h1>
+      <h1 className="user-page-title">Donations Report</h1>
       <div className="user-panel">
-        <h3>Total Donations Income : ₹ {totalDonationIncome.toLocaleString('en-IN')}</h3>
+        <h3>Total Received Help : ₹ {totalDonationIncome.toLocaleString('en-IN')}</h3>
 
         <div className="donation-income-filters">
           <input
