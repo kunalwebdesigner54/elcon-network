@@ -292,7 +292,7 @@ function UserLayout() {
             </button>
           )}
             <span className="user-top-title" style={{ fontSize: '15px', fontWeight: '600', lineHeight: '1.2' }}>
-              {userName ? `Welcome, ${userName}` : 'Welcome'}
+              {userName ? `Welcome, ${userName} !` : 'Welcome !'}
             </span>
           </div>
           <div className="user-topbar-right">
