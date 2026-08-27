@@ -252,3 +252,32 @@
   }
 }
 
+/* Donation History section (shown when form is locked) */
+.given-help-history-section {
+  max-width: 700px;
+  margin: 24px auto 32px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  padding: 20px 16px;
+  border: 1px solid #bdbdbd;
+}
+
+.given-help-history-section .section-title21 {
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+}
+
+.given-help-history-section .user-table-wrapper {
+  overflow-x: auto;
+}
+
+@media (max-width: 600px) {
+  .given-help-history-section {
+    max-width: 98vw;
+    padding: 10px 2vw;
+    margin: 16px auto 24px;
+  }
+}
+
+

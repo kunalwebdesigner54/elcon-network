@@ -16,6 +16,10 @@
   color: var(--text-main);
 }
 
+.submit-row {
+  text-align: center;
+}
+
 .help-submit-btn {
   margin-top: 18px;
   background: var(--primary, #04e0f8);
