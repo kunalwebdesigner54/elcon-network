@@ -7,6 +7,9 @@ function TransactionHistory() {
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
 
+  const [filters, setFilters] = useState({ memberId: '', transactionId: '', startDate: '', endDate: '' });
+  const [appliedFilters, setAppliedFilters] = useState({ memberId: '', transactionId: '', startDate: '', endDate: '' });
+
   useEffect(() => {
     (async () => {
       try {
@@ -20,10 +23,38 @@ function TransactionHistory() {
     })();
   }, []);
 
-  const totalCredit = useMemo(() => rows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [rows]);
-  const totalDebit = useMemo(() => rows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [rows]);
-  const totalBalance = rows.length ? rows[rows.length - 1].balance : 0;
-  const visibleRows = rows.slice(0, Number(pageSize));
+  const handleSearch = () => {
+    setAppliedFilters(filters);
+  };
+
+  const filteredRows = useMemo(() => {
+    return rows.filter(row => {
+      const matchMemberId = !appliedFilters.memberId || String(row.memberId || '').toLowerCase().includes(appliedFilters.memberId.toLowerCase());
+      const matchTxId = !appliedFilters.transactionId || String(row.transactionId || '').toLowerCase().includes(appliedFilters.transactionId.toLowerCase());
+      
+      let matchStartDate = true;
+      let matchEndDate = true;
+      
+      if (appliedFilters.startDate && row.dateTime) {
+         matchStartDate = new Date(row.dateTime) >= new Date(appliedFilters.startDate);
+      }
+      if (appliedFilters.endDate && row.dateTime) {
+         matchEndDate = new Date(row.dateTime) <= new Date(appliedFilters.endDate);
+      }
+      
+      return matchMemberId && matchTxId && matchStartDate && matchEndDate;
+    });
+  }, [rows, appliedFilters]);
+
+  const totalCredit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [filteredRows]);
+  const totalDebit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [filteredRows]);
+  const totalBalance = filteredRows.length ? filteredRows[filteredRows.length - 1].balance : 0;
+  const visibleRows = filteredRows.slice(0, Number(pageSize));
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="admintransactionhistory-report-page">
@@ -31,16 +62,16 @@ function TransactionHistory() {
 
       <section className="panel admintransactionhistory-panel">
         <div className="admintransactionhistory-filter-row">
-          <input className="text-input admintransactionhistory-filter-input" placeholder="MEMBER ID" />
-          <input className="text-input admintransactionhistory-filter-input" placeholder="TRANSACTION ID" />
-          <input className="text-input admintransactionhistory-filter-input" type="date" placeholder="START DATE" />
-          <input className="text-input admintransactionhistory-filter-input" type="date" placeholder="END DATE" />
+          <input type="text" name="memberId" className="text-input admintransactionhistory-filter-input" placeholder="MEMBER ID" value={filters.memberId} onChange={handleFilterChange} />
+          <input type="text" name="transactionId" className="text-input admintransactionhistory-filter-input" placeholder="TRANSACTION ID" value={filters.transactionId} onChange={handleFilterChange} />
+          <input type="date" name="startDate" className="text-input admintransactionhistory-filter-input" placeholder="START DATE" value={filters.startDate} onChange={handleFilterChange} />
+          <input type="date" name="endDate" className="text-input admintransactionhistory-filter-input" placeholder="END DATE" value={filters.endDate} onChange={handleFilterChange} />
           <select className="select-input admintransactionhistory-filter-input admintransactionhistory-size-select" value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary admintransactionhistory-search-btn" type="button">SEARCH</button>
+          <button className="btn-primary admintransactionhistory-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="admintransactionhistory-export-row">

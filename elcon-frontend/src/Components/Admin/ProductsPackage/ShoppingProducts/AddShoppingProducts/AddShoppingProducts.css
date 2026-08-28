@@ -12,13 +12,13 @@
   font-size: clamp(24px, 2vw, 32px);
   margin-bottom: 18px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .admin-add-product-card {
-  background: linear-gradient(180deg, #f8fbff 0%, #f4f7fc 100%);
-  border-radius: 16px;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -56,7 +56,7 @@
 .admin-add-product-row > span {
   min-width: 120px;
   font-weight: 600;
-  color: #334155;
+  color: var(--text-main);
 }
 
 .admin-add-product-row input[type="text"],
@@ -65,9 +65,10 @@
   flex: 1;
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--glass-border);
   font-size: 14px;
-  background: var(--card-bg);
+  background: transparent;
+  color: var(--text-main);
 }
 
 .admin-add-product-row input[type="file"] {
@@ -100,13 +101,14 @@
 .admin-add-product-description {
   width: 100%;
   margin-top: 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--glass-border);
   border-radius: 10px;
   resize: vertical;
   min-height: 120px;
   padding: 10px 12px;
   font-size: 14px;
-  background: var(--card-bg);
+  background: transparent;
+  color: var(--text-main);
 }
 
 .admin-add-product-description:focus {
@@ -143,8 +145,10 @@
   flex: 1;
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--glass-border);
   font-size: 14px;
+  background: transparent;
+  color: var(--text-main);
 }
 
 .admin-add-product-delete {
@@ -254,18 +258,20 @@
 }
 
 .admin-add-product-spec-row > span {
-  border: 1px solid rgba(45, 55, 72, 0.22);
-  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
   font-size: 14px;
   font-weight: 700;
   padding: 8px 10px;
 }
 
 .admin-add-product-spec-row > input {
-  border: 1px solid rgba(45, 55, 72, 0.22);
+  border: 1px solid var(--glass-border);
   font-size: 14px;
   padding: 8px 10px;
   min-width: 0;
+  background: transparent;
+  color: var(--text-main);
 }
 
 .admin-add-product-delete,

@@ -13,24 +13,39 @@ const DeleteIcon = () => (
 
 const CartItem = ({ item, onRemove, onQuantityChange }) => (
   <div className="mc-item">
-    <div className="mc-item-left">
-      <img src={resolveProductImage(item)} alt="product" />
-    </div>
-    <div className="mc-item-mid">
+    <div className="mc-item-header">
       <div className="mc-title">{item.productName}</div>
-      <div className="mc-bv">B.V. Point : {item.bvPoint || 0}</div>
-      <div className="mc-qty">
-        <button className="qty-btn" onClick={() => onQuantityChange(item, Math.max(1, item.quantity - 1))}>-</button>
-        <span className="qty-val">{item.quantity}</span>
-        <button className="qty-btn" onClick={() => onQuantityChange(item, item.quantity + 1)}>+</button>
+      <button className="mc-delete" aria-label="Delete item" onClick={() => onRemove(item)}>
+        <DeleteIcon />
+      </button>
+    </div>
+    
+    <div className="mc-divider"></div>
+
+    <div className="mc-item-body">
+      <div className="mc-item-image">
+        <img src={resolveProductImage(item)} alt="product" />
+      </div>
+      
+      <div className="mc-item-price-section">
+        <div className="mc-price">₹ {item.price} x</div>
+        
+        <div className="mc-qty-vertical">
+          <button className="qty-btn-v" onClick={() => onQuantityChange(item, item.quantity + 1)}>+</button>
+          <span className="qty-val-v">{item.quantity}</span>
+          <button className="qty-btn-v" onClick={() => onQuantityChange(item, Math.max(1, item.quantity - 1))}>-</button>
+        </div>
+        
+        <div className="mc-total">= {(item.price * item.quantity).toFixed(2)}</div>
       </div>
     </div>
-    <div className="mc-item-right">
-      <div className="mc-price">₹{item.price} x {item.quantity}</div>
-      <div className="mc-total-row-cart">
-        <div className="mc-total">= ₹{item.totalPrice}</div>
-        <button className="mc-delete" aria-label="Delete item" onClick={() => onRemove(item)}><DeleteIcon/></button>
-      </div>
+    
+    <div className="mc-divider"></div>
+
+    <div className="mc-item-footer">
+      <span>Coupon : {item.discount || 0}</span>
+      <span className="mc-separator">|</span>
+      <span>BV Point : {item.bvPoint || 0}</span>
     </div>
   </div>
 )

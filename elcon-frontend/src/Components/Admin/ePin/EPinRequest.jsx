@@ -9,12 +9,16 @@ function EPinRequest() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [pageSize, setPageSize] = useState('10');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  
+  const [appliedFilters, setAppliedFilters] = useState({ search: '', statusFilter: '', fromDate: '', toDate: '' });
 
   const loadRows = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const response = await getAdminEpinRequests(statusFilter || undefined);
+      const response = await getAdminEpinRequests(appliedFilters.statusFilter || undefined);
       setRows(response.requests || []);
     } catch (error) {
       setRows([]);
@@ -22,21 +26,38 @@ function EPinRequest() {
     } finally {
       setLoading(false);
     }
-  }, [statusFilter]);
+  }, [appliedFilters.statusFilter]);
 
   useEffect(() => {
     loadRows();
   }, [loadRows]);
+  
+  const handleSearch = () => {
+    setAppliedFilters({ search, statusFilter, fromDate, toDate });
+  };
 
   const filteredRows = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    const query = appliedFilters.search.trim().toLowerCase();
     return rows.filter((row) => {
-      if (!query) return true;
-      return [row.clientId, row.name, row.packageCost, row.mobile, row.status]
-        .filter(Boolean)
-        .some((value) => String(value).toLowerCase().includes(query));
+      let matchQuery = true;
+      if (query) {
+        matchQuery = [row.clientId, row.name, row.packageCost, row.mobile, row.status]
+          .filter(Boolean)
+          .some((value) => String(value).toLowerCase().includes(query));
+      }
+      
+      let matchFromDate = true;
+      let matchToDate = true;
+      if (appliedFilters.fromDate && row.date) {
+        matchFromDate = new Date(row.date) >= new Date(appliedFilters.fromDate);
+      }
+      if (appliedFilters.toDate && row.date) {
+        matchToDate = new Date(row.date) <= new Date(appliedFilters.toDate);
+      }
+      
+      return matchQuery && matchFromDate && matchToDate;
     }).slice(0, Number(pageSize));
-  }, [rows, search, pageSize]);
+  }, [rows, appliedFilters, pageSize]);
 
   const handleApprove = async (requestId) => {
     await updateAdminEpinRequestStatus(requestId, { status: 'Approved' });
@@ -65,9 +86,9 @@ function EPinRequest() {
             <option value="25">25</option>
             <option value="50">50</option>
           </select>
-          <input className="text-input" type="date" />
-          <input className="text-input" type="date" />
-          <button className="btn-primary" type="button" onClick={loadRows}>Search</button>
+          <input className="text-input" type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} />
+          <input className="text-input" type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} />
+          <button className="btn-primary" type="button" onClick={handleSearch}>Search</button>
         </div>
 
         <div className="epin-tools">

@@ -27,7 +27,7 @@ function RepurchaseProductsAdmin() {
       try {
         await deleteAdminProduct(id);
         const response = await getAdminProducts('repurchase');
-        setRepurchasePackageRows(response.products || []);
+        setRepurchaseRows(response.products || []);
       } catch (error) {
         console.error("Error deleting product:", error);
         alert("Failed to delete product.");
@@ -43,7 +43,7 @@ function RepurchaseProductsAdmin() {
     if (!id) return;
 
     // Optimistic UI Update for instant feedback
-    setRepurchasePackageRows(prevRows => 
+    setRepurchaseRows(prevRows => 
       prevRows.map(p => 
         (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
           ? { ...p, status: newStatus } 
@@ -56,7 +56,7 @@ function RepurchaseProductsAdmin() {
     } catch (error) {
       console.error("Error toggling product status:", error);
       // Revert on failure
-      setRepurchasePackageRows(prevRows => 
+      setRepurchaseRows(prevRows => 
         prevRows.map(p => 
           (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
             ? { ...p, status: currentStatus } 

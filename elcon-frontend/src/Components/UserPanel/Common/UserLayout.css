@@ -297,7 +297,41 @@
 
 /* Remove duplicate table, button, and panel classes since they are globally handled */
 
-/* Removed duplicate user-table, user-btn, user-panel, form-grid CSS here */
+/* Removed duplicate user-table, user-btn, form-grid CSS here */
+
+.user-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.user-page-btn {
+  min-width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.user-page-btn.active {
+  background: var(--gradient-primary);
+  color: #fff;
+  border-color: transparent;
+}
 
 .btn-row,
 .table-toolbar {

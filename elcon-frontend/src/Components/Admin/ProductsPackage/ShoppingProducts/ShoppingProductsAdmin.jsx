@@ -27,7 +27,7 @@ function ShoppingProductsAdmin() {
       try {
         await deleteAdminProduct(id);
         const response = await getAdminProducts('shopping');
-        setShoppingPackageRows(response.products || []);
+        setShoppingRows(response.products || []);
       } catch (error) {
         console.error("Error deleting product:", error);
         alert("Failed to delete product.");
@@ -43,7 +43,7 @@ function ShoppingProductsAdmin() {
     if (!id) return;
 
     // Optimistic UI Update for instant feedback
-    setShoppingPackageRows(prevRows => 
+    setShoppingRows(prevRows => 
       prevRows.map(p => 
         (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
           ? { ...p, status: newStatus } 
@@ -56,7 +56,7 @@ function ShoppingProductsAdmin() {
     } catch (error) {
       console.error("Error toggling product status:", error);
       // Revert on failure
-      setShoppingPackageRows(prevRows => 
+      setShoppingRows(prevRows => 
         prevRows.map(p => 
           (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
             ? { ...p, status: currentStatus } 

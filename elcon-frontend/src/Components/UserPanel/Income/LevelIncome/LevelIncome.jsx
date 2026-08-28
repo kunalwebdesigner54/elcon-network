@@ -157,7 +157,7 @@ function LevelIncome() {
                 <th>INCOME SLOT</th>
                 <th>LEVEL ID (SOURCE)</th>
                 <th>FROM MEMBER NAME</th>
-                <th>SKIPPED IDs</th>
+                <th>SKIPPED ID</th>
                 <th>LEVEL DEPTH</th>
                 <th>AMOUNT</th>
               </tr>

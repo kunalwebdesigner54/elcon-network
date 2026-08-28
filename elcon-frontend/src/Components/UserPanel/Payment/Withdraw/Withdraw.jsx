@@ -73,8 +73,13 @@ const Withdraw = () => {
   };
 
   const handleConfirmWithdrawal = () => {
-    if (!withdrawalAmount || parseFloat(withdrawalAmount) === 0) {
+    const amount = parseFloat(withdrawalAmount);
+    if (!withdrawalAmount || amount <= 0) {
       alert('Please enter a withdrawal amount');
+      return;
+    }
+    if (amount < 1000 || amount > 10000) {
+      alert('Withdrawal amount must be between ₹1,000 and ₹10,000');
       return;
     }
     if (!transactionPassword || !reenterPassword) {

@@ -72,6 +72,7 @@ function DatewiseIncome() {
                 <th>S.NO</th>
                 <th>INCOME DATE</th>
                 <th>MEMBER ID</th>
+                <th>MEMBER NAME</th>
                 <th>TOTAL ID'S</th>
                 <th>LEVEL INCOME</th>
                 <th>TOTAL BV POINT</th>
@@ -85,12 +86,13 @@ function DatewiseIncome() {
               ) : error ? (
                 <tr><td colSpan={8}>{error}</td></tr>
               ) : datewiseIncomeData.length === 0 ? (
-                <tr><td colSpan={8}>No datewise income records found.</td></tr>
+                <tr><td colSpan={9}>No datewise income records found.</td></tr>
               ) : datewiseIncomeData.map((row) => (
                 <tr key={row.sNo}>
                   <td>{row.sNo}</td>
                   <td>{row.incomeDate}</td>
                   <td>{row.memberId}</td>
+                  <td>{row.memberName || '---'}</td>
                   <td>{row.totalIds}</td>
                   <td>{row.levelIncome.toFixed(2)}</td>
                   <td>{row.totalBvPoint}</td>
@@ -101,7 +103,7 @@ function DatewiseIncome() {
               <tr className="report-total-row">
                 <td style={{
                     textAlign: "end",
-                  }} colSpan="7">TOTAL AMOUNT</td>
+                  }} colSpan="8">TOTAL AMOUNT</td>
                 <td>{totalAmount.toFixed(2)}</td>
               </tr>
             </tbody>

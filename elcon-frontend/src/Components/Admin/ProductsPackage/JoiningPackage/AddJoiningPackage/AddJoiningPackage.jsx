@@ -122,10 +122,11 @@ function AddJoiningPackage() {
     minHeight: '110px',
     padding: '12px 14px',
     borderRadius: '10px',
-    border: '1px solid #d6dbe5',
+    border: '1px solid var(--glass-border)',
     font: 'inherit',
     resize: 'vertical',
-    background: '#fff'
+    background: 'transparent',
+    color: 'var(--text-main)'
   };
 
   const contentGridStyle = {

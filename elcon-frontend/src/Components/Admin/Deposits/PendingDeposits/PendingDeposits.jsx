@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import './PendingDeposits.css';
 import { getAdminDepositRequests, updateDepositRequestStatus } from '../../../../api/paymentService';
 
@@ -26,6 +26,9 @@ function PendingDeposits() {
   const [pageSize, setPageSize] = useState('10');
   const [loading, setLoading] = useState(true);
 
+  const [filters, setFilters] = useState({ startDate: '', endDate: '', memberId: '', memberName: '', transactionId: '', paymentMode: '', utrNumber: '', status: '' });
+  const [appliedFilters, setAppliedFilters] = useState({ startDate: '', endDate: '', memberId: '', memberName: '', transactionId: '', paymentMode: '', utrNumber: '', status: '' });
+
   const loadRows = async () => {
     try {
       const response = await getAdminDepositRequests('Pending');
@@ -41,7 +44,38 @@ function PendingDeposits() {
     loadRows();
   }, []);
 
-  const visibleRows = depositRows.slice(0, Number(pageSize));
+  const handleSearch = () => {
+    setAppliedFilters(filters);
+  };
+
+  const filteredRows = useMemo(() => {
+    return depositRows.filter(row => {
+      const matchMemberId = !appliedFilters.memberId || (row.memberId || '').toLowerCase().includes(appliedFilters.memberId.toLowerCase());
+      const matchMemberName = !appliedFilters.memberName || (row.memberName || '').toLowerCase().includes(appliedFilters.memberName.toLowerCase());
+      const matchTransactionId = !appliedFilters.transactionId || (row.transactionId || '').toLowerCase().includes(appliedFilters.transactionId.toLowerCase());
+      const matchPaymentMode = !appliedFilters.paymentMode || (row.paymentMode || '').toLowerCase().includes(appliedFilters.paymentMode.toLowerCase());
+      const matchUtr = !appliedFilters.utrNumber || (row.utrNumber || '').toLowerCase().includes(appliedFilters.utrNumber.toLowerCase());
+      const matchStatus = !appliedFilters.status || row.status === appliedFilters.status;
+      
+      let matchStartDate = true;
+      let matchEndDate = true;
+      if (appliedFilters.startDate && row.depositDate) {
+         matchStartDate = new Date(row.depositDate) >= new Date(appliedFilters.startDate);
+      }
+      if (appliedFilters.endDate && row.depositDate) {
+         matchEndDate = new Date(row.depositDate) <= new Date(appliedFilters.endDate);
+      }
+
+      return matchMemberId && matchMemberName && matchTransactionId && matchPaymentMode && matchUtr && matchStatus && matchStartDate && matchEndDate;
+    });
+  }, [depositRows, appliedFilters]);
+
+  const visibleRows = filteredRows.slice(0, Number(pageSize));
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="tds-report-page">
@@ -51,14 +85,14 @@ function PendingDeposits() {
         
 
         <div className="tds-filter-row">
-          <input className="text-input tds-filter-input" placeholder="Start Date" />
-          <input className="text-input tds-filter-input" placeholder="End Date" />
-          <input className="text-input tds-filter-input" placeholder="Member Id" />
-          <input className="text-input tds-filter-input" placeholder="Member Name" />
-          <input className="text-input tds-filter-input" placeholder="Transaction ID" />
-          <input className="text-input tds-filter-input" placeholder="Payment Mode" />
-          <input className="text-input tds-filter-input" placeholder="Utr Number" />
-          <select className="select-input tds-filter-input" defaultValue="">
+          <input type="date" name="startDate" className="text-input tds-filter-input" placeholder="Start Date" value={filters.startDate} onChange={handleFilterChange} />
+          <input type="date" name="endDate" className="text-input tds-filter-input" placeholder="End Date" value={filters.endDate} onChange={handleFilterChange} />
+          <input type="text" name="memberId" className="text-input tds-filter-input" placeholder="Member Id" value={filters.memberId} onChange={handleFilterChange} />
+          <input type="text" name="memberName" className="text-input tds-filter-input" placeholder="Member Name" value={filters.memberName} onChange={handleFilterChange} />
+          <input type="text" name="transactionId" className="text-input tds-filter-input" placeholder="Transaction ID" value={filters.transactionId} onChange={handleFilterChange} />
+          <input type="text" name="paymentMode" className="text-input tds-filter-input" placeholder="Payment Mode" value={filters.paymentMode} onChange={handleFilterChange} />
+          <input type="text" name="utrNumber" className="text-input tds-filter-input" placeholder="Utr Number" value={filters.utrNumber} onChange={handleFilterChange} />
+          <select name="status" className="select-input tds-filter-input" value={filters.status} onChange={handleFilterChange}>
             <option value="">Status</option>
             <option value="Pending">Pending</option>
             <option value="Approve">Approve</option>
@@ -70,7 +104,7 @@ function PendingDeposits() {
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary tds-search-btn" type="button">SERCH</button>
+          <button className="btn-primary tds-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="btn-row tds-export-row" aria-label="Export options">
@@ -109,9 +143,13 @@ function PendingDeposits() {
                   <td>{row.mobileNo}</td>
                   <td>{row.transactionId}</td>
                   <td>{row.paymentMode}</td>
-                  <td>{Number(row.amount).toFixed(2)}</td>
+                  <td>{Number(row.amount || 0).toFixed(2)}</td>
                   <td>{row.utrNumber}</td>
-                  <td><button type="button" className="deposit-slip-btn">VIEW</button></td>
+                  <td>
+                    <button type="button" className="deposit-slip-btn" onClick={() => row.slip && window.open(row.slip, '_blank')}>
+                      VIEW
+                    </button>
+                  </td>
                   <td>{row.status}</td>
                   <td className="action-cell">{renderActionButtons(row.transactionId, loadRows)}</td>
                   <td className="remark-cell">{row.remark}</td>

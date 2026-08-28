@@ -12,6 +12,9 @@ function TransactionHistory() {
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
 
+  const [filters, setFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
+  const [appliedFilters, setAppliedFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
+
   useEffect(() => {
     (async () => {
       try {
@@ -25,27 +28,54 @@ function TransactionHistory() {
     })();
   }, []);
 
-  const totalCredit = useMemo(() => rows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [rows]);
-  const totalDebit = useMemo(() => rows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [rows]);
-  const totalBalance = rows.length ? rows[rows.length - 1].balance : 0;
-  const visibleRows = rows.slice(0, Number(pageSize));
+  const handleSearch = () => {
+    setAppliedFilters(filters);
+  };
+
+  const filteredRows = useMemo(() => {
+    return rows.filter(row => {
+      const matchTxId = !appliedFilters.transactionId || String(row.transactionId || '').toLowerCase().includes(appliedFilters.transactionId.toLowerCase());
+      
+      let matchStartDate = true;
+      let matchEndDate = true;
+      
+      if (appliedFilters.startDate && row.dateTime) {
+         matchStartDate = new Date(row.dateTime) >= new Date(appliedFilters.startDate);
+      }
+      if (appliedFilters.endDate && row.dateTime) {
+         matchEndDate = new Date(row.dateTime) <= new Date(appliedFilters.endDate);
+      }
+      
+      return matchTxId && matchStartDate && matchEndDate;
+    });
+  }, [rows, appliedFilters]);
+
+  const totalCredit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [filteredRows]);
+  const totalDebit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [filteredRows]);
+  const totalBalance = filteredRows.length ? filteredRows[filteredRows.length - 1].balance : 0;
+  const visibleRows = filteredRows.slice(0, Number(pageSize));
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div>
       <h1 className="user-page-title">Transaction History</h1>
       <div className="user-panel">
-        <h3>Total Balance: {totalBalance.toFixed(2)}</h3>
+        <h3>Total Balance: {totalBalance ? Number(totalBalance).toFixed(2) : '0.00'}</h3>
 
         <div className="report-filters">
-          <input type="text" placeholder="TRANSACTION ID" aria-label="Transaction ID" />
-          <input type="text" placeholder="START DATE" aria-label="Start Date" />
-          <input type="text" placeholder="END DATE" aria-label="End Date" />
+          <input type="text" name="transactionId" placeholder="TRANSACTION ID" aria-label="Transaction ID" value={filters.transactionId} onChange={handleFilterChange} />
+          <input type="date" name="startDate" placeholder="START DATE" aria-label="Start Date" value={filters.startDate} onChange={handleFilterChange} />
+          <input type="date" name="endDate" placeholder="END DATE" aria-label="End Date" value={filters.endDate} onChange={handleFilterChange} />
           <select aria-label="Rows per page" value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="user-btn-blue" type="button">SEARCH</button>
+          <button className="user-btn-blue" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="table-toolbar">

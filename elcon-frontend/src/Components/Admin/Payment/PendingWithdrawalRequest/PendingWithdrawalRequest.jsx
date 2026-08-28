@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import './PendingWithdrawalRequest.css';
 import { getAdminWithdrawalRequests, updateWithdrawalRequestStatus } from '../../../../api/paymentService';
 
@@ -36,6 +36,9 @@ function PendingWithdrawalRequest() {
   const [pageSize, setPageSize] = useState('10');
   const [loading, setLoading] = useState(true);
 
+  const [filters, setFilters] = useState({ requestId: '', memberId: '', amount: '', status: '', startDate: '', endDate: '' });
+  const [appliedFilters, setAppliedFilters] = useState({ requestId: '', memberId: '', amount: '', status: '', startDate: '', endDate: '' });
+
   const loadRows = async () => {
     try {
       const response = await getAdminWithdrawalRequests('Pending');
@@ -51,7 +54,36 @@ function PendingWithdrawalRequest() {
     loadRows();
   }, []);
 
-  const visibleRows = withdrawalRows.slice(0, Number(pageSize));
+  const handleSearch = () => {
+    setAppliedFilters(filters);
+  };
+
+  const filteredRows = useMemo(() => {
+    return withdrawalRows.filter((row) => {
+      const matchRequestId = !appliedFilters.requestId || row.requestId.toLowerCase().includes(appliedFilters.requestId.toLowerCase());
+      const matchMemberId = !appliedFilters.memberId || (row.memberId || '').toLowerCase().includes(appliedFilters.memberId.toLowerCase());
+      const matchAmount = !appliedFilters.amount || String(Number(row.amount || 0)).includes(appliedFilters.amount);
+      const matchStatus = !appliedFilters.status || row.status === appliedFilters.status;
+
+      let matchStartDate = true;
+      let matchEndDate = true;
+      if (appliedFilters.startDate && row.requestDate) {
+         matchStartDate = new Date(row.requestDate) >= new Date(appliedFilters.startDate);
+      }
+      if (appliedFilters.endDate && row.requestDate) {
+         matchEndDate = new Date(row.requestDate) <= new Date(appliedFilters.endDate);
+      }
+
+      return matchRequestId && matchMemberId && matchAmount && matchStatus && matchStartDate && matchEndDate;
+    });
+  }, [appliedFilters, withdrawalRows]);
+
+  const visibleRows = filteredRows.slice(0, Number(pageSize));
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="tds-report-page">
@@ -61,17 +93,24 @@ function PendingWithdrawalRequest() {
        
 
         <div className="tds-filter-row">
-          <input className="text-input tds-filter-input" placeholder="REQUEST ID" aria-label="Request ID" />
-          <input className="text-input tds-filter-input" placeholder="MEMBER ID" aria-label="Member ID" />
-          <input className="text-input tds-filter-input" placeholder="AMOUNT" aria-label="Amount" />
-          <input className="text-input tds-filter-input" placeholder="START DATE" aria-label="Start Date" />
-          <input className="text-input tds-filter-input" placeholder="END DATE" aria-label="End Date" />
+          <input type="text" name="requestId" className="text-input tds-filter-input" placeholder="REQUEST ID" aria-label="Request ID" value={filters.requestId} onChange={handleFilterChange} />
+          <input type="text" name="memberId" className="text-input tds-filter-input" placeholder="MEMBER ID" aria-label="Member ID" value={filters.memberId} onChange={handleFilterChange} />
+          <input type="text" name="amount" className="text-input tds-filter-input" placeholder="AMOUNT" aria-label="Amount" value={filters.amount} onChange={handleFilterChange} />
+          <select name="status" className="select-input tds-filter-input" aria-label="Status" value={filters.status} onChange={handleFilterChange}>
+            <option value="">STATUS</option>
+            <option value="Pending">Pending</option>
+            <option value="Approve">Approve</option>
+            <option value="Succeed">Succeed</option>
+            <option value="Reject">Reject</option>
+          </select>
+          <input type="date" name="startDate" className="text-input tds-filter-input" placeholder="START DATE" aria-label="Start Date" value={filters.startDate} onChange={handleFilterChange} />
+          <input type="date" name="endDate" className="text-input tds-filter-input" placeholder="END DATE" aria-label="End Date" value={filters.endDate} onChange={handleFilterChange} />
           <select className="select-input tds-filter-input tds-size-select" aria-label="Rows per page" value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary tds-search-btn" type="button">SERCH</button>
+          <button className="btn-primary tds-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
 
@@ -122,9 +161,9 @@ function PendingWithdrawalRequest() {
                   <td>{row.bankName}</td>
                   <td>{row.branch}</td>
                   <td>{row.ifscCode}</td>
-                  <td>{row.amount.toFixed(2)}</td>
-                  <td>{row.charges.toFixed(2)}</td>
-                  <td>{row.netAmount.toFixed(2)}</td>
+                  <td>{Number(row.amount || 0).toFixed(2)}</td>
+                  <td>{Number(row.charges || 0).toFixed(2)}</td>
+                  <td>{Number(row.netAmount || 0).toFixed(2)}</td>
                   <td>{row.paymentMethod}</td>
                   <td>{row.status}</td>
                   <td className="action-cell">{renderActionButtons(row.requestId, loadRows)}</td>

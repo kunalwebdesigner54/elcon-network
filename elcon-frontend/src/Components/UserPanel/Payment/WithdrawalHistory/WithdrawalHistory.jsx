@@ -25,6 +25,8 @@ function WithdrawalHistory() {
   const [filters, setFilters] = useState({ requestId: '', amount: '', status: '', startDate: '', endDate: '' });
   const [pageSize, setPageSize] = useState('10');
 
+  const [appliedFilters, setAppliedFilters] = useState({ requestId: '', amount: '', status: '', startDate: '', endDate: '' });
+
   useEffect(() => {
     const loadHistory = async () => {
       try {
@@ -38,14 +40,28 @@ function WithdrawalHistory() {
     loadHistory();
   }, []);
 
+  const handleSearch = () => {
+    setAppliedFilters(filters);
+  };
+
   const filteredRows = useMemo(() => {
     return withdrawalData.filter((row) => {
-      const byRequestId = !filters.requestId || row.requestId.toLowerCase().includes(filters.requestId.toLowerCase());
-      const byAmount = !filters.amount || String(Number(row.amount || 0)).includes(filters.amount);
-      const byStatus = !filters.status || row.status === filters.status;
-      return byRequestId && byAmount && byStatus;
+      const byRequestId = !appliedFilters.requestId || row.requestId.toLowerCase().includes(appliedFilters.requestId.toLowerCase());
+      const byAmount = !appliedFilters.amount || String(Number(row.amount || 0)).includes(appliedFilters.amount);
+      const byStatus = !appliedFilters.status || row.status === appliedFilters.status;
+      
+      let byStartDate = true;
+      let byEndDate = true;
+      if (appliedFilters.startDate && row.requestDate) {
+         byStartDate = new Date(row.requestDate) >= new Date(appliedFilters.startDate);
+      }
+      if (appliedFilters.endDate && row.requestDate) {
+         byEndDate = new Date(row.requestDate) <= new Date(appliedFilters.endDate);
+      }
+
+      return byRequestId && byAmount && byStatus && byStartDate && byEndDate;
     });
-  }, [filters, withdrawalData]);
+  }, [appliedFilters, withdrawalData]);
 
   const visibleRows = filteredRows.slice(0, Number(pageSize));
   
@@ -67,14 +83,14 @@ function WithdrawalHistory() {
             <option value="Succeed">Succeed</option>
             <option value="Reject">Reject</option>
           </select>
-          <input type="text" placeholder="START DATE" aria-label="Start Date" value={filters.startDate} onChange={(event) => setFilters((prev) => ({ ...prev, startDate: event.target.value }))} />
-          <input type="text" placeholder="END DATE" aria-label="End Date" value={filters.endDate} onChange={(event) => setFilters((prev) => ({ ...prev, endDate: event.target.value }))} />
+          <input type="date" placeholder="START DATE" aria-label="Start Date" value={filters.startDate} onChange={(event) => setFilters((prev) => ({ ...prev, startDate: event.target.value }))} />
+          <input type="date" placeholder="END DATE" aria-label="End Date" value={filters.endDate} onChange={(event) => setFilters((prev) => ({ ...prev, endDate: event.target.value }))} />
           <select aria-label="Rows per page" value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="user-btn-blue" type="button">SEARCH</button>
+          <button className="user-btn-blue" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="table-toolbar">

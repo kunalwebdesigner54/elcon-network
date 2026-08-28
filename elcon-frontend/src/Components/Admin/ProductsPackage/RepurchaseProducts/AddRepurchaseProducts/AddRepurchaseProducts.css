@@ -16,13 +16,13 @@
   font-size: clamp(24px, 4vw, 32px);
   margin-bottom: 20px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .admin-add-product-card {
-  background: linear-gradient(180deg, #f8fbff 0%, #f4f7fc 100%);
+  background: transparent;
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -63,7 +63,7 @@
 .admin-add-product-row > span {
   min-width: 130px;
   font-weight: 600;
-  color: #334155;
+  color: var(--text-main);
   font-size: 14px;
 }
 
@@ -79,9 +79,9 @@
   padding: 0 16px;
   font-size: 14px;
   font-family: inherit;
-  color: #1e293b;
-  background: var(--card-bg);
-  border: 1.5px solid var(--border-color);
+  color: var(--text-main);
+  background: transparent;
+  border: 1px solid var(--glass-border);
   border-radius: 10px;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -152,7 +152,7 @@
   font-weight: 500;
   align-items: center;
   cursor: pointer;
-  color: #334155;
+  color: var(--text-main);
 }
 
 .admin-add-product-row-radio input[type='radio'] {
@@ -187,7 +187,7 @@
   min-width: 130px;
   font-weight: 600;
   font-size: 14px;
-  color: #334155;
+  color: var(--text-main);
 }
 
 .admin-add-product-spec-row input[type="text"] {

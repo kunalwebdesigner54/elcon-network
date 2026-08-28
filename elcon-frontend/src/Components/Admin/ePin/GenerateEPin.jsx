@@ -14,6 +14,9 @@ function GenerateEPin() {
   }, []);
 
   const [form, setForm] = useState({ epinName: 'Activation', generatedBy: defaultGeneratedBy, qty: '1', cost: '10' });
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -22,7 +25,36 @@ function GenerateEPin() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await generateEpins({ epinName: form.epinName, generatedBy: form.generatedBy, qty: form.qty, cost: form.cost });
+    setError('');
+    setMessage('');
+    
+    if (!form.epinName || form.epinName === 'ePin Name') {
+      setError('Please select a valid ePin Name');
+      return;
+    }
+    if (!form.generatedBy || !form.generatedBy.trim()) {
+      setError('Please enter a Client ID');
+      return;
+    }
+    if (!form.cost || Number(form.cost) <= 0) {
+      setError('Please enter a valid amount/cost greater than 0');
+      return;
+    }
+    if (!form.qty || Number(form.qty) <= 0) {
+      setError('Please enter a valid quantity greater than 0');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await generateEpins({ epinName: form.epinName, generatedBy: form.generatedBy, qty: form.qty, cost: form.cost });
+      setMessage(`Successfully generated ${form.qty} ePin(s)`);
+      setForm({ epinName: 'Activation', generatedBy: defaultGeneratedBy, qty: '1', cost: '10' });
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Failed to generate ePins');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -33,6 +65,9 @@ function GenerateEPin() {
         <div className="epin-header-row">
           <h2 className="epin-title">Generate ePin</h2>
         </div>
+        
+        {message && <div style={{ color: 'green', marginBottom: '10px' }}>{message}</div>}
+        {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
 
         <form className="epin-generate-grid" onSubmit={handleSubmit}>
           <label className="field-label">Type</label>

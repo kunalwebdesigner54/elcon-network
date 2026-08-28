@@ -13,6 +13,13 @@ function DonationsIncome() {
   const [filterFrom, setFilterFrom] = useState('');
   const [filterTo, setFilterTo] = useState('');
   const [appliedFilters, setAppliedFilters] = useState({});
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [appliedFilters, pageSize]);
 
   useEffect(() => {
     getMyDonations()
@@ -42,6 +49,9 @@ function DonationsIncome() {
     setAppliedFilters({ memberId: filterMemberId, level: filterLevel, from: filterFrom, to: filterTo });
   };
 
+  const totalPages = Math.ceil(filteredRows.length / pageSize) || 1;
+  const visibleRows = filteredRows.slice((page - 1) * pageSize, page * pageSize);
+
   return (
     <div>
       <h1 className="user-page-title">Donations Report</h1>
@@ -63,6 +73,12 @@ function DonationsIncome() {
           <label className="filter-field">
             <input className="text-input" type="date" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} />
           </label>
+          <select className="select-input" value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))} style={{ width: '80px' }}>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
           <button className="user-btn-blue" type="button" onClick={handleSearch}>Search</button>
         </div>
 
@@ -75,6 +91,7 @@ function DonationsIncome() {
         {error && <p style={{ color: 'red', padding: '16px' }}>{error}</p>}
 
         {!loading && !error && (
+          <>
           <div className="table-wrap">
             <table className="data-table">
               <thead>
@@ -90,12 +107,12 @@ function DonationsIncome() {
                 </tr>
               </thead>
               <tbody>
-                {filteredRows.length === 0 ? (
+                {visibleRows.length === 0 ? (
                   <tr><td colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>No donation income records found.</td></tr>
                 ) : (
-                  filteredRows.map((row, index) => (
+                  visibleRows.map((row, index) => (
                     <tr key={row.donationId || index}>
-                      <td>{index + 1}</td>
+                      <td>{(page - 1) * pageSize + index + 1}</td>
                       <td>{row.fromMemberId}</td>
                       <td>{row.fromName}</td>
                       <td>{row.level}</td>
@@ -116,6 +133,38 @@ function DonationsIncome() {
               </tbody>
             </table>
           </div>
+          
+          <div className="table-footer" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
+              Total: {filteredRows.length} requests
+            </span>
+            <div className="pagination" style={{ display: 'flex', gap: '6px' }}>
+              <button type="button" className="user-page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
+              <button type="button" className="user-page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
+              
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let start = Math.max(1, page - 2);
+                if (start + 4 > totalPages) start = Math.max(1, totalPages - 4);
+                const pageNum = start + i;
+                if (pageNum > totalPages) return null;
+                
+                return (
+                  <button 
+                    key={pageNum} 
+                    type="button"
+                    className={`user-page-btn ${page === pageNum ? 'active' : ''}`}
+                    onClick={() => setPage(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              
+              <button type="button" className="user-page-btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0}>&rsaquo;</button>
+              <button type="button" className="user-page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages || totalPages === 0}>&raquo;</button>
+            </div>
+          </div>
+          </>
         )}
       </div>
     </div>

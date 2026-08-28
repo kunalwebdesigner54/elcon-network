@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { getMyDonations, updateDonationStatus } from "../../../../api/donationsService";
 import "./ReceivedHelp.css";
-
-const exportColumns = ['S.NO', 'DONAR MID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE LEVEL', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'SKIPPED IDs', 'STATUS'];
+const exportColumns = ['S.NO', 'DONAR MID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE LEVEL', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'SKIPPED ID', 'STATUS'];
 
 const ReceivedHelp = () => {
   const [receivedHelpRows, setReceivedHelpRows] = useState([]);
   const [activeTab, setActiveTab] = useState('ALL');
   const [filters, setFilters] = useState({ donorMemberId: '', rank: '', startDate: '', endDate: '' });
   const [pageSize, setPageSize] = useState('10');
+  const [page, setPage] = useState(1);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [filters, activeTab, pageSize]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -92,8 +97,8 @@ const ReceivedHelp = () => {
     });
   }, [filters, receivedHelpRows, activeTab]);
 
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
-
+  const totalPages = Math.ceil(filteredRows.length / Number(pageSize)) || 1;
+  const visibleRows = filteredRows.slice((page - 1) * Number(pageSize), page * Number(pageSize));
   const formatRowsForExport = (rows) => rows.map((row) => ([
     row.sNo, row.memberId, row.name, row.amount, row.rank, row.requestDate, row.transactionId, row.utrNumber, row.skippedIds, row.status.replace(/_/g, ' ')
   ]));
@@ -224,7 +229,7 @@ const ReceivedHelp = () => {
                     <th>REQUEST DATE</th>
                     <th>TRASACTION ID</th>
                     <th>UTR NUMBER</th>
-                    <th>SKIPPED IDs</th>
+                    <th>SKIPPED ID</th>
                     <th>ACTION</th>
                     <th>STATUS</th>
               </tr>
@@ -269,6 +274,37 @@ const ReceivedHelp = () => {
                   )}
                 </tbody>
           </table>
+            </div>
+            
+            <div className="table-footer" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
+                Total: {filteredRows.length} requests
+              </span>
+              <div className="pagination" style={{ display: 'flex', gap: '6px' }}>
+                <button type="button" className="user-page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
+                <button type="button" className="user-page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
+                
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let start = Math.max(1, page - 2);
+                  if (start + 4 > totalPages) start = Math.max(1, totalPages - 4);
+                  const pageNum = start + i;
+                  if (pageNum > totalPages) return null;
+                  
+                  return (
+                    <button 
+                      key={pageNum} 
+                      type="button"
+                      className={`user-page-btn ${page === pageNum ? 'active' : ''}`}
+                      onClick={() => setPage(pageNum)}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                
+                <button type="button" className="user-page-btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0}>&rsaquo;</button>
+                <button type="button" className="user-page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages || totalPages === 0}>&raquo;</button>
+              </div>
             </div>
           </>
         )}

@@ -157,7 +157,7 @@ function RepurchaseIncome() {
                 <th>INCOME SLOT</th>
                 <th>TRIGGERED BY ID</th>
                 <th>FROM MEMBER NAME</th>
-                <th>SKIPPED IDs</th>
+                <th>SKIPPED ID</th>
                 <th>AMOUNT</th>
               </tr>
             </thead>

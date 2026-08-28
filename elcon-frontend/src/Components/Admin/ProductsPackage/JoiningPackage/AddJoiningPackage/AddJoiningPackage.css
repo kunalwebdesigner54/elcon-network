@@ -10,10 +10,10 @@
 }
 
 .admin-add-product-card {
-  border: 1px solid rgba(45, 55, 72, 0.18);
-  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
   padding: 14px;
-  background: linear-gradient(180deg, #f8fbff 0%, #f4f7fc 100%);
+  background: transparent;
 }
 
 .admin-add-product-grid {
@@ -41,15 +41,15 @@
     font-size: 17px;
     font-weight: 700;
     border-radius: 8px;
-    color: #1f2937;
-    /* background: var(--card-bg); */
+    color: var(--text-main);
+    /* background: var(--bg-card); */
 }
 
 .admin-add-product-row > input,
 .admin-add-product-row > select,
 .admin-add-product-row > div {
   border: 0;
-  border-bottom: 1px solid rgba(45, 55, 72, 0.22);
+  border-bottom: 1px solid var(--glass-border);
   padding: 7px 10px;
   font-size: 14px;
   min-width: 0;
@@ -85,7 +85,7 @@
 .admin-add-product-description {
   width: 100%;
   margin-top: 10px;
-  border: 1px solid rgba(45, 55, 72, 0.22);
+  border: 1px solid var(--glass-border);
   border-radius: 10px;
   resize: vertical;
   min-height: 190px;
@@ -119,15 +119,15 @@
 }
 
 .admin-add-product-spec-row > span {
-  border: 1px solid rgba(45, 55, 72, 0.22);
-  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
   font-size: 14px;
   font-weight: 700;
   padding: 8px 10px;
 }
 
 .admin-add-product-spec-row > input {
-  border: 1px solid rgba(45, 55, 72, 0.22);
+  border: 1px solid var(--glass-border);
   font-size: 14px;
   padding: 8px 10px;
   min-width: 0;
