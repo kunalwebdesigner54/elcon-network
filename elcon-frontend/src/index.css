@@ -92,6 +92,16 @@ select {
     color-scheme: dark; 
     background-color: var(--bg-dark);
     color: var(--text-main);
+    
+    /* Custom Dropdown Arrow & Enforced Border Radius */
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 14px !important;
+    padding-right: 32px !important;
+    border-radius: var(--border-radius-sm, 8px) !important;
 }
 
 select option {
@@ -105,6 +115,7 @@ select option {
     color-scheme: light;
     background-color: #fff;
     color: #000;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") !important;
 }
 
 .light-theme select option,
@@ -343,7 +354,7 @@ select option {
 /* Global Inputs & Selects */
 .admin-root input, .admin-root select, .admin-root textarea,
 .user-root input, .user-root select, .user-root textarea {
-	background: rgba(255, 255, 255, 0.06) !important;
+	background-color: rgba(255, 255, 255, 0.06) !important;
 	border: 1px solid var(--glass-border) !important;
 	color: var(--text-main) !important;
 	border-radius: var(--border-radius-sm) !important;
@@ -356,7 +367,7 @@ select option {
 	outline: none !important;
 	border-color: var(--primary) !important;
 	box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.2) !important;
-	background: rgba(255, 255, 255, 0.09) !important;
+	background-color: rgba(255, 255, 255, 0.09) !important;
 }
 
 /* Global Public Page Inputs — white text on dark background */
