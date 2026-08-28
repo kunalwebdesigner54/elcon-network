@@ -11,6 +11,7 @@ const getStatusMeta = (status) => {
     case 'Pending':
       return { className: 'deposit-status deposit-status--pending', icon: '◔', label: 'Pending' };
     case 'Approve':
+    case 'Approved':
       return { className: 'deposit-status deposit-status--approve', icon: '◌', label: 'Approve' };
     case 'Succeed':
       return { className: 'deposit-status deposit-status--succeed', icon: '✓', label: 'Succeed' };
@@ -23,8 +24,10 @@ const getStatusMeta = (status) => {
 
 function DepositHistory() {
   const navigate = useNavigate();
-  const [filters, setFilters] = useState({ transactionId: '', amount: '', status: '', pageSize: '10' });
+  const [filters, setFilters] = useState({ transactionId: '', amount: '', status: '', startDate: '', endDate: '', pageSize: '10' });
+  const [appliedFilters, setAppliedFilters] = useState({ transactionId: '', amount: '', status: '', startDate: '', endDate: '', pageSize: '10' });
   const [depositRows, setDepositRows] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadHistory = async () => {
@@ -33,22 +36,38 @@ function DepositHistory() {
         setDepositRows(response.data || []);
       } catch (error) {
         setDepositRows([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadHistory();
   }, []);
 
+  const handleSearch = () => {
+    setAppliedFilters(filters);
+  };
+
   const filteredRows = useMemo(() => {
     return depositRows.filter((row) => {
-      const byTransaction = !filters.transactionId || row.transactionId.includes(filters.transactionId.trim());
-      const byAmount = !filters.amount || String(row.amount).includes(filters.amount.trim());
-      const byStatus = !filters.status || normalizeStatus(row.status) === normalizeStatus(filters.status);
-      return byTransaction && byAmount && byStatus;
-    });
-  }, [depositRows, filters]);
+      const byTransaction = !appliedFilters.transactionId || String(row.transactionId || '').toLowerCase().includes(appliedFilters.transactionId.trim().toLowerCase());
+      const byAmount = !appliedFilters.amount || String(row.amount || '').includes(appliedFilters.amount.trim());
+      const byStatus = !appliedFilters.status || normalizeStatus(row.status) === normalizeStatus(appliedFilters.status);
 
-  const visibleRows = filteredRows.slice(0, Number(filters.pageSize));
+      let byStartDate = true;
+      let byEndDate = true;
+      if (appliedFilters.startDate && row.depositDate) {
+         byStartDate = new Date(row.depositDate) >= new Date(appliedFilters.startDate);
+      }
+      if (appliedFilters.endDate && row.depositDate) {
+         byEndDate = new Date(row.depositDate) <= new Date(appliedFilters.endDate);
+      }
+
+      return byTransaction && byAmount && byStatus && byStartDate && byEndDate;
+    });
+  }, [depositRows, appliedFilters]);
+
+  const visibleRows = filteredRows.slice(0, Number(appliedFilters.pageSize || '10'));
 
   return (
     <div>
@@ -80,8 +99,20 @@ function DepositHistory() {
             <option value="Succeed">Succeed</option>
             <option value="Reject">Reject</option>
           </select>
-          <input type="text" placeholder="START DATE" aria-label="Start Date" />
-          <input type="text" placeholder="END DATE" aria-label="End Date" />
+          <input 
+            type="date" 
+            placeholder="START DATE" 
+            aria-label="Start Date" 
+            value={filters.startDate}
+            onChange={(event) => setFilters((prev) => ({ ...prev, startDate: event.target.value }))}
+          />
+          <input 
+            type="date" 
+            placeholder="END DATE" 
+            aria-label="End Date" 
+            value={filters.endDate}
+            onChange={(event) => setFilters((prev) => ({ ...prev, endDate: event.target.value }))}
+          />
           <select
             aria-label="Rows per page"
             value={filters.pageSize}
@@ -91,7 +122,7 @@ function DepositHistory() {
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="user-btn-blue" type="button">SEARCH</button>
+          <button className="user-btn-blue" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="table-toolbar">
@@ -117,17 +148,21 @@ function DepositHistory() {
               </tr>
             </thead>
             <tbody>
-              {visibleRows.length > 0 ? visibleRows.map((row) => {
+              {loading ? (
+                <tr>
+                  <td colSpan="10">Loading...</td>
+                </tr>
+              ) : visibleRows.length > 0 ? visibleRows.map((row) => {
                 const meta = getStatusMeta(row.status);
 
                 return (
-                  <tr key={`${row.transactionId}-${row.sNo}`}>
+                  <tr key={`${row.transactionId}-${row.sNo || Math.random()}`}>
                     <td>{row.sNo}</td>
                     <td>{row.depositDate}</td>
                     <td>{row.transactionId}</td>
-                    <td>{row.payMethod}</td>
-                    <td>{row.amount.toFixed(2)}</td>
-                    <td>{row.utrNumber}</td>
+                    <td>{row.payMethod || row.paymentMode}</td>
+                    <td>{Number(row.amount || 0).toFixed(2)}</td>
+                    <td>{row.utrNumber || row.utr}</td>
                     <td>
                       <button
                         type="button"
@@ -135,6 +170,8 @@ function DepositHistory() {
                         onClick={() => {
                           if (row.slip) {
                             window.open(row.slip, '_blank', 'noopener,noreferrer');
+                          } else {
+                            window.alert('No slip available.');
                           }
                         }}
                       >
@@ -156,7 +193,7 @@ function DepositHistory() {
                         className="deposit-details-btn"
                         onClick={() => {
                           window.alert(
-                            `Transaction ID: ${row.transactionId}\nAmount: ₹${Number(row.amount || 0).toFixed(2)}\nStatus: ${normalizeStatus(row.status)}\nPayment Mode: ${row.paymentMode}`
+                            `Transaction ID: ${row.transactionId || 'N/A'}\nAmount: ₹${Number(row.amount || 0).toFixed(2)}\nStatus: ${normalizeStatus(row.status) || 'N/A'}\nPayment Mode: ${row.paymentMode || row.payMethod || 'N/A'}`
                           );
                         }}
                       >
