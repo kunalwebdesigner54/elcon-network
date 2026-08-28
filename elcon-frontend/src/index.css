@@ -41,6 +41,8 @@
 	--border-radius-lg: 24px;
 	
 	--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	
+	color-scheme: dark; /* Force native dark mode for dropdowns/scrollbars */
 }
 
 * {
@@ -83,6 +85,32 @@ button,
 [class*='btn'] {
 	max-width: 100%;
 	border-radius: 5px !important;
+}
+
+/* Base Select styling to fix white dropdown options on Windows */
+select {
+    color-scheme: dark; 
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+}
+
+select option {
+    background-color: var(--bg-darkest, #040814);
+    color: var(--text-main, #fff);
+}
+
+/* Future proofing for Light Theme */
+.light-theme select,
+[data-theme="light"] select {
+    color-scheme: light;
+    background-color: #fff;
+    color: #000;
+}
+
+.light-theme select option,
+[data-theme="light"] select option {
+    background-color: #fff;
+    color: #000;
 }
 
 .btn-primary {
