@@ -50,7 +50,7 @@ function DonationsIncome() {
 
         <div className="donation-income-filters">
           <input
-            className="text-input" type="text" placeholder="DONOR MEMBER ID"
+            className="text-input" type="text" placeholder="DONAR MID"
             value={filterMemberId} onChange={(e) => setFilterMemberId(e.target.value)}
           />
           <select className="select-input" value={filterLevel} onChange={(e) => setFilterLevel(e.target.value)}>
@@ -80,7 +80,7 @@ function DonationsIncome() {
               <thead>
                 <tr>
                   <th>S.NO</th>
-                  <th>DONOR MEMBER ID</th>
+                  <th>DONAR MID</th>
                   <th>DONOR MEMBER NAME</th>
                   <th>LEVEL</th>
                   <th>AMOUNT (₹)</th>
