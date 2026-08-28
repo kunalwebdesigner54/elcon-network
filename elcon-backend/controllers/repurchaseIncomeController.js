@@ -54,9 +54,9 @@ exports.getRepurchaseIncomeReports = async (req, res) => {
 
     // Format for frontend
     const formattedData = records.map((record, index) => {
-      const skippedIds = Array.isArray(record.skippedMembers) 
-        ? record.skippedMembers.map(s => s.memberId).join(', ') 
-        : '';
+      const skippedIds = Array.isArray(record.skippedMembers) && record.skippedMembers.length > 0
+        ? record.skippedMembers[0].memberId
+        : '---';
         
       return {
         sNo: skip + index + 1,

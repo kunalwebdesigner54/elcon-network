@@ -89,7 +89,7 @@ exports.getLevelIncomeReports = async (req, res) => {
 
     const data = records.map((record, index) => {
       const skippedIds = Array.isArray(record.skippedMembers) && record.skippedMembers.length > 0
-        ? record.skippedMembers.map(s => s.memberId).join(', ')
+        ? record.skippedMembers[0].memberId
         : '---';
 
       return {
