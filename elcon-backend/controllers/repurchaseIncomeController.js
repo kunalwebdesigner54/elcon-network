@@ -1,4 +1,5 @@
 const RepurchaseIncome = require('../models/RepurchaseIncome');
+const User = require('../models/User');
 
 exports.getRepurchaseIncomeReports = async (req, res) => {
   try {
@@ -52,6 +53,16 @@ exports.getRepurchaseIncomeReports = async (req, res) => {
       .limit(Number(limit))
       .lean();
 
+    // Fetch the names for recipient members
+    const recipientMemberIds = [...new Set(records.map(r => r.recipientMemberId))];
+    const users = await User.find({ memberId: { $in: recipientMemberIds } }, 'memberId name').lean();
+    
+    // Create a map for fast lookup
+    const userMap = {};
+    users.forEach(u => {
+      userMap[u.memberId] = u.name || '---';
+    });
+
     // Format for frontend
     const formattedData = records.map((record, index) => {
       const skippedIds = Array.isArray(record.skippedMembers) && record.skippedMembers.length > 0
@@ -62,7 +73,7 @@ exports.getRepurchaseIncomeReports = async (req, res) => {
         sNo: skip + index + 1,
         incomeDateTime: new Date(record.createdAt).toLocaleString('en-IN'),
         memberId: record.recipientMemberId,
-        memberName: '---', // Admin can fetch name via User model if needed, User Panel knows own name
+        memberName: userMap[record.recipientMemberId] || '---',
         levelNo: `Level ${record.level}`,
         levelId: record.purchasingMemberId,
         fromMemberName: record.purchasingMemberName,
