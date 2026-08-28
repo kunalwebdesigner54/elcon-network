@@ -209,7 +209,7 @@ function Register() {
       <section className="public-page">
         <div className="public-container">
           <div className="register-card">
-            <h2 className="register-title">Registration Form</h2>
+            <h2 className="register-title" style={{ color: '#fff' }}>Registration Form</h2>
 
             {error ? <div className="register-error-message">{error}</div> : null}
 
@@ -242,7 +242,7 @@ function Register() {
                     onChange={(event) => setSponsorName(event.target.value)}
                     readOnly={sponsorId && sponsorName && !sponsorError}
                     style={{ 
-                      backgroundColor: sponsorId && sponsorName && !sponsorError ? '#f5f5f5' : '#fff',
+                      backgroundColor: sponsorId && sponsorName && !sponsorError ? 'rgba(0, 0, 0, 0.2)' : undefined,
                       cursor: sponsorId && sponsorName && !sponsorError ? 'not-allowed' : 'text'
                     }}
                   />
@@ -323,12 +323,8 @@ function Register() {
 
                 <div className="register-field">
                   <label htmlFor="country">Country</label>
-                  <select id="country" value={country} onChange={handleCountryChange}>
-                    {countryOptions.map((countryOption) => (
-                      <option key={countryOption.isoCode} value={countryOption.isoCode}>
-                        {countryOption.name}
-                      </option>
-                    ))}
+                  <select id="country" value={country} onChange={handleCountryChange} disabled style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', cursor: 'not-allowed', color: '#fff' }}>
+                    <option value="IN">India</option>
                   </select>
                 </div>
 
