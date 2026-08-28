@@ -52,14 +52,14 @@ const migrateLevelDepth = async () => {
 
     console.log(`Found ${roots.length} root members. Starting depth calculation...`);
     
-    roots.forEach(rootId => calculateDepth(rootId, 0));
+    roots.forEach(rootId => calculateDepth(rootId, 1));
 
     // Handle circular loops that weren't reached from roots
     users.forEach(user => {
       if (!visited.has(user.memberId)) {
-        // Just set depth to 0 for unreachable circular nodes as fallback
-        if (user.levelDepth !== 0) {
-          depthUpdates.set(user.memberId, 0);
+        // Just set depth to 1 for unreachable circular nodes as fallback
+        if (user.levelDepth !== 1) {
+          depthUpdates.set(user.memberId, 1);
         }
       }
     });

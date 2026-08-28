@@ -112,11 +112,11 @@ const calculateLevelDepths = (users, adminMemberId = null) => {
   const userMap = new Map(users.map(u => [u.memberId, u]));
 
   const getDepth = (memberId, visited = new Set()) => {
-    if (!memberId || visited.has(memberId)) return 0; // root or circular
+    if (!memberId || visited.has(memberId)) return 1; // root or circular
     if (depthMap.has(memberId)) return depthMap.get(memberId);
 
     const user = userMap.get(memberId);
-    if (!user) return 0;
+    if (!user) return 1;
 
     let sponsorKey = String(user.sponsorId || '').trim();
     if (adminMemberId && sponsorKey === adminMemberId) {
@@ -124,8 +124,8 @@ const calculateLevelDepths = (users, adminMemberId = null) => {
     }
 
     if (!sponsorKey || !userMap.has(sponsorKey)) {
-      depthMap.set(memberId, 0);
-      return 0;
+      depthMap.set(memberId, 1);
+      return 1;
     }
 
     visited.add(memberId);

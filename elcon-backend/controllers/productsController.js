@@ -637,6 +637,8 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Order not found' });
     }
 
+    const previousStatus = order.orderStatus;
+
     if (req.body.orderStatus) {
       order.orderStatus = req.body.orderStatus;
     }
@@ -646,6 +648,17 @@ exports.updateOrderStatus = async (req, res) => {
     }
 
     await order.save();
+
+    // Trigger Repurchase Income distribution when marked as Delivered
+    if (previousStatus !== 'Delivered' && order.orderStatus === 'Delivered' && order.bvPoint > 0) {
+      const purchaserUser = await User.findById(order.userId);
+      if (purchaserUser) {
+        // Fire and forget so we don't block the API response
+        distributeRepurchaseIncome(order, purchaserUser, order.bvPoint).catch(err => {
+          console.error(`Failed to distribute repurchase income for order ${order.orderNo}:`, err);
+        });
+      }
+    }
 
     res.status(200).json({ success: true, order });
   } catch (error) {

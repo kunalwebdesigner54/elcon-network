@@ -152,12 +152,12 @@ function DepositHistory() {
                 <tr>
                   <td colSpan="10">Loading...</td>
                 </tr>
-              ) : visibleRows.length > 0 ? visibleRows.map((row) => {
+              ) : visibleRows.length > 0 ? visibleRows.map((row, index) => {
                 const meta = getStatusMeta(row.status);
 
                 return (
-                  <tr key={`${row.transactionId}-${row.sNo || Math.random()}`}>
-                    <td>{row.sNo}</td>
+                  <tr key={`${row.transactionId}-${row.sNo || index}`}>
+                    <td>{row.sNo || index + 1}</td>
                     <td>{row.depositDate}</td>
                     <td>{row.transactionId}</td>
                     <td>{row.payMethod || row.paymentMode}</td>

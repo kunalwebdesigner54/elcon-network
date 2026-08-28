@@ -113,14 +113,14 @@ function WithdrawalHistory() {
               </tr>
             </thead>
             <tbody>
-              {visibleRows.length > 0 ? visibleRows.map((row) => (
-                <tr key={row.sNo}>
-                  <td>{row.sNo}</td>
+              {visibleRows.length > 0 ? visibleRows.map((row, index) => (
+                <tr key={`${row.requestId}-${row.sNo || index}`}>
+                  <td>{row.sNo || index + 1}</td>
                   <td>{row.requestDate}</td>
                   <td>{row.requestId}</td>
-                  <td>{row.amount.toFixed(2)}</td>
-                  <td>{row.charges.toFixed(2)}</td>
-                  <td>{row.netAmount.toFixed(2)}</td>
+                  <td>{Number(row.amount || 0).toFixed(2)}</td>
+                  <td>{Number(row.charges || 0).toFixed(2)}</td>
+                  <td>{Number(row.netAmount || 0).toFixed(2)}</td>
                   <td>{row.paymentMethod}</td>
                   <td>{row.status}</td>
                   <td className="details-cell">
