@@ -45,9 +45,24 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
       const payoutSlotLevel = successfulSlots + 1; // Slot 1 to 10
 
       if (isAccountValid) {
-        // Unlike Level Income, Repurchase Income does not have strict active directs requirement per slot
-        // Just being ACTIVE is enough to be eligible
-        isEligible = true;
+        if (isAdmin) {
+          isEligible = true;
+        } else {
+          // Check Active Directs for normal users
+          const activeDirectsCount = await User.countDocuments({
+            sponsorId: currentMemberId,
+            accountStatus: 'ACTIVE'
+          });
+
+          // Requirement is strictly based on the Income Slot number
+          const requiredDirects = payoutSlotLevel; 
+
+          if (activeDirectsCount >= requiredDirects) {
+            isEligible = true;
+          } else {
+            skippedMembersList.push({ memberId: currentMemberId, reason: `Requires ${requiredDirects} active directs, has ${activeDirectsCount}` });
+          }
+        }
       } else {
         skippedMembersList.push({ memberId: currentMemberId, reason: !candidate.accountStatus || candidate.accountStatus !== 'ACTIVE' ? 'Account inactive' : 'Account blocked' });
       }
