@@ -147,21 +147,25 @@ export default function MyCart(){
         )}
       </div>
 
-      <div className="mc-balance-cards">
-        <div className="mc-balance-card">
-          <div className="mc-balance-title">Wallet Balance</div>
-          <div className="mc-balance-amount">₹ {walletBalance.toFixed(2)}</div>
+      <div className="mc-wallet-section">
+        <div className="mc-balance-cards">
+          <div className="mc-balance-card">
+            <div className="mc-balance-title">Wallet Balance</div>
+            <div className="mc-balance-amount">₹ {walletBalance.toFixed(2)}</div>
+          </div>
+          <div className="mc-balance-card mc-coupon-card">
+            <div className="mc-balance-title">Coupon Balance</div>
+            <div className="mc-balance-amount">₹ {couponWalletBalance.toFixed(2)}</div>
+          </div>
         </div>
-        <div className="mc-balance-card mc-coupon-card">
-          <div className="mc-balance-title">Coupon Balance</div>
-          <div className="mc-balance-amount">₹ {couponWalletBalance.toFixed(2)}</div>
+        <div className="mc-row mc-wallet-bv">
+          <span>Total B.V Point =</span>
+          <strong>{summary.bvPoint}</strong>
         </div>
       </div>
 
       <div className="mc-summary">
         <h4>Order Summery</h4>
-        <div className="mc-row"><span>Total B.V Point =</span><strong>{summary.bvPoint}</strong></div>
-
         <div className="mc-row"><span>Sub Total</span><strong>₹ {summary.subtotal.toFixed(2)}</strong></div>
         <div className="mc-row"><span>Shipping Charge</span><strong>₹ 0.00</strong></div>
         <div className="mc-row coupon"><span>Coupon Discount</span><strong>- ₹ {(summary.appliedDiscount || 0).toFixed(2)}</strong></div>

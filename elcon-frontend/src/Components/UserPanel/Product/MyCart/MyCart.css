@@ -435,3 +435,23 @@
 .mc-coupon-card .mc-balance-amount {
   color: #00cc66;
 }
+
+.mc-wallet-section {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 18px;
+}
+.mc-wallet-section .mc-balance-cards {
+  margin-bottom: 12px;
+}
+.mc-wallet-bv {
+  border-top: 1px solid var(--glass-border);
+  padding-top: 12px;
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-main);
+}
