@@ -46,7 +46,7 @@ const GenerateEPin = () => {
   };
 
   return (
-    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 110px)' }}>
+    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh' }}>
       <h1 className="buyepin-title">Generate ePin</h1>
       
       <div className="ge-wallet-section" style={{ flexGrow: 1 }}>
@@ -64,11 +64,11 @@ const GenerateEPin = () => {
 
         <div className="buyepin-panel" style={{ marginTop: '20px' }}>
           <form className="buyepin-form-grid" onSubmit={handleSubmit}>
-            <div className="buyepin-section buyepin-single-card" style={{ padding: '20px 0 0 0' }}>
+            <div className="buyepin-section buyepin-single-card">
             <div className="buyepin-single-flex">
-              <div className="buyepin-single-left" style={{width: '100%'}}>
-                <div className="buyepin-form-fields" style={{width: '100%'}}>
-                  <div className="buyepin-form-col" style={{width: '100%'}}>
+              <div className="buyepin-single-left">
+                <div className="buyepin-form-fields">
+                  <div className="buyepin-form-col">
                     <div className="buyepin-input-group">
                       <label>Required No Of ePins</label>
                       <input type="number" name="qty" min="1" value={form.qty} onChange={handleChange} />
