@@ -8,7 +8,6 @@ const CompletePayment = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedPaymentMode, setSelectedPaymentMode] = useState('');
-  const [uploadedFile, setUploadedFile] = useState(null);
   const [transactionPassword, setTransactionPassword] = useState('');
   const [reenterPassword, setReenterPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,12 +32,7 @@ const CompletePayment = () => {
     'bank': { label: 'BANK TRANSFER', amount: '' }
   };
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setUploadedFile(file);
-    }
-  };
+
 
   useEffect(() => {
     const loadCart = async () => {
@@ -80,22 +74,11 @@ const CompletePayment = () => {
     loadProfile();
   }, []);
 
-  const readFileAsDataUrl = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('Unable to read payment screenshot'));
-      reader.readAsDataURL(file);
-    });
-  };
+
 
   const handlePayNow = async () => {
     if (!selectedPaymentMode) {
       alert('Please select a payment mode');
-      return;
-    }
-    if (!uploadedFile) {
-      alert('Please upload payment screenshot');
       return;
     }
     if (!transactionPassword || !reenterPassword) {
@@ -109,13 +92,10 @@ const CompletePayment = () => {
 
     setIsSubmitting(true);
     try {
-      const paymentScreenshot = await readFileAsDataUrl(uploadedFile);
-
       const response = await checkoutCart({
         paymentMode: paymentModes[selectedPaymentMode].label,
         transactionPassword,
         confirmTransactionPassword: reenterPassword,
-        paymentScreenshot,
       });
 
       navigate(`/user/product/my-orders/details/${response.order.orderNo}`);
@@ -231,21 +211,6 @@ const CompletePayment = () => {
               </div>
             )}
 
-            <div className="proof-section">
-              <label className="proof-label">Upload Payment Proof Screen Shot</label>
-              <div className="file-upload-area">
-                {uploadedFile ? (
-                  <span className="file-name">{uploadedFile.name}</span>
-                ) : (
-                  <input
-                    type="file"
-                    onChange={handleFileUpload}
-                    className="file-input"
-                    accept="image/*"
-                  />
-                )}
-              </div>
-            </div>
 
             <div className="password-section">
               <label className="password-label">Enter Transaction Password</label>

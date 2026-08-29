@@ -389,7 +389,6 @@ exports.checkoutCart = async (req, res) => {
     const paymentMode = String(req.body.paymentMode || '').trim();
     const transactionPassword = String(req.body.transactionPassword || '').trim();
     const confirmTransactionPassword = String(req.body.confirmTransactionPassword || '').trim();
-    const paymentScreenshot = String(req.body.paymentScreenshot || '').trim();
 
     const allowedPaymentModes = ['E-Wallet', 'R-Wallet', 'UPI ID', 'BANK TRANSFER'];
 
@@ -397,13 +396,6 @@ exports.checkoutCart = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Please select a valid payment mode',
-      });
-    }
-
-    if (!paymentScreenshot) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please upload payment screenshot',
       });
     }
 
@@ -489,7 +481,6 @@ exports.checkoutCart = async (req, res) => {
       orderDate,
       paymentMode,
       paymentStatus: 'Paid',
-      paymentScreenshot,
       orderStatus: 'Pending',
       orderItems: cart.items.length,
       totalPrice,
