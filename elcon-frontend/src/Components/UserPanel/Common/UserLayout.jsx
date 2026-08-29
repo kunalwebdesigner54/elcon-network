@@ -60,7 +60,6 @@ const menuItems = [
     key: 'epin',
     label: 'ePin',
     children: [
-      { label: 'Buy ePin', to: '/user/epin/buy-epin' },
       { label: 'Generate ePin', to: '/user/epin/generate-epin' },
       { label: 'Used ePin', to: '/user/epin/used-epin' },
       { label: 'Unused ePin', to: '/user/epin/unused-epin' },

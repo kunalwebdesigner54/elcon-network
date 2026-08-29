@@ -12,6 +12,10 @@ const {
   getFranchises,
   createOrUpdateFranchise,
   deleteFranchise,
+  getPackages,
+  createPackage,
+  updatePackage,
+  deletePackage
 } = require('../controllers/epinsController');
 
 const router = express.Router();
@@ -32,5 +36,10 @@ router.get('/franchises', getFranchises);
 router.post('/franchises', authorize('admin'), createOrUpdateFranchise);
 router.put('/franchises/:franchiseId', authorize('admin'), createOrUpdateFranchise);
 router.delete('/franchises/:franchiseId', authorize('admin'), deleteFranchise);
+
+router.get('/packages', getPackages);
+router.post('/packages', authorize('admin'), createPackage);
+router.put('/packages/:id', authorize('admin'), updatePackage);
+router.delete('/packages/:id', authorize('admin'), deletePackage);
 
 module.exports = router;

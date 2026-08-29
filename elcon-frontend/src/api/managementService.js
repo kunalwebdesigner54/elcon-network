@@ -45,6 +45,32 @@ export const updateNewsPopup = async (newsId, payload) => {
   return response.data;
 };
 
+export const deleteUserDepositRequest = async (requestId) => {
+  const response = await apiClient.delete(`/deposits/requests/${requestId}`);
+  return response.data;
+};
+
+// E-Pin Packages
+export const getEpinPackages = async () => {
+  const response = await apiClient.get('/epins/packages');
+  return response.data;
+};
+
+export const createEpinPackage = async (payload) => {
+  const response = await apiClient.post('/epins/packages', payload);
+  return response.data;
+};
+
+export const updateEpinPackage = async (id, payload) => {
+  const response = await apiClient.put(`/epins/packages/${id}`, payload);
+  return response.data;
+};
+
+export const deleteEpinPackage = async (id) => {
+  const response = await apiClient.delete(`/epins/packages/${id}`);
+  return response.data;
+};
+
 export const deleteNewsPopup = async (newsId) => {
   const response = await apiClient.delete(`/news-popup/${newsId}`);
   return response.data;

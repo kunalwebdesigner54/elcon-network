@@ -80,6 +80,7 @@ const menuItems = [
     label: 'Products/Package',
     children: [
       { label: 'Joining Package', to: '/products-package/Joining-Package' },
+      { label: 'ePin Packages', to: '/products-package/epin-packages' },
       { label: 'Shopping Products', to: '/products-package/shopping-products' },
       { label: 'Repurchase Products', to: '/products-package/repurchase-products' }
     ]

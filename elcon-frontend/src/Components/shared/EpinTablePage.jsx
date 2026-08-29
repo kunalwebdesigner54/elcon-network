@@ -14,6 +14,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
   const [counts, setCounts] = useState({ available: 0, used: 0 });
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({ epin: '', generatedBy: '', currentOwner: '', memberId: '', fromDate: '', toDate: '' });
   const [appliedFilters, setAppliedFilters] = useState({ epin: '', generatedBy: '', currentOwner: '', memberId: '', fromDate: '', toDate: '' });
 
@@ -41,6 +42,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
 
   const handleSearch = () => {
     setAppliedFilters(filters);
+    setCurrentPage(1);
   };
 
   const filteredRows = useMemo(() => {
@@ -63,7 +65,13 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
     });
   }, [appliedFilters, rows]);
 
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [pageSize]);
+
+  const totalPages = Math.ceil(filteredRows.length / Number(pageSize));
+  const startIndex = (currentPage - 1) * Number(pageSize);
+  const visibleRows = filteredRows.slice(startIndex, startIndex + Number(pageSize));
   const isTransferHistory = mode === 'transfer-history';
 
   const handleAction = async (epinNo, action) => {
@@ -100,9 +108,9 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
         <div className="epin-tabs-container" style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center' }}>
           <Link to="/user/epin/list-all-epin" style={{ color: location.pathname.includes('list-all-epin') || location.pathname.includes('all-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>All epins</Link>
           <span style={{ color: '#4a5568' }}>|</span>
-          <Link to="/user/epin/unused-epin" style={{ color: location.pathname.includes('unused-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>Unused epin</Link>
+          <Link to="/user/epin/unused-epin" style={{ color: location.pathname.endsWith('unused-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>Unused epin</Link>
           <span style={{ color: '#4a5568' }}>|</span>
-          <Link to="/user/epin/used-epin" style={{ color: location.pathname.includes('used-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>Used epin</Link>
+          <Link to="/user/epin/used-epin" style={{ color: location.pathname.endsWith('/used-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>Used epin</Link>
         </div>
       )}
       <div className="panel">
@@ -170,6 +178,35 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
             </tbody>
           </table>
         </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '10px 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+          <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
+            TOTAL E PINS : <span style={{ color: '#00e5ff', fontWeight: 'bold' }}>{filteredRows.length}</span>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '5px' }}>
+            <button 
+              type="button"
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              style={{ padding: '8px 12px', background: currentPage === 1 ? '#2d3748' : '#3182ce', color: '#fff', border: 'none', borderRadius: '4px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+            >
+              Prev
+            </button>
+            
+            <span style={{ padding: '8px 12px', color: '#e2e8f0' }}>Page {currentPage} of {Math.max(1, totalPages)}</span>
+            
+            <button 
+              type="button"
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage >= totalPages}
+              style={{ padding: '8px 12px', background: currentPage >= totalPages ? '#2d3748' : '#3182ce', color: '#fff', border: 'none', borderRadius: '4px', cursor: currentPage >= totalPages ? 'not-allowed' : 'pointer' }}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );

@@ -30,7 +30,6 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import AdminRoute from './Components/AdminRoute';
 import UserLayout from './Components/UserPanel/Common/UserLayout';
 import UserBlankPage from './Components/UserPanel/Common/UserBlankPage';
-import BuyEPin from './Components/UserPanel/Common/BuyEPin';
 import UserLogin from './Components/UserPanel/UserLogin/UserLogin';
 import UserDashboard from './Components/UserPanel/UserDashboard/UserDashboard';
 import MyProfile from './Components/UserPanel/Profile/MyProfile/MyProfile';
@@ -76,6 +75,8 @@ import CouponReport from './Components/Admin/Coupon/CouponReport/CouponReport';
 import DiscountCoupon from './Components/UserPanel/Coupon/DiscountCoupon/DiscountCoupon';
 import JoiningPackageAdmin from './Components/Admin/ProductsPackage/JoiningPackage/JoiningPackageAdmin';
 import ShoppingProductsAdmin from './Components/Admin/ProductsPackage/ShoppingProducts/ShoppingProductsAdmin';
+import EpinPackagesAdmin from './Components/Admin/ProductsPackage/EpinPackages/EpinPackagesAdmin';
+import AddEpinPackage from './Components/Admin/ProductsPackage/EpinPackages/AddEpinPackage/AddEpinPackage';
 import AddJoiningPackage from './Components/Admin/ProductsPackage/JoiningPackage/AddJoiningPackage/AddJoiningPackage';
 import AddShoppingProducts from './Components/Admin/ProductsPackage/ShoppingProducts/AddShoppingProducts/AddShoppingProducts';
 import AddRepurchaseProducts from './Components/Admin/ProductsPackage/RepurchaseProducts/AddRepurchaseProducts/AddRepurchaseProducts';
@@ -186,7 +187,6 @@ function App() {
           <Route path="product/product-order" element={<ShoppingProducts />} />
           <Route path="product/delivery-status" element={<UserBlankPage />} />
 
-          <Route path="epin/buy-epin" element={<BuyEPin />} />
           <Route path="epin/generate-epin" element={<GenerateEPin />} />
           <Route path="epin/used-epin" element={<UsedEPin />} />
           <Route path="epin/unused-epin" element={<UnusedEPin />} />
@@ -277,6 +277,8 @@ function App() {
 
           <Route path="products-package/Joining-Package" element={<JoiningPackageAdmin />} />
           <Route path="products-package/Joining-Package/add-new" element={<AddJoiningPackage />} />
+          <Route path="products-package/epin-packages" element={<EpinPackagesAdmin />} />
+          <Route path="products-package/epin-packages/add-new" element={<AddEpinPackage />} />
           <Route path="products-package/shopping-products" element={<ShoppingProductsAdmin />} />
           <Route path="products-package/shopping-products/add-new" element={<AddShoppingProducts />} />
           <Route path="products-package/repurchase-products" element={<RepurchaseProductsAdmin />} />

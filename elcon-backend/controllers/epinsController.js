@@ -4,6 +4,7 @@ const Epin = require('../models/Epin');
 const EpinRequest = require('../models/EpinRequest');
 const EpinTransfer = require('../models/EpinTransfer');
 const EpinFranchise = require('../models/EpinFranchise');
+const EpinPackage = require('../models/EpinPackage');
 
 const getUserIdentifiers = (req) => [req.user?.memberId, req.user?.epin, req.user?.id]
   .map((value) => String(value || '').trim())
@@ -161,7 +162,10 @@ exports.generateEpins = async (req, res) => {
       ? String(req.body.generatedBy || req.user?.memberId || req.user?.epin || 'ADMIN').trim()
       : identifiers[0];
     const currentOwner = String((isAdmin(req) ? req.body.currentOwner : undefined) || generatedBy).trim();
-    const cost = Number(req.body.cost || 10);
+    
+    // Fetch actual package price if available to prevent manipulation
+    const packageDoc = await EpinPackage.findOne({ packageName: epinName, isActive: true });
+    const cost = packageDoc ? packageDoc.price : Number(req.body.cost || 10);
 
     const created = [];
     for (let index = 0; index < qty; index += 1) {
@@ -338,6 +342,58 @@ exports.deleteFranchise = async (req, res) => {
         status: franchise.status,
       },
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getPackages = async (req, res) => {
+  try {
+    const packages = await EpinPackage.find({ isActive: true }).sort({ price: 1 });
+    res.json({ success: true, packages });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.createPackage = async (req, res) => {
+  try {
+    const { packageName, price } = req.body;
+    if (!packageName || price === undefined) {
+      return res.status(400).json({ success: false, message: 'packageName and price are required' });
+    }
+    const pkg = await EpinPackage.create({ packageName: packageName.trim(), price: Number(price) });
+    res.status(201).json({ success: true, package: pkg });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.updatePackage = async (req, res) => {
+  try {
+    const { packageName, price, isActive } = req.body;
+    const pkg = await EpinPackage.findById(req.params.id);
+    if (!pkg) return res.status(404).json({ success: false, message: 'Package not found' });
+    
+    if (packageName !== undefined) pkg.packageName = packageName.trim();
+    if (price !== undefined) pkg.price = Number(price);
+    if (isActive !== undefined) pkg.isActive = Boolean(isActive);
+    
+    await pkg.save();
+    res.json({ success: true, package: pkg });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.deletePackage = async (req, res) => {
+  try {
+    const pkg = await EpinPackage.findById(req.params.id);
+    if (!pkg) return res.status(404).json({ success: false, message: 'Package not found' });
+    
+    pkg.isActive = false;
+    await pkg.save();
+    res.json({ success: true, message: 'Package removed' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
