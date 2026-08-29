@@ -74,6 +74,41 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
   const visibleRows = filteredRows.slice(startIndex, startIndex + Number(pageSize));
   const isTransferHistory = mode === 'transfer-history';
 
+  const renderPageNumbers = () => {
+    const pages = [];
+    // if (totalPages <= 1) return pages; // We will show '1' even if there is only 1 page now.
+
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button
+          key={i}
+          type="button"
+          onClick={() => setCurrentPage(i)}
+          style={{
+            padding: '8px 12px',
+            background: currentPage === i ? '#00e5ff' : '#2d3748',
+            color: currentPage === i ? '#000' : '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: currentPage === i ? 'bold' : 'normal'
+          }}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pages;
+  };
+
   const handleAction = async (epinNo, action) => {
     if (action === 'delete') {
       await updateEpinStatus(epinNo, { status: 'Deleted' });
@@ -194,7 +229,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
               Prev
             </button>
             
-            <span style={{ padding: '8px 12px', color: '#e2e8f0' }}>Page {currentPage} of {Math.max(1, totalPages)}</span>
+            {renderPageNumbers()}
             
             <button 
               type="button"
