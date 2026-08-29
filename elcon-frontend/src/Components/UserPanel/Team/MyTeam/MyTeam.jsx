@@ -100,7 +100,7 @@ function MyTeam() {
             {levelOptions.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
           <select value={filterUnlock} onChange={(e) => setFilterUnlock(e.target.value)}>
-            <option value="">UPGRADE LEVEL</option>
+            <option value="">UPGRADE</option>
             {levelOptions.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
           <input type="date" placeholder="START DATE" value={filterStartDate} onChange={(e) => setFilterStartDate(e.target.value)} />
@@ -135,7 +135,7 @@ function MyTeam() {
                     <th>MEMBER NAME</th>
                     <th>LEVEL DEPTH</th>
                     <th>JOIN DATE</th>
-                    <th>UPGRADE LEVEL</th>
+                    <th>UPGRADE</th>
                     <th>CITY</th>
                     <th>STATUS</th>
                     <th>DIRECTS</th>

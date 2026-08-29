@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { getMyDonations, updateDonationStatus } from "../../../../api/donationsService";
 import "./ReceivedHelp.css";
-const exportColumns = ['S.NO', 'DONAR MID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE LEVEL', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'SKIPPED ID', 'STATUS'];
+const exportColumns = ['S.NO', 'DONAR MID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'SKIPPED ID', 'STATUS'];
 
 const ReceivedHelp = () => {
   const [receivedHelpRows, setReceivedHelpRows] = useState([]);
@@ -186,7 +186,7 @@ const ReceivedHelp = () => {
             >
               <input className="text-input" placeholder="DONAR MID" value={filters.donorMemberId} onChange={handleFilterChange('donorMemberId')} />
               <select className="select-input" value={filters.rank} onChange={handleFilterChange('rank')}>
-                <option value="">UPGRADE LEVEL</option>
+                <option value="">UPGRADE</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -225,7 +225,7 @@ const ReceivedHelp = () => {
                     <th>DONAR MID</th>
                     <th>DONAR MEMBER NAME</th>
                     <th>AMOUNT</th>
-                    <th>UPGRADE LEVEL</th>
+                    <th>UPGRADE</th>
                     <th>REQUEST DATE</th>
                     <th>TRASACTION ID</th>
                     <th>UTR NUMBER</th>

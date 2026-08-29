@@ -4,7 +4,7 @@ import './DonationReport.css';
 
 const exportColumns = [
   'S.No', 'Donor Member ID', 'Donor Member Name', 'Receiver Member ID', 'Receiver Member Name', 'D. Amount',
-  'Upgrade Level', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
+  'Upgrade', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
 ];
 
 const rankLabels = {
@@ -217,9 +217,9 @@ function DonationReport() {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
               <input className="text-input" style={{ maxWidth: '150px' }} placeholder="DONAR MID" value={filters.donorMemberId} onChange={handleFilterChange('donorMemberId')} />
               <input className="text-input" style={{ maxWidth: '160px' }} placeholder="RECEIVER MID" value={filters.receiverMemberId} onChange={handleFilterChange('receiverMemberId')} />
-              <input className="text-input" style={{ maxWidth: '110px' }} placeholder="D. AMOUNT" value={filters.amount} onChange={handleFilterChange('amount')} />
+              <input className="text-input" style={{ maxWidth: '110px' }} placeholder="AMOUNT" value={filters.amount} onChange={handleFilterChange('amount')} />
               <select className="select-input" style={{ maxWidth: '98px' }} value={filters.rank} onChange={handleFilterChange('rank')}>
-                <option value="">UPGRADE LEVEL</option>
+                <option value="">UPGRADE</option>
                 {Object.keys(rankLabels).map((rankKey) => (
                   <option key={rankKey} value={rankKey}>{rankKey}</option>
                 ))}
@@ -248,8 +248,8 @@ function DonationReport() {
                     <th>DONAR MEMBER NAME</th>
                     <th>RECEIVER MID</th>
                     <th>RECEIVER MEMBER NAME</th>
-                    <th>D. AMOUNT</th>
-                    <th>UPGRADE LEVEL</th>
+                    <th>AMOUNT</th>
+                    <th>UPGRADE</th>
                     <th>REQUEST DATE</th>
                     <th>APPROVE DATE</th>
                     <th>TRANSACTION ID</th>
