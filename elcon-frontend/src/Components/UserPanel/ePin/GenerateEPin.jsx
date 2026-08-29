@@ -61,11 +61,10 @@ const GenerateEPin = () => {
             </button>
           </div>
         </div>
-      </div>
 
-      <div className="buyepin-panel">
-        <form className="buyepin-form-grid" onSubmit={handleSubmit}>
-          <div className="buyepin-section buyepin-single-card">
+        <div className="buyepin-panel" style={{ marginTop: '20px' }}>
+          <form className="buyepin-form-grid" onSubmit={handleSubmit}>
+            <div className="buyepin-section buyepin-single-card" style={{ padding: '20px 0 0 0' }}>
             <div className="buyepin-single-flex">
               <div className="buyepin-single-left" style={{width: '100%'}}>
                 <div className="buyepin-form-fields" style={{width: '100%'}}>
@@ -103,8 +102,8 @@ const GenerateEPin = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
