@@ -320,6 +320,15 @@ exports.getMyDonations = async (req, res) => {
     const sent = await Donation.find({ fromMemberId: memberId }).sort({ createdAt: -1 }).lean();
     const received = await Donation.find({ toMemberId: memberId }).sort({ createdAt: -1 }).lean();
 
+    const uniqueMemberIds = [...new Set([...sent.map(d => d.fromMemberId), ...received.map(d => d.fromMemberId)])];
+    const User = require('../models/User');
+    const directCounts = await User.aggregate([
+      { $match: { sponsorId: { $in: uniqueMemberIds } } },
+      { $group: { _id: '$sponsorId', count: { $sum: 1 } } }
+    ]);
+    const directsMap = {};
+    directCounts.forEach(c => { directsMap[c._id] = c.count; });
+
     const mapRow = (d, type) => ({
       sNo: 0,
       donationId: d.donationId,
@@ -336,6 +345,7 @@ exports.getMyDonations = async (req, res) => {
       dateRaw: d.createdAt,
       utrNumber: d.utrNumber || '---',
       remark: d.remark || '---',
+      directs: directsMap[d.fromMemberId] || 0,
     });
 
     const sentRows = sent.map((d, i) => ({ ...mapRow(d, 'SENT'), sNo: i + 1 }));

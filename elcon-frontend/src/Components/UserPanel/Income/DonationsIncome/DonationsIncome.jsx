@@ -99,8 +99,10 @@ function DonationsIncome() {
                   <th>S.NO</th>
                   <th>DONAR MID</th>
                   <th>DONOR MEMBER NAME</th>
-                  <th>LEVEL</th>
+                  <th>DIRECTS</th>
+                  <th>LEVEL DEPTH</th>
                   <th>AMOUNT (₹)</th>
+                  <th>UPGRADE</th>
                   <th>DONATION ID</th>
                   <th>DATE</th>
                   <th>STATUS</th>
@@ -108,15 +110,17 @@ function DonationsIncome() {
               </thead>
               <tbody>
                 {visibleRows.length === 0 ? (
-                  <tr><td colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>No donation income records found.</td></tr>
+                  <tr><td colSpan={11} style={{ textAlign: 'center', padding: '20px' }}>No donation income records found.</td></tr>
                 ) : (
                   visibleRows.map((row, index) => (
                     <tr key={row.donationId || index}>
                       <td>{(page - 1) * pageSize + index + 1}</td>
                       <td>{row.fromMemberId}</td>
                       <td>{row.fromName}</td>
+                      <td>{row.directs || 0}</td>
                       <td>{row.level}</td>
                       <td style={{ color: '#27ae60', fontWeight: 'bold' }}>₹ {row.amount?.toLocaleString('en-IN')}</td>
+                      <td>Level {row.level}</td>
                       <td>{row.donationId}</td>
                       <td>{row.date}</td>
                       <td>
