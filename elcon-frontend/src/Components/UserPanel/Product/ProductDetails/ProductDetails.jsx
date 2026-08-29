@@ -230,22 +230,21 @@ const ProductDetails = () => {
           </div>
 
           <div className="product-tab-panel" role="tabpanel">
-            {activeTab !== 'pdf' ? (
-              <>
-                <p className="product-tab-lead">{activeTab === 'description' ? descriptionText : activeTab === 'specification' ? specificationText : featuresText}</p>
-                {activeTab === 'description' ? (
-                  <p className="product-tab-copy">{product?.features || activeTabData.content[1]}</p>
-                ) : (
-                  <ul className="product-tab-list">
-                    {(String(activeTab === 'specification' ? specificationText : featuresText)
-                      .split('\n')
-                      .filter(Boolean)).map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                )}
-              </>
-            ) : (
+            {activeTab === 'description' && (
+              <p className="product-tab-lead">{descriptionText}</p>
+            )}
+
+            {(activeTab === 'specification' || activeTab === 'features') && (
+              <ul className="product-tab-list">
+                {(String(activeTab === 'specification' ? specificationText : featuresText)
+                  .split('\n')
+                  .filter(Boolean)).map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            )}
+
+            {activeTab === 'pdf' && (
               <div className="product-pdf-panel">
                 <p className="product-tab-copy">{activeTabData.content[0]}</p>
                 {product?.brochurePdf ? (

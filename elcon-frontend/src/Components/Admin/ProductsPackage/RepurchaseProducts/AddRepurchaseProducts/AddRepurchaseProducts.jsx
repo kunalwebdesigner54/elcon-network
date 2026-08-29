@@ -20,22 +20,7 @@ function AddRepurchaseProducts() {
       ['category', 'Category'],
       ['productName', 'Product Name'],
       ['productCode', 'Product Code'],
-      ['hsnCode', 'HSN Code'],
-      ['quantity', 'Stock'],
-      ['mrpPrice', 'M.R.P Price'],
-      ['dpPrice', 'DP Price'],
-      ['discount', 'Coupon Discount'],
-      ['deliveryCharge', 'Delivery Charge'],
-      ['levelPoint', 'Level Point'],
-      ['bvPoint', 'B.V Point'],
-      ['reserveAmount', 'Reserve Amount'],
-      ['size', 'Size'],
-      ['color', 'Color'],
-      ['weight', 'Weight'],
-      ['dimension', 'Dimension'],
-      ['description', 'Description'],
-      ['specifications', 'Specifications'],
-      ['features', 'Features & Benefits']
+      ['hsnCode', 'HSN Code']
     ];
 
     const missingFields = requiredFields
@@ -48,15 +33,15 @@ function AddRepurchaseProducts() {
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const selectedImages = imageInputs.filter((input) => input.files && input.files.length > 0);
 
-    if (missingFields.length || selectedImages.length !== 5) {
+    if (missingFields.length || selectedImages.length === 0) {
       const alertParts = [];
 
       if (missingFields.length) {
         alertParts.push(`Please enter/select: ${missingFields.join(', ')}`);
       }
 
-      if (selectedImages.length !== 5) {
-        alertParts.push('Please select all 5 product images.');
+      if (selectedImages.length === 0) {
+        alertParts.push('Please select at least 1 product image.');
       }
 
       window.alert(alertParts.join('\n'));
