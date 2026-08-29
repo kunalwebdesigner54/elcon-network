@@ -46,7 +46,7 @@ const GenerateEPin = () => {
   };
 
   return (
-    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 110px)' }}>
       <h1 className="buyepin-title">Generate ePin</h1>
       
       <div className="ge-wallet-section" style={{ flexGrow: 1 }}>
