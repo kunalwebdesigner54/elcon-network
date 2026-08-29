@@ -399,3 +399,39 @@
     width: 100%;
   }
 }
+
+.mc-balance-cards {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.mc-balance-card {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--glass-shadow);
+}
+.mc-balance-card.mc-coupon-card {
+  background: rgba(0, 204, 102, 0.05);
+  border-color: rgba(0, 204, 102, 0.2);
+}
+.mc-balance-title {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+.mc-balance-amount {
+  font-size: 18px;
+  color: var(--text-main);
+  font-weight: bold;
+}
+.mc-coupon-card .mc-balance-amount {
+  color: #00cc66;
+}

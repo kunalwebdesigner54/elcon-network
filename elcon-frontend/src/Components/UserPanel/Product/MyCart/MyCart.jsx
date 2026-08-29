@@ -57,6 +57,7 @@ export default function MyCart(){
   const [couponWalletBalance, setCouponWalletBalance] = useState(0);
   const [summary, setSummary] = useState({ subtotal: 0, bvPoint: 0, appliedDiscount: 0 });
   const [deliveryAddress, setDeliveryAddress] = useState(null);
+  const [walletBalance, setWalletBalance] = useState(0);
 
   const loadCart = async () => {
     setLoading(true);
@@ -81,6 +82,7 @@ export default function MyCart(){
       const response = await getProfile();
       if (response?.success && response.data) {
         setDeliveryAddress(response.data);
+        setWalletBalance(response.data.walletBalance || 0);
       }
     } catch (err) {
       // Address will show fallback text
@@ -145,15 +147,20 @@ export default function MyCart(){
         )}
       </div>
 
+      <div className="mc-balance-cards">
+        <div className="mc-balance-card">
+          <div className="mc-balance-title">Wallet Balance</div>
+          <div className="mc-balance-amount">₹ {walletBalance.toFixed(2)}</div>
+        </div>
+        <div className="mc-balance-card mc-coupon-card">
+          <div className="mc-balance-title">Coupon Balance</div>
+          <div className="mc-balance-amount">₹ {couponWalletBalance.toFixed(2)}</div>
+        </div>
+      </div>
+
       <div className="mc-summary">
         <h4>Order Summery</h4>
         <div className="mc-row"><span>Total B.V Point =</span><strong>{summary.bvPoint}</strong></div>
-
-        <div className="mc-coupon-row">
-          <div className="mc-coupon-balance" style={{ color: '#00cc66', fontWeight: 'bold' }}>
-            Available Coupon Wallet Balance: ₹ {couponWalletBalance.toFixed(2)}
-          </div>
-        </div>
 
         <div className="mc-row"><span>Sub Total</span><strong>₹ {summary.subtotal.toFixed(2)}</strong></div>
         <div className="mc-row"><span>Shipping Charge</span><strong>₹ 0.00</strong></div>
