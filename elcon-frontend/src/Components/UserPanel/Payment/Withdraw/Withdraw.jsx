@@ -112,17 +112,20 @@ const Withdraw = () => {
   };
 
   return (
-    <div className="withdraw-wrapper">
-      <div className="withdraw-header">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-          <h2>Withdraw</h2>
+    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="withdraw-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <h1 className="buyepin-title" style={{ margin: 0, paddingLeft: 0, borderLeft: 'none' }}>Withdraw</h1>
+      </div>
+      
+      <div className="buyepin-single-card" style={{ flexGrow: 1, padding: '36px 32px' }}>
+        <div style={{ marginBottom: '24px' }}>
           {(memberDetails.name || memberDetails.memberId) && (
-            <div className="member-info-badge" style={{ background: 'rgba(255,255,255,0.1)', padding: '6px 14px', borderRadius: '20px', fontSize: '14px', fontWeight: '600', color: 'var(--text-main)', border: '1px solid var(--glass-border)' }}>
+            <div className="member-info-badge" style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '20px', fontSize: '15px', fontWeight: '600', color: 'var(--text-main)', border: '1px solid var(--glass-border)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <i className="fa-regular fa-user" style={{ color: '#00e5ff' }}></i>
               {memberDetails.name} {memberDetails.memberId ? `(${memberDetails.memberId})` : ''}
             </div>
           )}
         </div>
-      </div>
 
       {/* Wallet Balance Cards */}
       <div className="balance-cards-container">
@@ -159,11 +162,10 @@ const Withdraw = () => {
         </div>
       </div>
 
-      <div className="withdraw-container">
-        {/* Left Section - Withdrawal Amount */}
-        <div className="withdraw-left">
+      <div className="buyepin-single-flex">
+        <div className="buyepin-single-left">
           <div className="withdrawal-amount-card">
-            <h3 className="card-title">Withdrawal Amount</h3>
+            <h3 className="buyepin-section-title">Withdrawal Amount</h3>
 
             <div className="amount-input-section">
               <label className="amount-label">Enter Amount (₹)</label>
@@ -244,9 +246,9 @@ const Withdraw = () => {
         </div>
 
         {/* Right Section - Transfer Method */}
-        <div className="withdraw-right">
+        <div className="buyepin-single-right">
           <div className="transfer-method-card">
-            <h3 className="card-title">Transfer Method</h3>
+            <h3 className="buyepin-section-title">Transfer Method</h3>
 
             {/* Bank Transfer Option */}
             <div className="transfer-option">
@@ -296,40 +298,42 @@ const Withdraw = () => {
             </div>
 
             {/* Bank Account Details */}
-            <div className="bank-account-details">
-              <h4 className="details-title">Bank Account Details</h4>
-              <table className="details-table">
-                <tbody>
-                  <tr>
-                    <td className="detail-label">Bank Name</td>
-                    <td className="detail-value">{bankDetails.bankName}</td>
-                  </tr>
-                  <tr>
-                    <td className="detail-label">Bank Branch</td>
-                    <td className="detail-value">{bankDetails.branch}</td>
-                  </tr>
-                  <tr>
-                    <td className="detail-label">A/c Holder Name</td>
-                    <td className="detail-value">{bankDetails.accountHolder}</td>
-                  </tr>
-                  <tr>
-                    <td className="detail-label">A/c No.</td>
-                    <td className="detail-value">{bankDetails.accountNo}</td>
-                  </tr>
-                  <tr>
-                    <td className="detail-label">A/c Type</td>
-                    <td className="detail-value">{bankDetails.accountType}</td>
-                  </tr>
-                  <tr>
-                    <td className="detail-label">IFSC Code</td>
-                    <td className="detail-value">{bankDetails.ifscCode}</td>
-                  </tr>
-                  <tr className="upi-row">
-                    <td className="detail-label">UPI ID :</td>
-                    <td className="detail-value">{bankDetails.upiId}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="bank-account-details" style={{ padding: '24px', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <h4 className="details-title" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '18px', marginBottom: '20px', color: '#00e5ff', borderBottom: '1px solid rgba(0, 229, 255, 0.2)', paddingBottom: '12px' }}>
+                <i className="fa-solid fa-building-columns"></i>
+                Bank Account Details
+              </h4>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div>
+                  <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Bank Name</div>
+                  <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.bankName}</div>
+                </div>
+                <div>
+                  <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Branch</div>
+                  <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.branch}</div>
+                </div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>A/c Holder Name</div>
+                  <div style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>{bankDetails.accountHolder}</div>
+                </div>
+                <div style={{ gridColumn: '1 / -1', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Account Number</div>
+                  <div style={{ color: '#00e5ff', fontSize: '20px', fontWeight: '700', letterSpacing: '2px' }}>{bankDetails.accountNo}</div>
+                </div>
+                <div>
+                  <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Account Type</div>
+                  <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.accountType}</div>
+                </div>
+                <div>
+                  <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>IFSC Code</div>
+                  <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.ifscCode}</div>
+                </div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>UPI ID</div>
+                  <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.upiId}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

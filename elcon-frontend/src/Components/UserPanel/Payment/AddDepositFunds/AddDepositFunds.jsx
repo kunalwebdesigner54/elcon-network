@@ -123,20 +123,23 @@ function AddDepositFunds() {
   };
 
   return (
-    <div className="withdraw-wrapper deposit-funds-page">
-      <div className="withdraw-header deposit-funds-header">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <h2>Fund Deposit</h2>
+    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="withdraw-header deposit-funds-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <h1 className="buyepin-title" style={{ margin: 0, paddingLeft: 0, borderLeft: 'none' }}>Fund Deposit</h1>
+        <button type="button" className="deposit-history-link" onClick={() => navigate('/user/deposit/history')}>
+          <i className="fa-solid fa-clock-rotate-left" style={{ marginRight: '8px' }}></i> Deposit History
+        </button>
+      </div>
+
+      <div className="buyepin-single-card deposit-funds-page" style={{ flexGrow: 1, padding: '36px 32px' }}>
+        <div style={{ marginBottom: '24px' }}>
           {(memberDetails.name || memberDetails.memberId) && (
-            <div className="member-info-badge" style={{ background: 'rgba(255,255,255,0.1)', padding: '6px 14px', borderRadius: '20px', fontSize: '14px', fontWeight: '600', color: 'var(--text-main)', border: '1px solid var(--glass-border)', display: 'inline-block' }}>
+            <div className="member-info-badge" style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '20px', fontSize: '15px', fontWeight: '600', color: 'var(--text-main)', border: '1px solid var(--glass-border)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <i className="fa-regular fa-user" style={{ color: '#00e5ff' }}></i>
               {memberDetails.name} {memberDetails.memberId ? `(${memberDetails.memberId})` : ''}
             </div>
           )}
         </div>
-        <button type="button" className="deposit-history-link" onClick={() => navigate('/user/deposit/history')}>
-          + ADD FUND
-        </button>
-      </div>
 
       <div className="balance-cards-container deposit-stats-grid">
         {paymentStats.map((item) => (
@@ -150,10 +153,10 @@ function AddDepositFunds() {
         ))}
       </div>
 
-      <div className="withdraw-container deposit-funds-layout">
-        <div className="withdraw-left deposit-left">
+      <div className="buyepin-single-flex">
+        <div className="buyepin-single-left">
           <div className="withdrawal-amount-card deposit-form-card">
-            <h3 className="card-title">Deposit Amount</h3>
+            <h3 className="buyepin-section-title">Deposit Amount</h3>
 
             <div className="amount-input-section">
               <label className="amount-label">Enter Amount (₹)</label>
@@ -186,9 +189,10 @@ function AddDepositFunds() {
               </div>
             </div>
 
-            <label className="deposit-upload-box">
-              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleProofUpload} />
-              <span>{paymentProof || 'Upload Payment Proof Screen Shot'}</span>
+            <label className="deposit-upload-box" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '30px', border: '2px dashed #4a5568', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', transition: 'all 0.3s' }}>
+              <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: '32px', color: '#00e5ff', marginBottom: '12px' }}></i>
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleProofUpload} style={{ display: 'none' }} />
+              <span style={{ color: '#a0aec0', fontSize: '14px', fontWeight: '500' }}>{paymentProof || 'Click to Upload Payment Proof Screenshot'}</span>
             </label>
 
             <div className="password-field deposit-password-field">
@@ -217,9 +221,9 @@ function AddDepositFunds() {
           </div>
         </div>
 
-        <div className="withdraw-right deposit-right">
+        <div className="buyepin-single-right">
           <div className="transfer-method-card deposit-method-card">
-            <h3 className="card-title">Account Details to Deposit Amount</h3>
+            <h3 className="buyepin-section-title">Account Details</h3>
 
             <div className={`transfer-option deposit-method-option ${selectedMethod === 'bank' ? 'is-active' : ''}`}>
               <label className="transfer-label" htmlFor="deposit-bank-transfer">
@@ -273,39 +277,40 @@ function AddDepositFunds() {
                 </div>
               </div>
             ) : (
-              <div className="bank-account-details deposit-bank-panel">
-                <h4 className="details-title deposit-bank-title">Bank Account Details</h4>
-                <table className="details-table deposit-bank-table">
-                  <tbody>
-                    <tr>
-                      <td className="detail-label">Bank Name</td>
-                      <td className="detail-value">{bankDetails.bankName}</td>
-                    </tr>
-                    <tr>
-                      <td className="detail-label">Bank Branch</td>
-                      <td className="detail-value">{bankDetails.branch}</td>
-                    </tr>
-                    <tr>
-                      <td className="detail-label">A/c Holder Name</td>
-                      <td className="detail-value">{bankDetails.accountHolder}</td>
-                    </tr>
-                    <tr>
-                      <td className="detail-label">A/c No.</td>
-                      <td className="detail-value">{bankDetails.accountNo}</td>
-                    </tr>
-                    <tr>
-                      <td className="detail-label">A/c Type</td>
-                      <td className="detail-value">{bankDetails.accountType}</td>
-                    </tr>
-                    <tr>
-                      <td className="detail-label">IFSC Code</td>
-                      <td className="detail-value">{bankDetails.ifscCode}</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div className="bank-account-details deposit-bank-panel" style={{ padding: '24px', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <h4 className="details-title deposit-bank-title" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '18px', marginBottom: '20px', color: '#00e5ff', borderBottom: '1px solid rgba(0, 229, 255, 0.2)', paddingBottom: '12px' }}>
+                  <i className="fa-solid fa-building-columns"></i>
+                  Bank Account Details
+                </h4>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                  <div>
+                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Bank Name</div>
+                    <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.bankName}</div>
+                  </div>
+                  <div>
+                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Branch</div>
+                    <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.branch}</div>
+                  </div>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>A/c Holder Name</div>
+                    <div style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>{bankDetails.accountHolder}</div>
+                  </div>
+                  <div style={{ gridColumn: '1 / -1', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Account Number</div>
+                    <div style={{ color: '#00e5ff', fontSize: '20px', fontWeight: '700', letterSpacing: '2px' }}>{bankDetails.accountNo}</div>
+                  </div>
+                  <div>
+                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Account Type</div>
+                    <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.accountType}</div>
+                  </div>
+                  <div>
+                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>IFSC Code</div>
+                    <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.ifscCode}</div>
+                  </div>
+                </div>
               </div>
             )}
-          </div>
         </div>
       </div>
     </div>
