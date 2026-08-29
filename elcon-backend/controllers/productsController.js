@@ -99,7 +99,7 @@ exports.seedProducts = async () => {
 exports.getProducts = async (req, res) => {
   try {
     const type = getQueryType(req);
-    const filter = {};
+    const filter = { status: 'SHOWING' };
 
     if (type) {
       filter.type = type;
