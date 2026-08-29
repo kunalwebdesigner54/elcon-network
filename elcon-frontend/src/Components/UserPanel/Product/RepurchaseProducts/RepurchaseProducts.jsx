@@ -8,6 +8,16 @@ import { resolveProductImage } from '../productImages';
 function RepurchaseProducts() {
   const navigate = useNavigate();
   const [repurchaseProducts, setRepurchaseProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const categories = ['All', ...new Set(repurchaseProducts.map(p => p.category).filter(Boolean))];
+
+  const filteredProducts = repurchaseProducts.filter(p => {
+    const matchCategory = selectedCategory === 'All' || p.category === selectedCategory;
+    const matchSearch = !searchQuery || (p.productName || p.name || '').toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCategory && matchSearch;
+  });
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -40,8 +50,27 @@ function RepurchaseProducts() {
       <h2 className="page-heading">Repurchase Products</h2>
       <div className="user-panel user-product-panel">
 
+        <div className="product-filter-bar" style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
+          <input 
+            type="text" 
+            placeholder="Search products..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ flex: 1, minWidth: '200px', padding: '10px 15px', borderRadius: '8px', background: 'var(--bg-dark)', color: 'var(--text-main)', border: '1px solid var(--glass-border-light)', outline: 'none' }}
+          />
+          <select 
+            value={selectedCategory} 
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            style={{ padding: '10px 15px', borderRadius: '8px', background: 'var(--bg-dark)', color: 'var(--text-main)', border: '1px solid var(--glass-border-light)', outline: 'none', minWidth: '150px' }}
+          >
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat === 'All' ? 'All Categories' : cat}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="user-product-grid">
-          {repurchaseProducts.map((product) => {
+          {filteredProducts.map((product) => {
             const stockStatus = (product.quantity !== undefined && product.quantity !== null && product.quantity !== '') 
                 ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock') 
                 : (product.stock === 'Out of Stock' ? 'Out of Stock' : 'In Stock');
