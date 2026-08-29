@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { getEpinList, updateEpinStatus, transferEpin, getEpinTransferHistory } from '../../api/managementService';
 
 const statusClass = (status) => {
@@ -7,7 +8,8 @@ const statusClass = (status) => {
   return 'epin-chip-unused';
 };
 
-export default function EpinTablePage({ title, heading, statusFilter, mode, showActions = true }) {
+export default function EpinTablePage({ title, heading, statusFilter, mode, showActions = true, showTabs = false }) {
+  const location = useLocation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
@@ -75,6 +77,15 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
   return (
     <div>
       <h1 className="page-title">{title}</h1>
+      {showTabs && (
+        <div className="epin-tabs-container" style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center' }}>
+          <Link to="/user/epin/list-all-epin" style={{ color: location.pathname.includes('list-all-epin') || location.pathname.includes('all-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>All epins</Link>
+          <span style={{ color: '#4a5568' }}>|</span>
+          <Link to="/user/epin/unused-epin" style={{ color: location.pathname.includes('unused-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>Unused epin</Link>
+          <span style={{ color: '#4a5568' }}>|</span>
+          <Link to="/user/epin/used-epin" style={{ color: location.pathname.includes('used-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>Used epin</Link>
+        </div>
+      )}
       <div className="panel">
         <div className="epin-header-row"><h2 className="epin-title">{heading}</h2></div>
         <div className="epin-filter-grid">
