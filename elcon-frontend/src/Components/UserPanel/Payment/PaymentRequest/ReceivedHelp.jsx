@@ -34,6 +34,7 @@ const ReceivedHelp = () => {
         name: donation.fromName || 'N/A',
         amount: donation.amount || 0,
         rank: donation.level || '-',
+        directs: donation.directs || 0,
         requestDate: donation.dateRaw ? new Date(donation.dateRaw).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : (donation.date || '-'),
         dateRaw: donation.dateRaw,
         transactionId: donation.donationId || '-',
@@ -224,7 +225,9 @@ const ReceivedHelp = () => {
                     <th>S.NO</th>
                     <th>DONAR MID</th>
                     <th>DONAR MEMBER NAME</th>
-                    <th>AMOUNT</th>
+                    <th>DIRECTS</th>
+                    <th>LEVEL DEPTH</th>
+                    <th>AMOUNT (₹)</th>
                     <th>UPGRADE</th>
                     <th>REQUEST DATE</th>
                     <th>TRASACTION ID</th>
@@ -241,8 +244,10 @@ const ReceivedHelp = () => {
                       <td>{row.sNo}</td>
                       <td>{row.memberId}</td>
                       <td>{row.name}</td>
-                      <td>{row.amount}</td>
+                      <td>{row.directs || 0}</td>
                       <td>{row.rank}</td>
+                      <td style={{ color: '#27ae60', fontWeight: 'bold' }}>₹ {row.amount?.toLocaleString('en-IN')}</td>
+                      <td>Level {row.rank}</td>
                       <td>{row.requestDate}</td>
                       <td>{row.transactionId}</td>
                       <td>{row.utrNumber}</td>
