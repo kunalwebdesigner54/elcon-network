@@ -3,8 +3,8 @@ import { getAllDonations, updateDonationStatus } from '../../../../api/donations
 import './DonationReport.css';
 
 const exportColumns = [
-  'S.No', 'Donor Member ID', 'Donor Member Name', 'Receiver Member ID', 'Receiver Member Name', 'D. Amount',
-  'Upgrade', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
+  'S.No', 'Donor Member ID', 'Donor Member Name', 'Receiver Member ID', 'Receiver Member Name', 'Amount (₹)',
+  'Add Upgrade', 'Directs', 'Level Depth', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
 ];
 
 const rankLabels = {
@@ -126,7 +126,9 @@ function DonationReport() {
     row.receiverMemberId,
     row.receiverMemberName,
     row.amount,
-    row.rank,
+    '---', // Add Upgrade
+    '---', // Directs
+    row.rank, // Level Depth
     row.requestDate,
     row.approveDate,
     row.transactionId,
@@ -248,8 +250,10 @@ function DonationReport() {
                     <th>DONAR MEMBER NAME</th>
                     <th>RECEIVER MID</th>
                     <th>RECEIVER MEMBER NAME</th>
-                    <th>AMOUNT</th>
-                    <th>UPGRADE</th>
+                    <th>AMOUNT (₹)</th>
+                    <th>ADD UPGRADE</th>
+                    <th>DIRECTS</th>
+                    <th>LEVEL DEPTH</th>
                     <th>REQUEST DATE</th>
                     <th>APPROVE DATE</th>
                     <th>TRANSACTION ID</th>
@@ -269,6 +273,8 @@ function DonationReport() {
                       <td>{row.receiverMemberId}</td>
                       <td>{row.receiverMemberName}</td>
                       <td>{row.amount}</td>
+                      <td>---</td>
+                      <td>---</td>
                       <td>{row.rank}</td>
                       <td>{row.requestDate}</td>
                       <td>{row.approveDate}</td>
