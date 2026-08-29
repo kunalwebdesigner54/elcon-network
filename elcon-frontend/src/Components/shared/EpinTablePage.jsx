@@ -11,6 +11,7 @@ const statusClass = (status) => {
 export default function EpinTablePage({ title, heading, statusFilter, mode, showActions = true, showTabs = false }) {
   const location = useLocation();
   const [rows, setRows] = useState([]);
+  const [counts, setCounts] = useState({ available: 0, used: 0 });
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
   const [filters, setFilters] = useState({ epin: '', generatedBy: '', currentOwner: '', memberId: '', fromDate: '', toDate: '' });
@@ -25,8 +26,12 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
       }
       const response = await getEpinList(statusFilter ? { status: statusFilter } : {});
       setRows(response.epins || []);
+      if (response.counts) {
+        setCounts(response.counts);
+      }
     } catch (error) {
       setRows([]);
+      setCounts({ available: 0, used: 0 });
     } finally {
       setLoading(false);
     }
@@ -77,6 +82,20 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
   return (
     <div>
       <h1 className="page-title">{title}</h1>
+      
+      {showTabs && !isTransferHistory && (
+        <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+          <div style={{ background: 'linear-gradient(90deg, rgba(0,229,255,0.1) 0%, rgba(0,229,255,0.05) 100%)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '15px 25px', borderRadius: '12px', flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ color: '#a0aec0', fontSize: '1.1rem', fontWeight: '500' }}>Available ePins</span>
+            <span style={{ color: '#00e5ff', fontSize: '1.5rem', fontWeight: 'bold' }}>{counts.available}</span>
+          </div>
+          <div style={{ background: 'linear-gradient(90deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.05) 100%)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '15px 25px', borderRadius: '12px', flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ color: '#a0aec0', fontSize: '1.1rem', fontWeight: '500' }}>Used ePins</span>
+            <span style={{ color: '#ef4444', fontSize: '1.5rem', fontWeight: 'bold' }}>{counts.used}</span>
+          </div>
+        </div>
+      )}
+
       {showTabs && (
         <div className="epin-tabs-container" style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center' }}>
           <Link to="/user/epin/list-all-epin" style={{ color: location.pathname.includes('list-all-epin') || location.pathname.includes('all-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>All epins</Link>

@@ -95,26 +95,35 @@ exports.updateEpinRequestStatus = async (req, res) => {
 exports.getEpins = async (req, res) => {
   try {
     const { status, generatedBy, currentOwner, epin } = req.query;
-    const filter = {};
-    if (status) filter.status = status;
-    if (epin) filter.epinNo = new RegExp(epin, 'i');
-    if (isAdmin(req)) {
-      if (generatedBy) filter.generatedBy = generatedBy;
-      if (currentOwner) filter.currentOwner = currentOwner;
-    } else {
+    const baseFilter = {};
+    if (!isAdmin(req)) {
       const identifiers = getUserIdentifiers(req);
       if (!identifiers.length) {
         return res.status(403).json({ success: false, message: 'Not authorized to view ePins' });
       }
-      filter.$or = [
+      baseFilter.$or = [
         { generatedBy: { $in: identifiers } },
         { currentOwner: { $in: identifiers } },
         { usedBy: { $in: identifiers } },
         { deletedBy: { $in: identifiers } },
       ];
     }
+
+    const [available, used] = await Promise.all([
+      Epin.countDocuments({ ...baseFilter, status: 'Unused' }),
+      Epin.countDocuments({ ...baseFilter, status: 'Used' }),
+    ]);
+
+    const filter = { ...baseFilter };
+    if (status) filter.status = status;
+    if (epin) filter.epinNo = new RegExp(epin, 'i');
+    if (isAdmin(req)) {
+      if (generatedBy) filter.generatedBy = generatedBy;
+      if (currentOwner) filter.currentOwner = currentOwner;
+    }
+
     const rows = await Epin.find(filter).sort({ createdAt: -1 });
-    res.json({ success: true, epins: rows.map(mapEpin) });
+    res.json({ success: true, epins: rows.map(mapEpin), counts: { available, used } });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
