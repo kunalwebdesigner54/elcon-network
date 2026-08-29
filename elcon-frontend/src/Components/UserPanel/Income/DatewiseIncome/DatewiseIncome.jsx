@@ -2,8 +2,10 @@ import '../../Common/UserLayout.css';
 import './DatewiseIncome.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getMyDonations } from '../../../../api/donationsService';
+import { getUser } from '../../../../utils/auth';
 
 function DatewiseIncome() {
+  const currentUser = getUser() || {};
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -34,8 +36,8 @@ function DatewiseIncome() {
       .map(([date, group], index) => ({
         sNo: index + 1,
         incomeDate: date,
-        memberId: group.latest.toMemberId,
-        memberName: group.latest.toName,
+        memberId: group.latest.toMemberId || currentUser.memberId,
+        memberName: group.latest.toName || currentUser.name || '---',
         totalIds: group.count,
         levelIncome: group.amount * 0.5,
         totalBvPoint: group.amount * 0.5,
@@ -93,10 +95,10 @@ function DatewiseIncome() {
                   <td>{row.sNo}</td>
                   <td>{row.incomeDate}</td>
                   <td>{row.memberId}</td>
-                  <td>{row.memberName || '---'}</td>
+                  <td>{row.memberName}</td>
                   <td>{row.totalIds}</td>
                   <td>{row.levelIncome.toFixed(2)}</td>
-                  <td>{row.totalBvPoint}</td>
+                  <td>{row.totalBvPoint.toFixed(2)}</td>
                   <td>{row.repurchaseIncome.toFixed(2)}</td>
                   <td>{row.dailyIncome.toFixed(2)}</td>
                 </tr>
