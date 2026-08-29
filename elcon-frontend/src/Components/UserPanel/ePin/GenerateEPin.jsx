@@ -33,7 +33,7 @@ const GenerateEPin = () => {
     }
   }, []);
 
-  const [form, setForm] = useState({ epinName: 'Activation', qty: '1', cost: '10', generatedForId: defaultGeneratedForId });
+  const [form, setForm] = useState({ epinName: 'Activation', qty: '1', cost: '10', generatedForId: defaultGeneratedForId, transactionPassword: '' });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -42,7 +42,7 @@ const GenerateEPin = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await generateEpins({ epinName: form.epinName, generatedBy: form.generatedForId, currentOwner: form.generatedForId, qty: form.qty, cost: form.cost });
+    await generateEpins({ epinName: form.epinName, generatedBy: form.generatedForId, currentOwner: form.generatedForId, qty: form.qty, cost: form.cost, transactionPassword: form.transactionPassword });
   };
 
   return (
@@ -94,6 +94,10 @@ const GenerateEPin = () => {
                     <div className="buyepin-input-group">
                       <label>Generated For ID</label>
                       <input type="text" name="generatedForId" value={form.generatedForId} onChange={handleChange} />
+                    </div>
+                    <div className="buyepin-input-group">
+                      <label>Transaction Password <span className="buyepin-required">*</span></label>
+                      <input type="password" name="transactionPassword" value={form.transactionPassword} onChange={handleChange} required placeholder="Enter Transaction or Login Password" />
                     </div>
                   </div>
                 </div>

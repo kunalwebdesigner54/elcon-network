@@ -125,8 +125,28 @@ exports.generateEpins = async (req, res) => {
     const qty = Math.max(1, Number(req.body.qty || req.body.numberOfEpins || 1));
     const epinName = String(req.body.epinName || 'Activation').trim();
     const identifiers = getUserIdentifiers(req);
-    if (!isAdmin(req) && !identifiers.length) {
-      return res.status(403).json({ success: false, message: 'Not authorized to generate ePins' });
+    if (!isAdmin(req)) {
+      if (!identifiers.length) {
+        return res.status(403).json({ success: false, message: 'Not authorized to generate ePins' });
+      }
+
+      const transactionPassword = req.body.transactionPassword;
+      if (!transactionPassword) {
+        return res.status(400).json({ success: false, message: 'Transaction password is required' });
+      }
+      
+      const user = await User.findById(req.user.id).select('+password +transactionPassword');
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      const isPasswordValid = user.transactionPassword
+        ? await user.matchTransactionPassword(transactionPassword)
+        : await user.matchPassword(transactionPassword);
+
+      if (!isPasswordValid) {
+        return res.status(401).json({ success: false, message: 'Transaction password is incorrect' });
+      }
     }
     const generatedBy = isAdmin(req)
       ? String(req.body.generatedBy || req.user?.memberId || req.user?.epin || 'ADMIN').trim()
@@ -184,8 +204,28 @@ exports.transferEpin = async (req, res) => {
     const epin = await Epin.findOne({ epinNo: req.params.epinNo });
     if (!epin) return res.status(404).json({ success: false, message: 'ePin not found' });
     const identifiers = getUserIdentifiers(req);
-    if (!isAdmin(req) && !identifiers.includes(epin.currentOwner)) {
-      return res.status(403).json({ success: false, message: 'You can only transfer your own ePins' });
+    if (!isAdmin(req)) {
+      if (!identifiers.includes(epin.currentOwner)) {
+        return res.status(403).json({ success: false, message: 'You can only transfer your own ePins' });
+      }
+
+      const transactionPassword = req.body.transactionPassword;
+      if (!transactionPassword) {
+        return res.status(400).json({ success: false, message: 'Transaction password is required' });
+      }
+
+      const user = await User.findById(req.user.id).select('+password +transactionPassword');
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      const isPasswordValid = user.transactionPassword
+        ? await user.matchTransactionPassword(transactionPassword)
+        : await user.matchPassword(transactionPassword);
+
+      if (!isPasswordValid) {
+        return res.status(401).json({ success: false, message: 'Transaction password is incorrect' });
+      }
     }
     const toMember = String(req.body.toMember || '').trim();
     if (!toMember) {

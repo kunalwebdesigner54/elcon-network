@@ -6,6 +6,7 @@ export default function TransferEPin() {
   const [selectedEpin, setSelectedEpin] = useState('');
   const [toMember, setToMember] = useState('');
   const [amount, setAmount] = useState('');
+  const [transactionPassword, setTransactionPassword] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
@@ -47,11 +48,13 @@ export default function TransferEPin() {
       await transferEpin(selectedEpin, {
         toMember: toMember.trim(),
         amount: amount ? Number(amount) : selectedRecord?.cost,
+        transactionPassword,
       });
       setMessage('ePin transferred successfully.');
       setSelectedEpin('');
       setToMember('');
       setAmount('');
+      setTransactionPassword('');
       const response = await getEpinList({ status: 'Unused' });
       setEpins(response.epins || []);
     } catch (err) {
@@ -77,6 +80,7 @@ export default function TransferEPin() {
             </select>
             <input type="text" placeholder="RECIPIENT MEMBER ID" aria-label="Recipient Member ID" value={toMember} onChange={(event) => setToMember(event.target.value)} disabled={submitting} />
             <input type="number" placeholder="AMOUNT" aria-label="Amount" value={amount} onChange={(event) => setAmount(event.target.value)} disabled={submitting} />
+            <input type="password" placeholder="TRANSACTION PASSWORD" aria-label="Transaction Password" value={transactionPassword} onChange={(event) => setTransactionPassword(event.target.value)} disabled={submitting} required />
             <button className="user-btn-blue" type="submit" disabled={submitting || loading}>{submitting ? 'TRANSFER...' : 'TRANSFER'}</button>
           </div>
         </form>
