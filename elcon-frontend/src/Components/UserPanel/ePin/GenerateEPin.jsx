@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import "./GenerateEPin.css";
 import { generateEpins } from '../../../api/managementService';
 import { getUser } from '../../../utils/auth';
