@@ -158,10 +158,6 @@ export default function MyCart(){
             <div className="mc-balance-amount">₹ {couponWalletBalance.toFixed(2)}</div>
           </div>
         </div>
-        <div className="mc-row mc-wallet-bv">
-          <span>Total B.V Point =</span>
-          <strong>{summary.bvPoint}</strong>
-        </div>
       </div>
 
       <div className="mc-summary">
@@ -170,6 +166,11 @@ export default function MyCart(){
         <div className="mc-row"><span>Shipping Charge</span><strong>₹ 0.00</strong></div>
         <div className="mc-row coupon"><span>Coupon Discount</span><strong>- ₹ {(summary.appliedDiscount || 0).toFixed(2)}</strong></div>
         <div className="mc-total-row"><span>Total Amount</span><strong>₹ {(summary.subtotal - (summary.appliedDiscount || 0)).toFixed(2)}</strong></div>
+        
+        <div className="mc-row mc-address-bv" style={{ borderTop: '1px solid var(--glass-border)', marginTop: '8px', paddingTop: '12px', paddingBottom: '0' }}>
+          <span>Total B.V Point =</span>
+          <strong>{summary.bvPoint}</strong>
+        </div>
 
         <div className="mc-address">
           <div className="mc-address-head">Product Delivery Address
