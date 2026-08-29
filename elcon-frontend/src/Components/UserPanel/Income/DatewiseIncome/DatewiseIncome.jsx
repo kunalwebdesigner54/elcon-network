@@ -35,9 +35,10 @@ function DatewiseIncome() {
         sNo: index + 1,
         incomeDate: date,
         memberId: group.latest.toMemberId,
+        memberName: group.latest.toName,
         totalIds: group.count,
         levelIncome: group.amount * 0.5,
-        totalBvPoint: Math.round(group.amount),
+        totalBvPoint: group.amount * 0.5,
         repurchaseIncome: group.amount * 0.5,
         dailyIncome: group.amount,
       }));
