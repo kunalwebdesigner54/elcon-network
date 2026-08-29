@@ -3,7 +3,27 @@ import "./GenerateEPin.css";
 import { generateEpins } from '../../../api/managementService';
 import { getUser } from '../../../utils/auth';
 
+import { getProfile } from '../../../api/authService';
+import { useNavigate } from "react-router-dom";
+
 const GenerateEPin = () => {
+  const navigate = useNavigate();
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await getProfile();
+        if (response?.success && response.data) {
+          setWalletBalance(response.data.walletBalance || 0);
+        }
+      } catch (err) {
+        console.error("Failed to fetch wallet balance", err);
+      }
+    };
+    fetchBalance();
+  }, []);
+
   const defaultGeneratedForId = useMemo(() => {
     try {
       const storedUser = getUser() || {};
@@ -28,6 +48,21 @@ const GenerateEPin = () => {
   return (
     <div className="buyepin-container">
       <h1 className="buyepin-title">Generate ePin</h1>
+      
+      <div className="ge-wallet-section">
+        <div className="ge-balance-cards">
+          <div className="ge-balance-card">
+            <div className="ge-balance-title">Wallet Balance</div>
+            <div className="ge-balance-amount">₹ {walletBalance.toFixed(2)}</div>
+          </div>
+          <div className="ge-balance-card ge-add-fund-card">
+            <button type="button" className="ge-add-fund-btn" onClick={() => navigate('/user/deposit/add-funds')}>
+              + Add Fund
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div className="buyepin-panel">
         <form className="buyepin-form-grid" onSubmit={handleSubmit}>
           <div className="buyepin-section buyepin-single-card">
