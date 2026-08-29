@@ -46,10 +46,10 @@ const GenerateEPin = () => {
   };
 
   return (
-    <div className="buyepin-container">
+    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column' }}>
       <h1 className="buyepin-title">Generate ePin</h1>
       
-      <div className="ge-wallet-section">
+      <div className="ge-wallet-section" style={{ flexGrow: 1 }}>
         <div className="ge-balance-cards">
           <div className="ge-balance-card">
             <div className="ge-balance-title">Wallet Balance</div>
