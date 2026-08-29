@@ -228,7 +228,7 @@ const ReceivedHelp = () => {
                     <th>DIRECTS</th>
                     <th>LEVEL DEPTH</th>
                     <th>AMOUNT (₹)</th>
-                    <th>UPGRADE</th>
+                    <th>ADD UPGRADE</th>
                     <th>REQUEST DATE</th>
                     <th>TRASACTION ID</th>
                     <th>UTR NUMBER</th>
