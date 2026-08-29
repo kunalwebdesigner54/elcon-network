@@ -43,9 +43,9 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => (
     <div className="mc-divider"></div>
 
     <div className="mc-item-footer">
-      <span>Coupon : {item.discount || 0}</span>
+      <span>Coupon : {(item.discount || 0) * (item.quantity || 1)}</span>
       <span className="mc-separator">|</span>
-      <span>BV Point : {item.bvPoint || 0}</span>
+      <span>BV Point : {(item.bvPoint || 0) * (item.quantity || 1)}</span>
     </div>
   </div>
 )
