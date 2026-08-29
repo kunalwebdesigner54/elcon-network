@@ -106,6 +106,7 @@ const GenerateEPin = () => {
                 </div>
               </div>
             </div>
+            </div>
           </form>
         </div>
       </div>

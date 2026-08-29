@@ -314,6 +314,8 @@ function AddDepositFunds() {
         </div>
       </div>
     </div>
+    </div>
+    </div>
   );
 }
 
