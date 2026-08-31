@@ -105,7 +105,7 @@ exports.getProducts = async (req, res) => {
       filter.type = type;
     }
 
-    const products = await Product.find(filter).sort({ createdAt: 1 });
+    const products = await Product.find(filter);
 
     res.status(200).json({
       success: true,
