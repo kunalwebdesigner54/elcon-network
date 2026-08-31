@@ -76,8 +76,7 @@ function UserMyRank() {
             {rankProgressionData.map((rank, index) => (
               <div
                 key={index}
-                className={`user-rank-item ${expandedRank === index ? 'user-rank-item-expanded' : ''}`}
-                onClick={() => toggleRank(index)}
+                className="user-rank-item"
               >
                 <div className="user-rank-item-header">
                   <div className="user-rank-circle">
@@ -87,25 +86,7 @@ function UserMyRank() {
                     <span className="user-rank-item-name">{rank.name}</span>
                     <span className="user-rank-item-earning">{formatCurrency(rank.earning)}</span>
                   </div>
-                  <div className="user-rank-expand-icon">
-                    {expandedRank === index ? (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                    ) : (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    )}
-                  </div>
                 </div>
-                {expandedRank === index && (
-                  <div className="user-rank-item-detail-wrapper expanded">
-                    <div className="user-rank-item-detail">
-                      <div className="user-rank-detail-row">
-                        <span style={{ color: '#fff' }}>Target Earning:</span>
-                        <strong style={{ color: '#00E5FF' }}>{formatCurrency(rank.targetEarning)}</strong>
-                      </div>
-                      <p style={{ color: '#94A3B8' }}>Achieve this prestigious rank with 10 Active Directs and <strong style={{ color: '#00E5FF' }}>{formatCurrency(rank.upgradeAmount)}</strong> ID upgrade donation contribution.</p>
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
           </div>
