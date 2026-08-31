@@ -108,6 +108,11 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
           <button type="button" className="admin-product-order-search-btn">SEARCH</button>
         </div>
 
+        <div className="btn-row admin-product-order-export-row" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '14px' }}>
+          <button type="button" className="btn-outline admin-product-order-export-btn" style={{ minWidth: '72px', padding: '6px 12px', fontSize: '13px', fontWeight: '600', border: '1px solid var(--primary)', color: 'var(--primary)', borderRadius: '6px', background: 'transparent', cursor: 'pointer' }}>XLS</button>
+          <button type="button" className="btn-outline admin-product-order-export-btn" style={{ minWidth: '72px', padding: '6px 12px', fontSize: '13px', fontWeight: '600', border: '1px solid var(--primary)', color: 'var(--primary)', borderRadius: '6px', background: 'transparent', cursor: 'pointer' }}>PDF</button>
+        </div>
+
         <div className="admin-product-order-table-wrapper">
           <table className="admin-product-order-table">
             <thead>
