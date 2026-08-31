@@ -1,0 +1,80 @@
+.admin-product-franchise-container {
+  padding: 20px;
+  background-color: #f4f7f6;
+  min-height: 100vh;
+}
+
+.admin-product-franchise-title {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.admin-product-franchise-form-card,
+.admin-product-franchise-table-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+}
+
+.admin-product-franchise-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  align-items: end;
+}
+
+.admin-product-franchise-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-product-franchise-form label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.admin-product-franchise-form select,
+.admin-product-franchise-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.admin-product-franchise-submit-btn {
+  padding: 11px 20px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.admin-product-franchise-submit-btn:hover {
+  background: #0056b3;
+}
+
+.admin-product-franchise-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.admin-product-franchise-table th,
+.admin-product-franchise-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.admin-product-franchise-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #333;
+}

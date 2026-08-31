@@ -66,6 +66,12 @@ const orderSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    franchiseId: {
+      type: String,
+      trim: true,
+      default: null,
+      index: true,
+    },
     orderNo: {
       type: String,
       required: true,

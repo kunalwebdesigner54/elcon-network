@@ -26,6 +26,12 @@ import TransferHistory from './Components/Admin/ePin/TransferHistory';
 import EPinTransferHistory from './Components/UserPanel/ePin/EPinTransferHistory';
 import DeletedEPin from './Components/UserPanel/ePin/DeletedEPin';
 import FranchiseDeliveryReport from './Components/UserPanel/ePin/FranchiseDeliveryReport/FranchiseDeliveryReport';
+
+import FranchiseProductStock from './Components/UserPanel/Franchise/FranchiseProductStock';
+import FranchiseProductSell from './Components/UserPanel/Franchise/FranchiseProductSell';
+import FranchiseSalesReport from './Components/UserPanel/Franchise/FranchiseSalesReport';
+
+import AdminProductFranchise from './Components/Admin/ProductFranchise/AdminProductFranchise';
 import AdminLogin from './Components/AdminLogin';
 import ProtectedRoute from './Components/ProtectedRoute';
 import AdminRoute from './Components/AdminRoute';
@@ -203,6 +209,10 @@ function App() {
           <Route path="epin-franchise/epin-franchise-list" element={<EpinFranchiseList />} />
           <Route path="epin/franchise-delivery-report" element={<FranchiseDeliveryReport />} />
 
+          <Route path="product-franchise/stock" element={<FranchiseProductStock />} />
+          <Route path="product-franchise/sell" element={<FranchiseProductSell />} />
+          <Route path="product-franchise/sales-report" element={<FranchiseSalesReport />} />
+
           <Route path="transactions/main-wallet" element={<UserBlankPage />} />
           <Route path="transactions/transaction-history" element={<TransactionHistory />} />
 
@@ -324,6 +334,11 @@ function App() {
 
           <Route path="support/support-section" element={<AdminBlankPage />} />
           <Route path="support/support-tickets" element={<TicketHistory />} />
+          <Route path="epin-franchise/create" element={<CreateEpinFranchise />} />
+          <Route path="epin-franchise/list" element={<EpinFranchiseList />} />
+          <Route path="product-franchise/manage" element={<AdminProductFranchise />} />
+
+          <Route path="users/joining-report" element={<AdminBlankPage />} />
           <Route path="support/chat-integration" element={<AdminBlankPage />} />
 
           <Route path="rank/rank-holders-list" element={<AdminRankHoldersList />} />

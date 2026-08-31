@@ -71,6 +71,15 @@ const menuItems = [
     ]
   },
   {
+    key: 'productFranchise',
+    label: 'Product Franchise',
+    children: [
+      { label: 'My Product Stock', to: '/user/product-franchise/stock' },
+      { label: 'Sell Product', to: '/user/product-franchise/sell' },
+      { label: 'Sales Report', to: '/user/product-franchise/sales-report' }
+    ]
+  },
+  {
     key: 'planChartLetters',
     label: 'Plan Chart & Letters',
     children: [

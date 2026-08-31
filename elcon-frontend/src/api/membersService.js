@@ -62,3 +62,9 @@ export const getTreeNode = async (memberId) => {
   const response = await apiClient.get('/members/tree-node', { params });
   return response.data;
 };
+
+export const getMemberInfoByUserId = async (memberId) => {
+  const response = await apiClient.get(`/auth/sponsor/${memberId}`);
+  // We'll normalize the response if it returns sponsor info
+  return response.data;
+};

@@ -141,6 +141,32 @@ export const createSupportTicket = async (payload) => {
   return response.data;
 };
 
+// --- Product Franchise APIs ---
+export const adminAssignProductStock = async (payload) => {
+  const response = await apiClient.post('/product-franchise/admin/stock', payload);
+  return response.data;
+};
+
+export const adminGetProductStocks = async () => {
+  const response = await apiClient.get('/product-franchise/admin/stock');
+  return response.data;
+};
+
+export const franchiseGetMyStock = async () => {
+  const response = await apiClient.get('/product-franchise/stock');
+  return response.data;
+};
+
+export const franchiseSellProduct = async (payload) => {
+  const response = await apiClient.post('/product-franchise/sell', payload);
+  return response.data;
+};
+
+export const franchiseGetProductSales = async () => {
+  const response = await apiClient.get('/product-franchise/sales');
+  return response.data;
+};
+
 export const getMySupportTickets = async () => {
   const response = await apiClient.get('/support-tickets/me');
   return response.data;
