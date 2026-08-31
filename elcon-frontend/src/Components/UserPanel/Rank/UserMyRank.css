@@ -126,6 +126,16 @@
   color: var(--user-primary);
 }
 
+.user-rank-item-detail-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.user-rank-item-detail-wrapper.expanded {
+  max-height: 200px; /* Adjust if content gets larger */
+}
+
 .user-rank-item-detail {
   padding: 16px 20px 16px 76px;
   font-size: 14px;

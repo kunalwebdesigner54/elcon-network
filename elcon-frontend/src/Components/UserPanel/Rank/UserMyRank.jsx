@@ -95,13 +95,13 @@ function UserMyRank() {
                     )}
                   </div>
                 </div>
-                <div className="user-rank-item-detail-wrapper" style={{ height: expandedRank === index ? 'auto' : 0, overflow: 'hidden' }}>
+                <div className={`user-rank-item-detail-wrapper ${expandedRank === index ? 'expanded' : ''}`}>
                   <div className="user-rank-item-detail">
                     <div className="user-rank-detail-row">
-                      <span>Target Earning:</span>
-                      <strong>{formatCurrency(rank.targetEarning)}</strong>
+                      <span style={{ color: '#fff' }}>Target Earning:</span>
+                      <strong style={{ color: '#00E5FF' }}>{formatCurrency(rank.targetEarning)}</strong>
                     </div>
-                    <p>Achieve this prestigious rank with 10 Active Directs and <strong>{formatCurrency(rank.upgradeAmount)}</strong> ID upgrade donation contribution.</p>
+                    <p style={{ color: '#94A3B8' }}>Achieve this prestigious rank with 10 Active Directs and <strong style={{ color: '#00E5FF' }}>{formatCurrency(rank.upgradeAmount)}</strong> ID upgrade donation contribution.</p>
                   </div>
                 </div>
               </div>
