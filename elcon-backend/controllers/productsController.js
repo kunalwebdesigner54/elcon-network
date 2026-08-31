@@ -105,7 +105,13 @@ exports.getProducts = async (req, res) => {
       filter.type = type;
     }
 
-    const products = await Product.find(filter);
+    const products = await Product.find(filter).select({
+      _id: 1, type: 1, productCode: 1, productName: 1, category: 1, hsnCode: 1,
+      mrp: 1, dpPrice: 1, discount: 1, gst: 1, shipping: 1, bvPoint: 1, levelPoint: 1,
+      quantity: 1, reserveAmount: 1, status: 1, imageKey: 1, description: 1, specifications: 1,
+      features: 1, size: 1, color: 1, weight: 1, dimension: 1,
+      images: { $slice: 1 }
+    });
 
     res.status(200).json({
       success: true,

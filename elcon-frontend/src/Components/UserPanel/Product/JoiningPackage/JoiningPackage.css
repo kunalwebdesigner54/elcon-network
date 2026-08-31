@@ -19,7 +19,7 @@
 }
 
 .user-product-card {
-  background: var(--card-bg);
+  background: var(--bg-card);
   border: 1px solid rgba(0, 212, 170, 0.35);
   border-radius: 18px;
   overflow: hidden;
@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -195,7 +195,7 @@
   }
 
   .user-product-card {
-  background: var(--card-bg);
+  background: var(--bg-card);
   border: 1px solid rgba(0, 212, 170, 0.35);
   border-radius: 18px;
   overflow: hidden;
@@ -215,7 +215,7 @@
 }
 
   .user-product-card {
-  background: var(--card-bg);
+  background: var(--bg-card);
   border: 1px solid rgba(0, 212, 170, 0.35);
   border-radius: 18px;
   overflow: hidden;
@@ -239,7 +239,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: transparent;
   overflow: hidden;
 }
 

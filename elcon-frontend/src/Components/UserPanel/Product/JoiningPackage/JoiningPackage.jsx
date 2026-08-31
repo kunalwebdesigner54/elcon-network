@@ -8,14 +8,18 @@ import { resolveProductImage } from '../productImages';
 function JoiningPackage() {
   const navigate = useNavigate();
   const [joiningProducts, setJoiningProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
+        setLoading(true);
         const response = await getPublicProducts('joining');
         setJoiningProducts(response.products || []);
       } catch (error) {
         setJoiningProducts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -39,9 +43,16 @@ function JoiningPackage() {
     <div className="user-product-page">
       <h2 className="page-heading">Joining Package</h2>
       <div className="user-panel user-product-panel">
-
-        <div className="user-product-grid">
-          {joiningProducts.map((product) => {
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px', width: '100%' }}>
+            <div className="spinner" style={{ width: '40px', height: '40px', border: '4px solid rgba(255, 255, 255, 0.1)', borderTop: '4px solid #00e5ff', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+          </div>
+        ) : joiningProducts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '50px', color: '#a0aec0' }}>No Joining Packages found.</div>
+        ) : (
+          <div className="user-product-grid">
+            {joiningProducts.map((product) => {
             const stockStatus = (product.quantity !== undefined && product.quantity !== null && product.quantity !== '') 
                 ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock') 
                 : (product.stock === 'Out of Stock' ? 'Out of Stock' : 'In Stock');
@@ -103,6 +114,7 @@ function JoiningPackage() {
             );
           })}
         </div>
+        )}
       </div>
     </div>
   );
