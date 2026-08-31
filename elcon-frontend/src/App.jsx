@@ -334,7 +334,7 @@ function App() {
 
           <Route path="support/support-section" element={<AdminBlankPage />} />
           <Route path="support/support-tickets" element={<TicketHistory />} />
-          <Route path="epin-franchise/create" element={<CreateEpinFranchise />} />
+          <Route path="epin-franchise/create" element={<AddEpinFranchise />} />
           <Route path="epin-franchise/list" element={<EpinFranchiseList />} />
           <Route path="product-franchise/manage" element={<AdminProductFranchise />} />
 
