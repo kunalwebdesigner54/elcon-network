@@ -461,7 +461,7 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 980px;
-  background: var(--card-bg);
+  background: transparent;
 }
 
 .data-table th,
@@ -476,9 +476,9 @@
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: var(--dark);
+  color: var(--primary-light);
   text-align: left;
-  background: rgba(0, 212, 170, 0.1);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .data-table tbody tr:nth-child(odd) {

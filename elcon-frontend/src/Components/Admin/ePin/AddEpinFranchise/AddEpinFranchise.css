@@ -29,7 +29,7 @@
 .add-epin-panel {
   border-radius: 28px;
   padding: 26px;
-  background: var(--card-bg);
+  background: var(--bg-card);
 }
 
 .add-epin-title {
@@ -39,9 +39,9 @@
 
 .add-epin-card {
   border-radius: 24px;
-  border: 1px solid rgba(45, 55, 72, 0.16);
+  border: 1px solid var(--glass-border);
   padding: 20px;
-  background: linear-gradient(180deg, #f8fbff 0%, #f4f7fc 100%);
+  background: var(--bg-card);
 }
 
 .add-epin-grid {
@@ -59,7 +59,7 @@
 
 .add-epin-qr-box {
   border-radius: 24px;
-  background: #eef2f7;
+  background: rgba(255, 255, 255, 0.05);
   padding: 16px;
   display: grid;
   place-items: center;
