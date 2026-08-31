@@ -435,7 +435,7 @@ exports.getSponsorDetails = async (req, res) => {
         { memberId: id.toUpperCase() },
         { sponsorId: id.toUpperCase() }
       ]
-    }).select('memberId sponsorId name email contactNo');
+    }).select('memberId sponsorId name email contactNo city paymentDetails');
 
     if (!sponsor) {
       return res.status(404).json({
@@ -444,14 +444,19 @@ exports.getSponsorDetails = async (req, res) => {
       });
     }
 
+    const stockCount = await Epin.countDocuments({ currentOwner: sponsor.memberId, status: 'Unused' });
+
     res.status(200).json({
       success: true,
       data: {
         memberId: sponsor.memberId,
-        sponsorId: sponsor.sponsorId,
         name: sponsor.name,
         email: sponsor.email,
         contactNo: sponsor.contactNo,
+        sponsorId: sponsor.sponsorId,
+        city: sponsor.city || '',
+        upiId: sponsor.paymentDetails?.upiId || '',
+        stock: stockCount,
       },
     });
   } catch (error) {

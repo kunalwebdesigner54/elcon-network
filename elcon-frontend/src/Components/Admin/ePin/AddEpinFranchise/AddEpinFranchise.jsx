@@ -59,8 +59,14 @@ function AddEpinFranchise() {
     if (franchise.franchiseId && franchise.franchiseId.trim() !== '') {
       try {
         const response = await getSponsorDetails(franchise.franchiseId);
-        if (response && response.success && response.data && response.data.name) {
-          setFranchise((prev) => ({ ...prev, franchiseName: response.data.name }));
+        if (response && response.success && response.data) {
+          setFranchise((prev) => ({ 
+            ...prev, 
+            franchiseName: response.data.name || prev.franchiseName,
+            city: response.data.city || prev.city,
+            upiId: response.data.upiId || prev.upiId,
+            stock: response.data.stock !== undefined ? String(response.data.stock) : prev.stock
+          }));
         }
       } catch (error) {
         console.error("Error fetching sponsor details:", error);
