@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { franchiseGetMyStock, franchiseSellProduct } from '../../../api/managementService';
 import { getMemberInfoByUserId } from '../../../api/membersService';
 import Swal from 'sweetalert2';
-import '../../Common/UserLayout.css';
+import '../Common/UserLayout.css';
 import './FranchiseStyles.css';
 
 function FranchiseProductSell() {

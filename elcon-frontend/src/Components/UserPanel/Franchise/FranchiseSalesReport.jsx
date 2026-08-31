@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { franchiseGetProductSales } from '../../../api/managementService';
 import Swal from 'sweetalert2';
-import '../../Common/UserLayout.css';
+import '../Common/UserLayout.css';
 
 function FranchiseSalesReport() {
   const [sales, setSales] = useState([]);

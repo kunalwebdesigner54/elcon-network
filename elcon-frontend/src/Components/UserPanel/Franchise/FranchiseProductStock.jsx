@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { franchiseGetMyStock } from '../../../api/managementService';
 import Swal from 'sweetalert2';
-import '../../Common/UserLayout.css';
+import '../Common/UserLayout.css';
 
 function FranchiseProductStock() {
   const [stocks, setStocks] = useState([]);
