@@ -460,19 +460,42 @@ exports.checkoutCart = async (req, res) => {
     let lvPoint = 0;
     let totalReserveAmount = 0;
     let calculatedDiscount = 0;
+    
+    let remainingCoupon = user.couponWalletBalance || 0;
+    const finalOrderItems = [];
 
     for (const item of cart.items) {
       const product = await Product.findById(item.productId);
       const qty = Number(item.quantity || 1);
+      
+      let itemCouponUsed = 0;
+
       if (product) {
         bvPoint += Number(product.bvPoint || 0) * qty;
         lvPoint += Number(product.levelPoint || 0) * qty;
         totalReserveAmount += Number(product.reserveAmount || 0) * qty;
-        calculatedDiscount += Number(product.discount || 0) * qty;
+        
+        const itemMaxDiscount = Number(product.discount || 0) * qty;
+        calculatedDiscount += itemMaxDiscount;
+        
+        const appliedToThisItem = Math.min(itemMaxDiscount, remainingCoupon);
+        itemCouponUsed = appliedToThisItem;
+        remainingCoupon -= appliedToThisItem;
       }
+      
+      finalOrderItems.push({
+        productId: item.productId,
+        productCode: item.productCode,
+        name: item.productName,
+        price: item.price,
+        quantity: qty,
+        totalPrice: item.totalPrice,
+        imageKey: item.imageKey,
+        couponUsed: itemCouponUsed,
+      });
     }
 
-    let appliedDiscount = Math.min(calculatedDiscount, user.couponWalletBalance || 0);
+    let appliedDiscount = (user.couponWalletBalance || 0) - remainingCoupon;
     
     const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
     const shippingCharge = Number(req.body.shippingCharge || 0);
@@ -504,15 +527,7 @@ exports.checkoutCart = async (req, res) => {
       finalTotal,
       reserveAmount: totalReserveAmount,
       shippingInformation: buildShippingInformation(user),
-      items: cart.items.map((item) => ({
-        productId: item.productId,
-        productCode: item.productCode,
-        name: item.productName,
-        price: item.price,
-        quantity: item.quantity,
-        totalPrice: item.totalPrice,
-        imageKey: item.imageKey,
-      })),
+      items: finalOrderItems,
     });
 
     cart.items = [];
@@ -832,6 +847,47 @@ exports.getAdminGstSummary = async (req, res) => {
     ]);
 
     res.status(200).json({ success: true, summary });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/coupon-transaction-history
+// ─────────────────────────────────────────────────────────────────────────────
+exports.getCouponTransactionHistory = async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.user.id, discountCoupon: { $gt: 0 } }).sort({ createdAt: -1 });
+
+    const finalHistory = [];
+    orders.forEach(order => {
+        const totalItemsCoupon = order.items.reduce((sum, i) => sum + (i.couponUsed || 0), 0);
+        if (totalItemsCoupon === 0 && order.discountCoupon > 0) {
+            finalHistory.push({
+                orderNo: order.orderNo,
+                orderDate: order.orderDate,
+                productName: order.items.map(i => i.name).join(', '),
+                quantity: order.items.reduce((s, i) => s + i.quantity, 0),
+                couponUsed: order.discountCoupon,
+                isLegacy: true
+            });
+        } else {
+            order.items.forEach(item => {
+                if (item.couponUsed > 0) {
+                    finalHistory.push({
+                        orderNo: order.orderNo,
+                        orderDate: order.orderDate,
+                        productName: item.name,
+                        quantity: item.quantity,
+                        couponUsed: item.couponUsed,
+                        isLegacy: false
+                    });
+                }
+            });
+        }
+    });
+
+    res.status(200).json({ success: true, history: finalHistory });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

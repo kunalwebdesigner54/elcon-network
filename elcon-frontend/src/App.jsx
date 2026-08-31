@@ -73,6 +73,7 @@ import MyOrders from './Components/UserPanel/Product/MyOrders/MyOrders';
 import OrderDetails from './Components/UserPanel/Product/MyOrders/OrderDetails';
 import CouponReport from './Components/Admin/Coupon/CouponReport/CouponReport';
 import DiscountCoupon from './Components/UserPanel/Coupon/DiscountCoupon/DiscountCoupon';
+import CouponTransactionHistory from './Components/UserPanel/Coupon/TransactionHistory/TransactionHistory';
 import JoiningPackageAdmin from './Components/Admin/ProductsPackage/JoiningPackage/JoiningPackageAdmin';
 import ShoppingProductsAdmin from './Components/Admin/ProductsPackage/ShoppingProducts/ShoppingProductsAdmin';
 import EpinPackagesAdmin from './Components/Admin/ProductsPackage/EpinPackages/EpinPackagesAdmin';
@@ -186,6 +187,7 @@ function App() {
           <Route path="product/my-orders" element={<MyOrders />} />
           <Route path="product/my-orders/details/:orderNo" element={<OrderDetails />} />
           <Route path="coupon/discount-coupon" element={<DiscountCoupon />} />
+          <Route path="coupon/transaction-history" element={<CouponTransactionHistory />} />
           <Route path="product/product-list" element={<JoiningPackage />} />
           <Route path="product/product-order" element={<ShoppingProducts />} />
           <Route path="product/delivery-status" element={<UserBlankPage />} />

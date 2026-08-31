@@ -101,7 +101,8 @@ const menuItems = [
       key: 'coupon',
       label: 'Coupon',
       children: [
-        { label: 'Discount Coupon', to: '/user/coupon/discount-coupon' }
+        { label: 'Discount Coupon', to: '/user/coupon/discount-coupon' },
+        { label: 'Transaction History', to: '/user/coupon/transaction-history' }
       ]
     },
   { key: 'ticketSupport', label: 'Ticket Support', to: '/user/ticket-support' },

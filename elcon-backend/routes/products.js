@@ -19,6 +19,7 @@ const {
   updateOrderStatus,
   getAdminGstReport,
   getAdminGstSummary,
+  getCouponTransactionHistory,
 } = require('../controllers/productsController');
 
 const router = express.Router();
@@ -48,5 +49,6 @@ router.get('/admin/orders-gst-report', authorize('admin'), getAdminGstReport);
 router.get('/admin/orders-gst-summary', authorize('admin'), getAdminGstSummary);
 
 router.get('/products/:productId', getProductById);
+router.get('/coupon-transaction-history', getCouponTransactionHistory);
 
 module.exports = router;

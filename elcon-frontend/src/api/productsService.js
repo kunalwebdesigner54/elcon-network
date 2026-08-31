@@ -95,3 +95,8 @@ export const getAdminGstSummary = async () => {
   const response = await apiClient.get('/admin/orders-gst-summary');
   return response.data;
 };
+
+export const getCouponTransactionHistory = async () => {
+  const response = await apiClient.get('/coupon-transaction-history');
+  return response.data;
+};

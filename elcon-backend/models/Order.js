@@ -34,6 +34,10 @@ const orderItemSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    couponUsed: {
+      type: Number,
+      default: 0,
+    },
   },
   { _id: false }
 );
