@@ -142,13 +142,15 @@ function ChangePassword() {
             </div>
           </div>
           
-          <div style={{ display: 'flex', gap: '15px', marginTop: '30px', maxWidth: '300px' }}>
-            <button type="submit" disabled={submitting} style={{ flex: '1', padding: '12px 20px', borderRadius: '8px', border: 'none', background: 'var(--gradient-primary)', color: '#fff', fontSize: '14px', fontWeight: '700', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1px', transition: 'all 0.3s ease' }}>
-              {submitting ? 'Updating...' : 'Update'}
-            </button>
-            <button type="button" onClick={handleCancel} style={{ flex: '1', padding: '12px 20px', borderRadius: '8px', border: '1px solid var(--primary)', background: 'transparent', color: 'var(--primary)', fontSize: '14px', fontWeight: '700', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1px', transition: 'all 0.3s ease' }}>
-              Cancel
-            </button>
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '40px' }}>
+            <div style={{ display: 'flex', gap: '15px', width: '300px' }}>
+              <button type="submit" disabled={submitting} style={{ flex: '1', padding: '12px 20px', borderRadius: '8px', border: 'none', background: 'var(--gradient-primary)', color: '#fff', fontSize: '14px', fontWeight: '700', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1px', transition: 'all 0.3s ease' }}>
+                {submitting ? 'Updating...' : 'Update'}
+              </button>
+              <button type="button" onClick={handleCancel} style={{ flex: '1', padding: '12px 20px', borderRadius: '8px', border: '1px solid var(--primary)', background: 'transparent', color: 'var(--primary)', fontSize: '14px', fontWeight: '700', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1px', transition: 'all 0.3s ease' }}>
+                Cancel
+              </button>
+            </div>
           </div>
         </form>
       </div>
