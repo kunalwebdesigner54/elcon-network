@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import RepurchaseProductsAdmin from './Components/Admin/ProductsPackage/RepurchaseProducts/RepurchaseProductsAdmin';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -134,9 +135,53 @@ import CancelledOrders from './Components/Admin/ProductOrder/CancelledOrders/Can
 import useGlobalTableDrag from './hooks/useGlobalTableDrag';
 
 function App() {
-  // Initialize global table drag-to-scroll behavior
-  useGlobalTableDrag();
+  useEffect(() => {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let slider = null;
 
+    const onMouseDown = (e) => {
+      // Look for the closest scrollable table wrapper
+      slider = e.target.closest('div[class*="table-wrap"], div[class*="table-responsive"]');
+      if (!slider) return;
+      isDown = true;
+      slider.style.cursor = 'grabbing';
+      slider.style.userSelect = 'none';
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    };
+
+    const onMouseLeaveOrUp = () => {
+      if (!isDown) return;
+      isDown = false;
+      if (slider) {
+        slider.style.cursor = '';
+        slider.style.userSelect = '';
+        slider = null;
+      }
+    };
+
+    const onMouseMove = (e) => {
+      if (!isDown || !slider) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 2; // scroll speed multiplier
+      slider.scrollLeft = scrollLeft - walk;
+    };
+
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('mouseleave', onMouseLeaveOrUp);
+    document.addEventListener('mouseup', onMouseLeaveOrUp);
+    document.addEventListener('mousemove', onMouseMove);
+
+    return () => {
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('mouseleave', onMouseLeaveOrUp);
+      document.removeEventListener('mouseup', onMouseLeaveOrUp);
+      document.removeEventListener('mousemove', onMouseMove);
+    };
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
