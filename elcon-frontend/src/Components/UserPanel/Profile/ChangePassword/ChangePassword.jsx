@@ -98,6 +98,9 @@ function ChangePassword() {
     <div>
       <h1 className="user-page-title">Change Login Password</h1>
       <div className="user-panel">
+        {message && <div style={{ padding: '10px', marginBottom: '10px', backgroundColor: '#d4edda', color: '#155724', borderRadius: '4px' }}>{message}</div>}
+        {error && <div style={{ padding: '10px', marginBottom: '10px', backgroundColor: '#f8d7da', color: '#721c24', borderRadius: '4px' }}>{error}</div>}
+        <form onSubmit={handleSubmit}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', width: '100%' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--gray)', textTransform: 'uppercase' }}>Member ID</label>
