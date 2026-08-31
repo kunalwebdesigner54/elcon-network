@@ -14,8 +14,8 @@ function FranchiseProductStock() {
   const fetchStock = async () => {
     try {
       const res = await franchiseGetMyStock();
-      if (res.success) {
-        setStocks(res.stocks);
+      if (res?.success) {
+        setStocks(res.stocks || []);
       }
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load stock' });
@@ -44,22 +44,22 @@ function FranchiseProductStock() {
                 </tr>
               </thead>
               <tbody>
-                {stocks.length > 0 ? (
+                {stocks && stocks.length > 0 ? (
                   stocks.map(stock => (
-                    <tr key={stock._id}>
-                      <td>{stock.productCode}</td>
+                    <tr key={stock?._id || Math.random()}>
+                      <td>{stock?.productCode}</td>
                       <td>
-                        {stock.image ? (
-                          <img src={stock.image} alt={stock.productName} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+                        {stock?.image ? (
+                          <img src={stock.image} alt={stock?.productName} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
                         ) : (
                           'No Image'
                         )}
                       </td>
-                      <td>{stock.productName}</td>
-                      <td>{stock.type}</td>
-                      <td>₹{stock.dpPrice || stock.price}</td>
-                      <td style={{ fontWeight: 'bold', color: stock.quantity > 0 ? 'green' : 'red' }}>
-                        {stock.quantity}
+                      <td>{stock?.productName}</td>
+                      <td>{stock?.type}</td>
+                      <td>₹{stock?.dpPrice || stock?.price}</td>
+                      <td style={{ fontWeight: 'bold', color: (stock?.quantity || 0) > 0 ? 'green' : 'red' }}>
+                        {stock?.quantity || 0}
                       </td>
                     </tr>
                   ))

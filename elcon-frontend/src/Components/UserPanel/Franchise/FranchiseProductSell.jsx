@@ -20,8 +20,8 @@ function FranchiseProductSell() {
   const fetchStock = async () => {
     try {
       const res = await franchiseGetMyStock();
-      if (res.success) {
-        setStocks(res.stocks.filter(s => s.quantity > 0)); // Only show items in stock
+      if (res?.success) {
+        setStocks((res.stocks || []).filter(s => (s?.quantity || 0) > 0)); // Only show items in stock
       }
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load stock' });
