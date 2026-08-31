@@ -669,3 +669,176 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
+
+
+
+exports.getAdminGstReport = async (req, res) => {
+  try {
+    const report = await Order.aggregate([
+      { $unwind: '$items' },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'items.productId',
+          foreignField: '_id',
+          as: 'productDetails'
+        }
+      },
+      { $unwind: { path: '$productDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          customerName: {
+            $reduce: {
+              input: '$shippingInformation',
+              initialValue: '$user.name',
+              in: {
+                $cond: [ { $eq: ['$$this.label', 'Name'] }, '$$this.value', '$$value' ]
+              }
+            }
+          },
+          customerMobile: {
+            $reduce: {
+              input: '$shippingInformation',
+              initialValue: '$user.contactNo',
+              in: {
+                $cond: [ { $eq: ['$$this.label', 'Contact No'] }, '$$this.value', '$$value' ]
+              }
+            }
+          },
+          customerStateRaw: {
+            $reduce: {
+              input: '$shippingInformation',
+              initialValue: '',
+              in: {
+                $cond: [ { $eq: ['$$this.label', 'State,City'] }, '$$this.value', '$$value' ]
+              }
+            }
+          },
+          gstRate: { $ifNull: ['$productDetails.gst', 18] } // fallback to 18% if missing
+        }
+      },
+      {
+        $addFields: {
+          customerState: {
+            $arrayElemAt: [ { $split: ['$customerStateRaw', ' , '] }, 0 ]
+          },
+          taxableValue: {
+            $divide: [ '$items.totalPrice', { $add: [1, { $divide: ['$gstRate', 100] }] } ]
+          }
+        }
+      },
+      {
+        $addFields: {
+          totalGstAmount: { $subtract: ['$items.totalPrice', '$taxableValue'] }
+        }
+      },
+      {
+        $project: {
+          memberId: '$user.memberId',
+          memberName: '$user.name',
+          customerName: 1,
+          customerMobile: 1,
+          orderNo: 1,
+          invoiceNo: '$orderNo',
+          orderDate: 1,
+          productName: '$items.name',
+          hsnCode: { $ifNull: ['$productDetails.hsnCode', ''] },
+          quantity: '$items.quantity',
+          unitPrice: '$items.price',
+          taxableValue: { $round: ['$taxableValue', 2] },
+          gstRate: 1,
+          cgst: { $round: [{ $divide: ['$totalGstAmount', 2] }, 2] },
+          sgst: { $round: [{ $divide: ['$totalGstAmount', 2] }, 2] },
+          igst: { $literal: 0.00 },
+          totalAmount: '$items.totalPrice',
+          paymentMode: 1,
+          customerState: 1,
+          orderStatus: 1
+        }
+      },
+      { $sort: { createdAt: -1 } }
+    ]);
+
+    res.status(200).json({ success: true, report });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getAdminGstSummary = async (req, res) => {
+  try {
+    const summary = await Order.aggregate([
+      {
+        $addFields: {
+          monthYear: {
+            $dateToString: { format: '%m-%Y', date: '$createdAt' }
+          }
+        }
+      },
+      { $unwind: '$items' },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'items.productId',
+          foreignField: '_id',
+          as: 'productDetails'
+        }
+      },
+      { $unwind: { path: '$productDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          gstRate: { $ifNull: ['$productDetails.gst', 18] }
+        }
+      },
+      {
+        $addFields: {
+          taxableValue: {
+            $divide: [ '$items.totalPrice', { $add: [1, { $divide: ['$gstRate', 100] }] } ]
+          }
+        }
+      },
+      {
+        $addFields: {
+          totalGstAmount: { $subtract: ['$items.totalPrice', '$taxableValue'] }
+        }
+      },
+      {
+        $group: {
+          _id: '$monthYear',
+          totalOrders: { $addToSet: '$orderNo' },
+          totalQuantitySold: { $sum: '$items.quantity' },
+          taxableSales: { $sum: '$taxableValue' },
+          totalGst: { $sum: '$totalGstAmount' },
+          grossSales: { $sum: '$items.totalPrice' }
+        }
+      },
+      {
+        $project: {
+          month: '$_id',
+          totalOrders: { $size: '$totalOrders' },
+          totalQuantitySold: 1,
+          taxableSales: { $round: ['$taxableSales', 2] },
+          cgst: { $round: [{ $divide: ['$totalGst', 2] }, 2] },
+          sgst: { $round: [{ $divide: ['$totalGst', 2] }, 2] },
+          igst: { $literal: 0.00 },
+          totalGst: { $round: ['$totalGst', 2] },
+          grossSales: { $round: ['$grossSales', 2] }
+        }
+      },
+      { $sort: { month: -1 } }
+    ]);
+
+    res.status(200).json({ success: true, summary });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

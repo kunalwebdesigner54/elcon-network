@@ -155,3 +155,13 @@ export const updateSupportTicketStatus = async (ticketNo, payload) => {
   const response = await apiClient.patch(`/support-tickets/${ticketNo}/status`, payload);
   return response.data;
 };
+
+export const getTermsAndConditions = async () => {
+  const response = await apiClient.get('/settings/terms-and-conditions');
+  return response.data;
+};
+
+export const updateTermsAndConditions = async (payload) => {
+  const response = await apiClient.put('/settings/terms-and-conditions', payload);
+  return response.data;
+};

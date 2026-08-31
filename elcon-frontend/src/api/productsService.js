@@ -85,3 +85,13 @@ export const updateOrderStatus = async (orderNo, payload) => {
   const response = await apiClient.patch(`/admin/orders/${orderNo}/status`, payload);
   return response.data;
 };
+
+export const getAdminGstReport = async () => {
+  const response = await apiClient.get('/admin/orders-gst-report');
+  return response.data;
+};
+
+export const getAdminGstSummary = async () => {
+  const response = await apiClient.get('/admin/orders-gst-summary');
+  return response.data;
+};

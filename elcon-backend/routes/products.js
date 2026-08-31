@@ -17,6 +17,8 @@ const {
   getOrderByNo,
   getAdminOrders,
   updateOrderStatus,
+  getAdminGstReport,
+  getAdminGstSummary,
 } = require('../controllers/productsController');
 
 const router = express.Router();
@@ -42,6 +44,8 @@ router.post('/orders/checkout', checkoutCart);
 router.get('/orders/:orderNo', getOrderByNo);
 router.get('/admin/orders', authorize('admin'), getAdminOrders);
 router.patch('/admin/orders/:orderNo/status', authorize('admin'), updateOrderStatus);
+router.get('/admin/orders-gst-report', authorize('admin'), getAdminGstReport);
+router.get('/admin/orders-gst-summary', authorize('admin'), getAdminGstSummary);
 
 router.get('/products/:productId', getProductById);
 

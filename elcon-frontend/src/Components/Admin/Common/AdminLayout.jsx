@@ -90,6 +90,8 @@ const menuItems = [
     label: 'Product Order',
     children: [
       { label: 'All Orders', to: '/product-order/all-orders' },
+      { label: 'Sales GST Report', to: '/product-order/gst-report' },
+      { label: 'GST Sales Summary', to: '/product-order/gst-summary' },
       { label: 'Pending Orders', to: '/product-order/pending-orders' },
       { label: 'Confirm Orders', to: '/product-order/confirm-orders' },
       { label: 'Processing Orders', to: '/product-order/processing-orders' },
@@ -115,7 +117,8 @@ const menuItems = [
       { label: 'Level Plan', to: '/settings/level-plan' },
       { label: 'Manage Taxes & Deduction', to: '/settings/manage-taxes-deduction' },
       { label: 'Bank Account', to: '/admin/setting/bank-account' },
-      { label: 'Plan Setting', to: '/admin/setting/plan-setting' }
+      { label: 'Plan Setting', to: '/admin/setting/plan-setting' },
+      { label: 'Terms and Conditions', to: '/admin/setting/terms-and-conditions' }
     ]
   },
   {

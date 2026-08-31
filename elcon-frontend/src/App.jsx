@@ -93,8 +93,9 @@ import MyCart from './Components/UserPanel/Product/MyCart/MyCart';
 import CompletePayment from './Components/UserPanel/Payment/CompletePayment/CompletePayment';
 import AddDepositFunds from './Components/UserPanel/Payment/AddDepositFunds/AddDepositFunds';
 import Withdraw from './Components/UserPanel/Payment/Withdraw/Withdraw';
-import AdminBankAccount from './Components/Admin/Setting/BankAccount/BankAccount';
+import BankAccount from './Components/Admin/Setting/BankAccount/BankAccount';
 import PlanSetting from './Components/Admin/Setting/PlanSetting/PlanSetting';
+import AdminTermsAndConditions from './Components/Admin/Setting/TermsAndConditions/TermsAndConditions';
 
 import UserDatewiseIncome from './Components/UserPanel/Income/DatewiseIncome/DatewiseIncome';
 import UserDailyPayoutReport from './Components/UserPanel/Income/DailyPayoutReport/DailyPayoutReport';
@@ -113,6 +114,8 @@ import AdminRankHoldersList from './Components/Admin/Rank/AdminRankHoldersList';
 import UserMyRank from './Components/UserPanel/Rank/UserMyRank';
 import InvoicePage from './Components/UserPanel/Product/MyOrders/InvoicePage';
 import AllOrders from './Components/Admin/ProductOrder/AllOrders/AllOrders';
+import GstReport from './Components/Admin/ProductOrder/GstReport/GstReport';
+import GstSummary from './Components/Admin/ProductOrder/GstSummary/GstSummary';
 import PendingOrders from './Components/Admin/ProductOrder/PendingOrders/PendingOrders';
 import ConfirmOrders from './Components/Admin/ProductOrder/ConfirmOrders/ConfirmOrders';
 import ProcessingOrders from './Components/Admin/ProductOrder/ProcessingOrders/ProcessingOrders';
@@ -288,6 +291,8 @@ function App() {
           <Route path="products-package/rearrange-products" element={<AdminBlankPage />} />
 
           <Route path="product-order/all-orders" element={<AllOrders />} />
+          <Route path="product-order/gst-report" element={<GstReport />} />
+          <Route path="product-order/gst-summary" element={<GstSummary />} />
           <Route path="product-order/pending-orders" element={<PendingOrders />} />
           <Route path="product-order/confirm-orders" element={<ConfirmOrders />} />
           <Route path="product-order/processing-orders" element={<ProcessingOrders />} />
@@ -306,8 +311,9 @@ function App() {
 
           <Route path="settings/level-plan" element={<AdminBlankPage />} />
           <Route path="settings/manage-taxes-deduction" element={<AdminBlankPage />} />
-          <Route path="admin/setting/bank-account" element={<AdminBankAccount />} />
+          <Route path="admin/setting/bank-account" element={<BankAccount />} />
           <Route path="admin/setting/plan-setting" element={<PlanSetting />} />
+          <Route path="admin/setting/terms-and-conditions" element={<AdminTermsAndConditions />} />
 
           <Route path="news-popup/add-new" element={<NewsAdd />} />
           <Route path="news-popup/list-all" element={<NewsList />} />

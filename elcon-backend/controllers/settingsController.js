@@ -71,3 +71,33 @@ exports.updateBankAccount = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+const defaultTermsAndConditions = {
+  content: '<h2>Terms and Conditions</h2><p>Default terms and conditions.</p>',
+};
+
+exports.getTermsAndConditions = async (req, res) => {
+  try {
+    const setting = await SiteSetting.findOne({ settingKey: 'terms-and-conditions' });
+    if (!setting) {
+      await SiteSetting.create({ settingKey: 'terms-and-conditions', data: defaultTermsAndConditions });
+    }
+    const currentSetting = await SiteSetting.findOne({ settingKey: 'terms-and-conditions' });
+    res.json({ success: true, termsAndConditions: currentSetting?.data || defaultTermsAndConditions });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.updateTermsAndConditions = async (req, res) => {
+  try {
+    const setting = await SiteSetting.findOneAndUpdate(
+      { settingKey: 'terms-and-conditions' },
+      { data: req.body },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res.json({ success: true, termsAndConditions: setting.data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
