@@ -441,14 +441,12 @@ select option {
 	width: 100% !important;
 }
 
-.table-wrap {
-	cursor: grab;
+/* All table wrappers globally */
+div[class*="table-wrap"], div[class*="table-responsive"] {
+	cursor: grab !important;
 }
-.table-wrap:active {
-	cursor: grabbing;
-}
-.table-wrap table {
-	cursor: default;
+div[class*="table-wrap"]:active, div[class*="table-responsive"]:active {
+	cursor: grabbing !important;
 }
 
 .admin-root th, .user-root th {
@@ -465,17 +463,24 @@ select option {
 	z-index: 10 !important;
 }
 
+.admin-root th:first-child, .user-root th:first-child {
+	border-top-left-radius: 8px !important;
+}
+.admin-root th:last-child, .user-root th:last-child {
+	border-top-right-radius: 8px !important;
+}
+
 .admin-root td, .user-root td {
 	padding: 16px !important;
 	color: var(--text-main) !important;
 	border-bottom: 1px solid var(--glass-border) !important;
 	background: transparent !important;
 	transition: var(--transition) !important;
+	cursor: pointer !important; /* Hand cursor on all table data */
 }
 
 .admin-root tr:hover td, .user-root tr:hover td {
 	background: rgba(255, 255, 255, 0.05) !important;
-	cursor: pointer !important;
 }
 
 /* Scrollbars inside dashboard */
