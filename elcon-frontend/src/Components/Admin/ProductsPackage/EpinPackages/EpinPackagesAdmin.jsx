@@ -67,6 +67,7 @@ function EpinPackagesAdmin() {
             <button
               type="button"
               className="btn-primary admin-add-new-btn"
+              style={{ whiteSpace: 'nowrap' }}
               onClick={() => navigate('/products-package/epin-packages/add-new')}
             >
               ADD NEW PACKAGE
@@ -74,8 +75,8 @@ function EpinPackagesAdmin() {
           </div>
         </div>
 
-        <div className="table-responsive">
-          <table className="table admin-products-table">
+        <div className="table-wrap">
+          <table className="data-table" style={{ minWidth: '800px' }}>
             <thead>
               <tr>
                 <th>Sr.No</th>
