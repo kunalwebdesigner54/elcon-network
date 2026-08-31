@@ -290,7 +290,7 @@ exports.getFranchises = async (req, res) => {
   try {
     const filter = isAdmin(req) ? {} : { status: 'SHOWING' };
     const rows = await EpinFranchise.find(filter).sort({ createdAt: -1 });
-    res.json({ success: true, franchises: rows.map((doc, index) => ({ id: index + 1, franchiseId: doc.franchiseId, name: doc.franchiseName, upi: doc.upiId, whatsapp: doc.whatsappNo, city: doc.city, stock: doc.stock, status: doc.status })) });
+    res.json({ success: true, franchises: rows.map((doc, index) => ({ id: index + 1, _id: doc._id, franchiseId: doc.franchiseId, name: doc.franchiseName, upi: doc.upiId, whatsapp: doc.whatsappNo, city: doc.city, stock: doc.stock, qrImage: doc.qrImage, status: doc.status })) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -309,11 +309,12 @@ exports.createOrUpdateFranchise = async (req, res) => {
         whatsappNo: payload.whatsappNo || payload.whatsapp || '-',
         city: payload.city || '-',
         stock: Number(payload.stock || 0),
+        qrImage: payload.qrImage || '',
         status: payload.status || 'SHOWING',
       },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
-    res.status(201).json({ success: true, franchise: { franchiseId: franchise.franchiseId, name: franchise.franchiseName, upi: franchise.upiId, whatsapp: franchise.whatsappNo, city: franchise.city, stock: franchise.stock, status: franchise.status } });
+    res.status(201).json({ success: true, franchise: { franchiseId: franchise.franchiseId, name: franchise.franchiseName, upi: franchise.upiId, whatsapp: franchise.whatsappNo, city: franchise.city, stock: franchise.stock, qrImage: franchise.qrImage, status: franchise.status } });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

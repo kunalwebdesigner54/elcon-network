@@ -8,6 +8,7 @@ const epinFranchiseSchema = new mongoose.Schema(
     whatsappNo: { type: String, required: true, trim: true },
     city: { type: String, required: true, trim: true },
     stock: { type: Number, default: 0 },
+    qrImage: { type: String }, // Store base64 encoded image
     status: { type: String, enum: ['SHOWING', 'HIDDEN'], default: 'SHOWING' },
   },
   { timestamps: true }

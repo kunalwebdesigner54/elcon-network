@@ -2,12 +2,15 @@ import qrCode from '../../../../Assets/Pictures/QR-Code.png';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getEpinFranchises, upsertEpinFranchise, updateEpinFranchise } from '../../../../api/managementService';
+import { getSponsorDetails } from '../../../../api/authService';
+import { useRef } from 'react';
 import './AddEpinFranchise.css';
 
 function AddEpinFranchise() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [franchise, setFranchise] = useState({ franchiseId: '', franchiseName: '', upiId: '', whatsappNo: '', city: '', stock: '0', status: 'SHOWING' });
+  const fileInputRef = useRef(null);
+  const [franchise, setFranchise] = useState({ franchiseId: '', franchiseName: '', upiId: '', whatsappNo: '', city: '', stock: '0', status: 'SHOWING', qrImage: '' });
 
   useEffect(() => {
     const selectedFranchise = location.state?.franchise;
@@ -20,6 +23,7 @@ function AddEpinFranchise() {
         city: selectedFranchise.city || '',
         stock: String(selectedFranchise.stock || 0),
         status: selectedFranchise.status || 'SHOWING',
+        qrImage: selectedFranchise.qrImage || '',
       });
       return;
     }
@@ -37,6 +41,7 @@ function AddEpinFranchise() {
             city: first.city || '',
             stock: String(first.stock || 0),
             status: first.status || 'SHOWING',
+            qrImage: first.qrImage || '',
           });
         }
       } catch (error) {
@@ -48,6 +53,30 @@ function AddEpinFranchise() {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFranchise((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFranchiseIdBlur = async () => {
+    if (franchise.franchiseId && franchise.franchiseId.trim() !== '') {
+      try {
+        const response = await getSponsorDetails(franchise.franchiseId);
+        if (response && response.success && response.data && response.data.name) {
+          setFranchise((prev) => ({ ...prev, franchiseName: response.data.name }));
+        }
+      } catch (error) {
+        console.error("Error fetching sponsor details:", error);
+      }
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFranchise((prev) => ({ ...prev, qrImage: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -70,18 +99,25 @@ function AddEpinFranchise() {
           <div className="add-epin-grid">
             <div className="add-epin-qr-column">
               <div className="add-epin-qr-box">
-                <img src={qrCode} alt="Franchise QR code" className="add-epin-qr-image" />
+                <img src={franchise.qrImage || qrCode} alt="Franchise QR code" className="add-epin-qr-image" style={{ objectFit: 'contain' }} />
               </div>
               <div className="add-epin-qr-actions">
-                <button type="button" className="btn-secondary add-epin-btn">SELECT</button>
-                <button type="button" className="btn-primary add-epin-btn">ADD</button>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  ref={fileInputRef} 
+                  style={{ display: 'none' }} 
+                  onChange={handleFileChange} 
+                />
+                <button type="button" className="btn-secondary add-epin-btn" onClick={() => fileInputRef.current && fileInputRef.current.click()}>SELECT</button>
+                <button type="submit" className="btn-primary add-epin-btn">ADD</button>
               </div>
             </div>
 
             <div className="add-epin-details-column">
               <div className="add-epin-form-group">
                 <label className="field-label">FRANCHISE ID</label>
-                <input className="text-input" name="franchiseId" value={franchise.franchiseId} onChange={handleChange} />
+                <input className="text-input" name="franchiseId" value={franchise.franchiseId} onChange={handleChange} onBlur={handleFranchiseIdBlur} />
               </div>
               <div className="add-epin-form-group">
                 <label className="field-label">FRANCHISE NAME</label>
