@@ -441,15 +441,28 @@ select option {
 	width: 100% !important;
 }
 
+.table-wrap {
+	cursor: grab;
+}
+.table-wrap:active {
+	cursor: grabbing;
+}
+.table-wrap table {
+	cursor: default;
+}
+
 .admin-root th, .user-root th {
-	background: rgba(0, 0, 0, 0.4) !important;
-	color: var(--primary-light) !important;
+	background: #17a2b8 !important;
+	color: #ffffff !important;
 	font-weight: 600 !important;
 	text-transform: uppercase !important;
 	letter-spacing: 1px !important;
 	padding: 16px !important;
-	border-bottom: 2px solid var(--glass-border-light) !important;
+	border-bottom: 2px solid #138496 !important;
 	white-space: nowrap !important;
+	position: sticky !important;
+	top: 0 !important;
+	z-index: 10 !important;
 }
 
 .admin-root td, .user-root td {
@@ -461,7 +474,8 @@ select option {
 }
 
 .admin-root tr:hover td, .user-root tr:hover td {
-	background: rgba(255, 255, 255, 0.02) !important;
+	background: rgba(255, 255, 255, 0.05) !important;
+	cursor: pointer !important;
 }
 
 /* Scrollbars inside dashboard */
