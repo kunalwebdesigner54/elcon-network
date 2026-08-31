@@ -96,22 +96,33 @@ exports.seedProducts = async () => {
   await Product.insertMany(productSeedData);
 };
 
-exports.getProducts = async (req, res) => {
+exports.getProducts = async (req, res, isAdmin = false) => {
   try {
     const type = getQueryType(req);
-    const filter = { status: 'SHOWING' };
+    const filter = isAdmin ? {} : { status: 'SHOWING' };
 
     if (type) {
       filter.type = type;
     }
 
-    const products = await Product.find(filter).select({
-      _id: 1, type: 1, productCode: 1, productName: 1, category: 1, hsnCode: 1,
-      mrp: 1, dpPrice: 1, discount: 1, gst: 1, shipping: 1, bvPoint: 1, levelPoint: 1,
-      quantity: 1, reserveAmount: 1, status: 1, imageKey: 1, description: 1, specifications: 1,
-      features: 1, size: 1, color: 1, weight: 1, dimension: 1,
-      images: { $slice: 1 }
-    });
+    const products = await Product.aggregate([
+      { $match: filter },
+      { 
+        $project: {
+          type: 1, productCode: 1, productName: 1, category: 1, hsnCode: 1,
+          mrp: 1, dpPrice: 1, discount: 1, gst: 1, shipping: 1, bvPoint: 1, levelPoint: 1,
+          quantity: 1, reserveAmount: 1, status: 1, description: 1, specifications: 1,
+          features: 1, size: 1, color: 1, weight: 1, dimension: 1,
+          imageKey: { 
+            $cond: { 
+              if: { $lt: [{ $strLenCP: { $ifNull: ["$imageKey", ""] } }, 1000] }, 
+              then: "$imageKey", 
+              else: "" 
+            } 
+          }
+        }
+      }
+    ]);
 
     res.status(200).json({
       success: true,
@@ -138,7 +149,7 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.getAdminProducts = async (req, res) => {
-  return exports.getProducts(req, res);
+  return exports.getProducts(req, res, true);
 };
 
 exports.createProduct = async (req, res) => {
