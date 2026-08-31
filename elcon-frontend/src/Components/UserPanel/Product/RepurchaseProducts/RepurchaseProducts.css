@@ -6,7 +6,7 @@
 
 .user-product-card {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 119, 255, 0.4);
+  border: 2px solid rgba(0, 212, 170, 0.35);
   border-radius: 18px;
   overflow: hidden;
   height: auto;
@@ -18,7 +18,7 @@
 }
 
 .user-product-card:hover {
-  border-color: #0077FF;
+  border-color: var(--user-primary);
 }
 
 .user-product-btn {
