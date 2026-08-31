@@ -1,6 +1,6 @@
 const express = require('express');
 const { protect, authorize } = require('../middleware/auth');
-const { adminDashboard, userDashboard, adminFullDashboard } = require('../controllers/dashboardController');
+const { adminDashboard, userDashboard, adminFullDashboard, getTopEarners } = require('../controllers/dashboardController');
 
 const router = express.Router();
 
@@ -12,5 +12,6 @@ router.get('/admin/full', protect, authorize('admin'), adminFullDashboard);
 
 // User metrics
 router.get('/user', protect, userDashboard);
+router.get('/top-earners', protect, getTopEarners);
 
 module.exports = router;

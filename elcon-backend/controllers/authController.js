@@ -271,6 +271,14 @@ exports.loginUser = async (req, res) => {
       });
     }
 
+    // Check if user is blocked
+    if (user.isBlocked) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account has been blocked by the administrator.',
+      });
+    }
+
     // Check if password matches
     const isPasswordValid = await user.matchPassword(password);
 

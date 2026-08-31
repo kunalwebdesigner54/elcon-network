@@ -260,3 +260,81 @@ exports.adminFullDashboard = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error fetching full admin dashboard', error: error.message });
   }
 };
+
+// @desc Get top earners list
+// @route GET /api/dashboard/top-earners?type=all|monthly|daily
+// @access Private
+exports.getTopEarners = async (req, res) => {
+  try {
+    const { type } = req.query;
+    const dateFilter = {};
+
+    if (type === 'monthly') {
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+      dateFilter.createdAt = { $gte: startOfMonth };
+    } else if (type === 'daily') {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setHours(0, 0, 0, 0);
+      const endOfYesterday = new Date(yesterday);
+      endOfYesterday.setHours(23, 59, 59, 999);
+      dateFilter.createdAt = { $gte: yesterday, $lte: endOfYesterday };
+    }
+
+    const pipeline = [
+      { $match: { ...dateFilter, status: { $in: ['APPROVED', 'COMPLETED'] } } },
+      { $project: { memberId: '$toMemberId', amount: 1 } },
+      {
+        $unionWith: {
+          coll: 'levelincomes',
+          pipeline: [
+            { $match: { ...dateFilter, status: 'CREDITED' } },
+            { $project: { memberId: '$recipientMemberId', amount: 1 } }
+          ]
+        }
+      },
+      {
+        $unionWith: {
+          coll: 'repurchaseincomes',
+          pipeline: [
+            { $match: { ...dateFilter, status: 'CREDITED' } },
+            { $project: { memberId: '$recipientMemberId', amount: 1 } }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: '$memberId',
+          totalIncome: { $sum: '$amount' }
+        }
+      },
+      { $sort: { totalIncome: -1 } },
+      { $limit: 100 },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: 'memberId',
+          as: 'user'
+        }
+      },
+      { $unwind: '$user' },
+      {
+        $project: {
+          _id: 0,
+          memberId: '$_id',
+          name: '$user.name',
+          amount: '$totalIncome'
+        }
+      }
+    ];
+
+    const results = await Donation.aggregate(pipeline);
+
+    res.status(200).json({ success: true, data: results });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching top earners', error: error.message });
+  }
+};

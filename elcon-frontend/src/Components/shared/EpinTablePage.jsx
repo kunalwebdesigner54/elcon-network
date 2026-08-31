@@ -78,7 +78,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
     const pages = [];
     // if (totalPages <= 1) return pages; // We will show '1' even if there is only 1 page now.
 
-    const maxPagesToShow = 5;
+    const maxPagesToShow = 3;
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
 
@@ -126,6 +126,16 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
     <div>
       <h1 className="page-title">{title}</h1>
       
+      {showTabs && (
+        <div className="epin-tabs-container" style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center' }}>
+          <Link to="/user/epin/list-all-epin" style={{ color: location.pathname.includes('list-all-epin') || location.pathname.includes('all-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold', borderBottom: location.pathname.includes('list-all-epin') || location.pathname.includes('all-epin') ? '2px solid #00e5ff' : 'none', paddingBottom: '4px' }}>All epins</Link>
+          <span style={{ color: '#4a5568' }}>|</span>
+          <Link to="/user/epin/unused-epin" style={{ color: location.pathname.endsWith('unused-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold', borderBottom: location.pathname.endsWith('unused-epin') ? '2px solid #00e5ff' : 'none', paddingBottom: '4px' }}>Unused epin</Link>
+          <span style={{ color: '#4a5568' }}>|</span>
+          <Link to="/user/epin/used-epin" style={{ color: location.pathname.endsWith('/used-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold', borderBottom: location.pathname.endsWith('/used-epin') ? '2px solid #00e5ff' : 'none', paddingBottom: '4px' }}>Used epin</Link>
+        </div>
+      )}
+
       {showTabs && !isTransferHistory && (
         <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
           <div style={{ background: 'linear-gradient(90deg, rgba(0,229,255,0.1) 0%, rgba(0,229,255,0.05) 100%)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '15px 25px', borderRadius: '12px', flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -136,16 +146,6 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
             <span style={{ color: '#a0aec0', fontSize: '1.1rem', fontWeight: '500' }}>Used ePins</span>
             <span style={{ color: '#ef4444', fontSize: '1.5rem', fontWeight: 'bold' }}>{counts.used}</span>
           </div>
-        </div>
-      )}
-
-      {showTabs && (
-        <div className="epin-tabs-container" style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center' }}>
-          <Link to="/user/epin/list-all-epin" style={{ color: location.pathname.includes('list-all-epin') || location.pathname.includes('all-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>All epins</Link>
-          <span style={{ color: '#4a5568' }}>|</span>
-          <Link to="/user/epin/unused-epin" style={{ color: location.pathname.endsWith('unused-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>Unused epin</Link>
-          <span style={{ color: '#4a5568' }}>|</span>
-          <Link to="/user/epin/used-epin" style={{ color: location.pathname.endsWith('/used-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold' }}>Used epin</Link>
         </div>
       )}
       <div className="panel">
@@ -216,7 +216,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '10px 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
           <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
-            TOTAL E PINS : <span style={{ color: '#00e5ff', fontWeight: 'bold' }}>{filteredRows.length}</span>
+            Total Epins : <span style={{ color: '#00e5ff', fontWeight: 'bold' }}>{filteredRows.length}</span>
           </div>
           
           <div style={{ display: 'flex', gap: '5px' }}>

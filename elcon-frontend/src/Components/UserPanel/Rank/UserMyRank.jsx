@@ -84,19 +84,26 @@ function UserMyRank() {
                     {index + 1}
                   </div>
                   <div className="user-rank-info">
-                    <span className="user-rank-item-earning">{rank.earning}</span>
                     <span className="user-rank-item-name">{rank.name}</span>
+                    <span className="user-rank-item-earning">{formatCurrency(rank.earning)}</span>
                   </div>
                   <div className="user-rank-expand-icon">
-                    {expandedRank === index ? '▼' : '▶'}
+                    {expandedRank === index ? (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                    ) : (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    )}
                   </div>
                 </div>
-                {expandedRank === index && (
+                <div className="user-rank-item-detail-wrapper" style={{ height: expandedRank === index ? 'auto' : 0, overflow: 'hidden' }}>
                   <div className="user-rank-item-detail">
-                    <p>Target Earning: {formatCurrency(rank.targetEarning)}</p>
-                    <p>Achieve this prestigious rank with 10 Active Directs and {formatCurrency(rank.upgradeAmount)} id upgrade donation contribution.</p>
+                    <div className="user-rank-detail-row">
+                      <span>Target Earning:</span>
+                      <strong>{formatCurrency(rank.targetEarning)}</strong>
+                    </div>
+                    <p>Achieve this prestigious rank with 10 Active Directs and <strong>{formatCurrency(rank.upgradeAmount)}</strong> ID upgrade donation contribution.</p>
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>

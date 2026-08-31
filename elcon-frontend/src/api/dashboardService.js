@@ -14,3 +14,8 @@ export const getAdminFullDashboard = async () => {
   const response = await apiClient.get('/dashboard/admin/full');
   return response.data;
 };
+
+export const getTopEarners = async (type = 'all') => {
+  const response = await apiClient.get(`/dashboard/top-earners?type=${type}`);
+  return response.data;
+};

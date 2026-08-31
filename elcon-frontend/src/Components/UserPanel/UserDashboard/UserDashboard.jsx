@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Common/UserLayout.css';
 import './UserDashboard.css';
-import { getUserDashboard } from '../../../api/dashboardService';
+import { getUserDashboard, getTopEarners } from '../../../api/dashboardService';
 import dashboard1 from '../../../Assets/Pictures/dashbaord1.jpeg';
 import dashboard2 from '../../../Assets/Pictures/dashbaord2.jpeg';
 import dashboard3 from '../../../Assets/Pictures/dashbaord3.jpeg';
@@ -23,6 +23,8 @@ function MemberDashboard() {
   const [activeTab, setActiveTab] = useState('top');
   const [activeSlide, setActiveSlide] = useState(0);
   const [memberInfo, setMemberInfo] = useState(null);
+  const [topEarners, setTopEarners] = useState([]);
+  const [loadingTopEarners, setLoadingTopEarners] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +48,28 @@ function MemberDashboard() {
     fetch();
     return () => (mounted = false);
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchTopEarners = async () => {
+      if (activeTab === 'rewards') {
+        setTopEarners([]);
+        return;
+      }
+      setLoadingTopEarners(true);
+      try {
+        const typeMap = { top: 'all', monthly: 'monthly', daily: 'daily' };
+        const res = await getTopEarners(typeMap[activeTab]);
+        if (mounted && res?.success) setTopEarners(res.data);
+      } catch (err) {
+        // ignore
+      } finally {
+        if (mounted) setLoadingTopEarners(false);
+      }
+    };
+    fetchTopEarners();
+    return () => (mounted = false);
+  }, [activeTab]);
 
   // Build stats array with real data where available
   const stats = [
@@ -214,13 +238,21 @@ function MemberDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {activeTab === 'top' && (memberInfo?.recentReferrals || []).length > 0 ? (
-                  memberInfo.recentReferrals.map((row, idx) => (
-                    <tr key={row._id || `${idx}-${row.memberId}`}>
+                {activeTab === 'rewards' ? (
+                  <tr>
+                    <td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Rewards coming soon</td>
+                  </tr>
+                ) : loadingTopEarners ? (
+                  <tr>
+                    <td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Loading...</td>
+                  </tr>
+                ) : topEarners.length > 0 ? (
+                  topEarners.map((row, idx) => (
+                    <tr key={`${idx}-${row.memberId}`}>
                       <td>{idx + 1}</td>
                       <td>{row.memberId || '---'}</td>
                       <td>{row.name || '---'}</td>
-                      <td>---</td>
+                      <td>₹ {Number(row.amount || 0).toLocaleString('en-IN')}</td>
                     </tr>
                   ))
                 ) : (

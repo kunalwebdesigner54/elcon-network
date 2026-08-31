@@ -28,7 +28,15 @@ const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      const user = await User.findById(decoded.id).select('memberId name contactNo epin sponsorId sponsorName unlockLevel walletBalance accountStatus role');
+      const user = await User.findById(decoded.id).select('memberId name contactNo epin sponsorId sponsorName unlockLevel walletBalance accountStatus role isBlocked');
+      
+      if (user && user.isBlocked) {
+        return res.status(403).json({
+          success: false,
+          message: 'Your account has been blocked by the administrator.',
+        });
+      }
+
       req.user = user
         ? {
             ...decoded,

@@ -15,9 +15,9 @@
 
 .user-rank-panel {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 24px;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 /* Rank Progression Section */
@@ -47,16 +47,17 @@
 
 .user-rank-item {
   border: 1px solid var(--user-line-soft);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 0;
-  background: var(--card-bg);
+  background: var(--user-card-bg);
   cursor: pointer;
   transition: all 0.2s ease;
+  overflow: hidden;
 }
 
 .user-rank-item:hover {
   border-color: var(--user-primary);
-  background: rgba(0, 212, 170, 0.03);
+  background: rgba(0, 212, 170, 0.02);
 }
 
 .user-rank-item-expanded {
@@ -67,59 +68,79 @@
 .user-rank-item-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  gap: 16px;
+  padding: 16px;
 }
 
 .user-rank-circle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: var(--user-gradient-primary);
   color: #fff;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 212, 170, 0.3);
 }
 
 .user-rank-info {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   flex: 1;
 }
 
-.user-rank-item-earning {
-  font-size: 14px;
-  color: var(--user-primary);
-  font-weight: 600;
-}
-
 .user-rank-item-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--user-dark);
 }
 
-.user-rank-expand-icon {
-  font-size: 14px;
+.user-rank-item-earning {
+  font-size: 16px;
   color: var(--user-primary);
-  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.user-rank-expand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--user-dark);
+  opacity: 0.6;
+  transition: transform 0.2s;
+  margin-left: 8px;
+}
+.user-rank-item-expanded .user-rank-expand-icon {
+  opacity: 1;
+  color: var(--user-primary);
 }
 
 .user-rank-item-detail {
-  padding: 0 12px 12px 12px;
-  border-top: 1px solid var(--user-line-soft);
+  padding: 0 16px 16px 76px;
   font-size: 14px;
   color: var(--user-dark);
-  line-height: 1.5;
+  line-height: 1.6;
+  opacity: 0.9;
 }
 
-.user-rank-item-detail p {
-  margin: 6px 0;
+.user-rank-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--user-line-soft);
+}
+
+.user-rank-detail-row strong {
+  color: var(--user-primary);
+  font-size: 16px;
 }
 
 /* Rank Status Section */
@@ -132,17 +153,23 @@
 .user-rank-current-card,
 .user-rank-next-card {
   background: var(--user-card-bg);
+  border: 1px solid var(--user-line-soft);
   border-radius: 16px;
-  padding: 20px;
+  padding: 32px 24px;
   box-shadow: var(--user-shadow);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }
 
 .user-rank-card-title {
-  margin: 0 0 12px 0;
-  font-size: 14px;
+  margin: 0 0 16px 0;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--user-primary);
 }
@@ -171,12 +198,13 @@
 
 .user-rank-earning-display,
 .user-rank-next-earning-display {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 800;
   color: var(--user-dark);
-  margin: 12px 0;
-  border-bottom: 2px solid var(--user-line-soft);
-  padding-bottom: 12px;
+  margin: 20px 0;
+  border-bottom: 1px dashed var(--user-line-soft);
+  padding-bottom: 20px;
+  width: 100%;
 }
 
 .user-rank-progress-bar {
@@ -368,7 +396,8 @@
 /* Responsive Design */
 @media (max-width: 1024px) {
   .user-rank-panel {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
   }
 
   .user-rank-progression-section {
@@ -421,10 +450,7 @@
     font-size: 14px;
   }
 
-  .user-rank-item-earning {
-    font-size: 14px;
-  }
-
+  .user-rank-item-earning,
   .user-rank-item-name {
     font-size: 14px;
   }
@@ -470,7 +496,6 @@
   }
 
   .user-rank-panel {
-    grid-template-columns: 1fr;
     gap: 12px;
   }
 
@@ -500,7 +525,7 @@
   }
 
   .user-rank-item-earning {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .user-rank-item-name {
