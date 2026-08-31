@@ -22,7 +22,7 @@
 
 /* Rank Progression Section */
 .user-rank-progression-section {
-  background: var(--user-card-bg);
+  background: var(--card-bg);
   border-radius: 16px;
   padding: 20px;
   box-shadow: var(--user-shadow);
@@ -49,7 +49,7 @@
   border: 1px solid var(--user-line-soft);
   border-radius: 12px;
   padding: 0;
-  background: var(--user-card-bg);
+  background: var(--card-bg);
   cursor: pointer;
   transition: all 0.2s ease;
   overflow: hidden;
@@ -152,7 +152,7 @@
 
 .user-rank-current-card,
 .user-rank-next-card {
-  background: var(--user-card-bg);
+  background: var(--card-bg);
   border: 1px solid var(--user-line-soft);
   border-radius: 16px;
   padding: 32px 24px;
@@ -238,7 +238,7 @@
 
 /* Rank Holders Panel */
 .user-rank-holders-panel {
-  background: var(--user-card-bg);
+  background: var(--card-bg);
   border-radius: 16px;
   padding: 20px;
   box-shadow: var(--user-shadow);
@@ -293,7 +293,7 @@
 .user-rank-data-table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--user-card-bg);
+  background: var(--card-bg);
 }
 
 .user-rank-data-table thead {
@@ -328,7 +328,7 @@
   padding: 6px 10px;
   border: 1px solid var(--user-line-soft);
   border-radius: 8px;
-  background: var(--user-card-bg);
+  background: var(--card-bg);
   color: var(--user-dark);
   font-size: 14px;
   cursor: pointer;
@@ -347,7 +347,7 @@
 }
 
 .user-rank-select option {
-  background: var(--user-card-bg);
+  background: var(--card-bg);
   color: var(--user-dark);
   padding: 8px;
 }
@@ -372,7 +372,7 @@
   width: 32px;
   height: 32px;
   border: 1px solid var(--user-line-soft);
-  background: var(--user-card-bg);
+  background: var(--card-bg);
   color: var(--user-dark);
   border-radius: 6px;
   cursor: pointer;
