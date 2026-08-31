@@ -3,6 +3,23 @@ import '../../Common/AdminLayout.css';
 import '../ProductOrder.css';
 import { getAdminGstReport } from '../../../../api/productsService';
 
+const stateCodeMap = {
+  AP: "Andhra Pradesh", AR: "Arunachal Pradesh", AS: "Assam", BR: "Bihar", CG: "Chhattisgarh",
+  CH: "Chandigarh", DN: "Dadra and Nagar Haveli", DD: "Daman and Diu", DL: "Delhi", GA: "Goa",
+  GJ: "Gujarat", HR: "Haryana", HP: "Himachal Pradesh", JK: "Jammu and Kashmir", JH: "Jharkhand",
+  KA: "Karnataka", KL: "Kerala", LA: "Ladakh", LD: "Lakshadweep", MP: "Madhya Pradesh",
+  MH: "Maharashtra", MN: "Manipur", ML: "Meghalaya", MZ: "Mizoram", NL: "Nagaland", OD: "Odisha",
+  OR: "Odisha", PY: "Puducherry", PB: "Punjab", RJ: "Rajasthan", SK: "Sikkim", TN: "Tamil Nadu",
+  TG: "Telangana", TS: "Telangana", TR: "Tripura", UP: "Uttar Pradesh", UT: "Uttarakhand",
+  UK: "Uttarakhand", WB: "West Bengal"
+};
+
+const getFullStateName = (shortCode) => {
+  if (!shortCode || shortCode === '---') return '-';
+  const code = shortCode.toUpperCase().trim();
+  return stateCodeMap[code] || shortCode;
+};
+
 function GstReport() {
   const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +105,7 @@ function GstReport() {
                     <td className="text-center">₹{Number(row.igst || 0).toFixed(2)}</td>
                     <td className="text-center">₹{Number(row.totalAmount || 0).toFixed(2)}</td>
                     <td>{row.paymentMode || '-'}</td>
-                    <td>{row.customerState || '-'}</td>
+                    <td>{getFullStateName(row.customerState)}</td>
                     <td>{row.orderStatus || '-'}</td>
                   </tr>
                 ))
