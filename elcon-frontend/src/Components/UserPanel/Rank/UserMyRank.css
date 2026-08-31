@@ -80,6 +80,8 @@
   color: #fff;
   font-weight: 700;
   font-size: 13px;
+  line-height: 1;
+  padding-top: 1px; /* Optical adjustment for some fonts */
   flex-shrink: 0;
   box-shadow: 0 4px 10px rgba(0, 229, 255, 0.2);
 }
