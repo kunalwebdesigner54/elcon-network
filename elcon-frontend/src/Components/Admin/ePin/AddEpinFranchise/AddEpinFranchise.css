@@ -96,31 +96,11 @@
   overflow-x: auto;
 }
 
-.details-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--card-bg);
-  border-radius: 18px;
-  overflow: hidden;
-}
-
-.details-table th,
-.details-table td {
-  padding: 16px 18px;
-  border-bottom: 1px solid rgba(45, 55, 72, 0.12);
-  text-align: left;
-  font-size: 14px;
-}
-
-.details-table th {
-  width: 35%;
-  font-weight: 700;
-  background: #f7fafc;
-  color: #111827;
-}
-
-.details-table tr:last-child td {
-  border-bottom: 0;
+.add-epin-form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .add-epin-actions {
@@ -182,10 +162,8 @@
     padding: 18px;
   }
 
-  .details-table th,
-  .details-table td {
-    padding: 14px 12px;
-    font-size: 14px;
+  .add-epin-form-group {
+    margin-bottom: 14px;
   }
 
   .add-epin-actions {

@@ -79,43 +79,37 @@ function AddEpinFranchise() {
             </div>
 
             <div className="add-epin-details-column">
-              <table className="details-table">
-                <tbody>
-                  <tr>
-                    <th>FRANCHISE ID</th>
-                    <td><input className="text-input" name="franchiseId" value={franchise.franchiseId} onChange={handleChange} /></td>
-                  </tr>
-                  <tr>
-                    <th>FRANCHISE NAME</th>
-                    <td><input className="text-input" name="franchiseName" value={franchise.franchiseName} onChange={handleChange} /></td>
-                  </tr>
-                  <tr>
-                    <th>UPI ID</th>
-                    <td><input className="text-input" name="upiId" value={franchise.upiId} onChange={handleChange} /></td>
-                  </tr>
-                  <tr>
-                    <th>WATSAPP NO</th>
-                    <td><input className="text-input" name="whatsappNo" value={franchise.whatsappNo} onChange={handleChange} /></td>
-                  </tr>
-                  <tr>
-                    <th>CITY</th>
-                    <td><input className="text-input" name="city" value={franchise.city} onChange={handleChange} /></td>
-                  </tr>
-                  <tr>
-                    <th>E PIN STOCK</th>
-                    <td><input className="text-input" type="number" name="stock" value={franchise.stock} onChange={handleChange} /></td>
-                  </tr>
-                  <tr>
-                    <th>STATUS</th>
-                    <td>
-                      <select className="select-input" name="status" value={franchise.status} onChange={handleChange}>
-                        <option value="SHOWING">SHOWING</option>
-                        <option value="HIDDEN">HIDDEN</option>
-                      </select>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="add-epin-form-group">
+                <label className="field-label">FRANCHISE ID</label>
+                <input className="text-input" name="franchiseId" value={franchise.franchiseId} onChange={handleChange} />
+              </div>
+              <div className="add-epin-form-group">
+                <label className="field-label">FRANCHISE NAME</label>
+                <input className="text-input" name="franchiseName" value={franchise.franchiseName} onChange={handleChange} />
+              </div>
+              <div className="add-epin-form-group">
+                <label className="field-label">UPI ID</label>
+                <input className="text-input" name="upiId" value={franchise.upiId} onChange={handleChange} />
+              </div>
+              <div className="add-epin-form-group">
+                <label className="field-label">WHATSAPP NO</label>
+                <input className="text-input" name="whatsappNo" value={franchise.whatsappNo} onChange={handleChange} />
+              </div>
+              <div className="add-epin-form-group">
+                <label className="field-label">CITY</label>
+                <input className="text-input" name="city" value={franchise.city} onChange={handleChange} />
+              </div>
+              <div className="add-epin-form-group">
+                <label className="field-label">E PIN STOCK</label>
+                <input className="text-input" type="number" name="stock" value={franchise.stock} onChange={handleChange} />
+              </div>
+              <div className="add-epin-form-group">
+                <label className="field-label">STATUS</label>
+                <select className="select-input" name="status" value={franchise.status} onChange={handleChange}>
+                  <option value="SHOWING">SHOWING</option>
+                  <option value="HIDDEN">HIDDEN</option>
+                </select>
+              </div>
             </div>
           </div>
 

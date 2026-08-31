@@ -54,9 +54,9 @@ exports.getAllStocks = async (req, res) => {
         _id: s._id,
         franchiseId: s.franchiseId,
         franchiseName: franchise ? franchise.franchiseName : 'Unknown',
-        productId: s.productId._id,
-        productName: s.productId.productName,
-        type: s.productId.type,
+        productId: s.productId ? s.productId._id : null,
+        productName: s.productId ? s.productId.productName : 'Deleted Product',
+        type: s.productId ? s.productId.type : 'N/A',
         quantity: s.quantity,
         updatedAt: s.updatedAt
       };
@@ -82,14 +82,14 @@ exports.getMyStock = async (req, res) => {
     
     const formattedStocks = stocks.map(s => ({
       _id: s._id,
-      productId: s.productId._id,
-      productCode: s.productId.productCode,
-      productName: s.productId.productName,
-      type: s.productId.type,
-      price: s.productId.price,
-      dpPrice: s.productId.dpPrice,
+      productId: s.productId ? s.productId._id : null,
+      productCode: s.productId ? s.productId.productCode : 'N/A',
+      productName: s.productId ? s.productId.productName : 'Deleted Product',
+      type: s.productId ? s.productId.type : 'N/A',
+      price: s.productId ? s.productId.price : 0,
+      dpPrice: s.productId ? s.productId.dpPrice : 0,
       quantity: s.quantity,
-      image: s.productId.image
+      image: s.productId ? s.productId.image : null
     }));
 
     res.json({ success: true, stocks: formattedStocks });
