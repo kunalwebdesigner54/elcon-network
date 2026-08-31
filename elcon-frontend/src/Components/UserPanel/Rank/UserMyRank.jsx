@@ -95,15 +95,17 @@ function UserMyRank() {
                     )}
                   </div>
                 </div>
-                <div className={`user-rank-item-detail-wrapper ${expandedRank === index ? 'expanded' : ''}`}>
-                  <div className="user-rank-item-detail">
-                    <div className="user-rank-detail-row">
-                      <span style={{ color: '#fff' }}>Target Earning:</span>
-                      <strong style={{ color: '#00E5FF' }}>{formatCurrency(rank.targetEarning)}</strong>
+                {expandedRank === index && (
+                  <div className="user-rank-item-detail-wrapper expanded">
+                    <div className="user-rank-item-detail">
+                      <div className="user-rank-detail-row">
+                        <span style={{ color: '#fff' }}>Target Earning:</span>
+                        <strong style={{ color: '#00E5FF' }}>{formatCurrency(rank.targetEarning)}</strong>
+                      </div>
+                      <p style={{ color: '#94A3B8' }}>Achieve this prestigious rank with 10 Active Directs and <strong style={{ color: '#00E5FF' }}>{formatCurrency(rank.upgradeAmount)}</strong> ID upgrade donation contribution.</p>
                     </div>
-                    <p style={{ color: '#94A3B8' }}>Achieve this prestigious rank with 10 Active Directs and <strong style={{ color: '#00E5FF' }}>{formatCurrency(rank.upgradeAmount)}</strong> ID upgrade donation contribution.</p>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
@@ -170,7 +172,7 @@ function UserMyRank() {
               </option>
             ))}
           </select>
-          <button type="button" className="user-rank-search-btn" onClick={handleSearchClick}>
+          <button type="button" className="btn-primary w-100" style={{ height: '100%', minHeight: '44px' }} onClick={handleSearchClick}>
             Search
           </button>
         </div>

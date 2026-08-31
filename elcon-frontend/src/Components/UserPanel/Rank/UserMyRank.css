@@ -72,8 +72,8 @@
 .user-rank-item-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
+  gap: 20px;
+  padding: 20px 24px;
 }
 
 .user-rank-circle {
@@ -126,13 +126,11 @@
 }
 
 .user-rank-item-detail-wrapper {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
+  display: block;
 }
 
 .user-rank-item-detail-wrapper.expanded {
-  max-height: 200px; /* Adjust if content gets larger */
+  display: block;
 }
 
 .user-rank-item-detail {
