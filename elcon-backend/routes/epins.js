@@ -15,7 +15,10 @@ const {
   getPackages,
   createPackage,
   updatePackage,
-  deletePackage
+  deletePackage,
+  getFranchiseDeliveryReport,
+  verifyJoiningPackageDelivery,
+  getFranchiseStock
 } = require('../controllers/epinsController');
 
 const router = express.Router();
@@ -41,5 +44,9 @@ router.get('/packages', getPackages);
 router.post('/packages', authorize('admin'), createPackage);
 router.put('/packages/:id', authorize('admin'), updatePackage);
 router.delete('/packages/:id', authorize('admin'), deletePackage);
+
+router.get('/franchise-delivery-report', getFranchiseDeliveryReport);
+router.post('/franchise-verify-delivery', verifyJoiningPackageDelivery);
+router.get('/franchise-stock', getFranchiseStock);
 
 module.exports = router;

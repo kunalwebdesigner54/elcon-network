@@ -165,3 +165,18 @@ export const updateTermsAndConditions = async (payload) => {
   const response = await apiClient.put('/settings/terms-and-conditions', payload);
   return response.data;
 };
+
+export const getFranchiseDeliveryReport = async () => {
+  const response = await apiClient.get('/epins/franchise-delivery-report');
+  return response.data;
+};
+
+export const verifyJoiningPackageDelivery = async (payload) => {
+  const response = await apiClient.post('/epins/franchise-verify-delivery', payload);
+  return response.data;
+};
+
+export const getFranchiseStock = async () => {
+  const response = await apiClient.get('/epins/franchise-stock');
+  return response.data;
+};

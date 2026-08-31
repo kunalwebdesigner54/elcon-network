@@ -145,6 +145,18 @@ function MemberDashboard() {
           </div>
         </div>
 
+        {memberInfo?.joiningPackageDeliveryStatus === 'Pending' && memberInfo?.joiningPackageDeliveryCode && (
+          <div style={{ background: '#fff3cd', border: '1px solid #ffeeba', color: '#856404', padding: '15px 20px', borderRadius: '8px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <strong>Joining Package Delivery Pending</strong>
+              <div style={{ fontSize: '0.9em', marginTop: '5px' }}>Please provide this code to your E-Pin Franchise Member to receive your Joining Package.</div>
+            </div>
+            <div style={{ background: '#fff', padding: '10px 20px', borderRadius: '4px', border: '2px dashed #f39c12', fontSize: '1.5em', fontWeight: 'bold', letterSpacing: '2px', color: '#f39c12' }}>
+              {memberInfo.joiningPackageDeliveryCode}
+            </div>
+          </div>
+        )}
+
         <section className="user-dashboard1-member-dashboard-header">
           <div className="user-dashboard1-member-dashboard-profile-card">
             <div className="user-dashboard1-member-dashboard-profile-info">

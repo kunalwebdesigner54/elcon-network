@@ -397,3 +397,110 @@ exports.deletePackage = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Franchise Delivery & Stock
+// ─────────────────────────────────────────────────────────────────────────────
+const User = require('../models/User');
+
+exports.getFranchiseDeliveryReport = async (req, res) => {
+  try {
+    const memberId = req.user.memberId;
+    
+    // Check if the user is a franchise
+    const franchise = await EpinFranchise.findOne({ franchiseId: memberId });
+    if (!franchise) {
+        return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
+    }
+
+    // Find all users who registered using an e-pin distributed by this franchise.
+    // When a franchise transfers an E-pin, they were the currentOwner, or if they generated it, they were the generator.
+    // However, wait. If they transferred the E-Pin to the user BEFORE registration, the user isn't registered yet so they can't transfer it to the user's memberId in the system directly.
+    // Usually, the franchise just gives the E-Pin code to the user, and the user enters it on the registration form.
+    // In that case, the E-Pin's currentOwner at the time of registration is the franchise.
+    // Let's find all E-pins where this franchise was the currentOwner or generatedBy.
+    // Actually, to be very precise, find all USED E-pins where franchise is the one who distributed it.
+    // The easiest way is to find all users whose `epin` matches an E-pin that this franchise generated or currently owned.
+    const franchiseEpins = await Epin.find({ 
+        status: 'Used', 
+        $or: [
+            { generatedBy: memberId },
+            { currentOwner: memberId }
+        ] 
+    }).select('epinNo');
+
+    const epinNos = franchiseEpins.map(e => e.epinNo);
+
+    const users = await User.find({ epin: { $in: epinNos } }).sort({ createdAt: -1 });
+
+    const report = users.map((u, i) => ({
+        id: i + 1,
+        userId: u._id,
+        memberId: u.memberId,
+        name: u.name,
+        contactNo: u.contactNo,
+        joiningPackage: u.joiningPackage || 'N/A',
+        registeredAt: u.createdAt,
+        deliveryStatus: u.joiningPackageDeliveryStatus || 'Pending',
+        deliveredAt: u.joiningPackageDeliveredAt,
+        deliveredBy: u.joiningPackageDeliveredBy
+    }));
+
+    res.json({ success: true, report });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.verifyJoiningPackageDelivery = async (req, res) => {
+    try {
+        const memberId = req.user.memberId;
+        const { userId, deliveryCode } = req.body;
+
+        const franchise = await EpinFranchise.findOne({ franchiseId: memberId });
+        if (!franchise) {
+            return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        if (user.joiningPackageDeliveryStatus === 'Delivered') {
+            return res.status(400).json({ success: false, message: 'Package already delivered' });
+        }
+
+        if (user.joiningPackageDeliveryCode !== String(deliveryCode).trim()) {
+            return res.status(400).json({ success: false, message: 'Invalid Delivery OTP' });
+        }
+
+        user.joiningPackageDeliveryStatus = 'Delivered';
+        user.joiningPackageDeliveredAt = new Date();
+        user.joiningPackageDeliveredBy = memberId;
+        await user.save();
+
+        res.json({ success: true, message: 'Package marked as delivered successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.getFranchiseStock = async (req, res) => {
+    try {
+        const memberId = req.user.memberId;
+        const franchise = await EpinFranchise.findOne({ franchiseId: memberId });
+        if (!franchise) {
+            return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
+        }
+
+        const stockCount = await Epin.countDocuments({
+            currentOwner: memberId,
+            status: 'Unused'
+        });
+
+        res.json({ success: true, stock: stockCount });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

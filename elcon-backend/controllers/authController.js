@@ -161,6 +161,7 @@ exports.registerUser = async (req, res) => {
       panNo,
       acceptedTerms: acceptedTerms === true || acceptedTerms === 'true',
       role: 'user',
+      joiningPackageDeliveryCode: Math.floor(1000 + Math.random() * 9000).toString(),
     });
 
     if (foundEpin) {

@@ -25,6 +25,7 @@ import TransferEPin from './Components/UserPanel/ePin/TransferEPin';
 import TransferHistory from './Components/Admin/ePin/TransferHistory';
 import EPinTransferHistory from './Components/UserPanel/ePin/EPinTransferHistory';
 import DeletedEPin from './Components/UserPanel/ePin/DeletedEPin';
+import FranchiseDeliveryReport from './Components/UserPanel/ePin/FranchiseDeliveryReport/FranchiseDeliveryReport';
 import AdminLogin from './Components/AdminLogin';
 import ProtectedRoute from './Components/ProtectedRoute';
 import AdminRoute from './Components/AdminRoute';
@@ -200,6 +201,7 @@ function App() {
           <Route path="epin/epin-transfer-history" element={<EPinTransferHistory />} />
           <Route path="epin/deleted-epin" element={<DeletedEPin />} />
           <Route path="epin-franchise/epin-franchise-list" element={<EpinFranchiseList />} />
+          <Route path="epin/franchise-delivery-report" element={<FranchiseDeliveryReport />} />
 
           <Route path="transactions/main-wallet" element={<UserBlankPage />} />
           <Route path="transactions/transaction-history" element={<TransactionHistory />} />

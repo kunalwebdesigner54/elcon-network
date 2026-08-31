@@ -106,6 +106,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    joiningPackageDeliveryStatus: {
+      type: String,
+      enum: ['Pending', 'Delivered'],
+      default: 'Pending',
+    },
+    joiningPackageDeliveryCode: {
+      type: String,
+    },
+    joiningPackageDeliveredBy: {
+      type: String,
+    },
+    joiningPackageDeliveredAt: {
+      type: Date,
+    },
     joiningLevel: {
       type: Number,
       default: 1,
