@@ -399,9 +399,9 @@ exports.deletePackage = async (req, res) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Franchise Delivery & Stock
 // ─────────────────────────────────────────────────────────────────────────────
-const User = require('../models/User');
 
 exports.getFranchiseDeliveryReport = async (req, res) => {
   try {
