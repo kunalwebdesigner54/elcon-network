@@ -103,7 +103,6 @@ exports.getEpins = async (req, res) => {
         return res.status(403).json({ success: false, message: 'Not authorized to view ePins' });
       }
       baseFilter.$or = [
-        { generatedBy: { $in: identifiers } },
         { currentOwner: { $in: identifiers } },
         { usedBy: { $in: identifiers } },
         { deletedBy: { $in: identifiers } },
