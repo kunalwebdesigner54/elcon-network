@@ -138,6 +138,12 @@ exports.upgradeMember = async (req, res) => {
     // Deduct from payer's wallet
     user.walletBalance = (user.walletBalance || 0) - amount;
     user.unlockLevel = targetLevel;
+    
+    if (targetLevel === 1 && !user.receivedWelcomeCoupon) {
+      user.couponWalletBalance = (user.couponWalletBalance || 0) + 1000;
+      user.receivedWelcomeCoupon = true;
+    }
+    
     await user.save();
 
     // Credit upline's wallet
@@ -286,6 +292,10 @@ exports.updateDonationStatus = async (req, res) => {
 
       if (payer && payer.unlockLevel < donation.level) {
         payer.unlockLevel = donation.level; // Still updating this as a cache/fallback
+        if (donation.level === 1 && !payer.receivedWelcomeCoupon) {
+          payer.couponWalletBalance = (payer.couponWalletBalance || 0) + 1000;
+          payer.receivedWelcomeCoupon = true;
+        }
         await payer.save();
       }
       if (receiver) {

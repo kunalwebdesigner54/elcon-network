@@ -482,13 +482,7 @@ exports.checkoutCart = async (req, res) => {
       user.couponWalletBalance -= appliedDiscount;
     }
 
-    const previousOrdersCount = await Order.countDocuments({ userId: user._id });
-    if (previousOrdersCount === 0 && user.kycStatus === 'APPROVED' && !user.receivedWelcomeCoupon) {
-      user.couponWalletBalance += 1000;
-      user.receivedWelcomeCoupon = true;
-    }
-    
-    if (appliedDiscount > 0 || (previousOrdersCount === 0 && user.kycStatus === 'APPROVED')) {
+    if (appliedDiscount > 0) {
       await user.save();
     }
 

@@ -148,13 +148,7 @@ exports.updateKycStatus = async (req, res) => {
     }
 
     if (normalizedStatus === 'APPROVED' && !user.receivedWelcomeCoupon) {
-      const Order = require('../models/Order');
-      const orderCount = await Order.countDocuments({ userId: user._id });
-      if (orderCount > 0) {
-        user.couponWalletBalance += 1000;
-        user.receivedWelcomeCoupon = true;
-        await user.save();
-      }
+      // Logic for welcome coupon moved to donationsController (after 300 donation)
     }
 
     res.status(200).json({
