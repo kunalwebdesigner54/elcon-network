@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { franchiseGetMyStock, franchiseSellProduct } from '../../../api/managementService';
 import { getMemberInfoByUserId } from '../../../api/membersService';
 import Swal from 'sweetalert2';
+import '../../Common/UserLayout.css';
 import './FranchiseStyles.css';
 
 function FranchiseProductSell() {
@@ -98,12 +99,12 @@ function FranchiseProductSell() {
   const cartTotal = cart.reduce((acc, curr) => acc + ((curr.dpPrice || curr.price) * curr.quantity), 0);
 
   return (
-    <div className="franchise-container">
-      <h2 className="franchise-title">Sell Products (Shortcut Transaction)</h2>
+    <div>
+      <h1 className="user-page-title">Sell Products (Shortcut Transaction)</h1>
       
       <div className="franchise-split-layout">
         <div className="franchise-left-panel">
-          <div className="franchise-card mb-4">
+          <div className="user-panel mb-4">
             <h3>Buyer Details</h3>
             <div className="franchise-search-box">
               <input 
@@ -123,7 +124,7 @@ function FranchiseProductSell() {
             )}
           </div>
 
-          <div className="franchise-card">
+          <div className="user-panel">
             <h3>Available Stock</h3>
             {loading ? <p>Loading stock...</p> : (
               <div className="franchise-product-grid">
@@ -145,7 +146,7 @@ function FranchiseProductSell() {
         </div>
 
         <div className="franchise-right-panel">
-          <div className="franchise-card">
+          <div className="user-panel">
             <h3>Current Order</h3>
             {cart.length === 0 ? (
               <p className="empty-cart">No items added yet.</p>

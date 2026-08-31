@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { franchiseGetMyStock } from '../../../api/managementService';
 import Swal from 'sweetalert2';
-import './FranchiseStyles.css';
+import '../../Common/UserLayout.css';
 
 function FranchiseProductStock() {
   const [stocks, setStocks] = useState([]);
@@ -25,14 +25,14 @@ function FranchiseProductStock() {
   };
 
   return (
-    <div className="franchise-container">
-      <h2 className="franchise-title">My Product Stock</h2>
-      <div className="franchise-card">
+    <div>
+      <h1 className="user-page-title">My Product Stock</h1>
+      <div className="user-panel">
         {loading ? (
-          <p>Loading...</p>
+          <p style={{ padding: '16px' }}>Loading...</p>
         ) : (
-          <div className="table-responsive">
-            <table className="franchise-table">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>Product Code</th>

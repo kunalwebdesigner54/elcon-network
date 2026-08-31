@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { franchiseGetProductSales } from '../../../api/managementService';
 import Swal from 'sweetalert2';
-import './FranchiseStyles.css';
+import '../../Common/UserLayout.css';
 
 function FranchiseSalesReport() {
   const [sales, setSales] = useState([]);
@@ -25,14 +25,14 @@ function FranchiseSalesReport() {
   };
 
   return (
-    <div className="franchise-container">
-      <h2 className="franchise-title">Product Sales & Delivery Report</h2>
-      <div className="franchise-card">
+    <div>
+      <h1 className="user-page-title">Product Sales & Delivery Report</h1>
+      <div className="user-panel">
         {loading ? (
-          <p>Loading...</p>
+          <p style={{ padding: '16px' }}>Loading...</p>
         ) : (
-          <div className="table-responsive">
-            <table className="franchise-table">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>S.No</th>

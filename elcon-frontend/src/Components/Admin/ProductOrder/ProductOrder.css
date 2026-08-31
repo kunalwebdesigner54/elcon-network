@@ -228,7 +228,7 @@
   .admin-product-order-input { min-width: 70px; }
   .admin-product-order-table { min-width: 600px; }
   .admin-product-order-table th,
-  .admin-product-order-table td { padding: 6px 5px; font-size: 9px; }
+  .admin-product-order-table td { padding: 8px 6px; font-size: 12px; }
   .admin-product-order-action-btn { width: 22px; height: 22px; font-size: 8px; margin: 0 1px; }
 }
 

@@ -29,9 +29,9 @@ function AdminProductFranchise() {
         adminGetProductStocks()
       ]);
 
-      if (franchiseRes.success) setFranchises(franchiseRes.data);
-      if (productsRes.success) setProducts(productsRes.data);
-      if (stocksRes.success) setStocks(stocksRes.stocks);
+      if (franchiseRes.success) setFranchises(franchiseRes.data || []);
+      if (productsRes.success) setProducts(productsRes.data || []);
+      if (stocksRes.success) setStocks(stocksRes.stocks || []);
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load data.' });
     } finally {
@@ -74,8 +74,8 @@ function AdminProductFranchise() {
             <label>Franchise Member</label>
             <select name="franchiseId" value={formData.franchiseId} onChange={handleInputChange} required>
               <option value="">Select Franchise</option>
-              {franchises.map(f => (
-                <option key={f._id} value={f.franchiseId}>{f.franchiseName} ({f.franchiseId})</option>
+              {(Array.isArray(franchises) ? franchises : []).map(f => (
+                <option key={f?._id || Math.random()} value={f?.franchiseId}>{f?.franchiseName} ({f?.franchiseId})</option>
               ))}
             </select>
           </div>
@@ -84,8 +84,8 @@ function AdminProductFranchise() {
             <label>Product</label>
             <select name="productId" value={formData.productId} onChange={handleInputChange} required>
               <option value="">Select Product</option>
-              {products.map(p => (
-                <option key={p._id} value={p._id}>{p.productName} ({p.productCode})</option>
+              {(Array.isArray(products) ? products : []).map(p => (
+                <option key={p?._id || Math.random()} value={p?._id}>{p?.productName} ({p?.productCode})</option>
               ))}
             </select>
           </div>
@@ -117,17 +117,17 @@ function AdminProductFranchise() {
                 </tr>
               </thead>
               <tbody>
-                {stocks.length > 0 ? (
+                {Array.isArray(stocks) && stocks.length > 0 ? (
                   stocks.map((stock) => (
-                    <tr key={stock._id}>
-                      <td>{stock.franchiseId}</td>
-                      <td>{stock.franchiseName}</td>
-                      <td>{stock.productName}</td>
-                      <td>{stock.type}</td>
-                      <td style={{ fontWeight: 'bold', color: stock.quantity > 0 ? 'green' : 'red' }}>
-                        {stock.quantity}
+                    <tr key={stock?._id || Math.random()}>
+                      <td>{stock?.franchiseId}</td>
+                      <td>{stock?.franchiseName}</td>
+                      <td>{stock?.productName}</td>
+                      <td>{stock?.type}</td>
+                      <td style={{ fontWeight: 'bold', color: (stock?.quantity || 0) > 0 ? 'green' : 'red' }}>
+                        {stock?.quantity || 0}
                       </td>
-                      <td>{new Date(stock.updatedAt).toLocaleDateString()}</td>
+                      <td>{stock?.updatedAt ? new Date(stock.updatedAt).toLocaleDateString() : 'N/A'}</td>
                     </tr>
                   ))
                 ) : (
