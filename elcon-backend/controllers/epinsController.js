@@ -56,6 +56,7 @@ const mapEpin = (doc, index) => ({
   status: doc.status,
   usedBy: doc.usedBy || '-',
   usedDate: doc.usedDate || '-',
+  remark: doc.remark || '-',
 });
 
 const mapRequest = (doc, index) => ({
@@ -205,6 +206,7 @@ exports.generateEpins = async (req, res) => {
     // Fetch actual package price if available to prevent manipulation
     const packageDoc = await EpinPackage.findOne({ packageName: epinName, isActive: true });
     const cost = packageDoc ? packageDoc.price : Number(req.body.cost || 10);
+    const remark = String(req.body.remark || '-').trim();
 
     const created = [];
     for (let index = 0; index < qty; index += 1) {
@@ -216,7 +218,7 @@ exports.generateEpins = async (req, res) => {
         exists = Boolean(await Epin.findOne({ epinNo }));
       }
       // eslint-disable-next-line no-await-in-loop
-      const doc = await Epin.create({ epinName, epinNo, cost, generatedBy, currentOwner, status: 'Unused', usedBy: '-', usedDate: '-', deletedBy: '-', deletedDate: '-', deletedReason: '-' });
+      const doc = await Epin.create({ epinName, epinNo, cost, generatedBy, currentOwner, remark, status: 'Unused', usedBy: '-', usedDate: '-', deletedBy: '-', deletedDate: '-', deletedReason: '-' });
       created.push(mapEpin(doc, created.length));
     }
 

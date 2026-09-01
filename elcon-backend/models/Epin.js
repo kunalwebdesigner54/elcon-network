@@ -13,6 +13,7 @@ const epinSchema = new mongoose.Schema(
     deletedBy: { type: String, default: '-', trim: true },
     deletedDate: { type: String, default: '-', trim: true },
     deletedReason: { type: String, default: '-', trim: true },
+    remark: { type: String, default: '-', trim: true },
   },
   { timestamps: true }
 );

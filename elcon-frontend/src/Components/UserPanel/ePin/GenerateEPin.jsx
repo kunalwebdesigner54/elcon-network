@@ -3,7 +3,7 @@ import "./GenerateEPin.css";
 import { generateEpins, getEpinPackages } from '../../../api/managementService';
 import { getUser } from '../../../utils/auth';
 
-import { getProfile } from '../../../api/authService';
+import { getProfile, getSponsorDetails } from '../../../api/authService';
 import { useNavigate } from "react-router-dom";
 
 const GenerateEPin = () => {
@@ -11,6 +11,9 @@ const GenerateEPin = () => {
   const [walletBalance, setWalletBalance] = useState(0);
   const [packages, setPackages] = useState([]);
   const [flashMessage, setFlashMessage] = useState({ type: '', text: '' });
+  const [memberName, setMemberName] = useState('');
+  const [memberNameLoading, setMemberNameLoading] = useState(false);
+  const [memberNameError, setMemberNameError] = useState('');
 
   useEffect(() => {
     const fetchBalanceAndPackages = async () => {
@@ -49,8 +52,41 @@ const GenerateEPin = () => {
     qty: '1', 
     cost: '', 
     generatedForId: defaultGeneratedForId, 
-    transactionPassword: '' 
+    transactionPassword: '',
+    remark: ''
   });
+
+  useEffect(() => {
+    const fetchName = async () => {
+      if (!form.generatedForId || form.generatedForId.trim().toUpperCase() === 'ADMIN') {
+        setMemberName(form.generatedForId.trim().toUpperCase() === 'ADMIN' ? 'Administrator' : '');
+        setMemberNameError('');
+        return;
+      }
+      setMemberNameLoading(true);
+      setMemberNameError('');
+      try {
+        const response = await getSponsorDetails(form.generatedForId.trim());
+        if (response.success && response.sponsorName) {
+          setMemberName(response.sponsorName);
+        } else {
+          setMemberNameError('Invalid ID');
+          setMemberName('');
+        }
+      } catch (err) {
+        setMemberNameError('Invalid ID or Member not found');
+        setMemberName('');
+      } finally {
+        setMemberNameLoading(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      fetchName();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [form.generatedForId]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -87,7 +123,8 @@ const GenerateEPin = () => {
         currentOwner: form.generatedForId, 
         qty: form.qty, 
         cost: form.cost, 
-        transactionPassword: form.transactionPassword 
+        transactionPassword: form.transactionPassword,
+        remark: form.remark
       });
       if (res.success) {
         showFlash('success', 'ePin Generated Successfully!');
@@ -99,7 +136,7 @@ const GenerateEPin = () => {
           }
         });
         // Optionally reset form
-        setForm(prev => ({ ...prev, qty: '1', transactionPassword: '' }));
+        setForm(prev => ({ ...prev, qty: '1', transactionPassword: '', remark: '' }));
       } else {
         showFlash('error', res.message || "Failed to generate E-Pin");
       }
@@ -185,10 +222,19 @@ const GenerateEPin = () => {
                     <div className="buyepin-input-group">
                       <label>Generated For ID</label>
                       <input type="text" name="generatedForId" value={form.generatedForId} onChange={handleChange} />
+                      <div style={{ marginTop: '5px', fontSize: '13px', fontWeight: 'bold' }}>
+                        {memberNameLoading && <span style={{ color: '#888' }}>Fetching name...</span>}
+                        {!memberNameLoading && memberNameError && <span style={{ color: '#ef4444' }}>{memberNameError}</span>}
+                        {!memberNameLoading && memberName && <span style={{ color: '#10b981', padding: '2px 8px', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderRadius: '4px' }}>{memberName}</span>}
+                      </div>
                     </div>
                     <div className="buyepin-input-group">
                       <label>Transaction Password <span className="buyepin-required">*</span></label>
                       <input type="password" name="transactionPassword" value={form.transactionPassword} onChange={handleChange} required placeholder="Enter Transaction or Login Password" />
+                    </div>
+                    <div className="buyepin-input-group">
+                      <label>Remark</label>
+                      <input type="text" name="remark" value={form.remark} onChange={handleChange} placeholder="Enter remark or short note" />
                     </div>
                   </div>
                 </div>
