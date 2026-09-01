@@ -166,6 +166,19 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    adminType: {
+      type: String,
+      enum: ['SUPER_ADMIN', 'SUB_ADMIN'],
+      default: 'SUPER_ADMIN',
+    },
+    permissions: {
+      type: [String],
+      default: [],
+    },
+    discountCouponBalance: {
+      type: Number,
+      default: 0,
+    },
     panNo: {
       type: String,
       trim: true,

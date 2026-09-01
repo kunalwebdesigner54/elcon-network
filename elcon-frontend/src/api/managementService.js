@@ -126,13 +126,51 @@ export const upsertEpinFranchise = async (payload) => {
   return response.data;
 };
 
-export const updateEpinFranchise = async (franchiseId, payload) => {
-  const response = await apiClient.put(`/epins/franchises/${franchiseId}`, payload);
+export const updateProductFranchiseStatus = async (franchiseId, payload) => {
+  const response = await apiClient.patch(`/product-franchise/${franchiseId}/status`, payload);
   return response.data;
 };
 
+// --- ADMIN CONTROLS ---
+
+export const manageDiscountCoupon = async (payload) => {
+  const response = await apiClient.post('/admin-controls/discount-coupon', payload);
+  return response.data;
+};
+
+export const createSubAdmin = async (payload) => {
+  const response = await apiClient.post('/admin-controls/sub-admins', payload);
+  return response.data;
+};
+
+export const getSubAdmins = async () => {
+  const response = await apiClient.get('/admin-controls/sub-admins');
+  return response.data;
+};
+
+export const updateSubAdmin = async (id, payload) => {
+  const response = await apiClient.put(`/admin-controls/sub-admins/${id}`, payload);
+  return response.data;
+};
+
+export const deleteSubAdmin = async (id) => {
+  const response = await apiClient.delete(`/admin-controls/sub-admins/${id}`);
+  return response.data;
+};
+
+export const changeAdminPasswords = async (payload) => {
+  const response = await apiClient.post('/admin-controls/change-passwords', payload);
+  return response.data;
+};
+
+
 export const deleteEpinFranchise = async (franchiseId) => {
   const response = await apiClient.delete(`/epins/franchises/${franchiseId}`);
+  return response.data;
+};
+
+export const updateEpinFranchise = async (franchiseId, payload) => {
+  const response = await apiClient.put(`/epins/franchises/${franchiseId}`, payload);
   return response.data;
 };
 

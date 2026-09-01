@@ -125,14 +125,17 @@ const menuItems = [
       { label: 'Manage Taxes & Deduction', to: '/settings/manage-taxes-deduction' },
       { label: 'Bank Account', to: '/admin/setting/bank-account' },
       { label: 'Plan Setting', to: '/admin/setting/plan-setting' },
-      { label: 'Terms and Conditions', to: '/admin/setting/terms-and-conditions' }
+      { label: 'Terms and Conditions', to: '/admin/setting/terms-and-conditions' },
+      { label: 'Admin Settings', to: '/settings/admin-settings' },
+      { label: 'Manage Sub-Admins', to: '/sub-admins/manage' }
     ]
   },
   {
     key: 'coupon',
     label: 'Coupon',
     children: [
-      { label: 'Coupon Report', to: '/admin/coupon/coupon-report' }
+      { label: 'Coupon Report', to: '/admin/coupon/coupon-report' },
+      { label: 'Manage Discount Coupon', to: '/discount-coupon/manage' }
     ]
   },
   {
@@ -190,6 +193,52 @@ function AdminLayout() {
 
   const [openSection, setOpenSection] = useState(null);
 
+  const user = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user')) || {};
+    } catch {
+      return {};
+    }
+  }, []);
+
+  const filteredMenuItems = useMemo(() => {
+    if (user.adminType === 'SUB_ADMIN') {
+      const perms = user.permissions || [];
+      return menuItems.filter(item => {
+        if (item.key === 'dashboard' || item.key === 'signout' || item.key === 'lastLogin') return true;
+        
+        const permissionMap = {
+          'epin': 'epin_management',
+          'franchise': 'epin_management',
+          'members': ['kyc_verification', 'address_update', 'user_management'],
+          'networkReports': ['reports', 'user_management'],
+          'incomeReports': 'reports',
+          'deposits': 'wallet_management',
+          'withdrawals': 'wallet_management',
+          'productsPackage': 'product_management',
+          'productOrder': 'product_management',
+          'transaction': 'wallet_management',
+          'settings': 'SUPER_ADMIN_ONLY', // Sub-admins usually shouldn't access settings, but let's say 'user_management'
+          'coupon': 'wallet_management',
+          'newsPopup': 'product_management',
+          'support': 'support',
+          'rank': 'reports'
+        };
+
+        const reqPerm = permissionMap[item.key];
+        if (!reqPerm) return false;
+        if (reqPerm === 'SUPER_ADMIN_ONLY') return false;
+
+        if (Array.isArray(reqPerm)) {
+          return reqPerm.some(p => perms.includes(p));
+        }
+        return perms.includes(reqPerm);
+      });
+    }
+    return menuItems;
+  }, [user]);
+
+
   const toggleSection = (key) => {
     setOpenSection((prev) => (prev === key ? null : key));
   };
@@ -225,7 +274,7 @@ function AdminLayout() {
         <div className="sidebar-section-title">MAIN NAVIGATION</div>
 
         <nav className="sidebar-nav">
-          {menuItems.map((item) => {
+          {filteredMenuItems.map((item) => {
             if (item.children) {
               const isOpen = openSection === item.key;
               return (

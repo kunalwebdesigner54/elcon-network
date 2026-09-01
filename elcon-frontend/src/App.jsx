@@ -4,6 +4,11 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import AdminLayout from './Components/Admin/Common/AdminLayout';
 import AdminBlankPage from './Components/Admin/Common/AdminBlankPage';
+import ChangeProfileAdmin from './Components/Admin/Setting/ChangeProfile/ChangeProfileAdmin';
+import AdminSettings from './Components/Admin/Settings/AdminSettings';
+import ManageSubAdmins from './Components/Admin/SubAdmins/ManageSubAdmins';
+import ManageDiscountCoupon from './Components/Admin/DiscountCoupon/ManageDiscountCoupon';
+import UserLocation from './Components/Admin/Users/UserLocation';
 import Dashboard from './Components/Admin/Dashboard/Dashboard';
 import MembersLocation from './Components/Admin/Members/MembersLocation/MembersLocation';
 import KYCRequest from './Components/Admin/Members/KYCRequest/KYCRequest';
@@ -360,6 +365,12 @@ function App() {
           <Route path="product-order/returned-orders" element={<ReturnedOrders />} />
           <Route path="product-order/cancelled-orders" element={<CancelledOrders />} />
 
+          {/* Admin Settings & Roles */}
+          <Route path="settings/admin-settings" element={<AdminSettings />} />
+          <Route path="sub-admins/manage" element={<ManageSubAdmins />} />
+          <Route path="discount-coupon/manage" element={<ManageDiscountCoupon />} />
+
+          <Route path="wallet-manage/admin-wallet-deposit" element={<AdminBlankPage />} />
           <Route path="transaction/main-wallet" element={<AdminBlankPage />} />
           <Route path="transactions/transaction-history" element={<AdminTransactionHistory />} />
           <Route path="withdrawals/all-request" element={<AllWithdrawalRequest />} />

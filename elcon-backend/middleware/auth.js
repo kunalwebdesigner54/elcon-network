@@ -28,7 +28,7 @@ const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      const user = await User.findById(decoded.id).select('memberId name contactNo epin sponsorId sponsorName unlockLevel walletBalance accountStatus role isBlocked');
+      const user = await User.findById(decoded.id).select('memberId name contactNo epin sponsorId sponsorName unlockLevel walletBalance accountStatus role isBlocked adminType permissions');
       
       if (user && user.isBlocked) {
         return res.status(403).json({
@@ -51,6 +51,8 @@ const protect = async (req, res, next) => {
             walletBalance: user.walletBalance,
             accountStatus: user.accountStatus,
             role: user.role || decoded.role,
+            adminType: user.adminType,
+            permissions: user.permissions,
           }
         : decoded;
       next();
