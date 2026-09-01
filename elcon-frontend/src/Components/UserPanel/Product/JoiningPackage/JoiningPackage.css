@@ -24,9 +24,9 @@
   border-radius: 18px;
   overflow: hidden;
   height: auto;
-  min-height: 380px;
+  min-height: 360px;
   cursor: pointer;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -60,7 +60,7 @@
   object-fit: contain;
   object-position: center;
   transform: scale(1);
-  transition: transform 0.35s ease;
+  transition: transform 0.25s ease-out;
   will-change: auto;
   backface-visibility: hidden;
 }
@@ -70,22 +70,21 @@
   height: 100%;
   object-fit: contain;
   object-position: center;
-  transform: scale(1.05);
-  transition: transform 0.35s ease;
+  transform: scale(1.03);
+  transition: transform 0.25s ease-out;
   will-change: transform;
 }
 
 .user-product-stock-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 10px;
+  position: static;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  z-index: 10;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .user-product-stock-badge.in-stock {
@@ -100,35 +99,42 @@
 
 .user-product-footer {
   background: #1b2b43;
-  padding: 12px 12px;
-  margin-top: 8px;
+  padding: 10px;
   min-height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
 }
 
 .user-product-meta {
   margin-bottom: 0;
 }
 
+.user-product-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
 .user-product-meta h3 {
   margin: 0;
- padding-block: 5px;
+  padding: 0;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .user-product-meta-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0;
   flex-wrap: wrap;
-  margin-top: 4px;
-  justify-content: space-between;
+  margin-top: 2px;
+  justify-content: flex-start;
 }
 
 .user-product-stock {
@@ -165,8 +171,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 4px;
+  margin-bottom: 6px;
 }
 
 .user-product-mrp {
