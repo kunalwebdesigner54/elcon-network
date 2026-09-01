@@ -120,9 +120,9 @@ function MyTeam() {
           <>
             <div className="table-toolbar">
               <div /> {/* flex spacer */}
-              <div>
-                <button className="user-btn-outline" type="button" style={{ marginRight: '8px' }}>Excel</button>
-                <button className="user-btn-outline" type="button">PDF</button>
+              <div style={{ display: 'flex', gap: '15px', width: '100%' }}>
+                <button className="user-btn-outline" type="button" style={{ flex: 1 }}>Excel</button>
+                <button className="user-btn-outline" type="button" style={{ flex: 1 }}>PDF</button>
               </div>
             </div>
 
