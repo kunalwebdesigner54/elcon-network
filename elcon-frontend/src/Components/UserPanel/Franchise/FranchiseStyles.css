@@ -13,6 +13,15 @@
 
 .franchise-left-panel {
   flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.franchise-split-layout .user-panel {
+  min-height: auto;
+  flex: none;
+  margin-bottom: 0; /* Override the mb-4 inline class if present */
 }
 
 .franchise-right-panel {
