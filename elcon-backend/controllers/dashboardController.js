@@ -52,7 +52,7 @@ exports.adminDashboard = async (req, res) => {
 exports.userDashboard = async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId).select('memberId name joiningPackage createdAt role rank joiningPackageDeliveryStatus joiningPackageDeliveryCode');
+    const user = await User.findById(userId).select('memberId name joiningPackage createdAt role rank isRankVisible joiningPackageDeliveryStatus joiningPackageDeliveryCode');
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
@@ -113,6 +113,9 @@ exports.userDashboard = async (req, res) => {
       data: {
         memberId: user.memberId,
         name: user.name,
+        role: user.role,
+        rank: user.rank || '---',
+        isRankVisible: user.isRankVisible !== false,
         joiningPackage: user.joiningPackage || '---',
         registeredAt: user.createdAt,
         referralsCount,

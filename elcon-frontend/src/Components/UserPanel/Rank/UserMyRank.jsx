@@ -25,6 +25,7 @@ function UserMyRank() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentRankName, setCurrentRankName] = useState('---');
+  const [isRankVisible, setIsRankVisible] = useState(true);
   const [currentEarning, setCurrentEarning] = useState(0);
 
   useEffect(() => {
@@ -32,6 +33,7 @@ function UserMyRank() {
       .then(([dashboardResponse, performanceResponse]) => {
         setRankRows(Array.isArray(performanceResponse.data) ? performanceResponse.data : []);
         setCurrentRankName(dashboardResponse.data?.rank || '---');
+        setIsRankVisible(dashboardResponse.data?.isRankVisible !== false);
         const totalEarning = String(dashboardResponse.data?.totalEarning || '0').replace(/[^0-9.]/g, '');
         setCurrentEarning(Number(totalEarning) || 0);
       })
@@ -97,8 +99,13 @@ function UserMyRank() {
           <div className="user-rank-current-card">
             <h3 className="user-rank-card-title">CURRENT RANK</h3>
             <div className="user-rank-badge">
-              {currentRank.name}
+              {!isRankVisible ? 'HIDDEN' : currentRank.name}
             </div>
+            {!isRankVisible && (
+              <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+                Your rank visibility is currently hidden by the administrator.
+              </p>
+            )}
             <div className="user-rank-earning-display">
               ₹{currentEarning.toLocaleString('en-IN')}
             </div>

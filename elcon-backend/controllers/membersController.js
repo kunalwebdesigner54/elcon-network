@@ -478,6 +478,20 @@ exports.getTeamTree = async (req, res) => {
   }
 };
 
+const calculateRank = (directsCount, upgradeLevel, totalIncome) => {
+  if (totalIncome >= 256000 && upgradeLevel >= 10 && directsCount >= 10) return 'CROWN DIAMOND';
+  if (totalIncome >= 128000 && upgradeLevel >= 9 && directsCount >= 9) return 'DIAMOND';
+  if (totalIncome >= 64000 && upgradeLevel >= 8 && directsCount >= 8) return 'EMERALD';
+  if (totalIncome >= 32000 && upgradeLevel >= 7 && directsCount >= 7) return 'PLATINUM';
+  if (totalIncome >= 16000 && upgradeLevel >= 6 && directsCount >= 6) return 'GOLD';
+  if (totalIncome >= 8000 && upgradeLevel >= 5 && directsCount >= 5) return 'SILVER';
+  if (totalIncome >= 4000 && upgradeLevel >= 4 && directsCount >= 4) return 'BRONZE';
+  if (totalIncome >= 2000 && upgradeLevel >= 3 && directsCount >= 3) return 'STAR';
+  if (totalIncome >= 1000 && upgradeLevel >= 2 && directsCount >= 2) return 'ACHIEVER';
+  if (totalIncome >= 300 && upgradeLevel >= 1 && directsCount >= 1) return 'STARTER';
+  return '---';
+};
+
 exports.getMemberPerformance = async (req, res) => {
   try {
     const { users, statsMap, adminMemberId } = await getAllUsersTeamStats();
@@ -501,6 +515,15 @@ exports.getMemberPerformance = async (req, res) => {
       const donationIncome = totalTeamCount * 50;
       const totalIncome = levelIncome + repurchaseIncome + donationIncome;
 
+      const directsCount = descendants.filter((d) => d.sponsorId === user.memberId).length;
+      const unlockLevel = upgradeLevelMap.get(user.memberId) ?? 0;
+      const calculatedRank = calculateRank(directsCount, unlockLevel, totalIncome);
+
+      // Async update user rank in DB if it changed
+      if (user.rank !== calculatedRank) {
+        User.updateOne({ memberId: user.memberId }, { $set: { rank: calculatedRank } }).exec();
+      }
+
       return {
         sNo: index + 1,
         memberId: user.memberId || '---',
@@ -510,11 +533,13 @@ exports.getMemberPerformance = async (req, res) => {
         joinDateRaw: user.createdAt,
         status: user.accountStatus || 'ACTIVE',
         levelDepth: depthMap.get(user.memberId) || 0,
-        unlockLevel: upgradeLevelMap.get(user.memberId) ?? 0,
-        rank: user.rank || '---',
+        unlockLevel,
+        rank: calculatedRank,
+        isRankVisible: user.isRankVisible !== false,
         activeTeamCount,
         inactiveTeamCount,
         totalTeamCount,
+        directsCount,
         levelIncome,
         repurchaseIncome,
         donationIncome,

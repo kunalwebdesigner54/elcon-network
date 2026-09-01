@@ -10,6 +10,9 @@ router.use(authorize('admin'));
 // Manage Discount Coupons
 router.post('/discount-coupon', adminControlsController.manageDiscountCoupon);
 
+// Manage Rank Visibility
+router.put('/rank-visibility', adminControlsController.toggleRankVisibility);
+
 // Sub-Admin Management (Require SUPER_ADMIN ideally, but we can do it in the controller or a middleware)
 // For simplicity, we can just check if req.user.adminType === 'SUPER_ADMIN' in a tiny middleware here
 const requireSuperAdmin = (req, res, next) => {

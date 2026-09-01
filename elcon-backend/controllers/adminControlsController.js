@@ -216,3 +216,31 @@ exports.changePasswords = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to change password' });
   }
 };
+
+// ==========================================
+// Toggle Rank Visibility
+// ==========================================
+exports.toggleRankVisibility = async (req, res) => {
+  try {
+    const { memberId, isVisible } = req.body;
+    
+    if (!memberId) {
+      return res.status(400).json({ success: false, message: 'Member ID is required' });
+    }
+
+    const user = await User.findOne({ memberId: memberId.toUpperCase() });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Member not found' });
+    }
+
+    user.isRankVisible = isVisible;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Rank visibility set to ${isVisible ? 'SHOW' : 'HIDE'} for member ${user.memberId}`
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};

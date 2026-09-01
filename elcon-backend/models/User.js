@@ -323,6 +323,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: '---',
     },
+    isRankVisible: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

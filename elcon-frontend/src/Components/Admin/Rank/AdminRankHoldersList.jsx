@@ -1,6 +1,7 @@
 import './AdminRankHoldersList.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getMemberPerformance } from '../../../api/membersService';
+import { toggleRankVisibility } from '../../../api/managementService';
 
 const rankOptions = [
   'STARTER',
@@ -38,6 +39,20 @@ function AdminRankHoldersList() {
 
   const handleSearchClick = () => {
     setSelectedRankFilter((prev) => prev);
+  };
+
+  const handleToggleVisibility = async (memberId, isVisible) => {
+    if (!window.confirm(`Are you sure you want to ${isVisible ? 'SHOW' : 'HIDE'} rank for this user?`)) return;
+    try {
+      const res = await toggleRankVisibility({ memberId, isVisible });
+      if (res.success) {
+        setRows(prevRows => prevRows.map(row => 
+          row.memberId === memberId ? { ...row, isRankVisible: isVisible } : row
+        ));
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to update visibility');
+    }
   };
 
   return (
@@ -96,17 +111,31 @@ function AdminRankHoldersList() {
                   <td>{row.memberId}</td>
                   <td>{row.memberName}</td>
                   <td>{row.city || '---'}</td>
-                  <td>{row.totalTeamCount ?? row.directs ?? 0}</td>
+                  <td>{row.directsCount ?? row.totalTeamCount ?? row.directs ?? 0}</td>
                   <td>{row.unlockLevel || row.joiningLevel || '---'}</td>
                   <td>{typeof row.totalIncome === 'number' ? row.totalIncome : row.earning || '---'}</td>
                   <td>{row.rank}</td>
-                  <td>{row.status || 'ACTIVE'}</td>
+                  <td>
+                    <span className={row.isRankVisible ? 'status-active' : 'status-inactive'}>
+                      {row.isRankVisible ? 'VISIBLE' : 'HIDDEN'}
+                    </span>
+                  </td>
                   <td>
                     <div className="rank-action-buttons">
-                      <button type="button" className="action-button action-button-show">
+                      <button 
+                        type="button" 
+                        className="action-button action-button-show"
+                        onClick={() => handleToggleVisibility(row.memberId, true)}
+                        disabled={row.isRankVisible}
+                      >
                         SHOW
                       </button>
-                      <button type="button" className="action-button action-button-hide">
+                      <button 
+                        type="button" 
+                        className="action-button action-button-hide"
+                        onClick={() => handleToggleVisibility(row.memberId, false)}
+                        disabled={!row.isRankVisible}
+                      >
                         HIDE
                       </button>
                     </div>

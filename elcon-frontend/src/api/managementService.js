@@ -138,6 +138,11 @@ export const manageDiscountCoupon = async (payload) => {
   return response.data;
 };
 
+export const toggleRankVisibility = async (payload) => {
+  const response = await apiClient.put('/admin-controls/rank-visibility', payload);
+  return response.data;
+};
+
 export const createSubAdmin = async (payload) => {
   const response = await apiClient.post('/admin-controls/sub-admins', payload);
   return response.data;
