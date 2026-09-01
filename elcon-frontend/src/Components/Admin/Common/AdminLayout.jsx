@@ -21,8 +21,7 @@ const menuItems = [
     key: 'franchise',
     label: 'Franchise Manage',
     children: [
-      { label: 'ePin Franchise List', to: '/epin-franchise/list' },
-      { label: 'Create ePin Franchise', to: '/epin-franchise/create' },
+      { label: 'Create Epin Franchise', to: '/epin-franchise/list' },
       { label: 'Product Franchise Stock', to: '/product-franchise/manage' }
     ]
   },

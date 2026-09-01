@@ -380,7 +380,7 @@ function App() {
           <Route path="support/support-section" element={<AdminBlankPage />} />
           <Route path="support/support-tickets" element={<TicketHistory />} />
           <Route path="epin-franchise/create" element={<AddEpinFranchise />} />
-          <Route path="epin-franchise/list" element={<EpinFranchiseList />} />
+          <Route path="epin-franchise/list" element={<AdminEpinFranchiseList />} />
           <Route path="product-franchise/manage" element={<AdminProductFranchise />} />
 
           <Route path="users/joining-report" element={<AdminBlankPage />} />
