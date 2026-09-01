@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import '../../Common/AdminLayout.css';
-import { getSubAdmins, createSubAdmin, updateSubAdmin, deleteSubAdmin } from '../../../../api/managementService';
+import "../Common/AdminLayout.css";
+import { getSubAdmins, createSubAdmin, updateSubAdmin, deleteSubAdmin } from "../../../api/managementService";
 
 const AVAILABLE_PERMISSIONS = [
   { id: 'kyc_verification', label: 'KYC Verification' },

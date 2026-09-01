@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import '../../Common/AdminLayout.css';
-import { changeAdminPasswords } from '../../../../api/managementService';
+import "../Common/AdminLayout.css";
+import { changeAdminPasswords } from "../../../api/managementService";
 
 function AdminSettings() {
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'transaction'

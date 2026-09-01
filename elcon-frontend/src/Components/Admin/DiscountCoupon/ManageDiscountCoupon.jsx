@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import '../../Common/AdminLayout.css';
-import { manageDiscountCoupon } from '../../../../api/managementService';
+import "../Common/AdminLayout.css";
+import { manageDiscountCoupon } from "../../../api/managementService";
 
 function ManageDiscountCoupon() {
   const [formData, setFormData] = useState({
