@@ -297,6 +297,14 @@ exports.getAllMembersList = async (req, res) => {
     const directCountMap = {};
     directCounts.forEach(dc => { directCountMap[dc._id] = dc.count; });
 
+    // Attach upgrade levels
+    const upgradeLevels = await Donation.aggregate([
+      { $match: { fromMemberId: { $in: userIds }, status: { $in: ['APPROVED', 'COMPLETED'] } } },
+      { $group: { _id: '$fromMemberId', maxLevel: { $max: '$level' } } }
+    ]);
+    const upgradeLevelMap = {};
+    upgradeLevels.forEach(ul => { upgradeLevelMap[ul._id] = ul.maxLevel; });
+
     const rows = users.map((user, index) => ({
       sNo: skip + index + 1,
       sponsorId: (user.sponsorId && user.sponsorId !== adminMemberId) ? user.sponsorId : '---',
@@ -307,6 +315,7 @@ exports.getAllMembersList = async (req, res) => {
       joinDateRaw: user.createdAt,
       levelDepth: (user.levelDepth !== undefined && user.levelDepth !== -1) ? user.levelDepth : 'INVALID',
       directCount: directCountMap[user.memberId] || 0,
+      upgradeLevel: upgradeLevelMap[user.memberId] || 0,
       city: user.city || '---',
       status: user.accountStatus || 'ACTIVE',
       password: user.plainPassword || '********',

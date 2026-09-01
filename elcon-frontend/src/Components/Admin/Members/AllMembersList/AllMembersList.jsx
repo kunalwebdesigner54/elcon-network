@@ -153,6 +153,7 @@ const AllMembersList = () => {
                 <th>MOBILE</th>
                 <th>JOIN DATE</th>
                 <th>DIRECTS</th>
+                <th>UPGRADE</th>
                 <th>LEVEL DEPTH</th>
                 <th>CITY</th>
                 <th>STATUS</th>
@@ -166,7 +167,7 @@ const AllMembersList = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="14">Loading...</td>
+                  <td colSpan="15">Loading...</td>
                 </tr>
               ) : membersData.length > 0 ? membersData.map((member) => (
                 <tr key={member.sNo}>
@@ -177,6 +178,7 @@ const AllMembersList = () => {
                   <td>{member.mobile}</td>
                   <td>{formatJoinDate(member.joinDateRaw, member.joinDate)}</td>
                   <td>{member.directCount || 0}</td>
+                  <td>{member.upgradeLevel || 0}</td>
                   <td>{member.levelDepth}</td>
                   <td>{member.city}</td>
                   <td>
@@ -217,7 +219,7 @@ const AllMembersList = () => {
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan="14">No members found</td>
+                  <td colSpan="15">No members found</td>
                 </tr>
               )}
             </tbody>
