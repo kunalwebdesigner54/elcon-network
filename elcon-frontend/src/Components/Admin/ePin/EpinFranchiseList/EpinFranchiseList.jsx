@@ -37,7 +37,7 @@ function AdminEpinFranchiseList() {
   };
 
   const handleEdit = (row) => {
-    navigate('/epin/epin-franchise/add-epin-franchise', { state: { franchise: row } });
+    navigate('/epin-franchise/create', { state: { franchise: row } });
   };
 
   const handleToggleStatus = async (row) => {
