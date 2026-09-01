@@ -101,7 +101,7 @@ function EpinFranchiseList() {
               <article key={item.franchiseId} className="franchise-card">
                 <div className="franchise-card-image">
                   <div className="qr-frame">
-                    <img src={qrCode} alt="Franchise QR code" className="franchise-qr-image" />
+                    <img src={item.qrImage || qrCode} alt="Franchise QR code" className="franchise-qr-image" />
                   </div>
                 </div>
                 <div className="franchise-card-details">
@@ -119,7 +119,7 @@ function EpinFranchiseList() {
                       {copiedId === item.franchiseId && <span className="copy-notice">Copied</span>}
                     </div>
                   </div>
-                  <button type="button" className="franchise-share-btn">
+                  <button type="button" className="franchise-share-btn" onClick={() => window.open(`https://wa.me/${item.whatsapp}`, '_blank')}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: 6 }}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="none" style={{ marginRight: 6 }}>
                         <g>
