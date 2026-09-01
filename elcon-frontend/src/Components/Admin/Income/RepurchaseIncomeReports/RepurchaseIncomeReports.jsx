@@ -88,7 +88,7 @@ function RepurchaseIncomeReports() {
     incomeDateTime: row.incomeDateTime,
     memberId: row.memberId,
     memberName: row.memberName,
-    levelNo: String(row.levelNo || '').replace(/Level/gi, 'Upline'),
+    levelNo: row.levelNo ? `Upline ${String(row.levelNo).replace(/Level|Upline/gi, '').trim()}` : '',
     levelId: row.levelId,
     fromMemberName: row.fromMemberName,
     amount: Number(row.amount || 0),
