@@ -4,7 +4,7 @@ import './DonationReport.css';
 
 const exportColumns = [
   'S.No', 'Donor Member ID', 'Donor Member Name', 'Receiver Member ID', 'Receiver Member Name', 'Amount (₹)',
-  'Add Upgrade', 'Directs', 'Level Depth', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
+  'Upgrade', 'Directs', 'Level Depth', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
 ];
 
 const rankLabels = {
@@ -126,9 +126,9 @@ function DonationReport() {
     row.receiverMemberId,
     row.receiverMemberName,
     row.amount,
-    '---', // Add Upgrade
+    row.rank, // Upgrade
     '---', // Directs
-    row.rank, // Level Depth
+    '---', // Level Depth
     row.requestDate,
     row.approveDate,
     row.transactionId,
@@ -251,7 +251,7 @@ function DonationReport() {
                     <th>RECEIVER MID</th>
                     <th>RECEIVER MEMBER NAME</th>
                     <th>AMOUNT (₹)</th>
-                    <th>ADD UPGRADE</th>
+                    <th>UPGRADE</th>
                     <th>DIRECTS</th>
                     <th>LEVEL DEPTH</th>
                     <th>REQUEST DATE</th>
@@ -273,9 +273,9 @@ function DonationReport() {
                       <td>{row.receiverMemberId}</td>
                       <td>{row.receiverMemberName}</td>
                       <td>{row.amount}</td>
-                      <td>---</td>
-                      <td>---</td>
                       <td>{row.rank}</td>
+                      <td>---</td>
+                      <td>---</td>
                       <td>{row.requestDate}</td>
                       <td>{row.approveDate}</td>
                       <td>{row.transactionId}</td>
