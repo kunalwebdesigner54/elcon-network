@@ -83,13 +83,11 @@ function JoiningPackage() {
 
                   <div className="user-product-footer">
                     <div className="user-product-meta">
-                      <div className="user-product-title-row">
-                        <h3>{product.productName || product.name}</h3>
-                        <span className={`user-product-stock-badge ${stockStatus === 'In Stock' ? 'in-stock' : 'out-stock'}`}>
+                      <h3>{product.productName || product.name}</h3>
+                      <div className="user-product-meta-row">
+                        <span className={`user-product-stock ${stockStatus === 'In Stock' ? 'in-stock' : 'out-stock'}`}>
                           {stockStatus === 'In Stock' ? 'IN STOCK' : 'OUT OF STOCK'}
                         </span>
-                      </div>
-                      <div className="user-product-meta-row">
                         <span className="user-product-category">Category : {product.category}</span>
                       </div>
                     </div>
