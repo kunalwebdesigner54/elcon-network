@@ -10,12 +10,12 @@ const formatDateTime = (value) => new Date(value).toLocaleString('en-IN', {
 const buildTransactionRows = async (scope, memberIdentifiers = []) => {
   const rows = [];
 
-  const orders = await Order.find().sort({ createdAt: -1 });
+  const orders = await Order.find().populate('userId', 'memberId').sort({ createdAt: -1 });
   orders.forEach((order) => {
     rows.push({
       dateTime: formatDateTime(order.createdAt),
       transactionId: order.orderNo,
-      memberId: String(order.userId),
+      memberId: order.userId?.memberId || String(order.userId),
       description: 'PRODUCT PURCHASE',
       credit: 0,
       debit: Number(order.finalTotal || 0),
