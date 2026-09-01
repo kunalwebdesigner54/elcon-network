@@ -255,13 +255,16 @@
   border: 1px solid rgba(0, 220, 255, 0.25);
   border-right: none;
   background: #1f2937;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
   color: #ffffff;
   outline: none;
+  text-align: center;
+  min-width: 0;
 }
 
 .network-search-input::placeholder {
-  color: #64748b;
+  color: #94a3b8;
 }
 
 .network-search-btn {
@@ -269,11 +272,12 @@
   background: #00dcff;
   color: #111827;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 14px;
   border: none;
   cursor: pointer;
   letter-spacing: 0.5px;
   transition: background 0.2s;
+  flex-shrink: 0;
 }
 
 .network-search-btn:hover {
