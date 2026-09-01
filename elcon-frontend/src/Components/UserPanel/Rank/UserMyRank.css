@@ -4,6 +4,12 @@
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-rank-container *, .user-rank-container *::before, .user-rank-container *::after {
+  box-sizing: border-box;
 }
 
 .user-rank-page-title {
@@ -379,8 +385,8 @@
 /* Responsive Design */
 @media (max-width: 1024px) {
   .user-rank-panel {
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .user-rank-progression-section {
@@ -407,6 +413,8 @@
   }
 
   .user-rank-panel {
+    display: flex !important;
+    flex-direction: column !important;
     gap: 16px;
   }
 
@@ -479,6 +487,8 @@
   }
 
   .user-rank-panel {
+    display: flex !important;
+    flex-direction: column !important;
     gap: 12px;
   }
 
