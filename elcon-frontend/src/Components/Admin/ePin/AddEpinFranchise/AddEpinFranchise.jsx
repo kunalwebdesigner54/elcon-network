@@ -27,27 +27,16 @@ function AddEpinFranchise() {
       });
       return;
     }
-
-    (async () => {
-      try {
-        const response = await getEpinFranchises();
-        const first = response.franchises?.[0];
-        if (first) {
-          setFranchise({
-            franchiseId: first.franchiseId || '',
-            franchiseName: first.name || '',
-            upiId: first.upi || '',
-            whatsappNo: first.whatsapp || '',
-            city: first.city || '',
-            stock: String(first.stock || 0),
-            status: first.status || 'SHOWING',
-            qrImage: first.qrImage || '',
-          });
-        }
-      } catch (error) {
-        setFranchise((prev) => prev);
-      }
-    })();
+      setFranchise({
+        franchiseId: '',
+        franchiseName: '',
+        upiId: '',
+        whatsappNo: '',
+        city: '',
+        stock: '0',
+        status: 'SHOWING',
+        qrImage: '',
+      });
   }, [location.state]);
 
   const handleChange = (event) => {
