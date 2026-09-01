@@ -102,7 +102,7 @@ function DonationsIncome() {
                   <th>DIRECTS</th>
                   <th>LEVEL DEPTH</th>
                   <th>AMOUNT (₹)</th>
-                  <th>ADD UPGRADE</th>
+                  <th>UPGRADE</th>
                   <th>DONATION ID</th>
                   <th>DATE</th>
                   <th>STATUS</th>
