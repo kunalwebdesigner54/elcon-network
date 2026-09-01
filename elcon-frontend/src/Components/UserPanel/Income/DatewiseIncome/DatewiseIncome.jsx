@@ -10,6 +10,7 @@ function DatewiseIncome() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [pageSize, setPageSize] = useState('10');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     getMyDonations()
@@ -32,7 +33,6 @@ function DatewiseIncome() {
 
     return Array.from(grouped.entries())
       .sort((left, right) => new Date(right[0]).getTime() - new Date(left[0]).getTime())
-      .slice(0, Number(pageSize))
       .map(([date, group], index) => ({
         sNo: index + 1,
         incomeDate: date,
@@ -44,9 +44,18 @@ function DatewiseIncome() {
         repurchaseIncome: group.amount * 0.5,
         dailyIncome: group.amount,
       }));
-  }, [pageSize, rows]);
+  }, [rows]);
 
-  const totalAmount = datewiseIncomeData.reduce((sum, row) => sum + row.dailyIncome, 0);
+  const indexOfLastItem = currentPage * Number(pageSize);
+  const indexOfFirstItem = indexOfLastItem - Number(pageSize);
+  const visibleRows = datewiseIncomeData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.max(1, Math.ceil(datewiseIncomeData.length / Number(pageSize)));
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const totalAmount = visibleRows.reduce((sum, row) => sum + row.dailyIncome, 0);
 
   return (
     <div>
@@ -55,12 +64,12 @@ function DatewiseIncome() {
         <div className="report-filters">
           <input type="date" placeholder="START DATE" aria-label="Start Date" />
           <input type="date" placeholder="END DATE" aria-label="End Date" />
-          <select aria-label="Rows per page" value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
+          <select aria-label="Rows per page" value={pageSize} onChange={(event) => { setPageSize(event.target.value); setCurrentPage(1); }}>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="user-btn-blue" type="button">SERCH</button>
+          <button className="user-btn-blue" type="button" onClick={() => setCurrentPage(1)}>SEARCH</button>
         </div>
 
         <div className="table-toolbar">
@@ -90,7 +99,7 @@ function DatewiseIncome() {
                 <tr><td colSpan={8}>{error}</td></tr>
               ) : datewiseIncomeData.length === 0 ? (
                 <tr><td colSpan={9}>No datewise income records found.</td></tr>
-              ) : datewiseIncomeData.map((row) => (
+              ) : visibleRows.map((row) => (
                 <tr key={row.sNo}>
                   <td>{row.sNo}</td>
                   <td>{row.incomeDate}</td>
@@ -106,25 +115,33 @@ function DatewiseIncome() {
               <tr className="report-total-row">
                 <td style={{
                     textAlign: "end",
-                  }} colSpan="8">TOTAL AMOUNT</td>
+                  }} colSpan="8">PAGE TOTAL AMOUNT</td>
                 <td>{totalAmount.toFixed(2)}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div className="pagination-row">
-          <button className="page-btn" type="button">«</button>
-          <button className="page-btn" type="button">‹</button>
-          <button className="page-btn active" type="button">1</button>
-          <button className="page-btn" type="button">2</button>
-          <button className="page-btn" type="button">3</button>
-          <button className="page-btn" type="button">4</button>
-          <button className="page-btn" type="button">5</button>
-          <button className="page-btn" type="button">6</button>
-          <button className="page-btn" type="button">7</button>
-          <button className="page-btn" type="button">›</button>
-          <button className="page-btn" type="button">»</button>
+        <div className="table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', gap: '15px', background: 'rgba(0, 229, 255, 0.05)', padding: '16px', border: '1px solid rgba(0, 229, 255, 0.2)', borderRadius: '12px' }}>
+          <div style={{ fontWeight: '700', color: '#00e5ff', fontSize: '16px', letterSpacing: '0.5px' }}>
+            <i className="fa-solid fa-chart-pie" style={{ marginRight: '8px' }}></i>
+            Total Entries : {datewiseIncomeData.length}
+          </div>
+          <div className="pagination" style={{ margin: 0, display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+            <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
+            <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button 
+                key={i + 1} 
+                className={`page-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+            <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
+          </div>
         </div>
       </div>
     </div>

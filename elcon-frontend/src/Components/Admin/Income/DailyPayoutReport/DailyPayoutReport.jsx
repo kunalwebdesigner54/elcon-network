@@ -20,6 +20,9 @@ function DailyPayoutReport() {
     endDate: ''
   });
 
+  const [pageSize, setPageSize] = useState('10');
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
     getMemberPerformance()
       .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
@@ -34,6 +37,7 @@ function DailyPayoutReport() {
       startDate: filterStartDate,
       endDate: filterEndDate
     });
+    setCurrentPage(1);
   };
 
   const parseDateString = (dateStr) => {
@@ -101,9 +105,19 @@ function DailyPayoutReport() {
         status: row.status === 'IN-ACTIVE' ? 'Pending' : 'Credited To E-wallet',
       };
     });
+    });
   }, [rows, appliedFilters]);
 
-  const totalPayoutAmount = adminDailyPayoutData.reduce((sum, row) => sum + Number(row.netPayable || 0), 0);
+  const indexOfLastItem = currentPage * Number(pageSize);
+  const indexOfFirstItem = indexOfLastItem - Number(pageSize);
+  const visibleRows = adminDailyPayoutData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.max(1, Math.ceil(adminDailyPayoutData.length / Number(pageSize)));
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const totalPayoutAmount = visibleRows.reduce((sum, row) => sum + Number(row.netPayable || 0), 0);
 
   return (
     <div className="daily-payout-report-report-page">
@@ -137,7 +151,11 @@ function DailyPayoutReport() {
             value={filterEndDate}
             onChange={(e) => setFilterEndDate(e.target.value)}
           />
-          <select className="select-input daily-payout-report-filter-input daily-payout-report-size-select" defaultValue="10">
+          <select 
+            className="select-input daily-payout-report-filter-input daily-payout-report-size-select" 
+            value={pageSize}
+            onChange={(e) => { setPageSize(e.target.value); setCurrentPage(1); }}
+          >
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
@@ -176,7 +194,7 @@ function DailyPayoutReport() {
                 <tr><td colSpan={11} style={{textAlign: 'center'}}>No payout data found.</td></tr>
               ) : (
                 <>
-                  {adminDailyPayoutData.map((row) => (
+                  {visibleRows.map((row) => (
                     <tr key={row.sNo}>
                       <td>{row.sNo}</td>
                       <td>{row.incomeDate}</td>
@@ -192,7 +210,7 @@ function DailyPayoutReport() {
                     </tr>
                   ))}
                   <tr className="daily-payout-report-summary-row">
-                    <td colSpan="9" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL PAYOUT AMOUNT</td>
+                    <td colSpan="9" style={{ textAlign: 'right', fontWeight: 700 }}>PAGE TOTAL PAYOUT AMOUNT</td>
                     <td colSpan="2" style={{ fontWeight: 700 }}>{totalPayoutAmount.toFixed(2)}</td>
                   </tr>
                 </>
@@ -201,19 +219,25 @@ function DailyPayoutReport() {
           </table>
         </div>
 
-        <div className="daily-payout-report-table-footer">
-          <div className="daily-payout-report-pagination">
-            <button className="daily-payout-report-page-btn">«</button>
-            <button className="daily-payout-report-page-btn">‹</button>
-            <button className="daily-payout-report-page-btn daily-payout-report-active">1</button>
-            <button className="daily-payout-report-page-btn">2</button>
-            <button className="daily-payout-report-page-btn">3</button>
-            <button className="daily-payout-report-page-btn">4</button>
-            <button className="daily-payout-report-page-btn">5</button>
-            <button className="daily-payout-report-page-btn">6</button>
-            <button className="daily-payout-report-page-btn">7</button>
-            <button className="daily-payout-report-page-btn">›</button>
-            <button className="daily-payout-report-page-btn">»</button>
+        <div className="daily-payout-report-table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', gap: '15px', background: 'rgba(0, 229, 255, 0.05)', padding: '16px', border: '1px solid rgba(0, 229, 255, 0.2)', borderRadius: '12px' }}>
+          <div style={{ fontWeight: '700', color: '#00e5ff', fontSize: '16px', letterSpacing: '0.5px' }}>
+            <i className="fa-solid fa-chart-pie" style={{ marginRight: '8px' }}></i>
+            Total Entries : {adminDailyPayoutData.length}
+          </div>
+          <div className="daily-payout-report-pagination" style={{ margin: 0, display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+            <button className="daily-payout-report-page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
+            <button className="daily-payout-report-page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button 
+                key={i + 1} 
+                className={`daily-payout-report-page-btn ${currentPage === i + 1 ? 'daily-payout-report-active' : ''}`}
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button className="daily-payout-report-page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+            <button className="daily-payout-report-page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
           </div>
         </div>
       </section>

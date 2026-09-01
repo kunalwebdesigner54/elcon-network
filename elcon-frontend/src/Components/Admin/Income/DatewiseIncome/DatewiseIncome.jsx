@@ -24,6 +24,9 @@ function DatewiseIncome() {
     endDate: ''
   });
 
+  const [pageSize, setPageSize] = useState('10');
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
     getMemberPerformance()
       .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
@@ -40,6 +43,7 @@ function DatewiseIncome() {
       startDate: filterStartDate,
       endDate: filterEndDate
     });
+    setCurrentPage(1);
   };
 
   const parseDateString = (dateStr) => {
@@ -112,7 +116,16 @@ function DatewiseIncome() {
     }));
   }, [rows, appliedFilters]);
 
-  const totalAmount = adminDatewiseIncomeData.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
+  const indexOfLastItem = currentPage * Number(pageSize);
+  const indexOfFirstItem = indexOfLastItem - Number(pageSize);
+  const visibleRows = adminDatewiseIncomeData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.max(1, Math.ceil(adminDatewiseIncomeData.length / Number(pageSize)));
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const totalAmount = visibleRows.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
 
   return (
     <div className="datewise-income-report-page">
@@ -158,7 +171,11 @@ function DatewiseIncome() {
             value={filterEndDate}
             onChange={(e) => setFilterEndDate(e.target.value)}
           />
-          <select className="select-input datewise-income-filter-input datewise-income-size-select" defaultValue="10">
+          <select 
+            className="select-input datewise-income-filter-input datewise-income-size-select" 
+            value={pageSize}
+            onChange={(e) => { setPageSize(e.target.value); setCurrentPage(1); }}
+          >
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
@@ -196,7 +213,7 @@ function DatewiseIncome() {
                 <tr><td colSpan={10} style={{textAlign: 'center'}}>No datewise income found.</td></tr>
               ) : (
                 <>
-                  {adminDatewiseIncomeData.map((row) => (
+                  {visibleRows.map((row) => (
                     <tr key={row.sNo}>
                       <td>{row.sNo}</td>
                       <td>{row.incomeDate}</td>
@@ -211,7 +228,7 @@ function DatewiseIncome() {
                     </tr>
                   ))}
                   <tr className="datewise-income-summary-row">
-                    <td colSpan="9" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL AMOUNT</td>
+                    <td colSpan="9" style={{ textAlign: 'right', fontWeight: 700 }}>PAGE TOTAL AMOUNT</td>
                     <td style={{ fontWeight: 700 }}>{totalAmount.toFixed(2)}</td>
                   </tr>
                 </>
@@ -220,19 +237,25 @@ function DatewiseIncome() {
           </table>
         </div>
 
-        <div className="datewise-income-table-footer">
-          <div className="datewise-income-pagination">
-            <button className="datewise-income-page-btn">«</button>
-            <button className="datewise-income-page-btn">‹</button>
-            <button className="datewise-income-page-btn datewise-income-active">1</button>
-            <button className="datewise-income-page-btn">2</button>
-            <button className="datewise-income-page-btn">3</button>
-            <button className="datewise-income-page-btn">4</button>
-            <button className="datewise-income-page-btn">5</button>
-            <button className="datewise-income-page-btn">6</button>
-            <button className="datewise-income-page-btn">7</button>
-            <button className="datewise-income-page-btn">›</button>
-            <button className="datewise-income-page-btn">»</button>
+        <div className="datewise-income-table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', gap: '15px', background: 'rgba(0, 229, 255, 0.05)', padding: '16px', border: '1px solid rgba(0, 229, 255, 0.2)', borderRadius: '12px' }}>
+          <div style={{ fontWeight: '700', color: '#00e5ff', fontSize: '16px', letterSpacing: '0.5px' }}>
+            <i className="fa-solid fa-chart-pie" style={{ marginRight: '8px' }}></i>
+            Total Entries : {adminDatewiseIncomeData.length}
+          </div>
+          <div className="datewise-income-pagination" style={{ margin: 0, display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+            <button className="datewise-income-page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
+            <button className="datewise-income-page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button 
+                key={i + 1} 
+                className={`datewise-income-page-btn ${currentPage === i + 1 ? 'datewise-income-active' : ''}`}
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button className="datewise-income-page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+            <button className="datewise-income-page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
           </div>
         </div>
       </section>
