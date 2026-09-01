@@ -7,6 +7,23 @@ function DatewiseIncome() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Filter states
+  const [filterMemberId, setFilterMemberId] = useState('');
+  const [filterMemberName, setFilterMemberName] = useState('');
+  const [filterDirects, setFilterDirects] = useState('');
+  const [filterTotalIds, setFilterTotalIds] = useState('');
+  const [filterStartDate, setFilterStartDate] = useState('');
+  const [filterEndDate, setFilterEndDate] = useState('');
+
+  const [appliedFilters, setAppliedFilters] = useState({
+    memberId: '',
+    memberName: '',
+    directs: '',
+    totalIds: '',
+    startDate: '',
+    endDate: ''
+  });
+
   useEffect(() => {
     getMemberPerformance()
       .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
@@ -14,18 +31,86 @@ function DatewiseIncome() {
       .finally(() => setLoading(false));
   }, []);
 
-  const adminDatewiseIncomeData = useMemo(() => rows.map((row) => ({
-    sNo: row.sNo,
-    incomeDate: row.joinDate,
-    memberId: row.memberId,
-    memberName: row.memberName,
-    directs: row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
-    totalIds: row.totalTeamCount,
-    levelIncome: Number(row.levelIncome || 0),
-    totalBvPoint: Number(row.totalTeamCount || 0) * 100,
-    repurchaseIncome: Number(row.repurchaseIncome || 0),
-    dailyIncome: Number(row.totalIncome || 0),
-  })), [rows]);
+  const handleSearch = () => {
+    setAppliedFilters({
+      memberId: filterMemberId,
+      memberName: filterMemberName,
+      directs: filterDirects,
+      totalIds: filterTotalIds,
+      startDate: filterStartDate,
+      endDate: filterEndDate
+    });
+  };
+
+  const parseDateString = (dateStr) => {
+    if (!dateStr) return null;
+    const datePart = dateStr.split(' ')[0]; // DD-MM-YYYY
+    const parts = datePart.split('-');
+    if (parts.length === 3) {
+      return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // YYYY-MM-DD
+    }
+    return new Date(dateStr);
+  };
+
+  const adminDatewiseIncomeData = useMemo(() => {
+    let filteredRows = rows;
+
+    if (appliedFilters.memberId) {
+      filteredRows = filteredRows.filter(r => 
+        r.memberId?.toLowerCase().includes(appliedFilters.memberId.toLowerCase())
+      );
+    }
+    
+    if (appliedFilters.memberName) {
+      filteredRows = filteredRows.filter(r => 
+        r.memberName?.toLowerCase().includes(appliedFilters.memberName.toLowerCase())
+      );
+    }
+
+    if (appliedFilters.directs) {
+      filteredRows = filteredRows.filter(r => {
+        const d = r.directsCount ?? r.totalTeamCount ?? r.directs ?? r.unlockLevel ?? 0;
+        return String(d).includes(appliedFilters.directs);
+      });
+    }
+
+    if (appliedFilters.totalIds) {
+      filteredRows = filteredRows.filter(r => 
+        String(r.totalTeamCount || 0).includes(appliedFilters.totalIds)
+      );
+    }
+
+    if (appliedFilters.startDate) {
+      const start = new Date(appliedFilters.startDate);
+      start.setHours(0, 0, 0, 0);
+      filteredRows = filteredRows.filter(r => {
+        const rowDate = parseDateString(r.joinDate);
+        return rowDate && rowDate >= start;
+      });
+    }
+
+    if (appliedFilters.endDate) {
+      const end = new Date(appliedFilters.endDate);
+      end.setHours(23, 59, 59, 999);
+      filteredRows = filteredRows.filter(r => {
+        const rowDate = parseDateString(r.joinDate);
+        return rowDate && rowDate <= end;
+      });
+    }
+
+    return filteredRows.map((row) => ({
+      sNo: row.sNo,
+      incomeDate: row.joinDate,
+      memberId: row.memberId,
+      memberName: row.memberName,
+      directs: row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
+      totalIds: row.totalTeamCount,
+      levelIncome: Number(row.levelIncome || 0),
+      totalBvPoint: Number(row.totalTeamCount || 0) * 100,
+      repurchaseIncome: Number(row.repurchaseIncome || 0),
+      dailyIncome: Number(row.totalIncome || 0),
+    }));
+  }, [rows, appliedFilters]);
 
   const totalAmount = adminDatewiseIncomeData.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
 
@@ -35,18 +120,50 @@ function DatewiseIncome() {
 
       <section className="panel datewise-income-panel">
         <div className="datewise-income-filter-row">
-          <input className="text-input datewise-income-filter-input" placeholder="TO MEMBER ID" />
-          <input className="text-input datewise-income-filter-input" placeholder="MEMBER NAME" />
-          <input className="text-input datewise-income-filter-input" placeholder="DIRECTS" />
-          <input className="text-input datewise-income-filter-input" placeholder="TOTAL ID'S" />
-          <input className="text-input datewise-income-filter-input" type="date" placeholder="START DATE" />
-          <input className="text-input datewise-income-filter-input" type="date" placeholder="END DATE" />
+          <input 
+            className="text-input datewise-income-filter-input" 
+            placeholder="TO MEMBER ID" 
+            value={filterMemberId}
+            onChange={(e) => setFilterMemberId(e.target.value)}
+          />
+          <input 
+            className="text-input datewise-income-filter-input" 
+            placeholder="MEMBER NAME" 
+            value={filterMemberName}
+            onChange={(e) => setFilterMemberName(e.target.value)}
+          />
+          <input 
+            className="text-input datewise-income-filter-input" 
+            placeholder="DIRECTS" 
+            value={filterDirects}
+            onChange={(e) => setFilterDirects(e.target.value)}
+          />
+          <input 
+            className="text-input datewise-income-filter-input" 
+            placeholder="TOTAL ID'S" 
+            value={filterTotalIds}
+            onChange={(e) => setFilterTotalIds(e.target.value)}
+          />
+          <input 
+            className="text-input datewise-income-filter-input" 
+            type="date" 
+            placeholder="START DATE" 
+            value={filterStartDate}
+            onChange={(e) => setFilterStartDate(e.target.value)}
+          />
+          <input 
+            className="text-input datewise-income-filter-input" 
+            type="date" 
+            placeholder="END DATE" 
+            value={filterEndDate}
+            onChange={(e) => setFilterEndDate(e.target.value)}
+          />
           <select className="select-input datewise-income-filter-input datewise-income-size-select" defaultValue="10">
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary datewise-income-search-btn" type="button">SERCH</button>
+          <button className="btn-primary datewise-income-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="datewise-income-export-row">
@@ -72,11 +189,11 @@ function DatewiseIncome() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9}>Loading...</td></tr>
+                <tr><td colSpan={10} style={{textAlign: 'center'}}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={9}>{error}</td></tr>
+                <tr><td colSpan={10} style={{textAlign: 'center', color: 'red'}}>{error}</td></tr>
               ) : adminDatewiseIncomeData.length === 0 ? (
-                <tr><td colSpan={9}>No datewise income found.</td></tr>
+                <tr><td colSpan={10} style={{textAlign: 'center'}}>No datewise income found.</td></tr>
               ) : (
                 <>
                   {adminDatewiseIncomeData.map((row) => (
@@ -95,7 +212,7 @@ function DatewiseIncome() {
                   ))}
                   <tr className="datewise-income-summary-row">
                     <td colSpan="9" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL AMOUNT</td>
-                    <td>{totalAmount.toFixed(2)}</td>
+                    <td style={{ fontWeight: 700 }}>{totalAmount.toFixed(2)}</td>
                   </tr>
                 </>
               )}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import './AdminLayout.css';
 
 const menuItems = [
@@ -190,6 +190,7 @@ function AdminLayout() {
   const breadcrumb = useMemo(() => buildBreadcrumb(location.pathname), [location.pathname]);
   const showBackButton = location.pathname !== '/dashboard';
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   const [openSection, setOpenSection] = useState(null);
 
@@ -344,7 +345,46 @@ function AdminLayout() {
               </button>
             )}
           </div>
-          <div className="topbar-avatar">👨‍💼</div>
+          <div className="topbar-avatar" style={{ position: 'relative' }}>
+            <button 
+              type="button" 
+              className="topbar-avatar-btn" 
+              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px' }}
+            >
+              👨‍💼
+            </button>
+            {isProfileDropdownOpen && (
+              <div className="profile-dropdown" style={{
+                position: 'absolute',
+                top: '40px',
+                right: '0',
+                backgroundColor: '#fff',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                borderRadius: '4px',
+                padding: '10px 0',
+                minWidth: '160px',
+                zIndex: 1000
+              }}>
+                <Link 
+                  to="/settings/admin-settings" 
+                  style={{ display: 'block', padding: '8px 16px', color: '#333', textDecoration: 'none' }}
+                  onClick={() => setIsProfileDropdownOpen(false)}
+                >
+                  Admin Profile
+                </Link>
+                {user.adminType !== 'SUB_ADMIN' && (
+                  <Link 
+                    to="/sub-admins/manage" 
+                    style={{ display: 'block', padding: '8px 16px', color: '#333', textDecoration: 'none' }}
+                    onClick={() => setIsProfileDropdownOpen(false)}
+                  >
+                    Manage Sub-Admins
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
         </header>
 
         <section className="page-container">

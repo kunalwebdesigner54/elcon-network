@@ -322,8 +322,11 @@ function DonationReport() {
               </table>
             </div>
 
-            <div className="table-footer" style={{ justifyContent: 'center', marginTop: '12px' }}>
-              <div className="pagination">
+            <div className="table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', gap: '15px' }}>
+              <div style={{ fontWeight: '600', color: '#00d2ff', fontSize: '16px' }}>
+                Total Donations: {filteredRows.length}
+              </div>
+              <div className="pagination" style={{ margin: 0 }}>
                 <button className="page-btn">&lt;&lt;</button>
                 <button className="page-btn">&lt;</button>
                 <button className="page-btn active">1</button>

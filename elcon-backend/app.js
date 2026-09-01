@@ -19,6 +19,9 @@ const donationsRoutes = require('./routes/donations');
 const levelIncomeRoutes = require('./routes/levelIncome');
 const repurchaseIncomeRoutes = require('./routes/repurchaseIncome');
 const adminControlsRoutes = require('./routes/adminControls');
+const categoryRoutes = require('./routes/categories');
+const subAdminRoutes = require('./routes/subadmins');
+const adminProfileRoutes = require('./routes/adminProfile');
 
 const app = express();
 
@@ -60,6 +63,9 @@ app.use('/api/donations', donationsRoutes);
 app.use('/api/level-income', levelIncomeRoutes);
 app.use('/api/repurchase-income', repurchaseIncomeRoutes);
 app.use('/api/admin-controls', adminControlsRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/subadmins', subAdminRoutes);
+app.use('/api/admin-profile', adminProfileRoutes);
 app.use('/api', productRoutes);
 
 // Health check

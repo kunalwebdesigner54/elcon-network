@@ -7,6 +7,19 @@ function DailyPayoutReport() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Filter states
+  const [filterMemberId, setFilterMemberId] = useState('');
+  const [filterMemberName, setFilterMemberName] = useState('');
+  const [filterStartDate, setFilterStartDate] = useState('');
+  const [filterEndDate, setFilterEndDate] = useState('');
+
+  const [appliedFilters, setAppliedFilters] = useState({
+    memberId: '',
+    memberName: '',
+    startDate: '',
+    endDate: ''
+  });
+
   useEffect(() => {
     getMemberPerformance()
       .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
@@ -14,28 +27,81 @@ function DailyPayoutReport() {
       .finally(() => setLoading(false));
   }, []);
 
-  const adminDailyPayoutData = useMemo(() => rows.map((row) => {
-    const levelIncome = Number(row.levelIncome || 0);
-    const repurchaseIncome = Number(row.repurchaseIncome || 0);
-    const grossIncome = levelIncome + repurchaseIncome;
-    const tds = grossIncome * 0.05;
-    const adminCharge = grossIncome * 0.05;
-    const netPayable = grossIncome - tds - adminCharge;
+  const handleSearch = () => {
+    setAppliedFilters({
+      memberId: filterMemberId,
+      memberName: filterMemberName,
+      startDate: filterStartDate,
+      endDate: filterEndDate
+    });
+  };
 
-    return {
-      sNo: row.sNo,
-      incomeDate: row.joinDate,
-      memberId: row.memberId,
-      memberName: row.memberName,
-      levelIncome,
-      repurchaseIncome,
-      grossIncome,
-      tds,
-      adminCharge,
-      netPayable,
-      status: row.status === 'IN-ACTIVE' ? 'Pending' : 'Credited To E-wallet',
-    };
-  }), [rows]);
+  const parseDateString = (dateStr) => {
+    if (!dateStr) return null;
+    const datePart = dateStr.split(' ')[0]; // DD-MM-YYYY
+    const parts = datePart.split('-');
+    if (parts.length === 3) {
+      return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // YYYY-MM-DD
+    }
+    return new Date(dateStr);
+  };
+
+  const adminDailyPayoutData = useMemo(() => {
+    let filteredRows = rows;
+
+    if (appliedFilters.memberId) {
+      filteredRows = filteredRows.filter(r => 
+        r.memberId?.toLowerCase().includes(appliedFilters.memberId.toLowerCase())
+      );
+    }
+    
+    if (appliedFilters.memberName) {
+      filteredRows = filteredRows.filter(r => 
+        r.memberName?.toLowerCase().includes(appliedFilters.memberName.toLowerCase())
+      );
+    }
+
+    if (appliedFilters.startDate) {
+      const start = new Date(appliedFilters.startDate);
+      start.setHours(0, 0, 0, 0);
+      filteredRows = filteredRows.filter(r => {
+        const rowDate = parseDateString(r.joinDate);
+        return rowDate && rowDate >= start;
+      });
+    }
+
+    if (appliedFilters.endDate) {
+      const end = new Date(appliedFilters.endDate);
+      end.setHours(23, 59, 59, 999);
+      filteredRows = filteredRows.filter(r => {
+        const rowDate = parseDateString(r.joinDate);
+        return rowDate && rowDate <= end;
+      });
+    }
+
+    return filteredRows.map((row) => {
+      const levelIncome = Number(row.levelIncome || 0);
+      const repurchaseIncome = Number(row.repurchaseIncome || 0);
+      const grossIncome = levelIncome + repurchaseIncome;
+      const tds = grossIncome * 0.05;
+      const adminCharge = grossIncome * 0.05;
+      const netPayable = grossIncome - tds - adminCharge;
+
+      return {
+        sNo: row.sNo,
+        incomeDate: row.joinDate,
+        memberId: row.memberId,
+        memberName: row.memberName,
+        levelIncome,
+        repurchaseIncome,
+        grossIncome,
+        tds,
+        adminCharge,
+        netPayable,
+        status: row.status === 'IN-ACTIVE' ? 'Pending' : 'Credited To E-wallet',
+      };
+    });
+  }, [rows, appliedFilters]);
 
   const totalPayoutAmount = adminDailyPayoutData.reduce((sum, row) => sum + Number(row.netPayable || 0), 0);
 
@@ -45,16 +111,38 @@ function DailyPayoutReport() {
 
       <section className="panel daily-payout-report-panel">
         <div className="daily-payout-report-filter-row">
-          <input className="text-input daily-payout-report-filter-input" placeholder="MEMBER ID" />
-          <input className="text-input daily-payout-report-filter-input" placeholder="MEMBER NAME" />
-          <input className="text-input daily-payout-report-filter-input" type="date" placeholder="START DATE" />
-          <input className="text-input daily-payout-report-filter-input" type="date" placeholder="END DATE" />
+          <input 
+            className="text-input daily-payout-report-filter-input" 
+            placeholder="MEMBER ID" 
+            value={filterMemberId}
+            onChange={(e) => setFilterMemberId(e.target.value)}
+          />
+          <input 
+            className="text-input daily-payout-report-filter-input" 
+            placeholder="MEMBER NAME" 
+            value={filterMemberName}
+            onChange={(e) => setFilterMemberName(e.target.value)}
+          />
+          <input 
+            className="text-input daily-payout-report-filter-input" 
+            type="date" 
+            placeholder="START DATE" 
+            value={filterStartDate}
+            onChange={(e) => setFilterStartDate(e.target.value)}
+          />
+          <input 
+            className="text-input daily-payout-report-filter-input" 
+            type="date" 
+            placeholder="END DATE" 
+            value={filterEndDate}
+            onChange={(e) => setFilterEndDate(e.target.value)}
+          />
           <select className="select-input daily-payout-report-filter-input daily-payout-report-size-select" defaultValue="10">
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
-          <button className="btn-primary daily-payout-report-search-btn" type="button">SERCH</button>
+          <button className="btn-primary daily-payout-report-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
         </div>
 
         <div className="daily-payout-report-export-row">
@@ -81,11 +169,11 @@ function DailyPayoutReport() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={11}>Loading...</td></tr>
+                <tr><td colSpan={11} style={{textAlign: 'center'}}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={11}>{error}</td></tr>
+                <tr><td colSpan={11} style={{textAlign: 'center', color: 'red'}}>{error}</td></tr>
               ) : adminDailyPayoutData.length === 0 ? (
-                <tr><td colSpan={11}>No payout data found.</td></tr>
+                <tr><td colSpan={11} style={{textAlign: 'center'}}>No payout data found.</td></tr>
               ) : (
                 <>
                   {adminDailyPayoutData.map((row) => (
@@ -104,8 +192,8 @@ function DailyPayoutReport() {
                     </tr>
                   ))}
                   <tr className="daily-payout-report-summary-row">
-                    <td colSpan="10" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL PAYOUT AMOUNT</td>
-                    <td>{totalPayoutAmount.toFixed(2)}</td>
+                    <td colSpan="9" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL PAYOUT AMOUNT</td>
+                    <td colSpan="2" style={{ fontWeight: 700 }}>{totalPayoutAmount.toFixed(2)}</td>
                   </tr>
                 </>
               )}
