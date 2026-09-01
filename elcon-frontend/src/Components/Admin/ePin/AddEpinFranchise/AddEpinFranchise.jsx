@@ -1,7 +1,7 @@
 import qrCode from '../../../../Assets/Pictures/QR-Code.png';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getEpinFranchises, upsertEpinFranchise, updateEpinFranchise } from '../../../../api/managementService';
+import { getEpinFranchises, upsertEpinFranchise, updateEpinFranchise, getEpinList } from '../../../../api/managementService';
 import { getSponsorDetails } from '../../../../api/authService';
 import { useRef } from 'react';
 import './AddEpinFranchise.css';
@@ -46,6 +46,16 @@ function AddEpinFranchise() {
 
   const handleFranchiseIdBlur = async () => {
     if (franchise.franchiseId && franchise.franchiseId.trim() !== '') {
+      let stockCount = undefined;
+      try {
+        const epinsRes = await getEpinList({ currentOwner: franchise.franchiseId, status: 'Unused' });
+        if (epinsRes && epinsRes.epins) {
+          stockCount = epinsRes.epins.length;
+        }
+      } catch (e) {
+        console.error("Failed to fetch E-Pin stock", e);
+      }
+
       try {
         const response = await getSponsorDetails(franchise.franchiseId);
         if (response && response.success && response.data) {
@@ -54,11 +64,16 @@ function AddEpinFranchise() {
             franchiseName: response.data.name || prev.franchiseName,
             city: response.data.city || prev.city,
             upiId: response.data.upiId || prev.upiId,
-            stock: response.data.stock !== undefined ? String(response.data.stock) : prev.stock
+            stock: stockCount !== undefined ? String(stockCount) : (response.data.stock !== undefined ? String(response.data.stock) : prev.stock)
           }));
+        } else if (stockCount !== undefined) {
+          setFranchise((prev) => ({ ...prev, stock: String(stockCount) }));
         }
       } catch (error) {
         console.error("Error fetching sponsor details:", error);
+        if (stockCount !== undefined) {
+          setFranchise((prev) => ({ ...prev, stock: String(stockCount) }));
+        }
       }
     }
   };
