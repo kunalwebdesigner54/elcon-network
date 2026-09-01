@@ -20,7 +20,7 @@
 
 .user-product-card {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 195, 255, 0.35);
+  border: 1px solid rgba(0, 195, 255, 0.35) !important;
   border-radius: 18px;
   overflow: hidden;
   height: auto;
@@ -38,7 +38,7 @@
 }
 
 .user-product-card:hover {
-  border-color: #00c3ff;
+  border-color: #00c3ff !important;
 }
 
 .user-product-image-wrap {
@@ -240,7 +240,7 @@
 
   .user-product-card {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 195, 255, 0.35);
+  border: 1px solid rgba(0, 195, 255, 0.35) !important;
   border-radius: 18px;
   overflow: hidden;
   height: auto;
@@ -260,7 +260,7 @@
 
   .user-product-card {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 195, 255, 0.35);
+  border: 1px solid rgba(0, 195, 255, 0.35) !important;
   border-radius: 18px;
   overflow: hidden;
   height: auto;
