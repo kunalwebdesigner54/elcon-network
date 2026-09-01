@@ -20,7 +20,7 @@
 
 .user-product-card {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 212, 170, 0.35);
+  border: 1px solid rgba(0, 195, 255, 0.35);
   border-radius: 18px;
   overflow: hidden;
   height: auto;
@@ -33,13 +33,12 @@
 }
 
 .user-product-card:focus-visible {
-  outline: 3px solid rgba(0, 212, 170, 0.45);
+  outline: 3px solid rgba(0, 195, 255, 0.45);
   outline-offset: 3px;
 }
 
 .user-product-card:hover {
   border-color: #00c3ff;
-  box-shadow: 0 0 15px rgba(0, 195, 255, 0.4);
 }
 
 .user-product-image-wrap {
@@ -241,7 +240,7 @@
 
   .user-product-card {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 212, 170, 0.35);
+  border: 1px solid rgba(0, 195, 255, 0.35);
   border-radius: 18px;
   overflow: hidden;
   height: auto;
@@ -261,7 +260,7 @@
 
   .user-product-card {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 212, 170, 0.35);
+  border: 1px solid rgba(0, 195, 255, 0.35);
   border-radius: 18px;
   overflow: hidden;
   height: auto;
