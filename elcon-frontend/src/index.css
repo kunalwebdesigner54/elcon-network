@@ -446,22 +446,14 @@ select option {
 	width: 100% !important;
 }
 
-/* All table wrappers globally */
-div[class*="table-wrap"], div[class*="table-responsive"] {
-	cursor: grab !important;
-}
-div[class*="table-wrap"]:active, div[class*="table-responsive"]:active {
-	cursor: grabbing !important;
-}
-
 .admin-root th, .user-root th {
-	background: #17a2b8 !important;
-	color: #ffffff !important;
+	background: rgba(0, 0, 0, 0.3) !important;
+	color: var(--primary-light) !important;
 	font-weight: 600 !important;
 	text-transform: uppercase !important;
 	letter-spacing: 1px !important;
 	padding: 16px !important;
-	border-bottom: 2px solid #138496 !important;
+	border-bottom: 1px solid var(--glass-border) !important;
 	white-space: nowrap !important;
 	position: sticky !important;
 	top: 0 !important;
@@ -481,11 +473,10 @@ div[class*="table-wrap"]:active, div[class*="table-responsive"]:active {
 	border-bottom: 1px solid var(--glass-border) !important;
 	background: transparent !important;
 	transition: var(--transition) !important;
-	cursor: pointer !important; /* Hand cursor on all table data */
 }
 
 .admin-root tr:hover td, .user-root tr:hover td {
-	background: rgba(255, 255, 255, 0.05) !important;
+	background: rgba(255, 255, 255, 0.03) !important;
 }
 
 /* Scrollbars inside dashboard */
@@ -497,23 +488,57 @@ div[class*="table-wrap"]:active, div[class*="table-responsive"]:active {
 	background: rgba(0,0,0,0.2);
 }
 .admin-root ::-webkit-scrollbar-thumb, .user-root ::-webkit-scrollbar-thumb {
-	background: var(--primary-dark);
+	background: rgba(255, 255, 255, 0.2);
 	border-radius: 4px;
 }
 .admin-root ::-webkit-scrollbar-thumb:hover, .user-root ::-webkit-scrollbar-thumb:hover {
-	background: var(--primary);
+	background: rgba(255, 255, 255, 0.4);
 }
 
-/* Global Table Drag to Scroll UX */
-.table-wrap, .table-responsive {
-  cursor: grab;
+/* Common Layout Utilities for Dashboard */
+.admin-root .table-wrap, .user-root .table-wrap,
+.admin-root .table-responsive, .user-root .table-responsive {
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch; /* smooth mobile scroll */
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--glass-border);
+  margin-top: 10px;
 }
-.table-wrap:active, .table-responsive:active {
-  cursor: grabbing;
+
+.admin-root .form-grid, .user-root .form-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, max-content) minmax(220px, 1fr);
+  gap: 16px;
+  align-items: center;
+  max-width: 650px;
+  margin-bottom: 16px;
 }
-/* Revert cursor for interactive elements within table */
-.table-wrap button, .table-wrap a, .table-wrap input, .table-wrap select, .table-wrap textarea, .table-wrap label, .table-wrap [role="button"] {
-  cursor: pointer;
+
+.admin-root .form-grid-wide, .user-root .form-grid-wide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.admin-root .field-label, .user-root .field-label {
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.admin-root .page-heading, .user-root .page-heading {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .admin-root .form-grid, .user-root .form-grid {
+    grid-template-columns: 1fr;
+  }
 }

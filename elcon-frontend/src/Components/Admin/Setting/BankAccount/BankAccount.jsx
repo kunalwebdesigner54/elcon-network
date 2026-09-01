@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import './BankAccount.css';
 import qr from '../../../../Assets/Pictures/QR-Code.png';
 import { getBankAccount, updateBankAccount } from '../../../../api/managementService';
-import { toast } from 'react-hot-toast';
-
+import Swal from 'sweetalert2';
 export default function BankAccount(){
   const [bankAccount, setBankAccount] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -60,14 +59,14 @@ export default function BankAccount(){
     try {
       const res = await updateBankAccount(formData);
       if (res.success) {
-        toast.success("Bank account updated successfully!");
+        Swal.fire("Success", "Bank account updated successfully!", "success");
         setBankAccount(res.bankAccount);
         setIsEditing(false);
       } else {
-        toast.error(res.message || "Update failed");
+        Swal.fire("Error", res.message || "Update failed", "error");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred");
+      Swal.fire("Error", error.response?.data?.message || "An error occurred", "error");
     }
   };
 

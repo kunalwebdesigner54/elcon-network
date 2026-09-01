@@ -105,7 +105,6 @@ function DailyPayoutReport() {
         status: row.status === 'IN-ACTIVE' ? 'Pending' : 'Credited To E-wallet',
       };
     });
-    });
   }, [rows, appliedFilters]);
 
   const indexOfLastItem = currentPage * Number(pageSize);
