@@ -65,7 +65,7 @@ function AdminEpinFranchiseList() {
           <button type="button" className="btn-primary admin-epin-franchise-btn" onClick={() => { setFilters({ franchiseId: '', franchiseName: '', upi: '', whatsapp: '' }); }}>
             SEARCH
           </button>
-          <button type="button" className="btn-primary admin-epin-franchise-btn" onClick={() => navigate('/epin-franchise/create')}>
+          <button type="button" className="btn-primary admin-epin-franchise-btn" onClick={() => navigate('/epin-franchise/create', { state: null })}>
             ADD NEW
           </button>
         </div>

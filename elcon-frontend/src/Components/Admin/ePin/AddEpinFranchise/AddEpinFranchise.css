@@ -93,7 +93,7 @@
 }
 
 .add-epin-details-column {
-  overflow-x: auto;
+  /* overflow-x: auto removed to prevent internal scrollbars */
 }
 
 .add-epin-form-group {

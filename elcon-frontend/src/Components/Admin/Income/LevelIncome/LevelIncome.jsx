@@ -112,7 +112,7 @@ function LevelIncome() {
                   <td>{row.incomeDateTime}</td>
                   <td>{row.memberId}</td>
                   <td>{row.memberName}</td>
-                  <td>{row.levelNo}</td>
+                  <td>{String(row.levelNo || '').replace(/Level/gi, 'Upline')}</td>
                   <td>{row.levelId}</td>
                   <td>{row.fromMemberName}</td>
                   <td>{row.physicalDepth}</td>

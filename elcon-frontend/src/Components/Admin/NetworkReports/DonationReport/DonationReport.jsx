@@ -69,6 +69,8 @@ function DonationReport() {
         receiverMemberName: donation.toName || 'N/A',
         amount: donation.amount ? String(donation.amount) : '0',
         rank: donation.level ? String(donation.level) : '',
+        directs: donation.directs !== undefined ? String(donation.directs) : '0',
+        levelDepth: donation.levelDepth !== undefined ? String(donation.levelDepth) : '0',
         paymentProof: donation.utrNumber !== '---' ? donation.utrNumber : '',
         transactionId: donation.donationId || '',
         requestDate: formatDateTime(donation.dateRaw),
@@ -127,8 +129,8 @@ function DonationReport() {
     row.receiverMemberName,
     row.amount,
     row.rank, // Upgrade
-    '---', // Directs
-    '---', // Level Depth
+    row.directs, // Directs
+    row.levelDepth, // Level Depth
     row.requestDate,
     row.approveDate,
     row.transactionId,
@@ -260,7 +262,6 @@ function DonationReport() {
                     <th>UTR NUMBER</th>
                     <th>STATUS</th>
                     <th>SKIPPED IDs</th>
-                    <th>DATE</th>
                     <th>ACTION</th>
                   </tr>
                 </thead>
@@ -274,8 +275,8 @@ function DonationReport() {
                       <td>{row.receiverMemberName}</td>
                       <td>{row.amount}</td>
                       <td>{row.rank}</td>
-                      <td>---</td>
-                      <td>---</td>
+                      <td>{row.directs}</td>
+                      <td>{row.levelDepth}</td>
                       <td>{row.requestDate}</td>
                       <td>{row.approveDate}</td>
                       <td>{row.transactionId}</td>
@@ -301,7 +302,6 @@ function DonationReport() {
                           ? row.skippedMembers.map(s => s.memberId || s).join(', ') 
                           : '---'}
                       </td>
-                      <td>{row.date}</td>
                       <td>
                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                           {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) && (

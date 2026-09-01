@@ -9,9 +9,9 @@ const exportColumns = [
   'MOBILE',
   'JOIN DATE',
   'STATUS',
-  'LEVEL DEPTH',
   'DIRECTS',
-  'RANK',
+  'UPGRADE',
+  'LEVEL DEPTH',
   'ACTIVE TEAM COUNT',
   'IN-ACTIVE TEAM COUNT',
   'TOTAL TEAM COUNT',
@@ -82,9 +82,9 @@ function AllMemberPerformance() {
     row.mobile,
     row.joinDate,
     row.status,
-    row.levelDepth,
     row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
     row.rank,
+    row.levelDepth,
     row.activeTeamCount,
     row.inactiveTeamCount,
     row.totalTeamCount,
@@ -159,6 +159,13 @@ function AllMemberPerformance() {
             <option value="ACTIVE">ACTIVE</option>
             <option value="IN-ACTIVE">IN-ACTIVE</option>
           </select>
+          <select className="select-input" style={{ maxWidth: '110px' }} value={filters.unlockLevel} onChange={handleFilterChange('unlockLevel')}>
+            <option value="">DIRECTS</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="4">4</option>
+          </select>
+          <input className="text-input" style={{ maxWidth: '90px' }} placeholder="UPGRADE" value={filters.rank} onChange={handleFilterChange('rank')} />
           <select className="select-input" style={{ maxWidth: '110px' }} value={filters.levelDepth} onChange={handleFilterChange('levelDepth')}>
             <option value="">LEVEL DEPTH</option>
             <option value="0">0</option>
@@ -172,13 +179,6 @@ function AllMemberPerformance() {
             <option value="8">8</option>
             <option value="9">9</option>
           </select>
-          <select className="select-input" style={{ maxWidth: '110px' }} value={filters.unlockLevel} onChange={handleFilterChange('unlockLevel')}>
-            <option value="">DIRECTS</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="4">4</option>
-          </select>
-          <input className="text-input" style={{ maxWidth: '90px' }} placeholder="RANK" value={filters.rank} onChange={handleFilterChange('rank')} />
           <input className="text-input" style={{ maxWidth: '120px' }} placeholder="START DATE" type="date" value={filters.startDate} onChange={handleFilterChange('startDate')} />
           <input className="text-input" style={{ maxWidth: '110px' }} placeholder="END DATE" type="date" value={filters.endDate} onChange={handleFilterChange('endDate')} />
           <select className="select-input" style={{ maxWidth: '84px' }} value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
@@ -204,9 +204,9 @@ function AllMemberPerformance() {
                 <th>MOBILE</th>
                 <th>JOIN DATE</th>
                 <th>STATUS</th>
-                <th>LEVEL DEPTH</th>
                 <th>DIRECTS</th>
-                <th>RANK</th>
+                <th>UPGRADE</th>
+                <th>LEVEL DEPTH</th>
                 <th>ACTIVE TEAM COUNT</th>
                 <th>IN-ACTIVE TEAM COUNT</th>
                 <th>TOTAL TEAM COUNT</th>
@@ -229,9 +229,9 @@ function AllMemberPerformance() {
                   <td>{row.mobile}</td>
                   <td>{row.joinDate}</td>
                   <td className={row.status === 'IN-ACTIVE' ? 'member-performance-status-inactive' : ''}>{row.status}</td>
-                  <td>{row.levelDepth}</td>
                   <td>{row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0}</td>
                   <td>{row.rank}</td>
+                  <td>{row.levelDepth}</td>
                   <td>{row.activeTeamCount}</td>
                   <td>{row.inactiveTeamCount}</td>
                   <td>{row.totalTeamCount}</td>

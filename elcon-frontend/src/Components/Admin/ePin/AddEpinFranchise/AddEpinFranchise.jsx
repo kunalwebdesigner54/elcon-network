@@ -37,7 +37,7 @@ function AddEpinFranchise() {
         status: 'SHOWING',
         qrImage: '',
       });
-  }, [location.state]);
+  }, [location.state, location.key]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;

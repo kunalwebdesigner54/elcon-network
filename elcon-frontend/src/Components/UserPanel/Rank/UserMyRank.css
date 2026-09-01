@@ -283,6 +283,7 @@
   width: 100%;
   border-collapse: collapse;
   background: transparent;
+  min-width: 900px; /* Force horizontal scroll on mobile */
 }
 
 .user-rank-data-table thead {

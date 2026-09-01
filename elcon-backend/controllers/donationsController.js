@@ -397,6 +397,22 @@ exports.getAllDonations = async (req, res) => {
 
     const donations = await Donation.find(filter).sort({ createdAt: -1 }).lean();
 
+    const uniqueMemberIds = [...new Set(donations.map(d => d.fromMemberId))];
+    const User = require('../models/User');
+
+    // Get directs
+    const directCounts = await User.aggregate([
+      { $match: { sponsorId: { $in: uniqueMemberIds } } },
+      { $group: { _id: '$sponsorId', count: { $sum: 1 } } }
+    ]);
+    const directsMap = {};
+    directCounts.forEach(c => { directsMap[c._id] = c.count; });
+
+    // Get levelDepth
+    const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId levelDepth').lean();
+    const levelDepthMap = {};
+    users.forEach(u => { levelDepthMap[u.memberId] = u.levelDepth || 0; });
+
     const rows = donations.map((d, index) => ({
       sNo: index + 1,
       donationId: d.donationId,
@@ -413,6 +429,8 @@ exports.getAllDonations = async (req, res) => {
       reviewedAt: d.reviewedAt || null,
       utrNumber: d.utrNumber || '---',
       remark: d.remark || '---',
+      directs: directsMap[d.fromMemberId] || 0,
+      levelDepth: levelDepthMap[d.fromMemberId] || 0,
     }));
 
     const totalAmount = donations.filter(d => ['APPROVED', 'COMPLETED'].includes(d.status)).reduce((s, d) => s + d.amount, 0);

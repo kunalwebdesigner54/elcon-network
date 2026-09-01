@@ -88,7 +88,7 @@ function RepurchaseIncomeReports() {
     incomeDateTime: row.incomeDateTime,
     memberId: row.memberId,
     memberName: row.memberName,
-    levelNo: row.levelNo,
+    levelNo: String(row.levelNo || '').replace(/Level/gi, 'Upline'),
     levelId: row.levelId,
     fromMemberName: row.fromMemberName,
     amount: Number(row.amount || 0),
@@ -137,7 +137,7 @@ function RepurchaseIncomeReports() {
           <input name="memberName" value={filters.memberName} onChange={handleFilterChange} className="text-input level-income-filter-input" placeholder="MEMBER NAME" />
           <select name="levelNo" value={filters.levelNo} onChange={handleFilterChange} className="select-input level-income-filter-input">
             <option value="">ALL LEVELS</option>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => <option key={value} value={value}>Level {value}</option>)}
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => <option key={value} value={value}>Upline {value}</option>)}
           </select>
           <input name="levelId" value={filters.levelId} onChange={handleFilterChange} className="text-input level-income-filter-input" placeholder="LEVEL ID" />
           <input name="startDate" value={filters.startDate} onChange={handleFilterChange} className="text-input level-income-filter-input" type="date" placeholder="START DATE" />
