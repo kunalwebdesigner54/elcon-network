@@ -4,6 +4,7 @@ import { City, Country, State } from 'country-state-city';
 import { getDistricts } from 'india-state-district';
 import PublicPageHeader from '../Common/PublicPageHeader';
 import { registerUser, getSponsorDetails } from '../../../api/authService';
+import { getGlobalSettings } from '../../../api/managementService';
 import Swal from 'sweetalert2';
 import './Register.css';
 
@@ -45,6 +46,8 @@ function Register() {
   const [error, setError] = useState('');
   const [sponsorLoading, setSponsorLoading] = useState(false);
   const [sponsorError, setSponsorError] = useState('');
+  const [registrationEnabled, setRegistrationEnabled] = useState(true);
+  const [checkingSettings, setCheckingSettings] = useState(true);
 
   const countryOptions = useMemo(() => Country.getAllCountries(), []);
 
@@ -87,6 +90,22 @@ function Register() {
     const timer = setTimeout(fetchSponsor, 500);
     return () => clearTimeout(timer);
   }, [sponsorId]);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await getGlobalSettings();
+        if (res.success && res.globalSettings) {
+          setRegistrationEnabled(res.globalSettings.registrationEnabled !== false);
+        }
+      } catch (err) {
+        console.error('Failed to fetch global settings', err);
+      } finally {
+        setCheckingSettings(false);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const stateOptions = useMemo(() => {
     if (!country) return [];
@@ -211,9 +230,20 @@ function Register() {
           <div className="register-card">
             <h2 className="register-title" style={{ color: '#fff' }}>Registration Form</h2>
 
-            {error ? <div className="register-error-message">{error}</div> : null}
+            {checkingSettings ? (
+              <div style={{ color: '#fff', textAlign: 'center', padding: '20px' }}>Loading...</div>
+            ) : !registrationEnabled ? (
+              <div style={{ padding: '30px', textAlign: 'center' }}>
+                <h3 style={{ color: '#ff4d4f', marginBottom: '15px' }}>Registration Temporarily Paused</h3>
+                <p style={{ color: '#ddd' }}>
+                  We are currently not accepting new registrations. Please check back later or contact support if you need assistance.
+                </p>
+              </div>
+            ) : (
+              <>
+                {error ? <div className="register-error-message">{error}</div> : null}
 
-            <form className="register-form" noValidate onSubmit={handleSubmit}>
+                <form className="register-form" noValidate onSubmit={handleSubmit}>
               <div className="register-grid">
                 <div className="register-field">
                   <label htmlFor="sponsorId">
@@ -476,6 +506,8 @@ function Register() {
                 {loading ? 'Submitting...' : 'Submit'}
               </button>
             </form>
+            </>
+            )}
           </div>
         </div>
       </section>

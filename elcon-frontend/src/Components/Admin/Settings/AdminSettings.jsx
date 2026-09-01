@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "../Common/AdminLayout.css";
-import { changeAdminPasswords } from "../../../api/managementService";
+import { changeAdminPasswords, getGlobalSettings, updateGlobalSettings } from "../../../api/managementService";
 
 function AdminSettings() {
-  const [activeTab, setActiveTab] = useState('login'); // 'login' or 'transaction'
+  const [activeTab, setActiveTab] = useState('login'); // 'login', 'transaction', or 'global'
+  const [globalSettings, setGlobalSettings] = useState({ registrationEnabled: true });
   const [formData, setFormData] = useState({
     oldPassword: '',
     newPassword: '',
@@ -15,6 +16,41 @@ function AdminSettings() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  useEffect(() => {
+    if (activeTab === 'global') {
+      fetchGlobalSettings();
+    }
+  }, [activeTab]);
+
+  const fetchGlobalSettings = async () => {
+    try {
+      const res = await getGlobalSettings();
+      if (res.success && res.globalSettings) {
+        setGlobalSettings(res.globalSettings);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleGlobalSettingsUpdate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+    try {
+      const res = await updateGlobalSettings(globalSettings);
+      if (res.success) {
+        setMessage({ type: 'success', text: 'Global settings updated successfully' });
+      } else {
+        setMessage({ type: 'error', text: res.message || 'Operation failed' });
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: err.response?.data?.message || 'Server error' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -69,6 +105,13 @@ function AdminSettings() {
           >
             Change Transaction Password
           </button>
+          <button 
+            type="button" 
+            className={activeTab === 'global' ? 'btn-primary' : 'btn-secondary'} 
+            onClick={() => { setActiveTab('global'); setMessage(null); }}
+          >
+            Global System Settings
+          </button>
         </div>
 
         {message && (
@@ -77,57 +120,81 @@ function AdminSettings() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="admin-add-product-form">
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">Old Password <span>*</span></label>
-            <div className="col-sm-9">
-              <input
-                type="password"
-                name="oldPassword"
-                className="text-input"
-                placeholder="Enter Old Password (or leave blank if first time for transaction password)"
-                value={formData.oldPassword}
-                onChange={handleChange}
-              />
+        {activeTab !== 'global' ? (
+          <form onSubmit={handleSubmit} className="admin-add-product-form">
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">Old Password <span>*</span></label>
+              <div className="col-sm-9">
+                <input
+                  type="password"
+                  name="oldPassword"
+                  className="text-input"
+                  placeholder="Enter Old Password (or leave blank if first time for transaction password)"
+                  value={formData.oldPassword}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">New Password <span>*</span></label>
-            <div className="col-sm-9">
-              <input
-                type="password"
-                name="newPassword"
-                className="text-input"
-                placeholder="Enter New Password"
-                value={formData.newPassword}
-                onChange={handleChange}
-                required
-              />
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">New Password <span>*</span></label>
+              <div className="col-sm-9">
+                <input
+                  type="password"
+                  name="newPassword"
+                  className="text-input"
+                  placeholder="Enter New Password"
+                  value={formData.newPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">Confirm Password <span>*</span></label>
-            <div className="col-sm-9">
-              <input
-                type="password"
-                name="confirmPassword"
-                className="text-input"
-                placeholder="Confirm New Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">Confirm Password <span>*</span></label>
+              <div className="col-sm-9">
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  className="text-input"
+                  placeholder="Confirm New Password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? 'Processing...' : 'Update Password'}
-            </button>
-          </div>
-        </form>
+            <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? 'Processing...' : 'Update Password'}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <form onSubmit={handleGlobalSettingsUpdate} className="admin-add-product-form">
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">Enable Registration</label>
+              <div className="col-sm-9" style={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="checkbox"
+                  checked={globalSettings.registrationEnabled}
+                  onChange={(e) => setGlobalSettings({ ...globalSettings, registrationEnabled: e.target.checked })}
+                  style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                />
+                <span style={{ marginLeft: '10px', color: 'var(--text-main)' }}>
+                  {globalSettings.registrationEnabled ? 'New registrations are currently ENABLED.' : 'New registrations are currently PAUSED.'}
+                </span>
+              </div>
+            </div>
+            <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? 'Processing...' : 'Save Global Settings'}
+              </button>
+            </div>
+          </form>
+        )}
       </section>
     </div>
   );

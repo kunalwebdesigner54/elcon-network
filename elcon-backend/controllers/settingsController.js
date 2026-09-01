@@ -101,3 +101,32 @@ exports.updateTermsAndConditions = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+const defaultGlobalSettings = {
+  registrationEnabled: true,
+};
+
+exports.getGlobalSettings = async (req, res) => {
+  try {
+    let setting = await SiteSetting.findOne({ settingKey: 'global-settings' });
+    if (!setting) {
+      setting = await SiteSetting.create({ settingKey: 'global-settings', data: defaultGlobalSettings });
+    }
+    res.json({ success: true, globalSettings: setting?.data || defaultGlobalSettings });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.updateGlobalSettings = async (req, res) => {
+  try {
+    const setting = await SiteSetting.findOneAndUpdate(
+      { settingKey: 'global-settings' },
+      { data: { ...defaultGlobalSettings, ...(req.body || {}) } },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res.json({ success: true, globalSettings: setting.data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

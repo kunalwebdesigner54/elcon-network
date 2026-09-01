@@ -525,22 +525,36 @@
 .pagination {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .page-btn {
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: var(--card-bg);
-  color: var(--dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
   font-size: 14px;
-  padding: 5px 10px;
-  border-radius: 10px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  margin: 0 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: rgba(0, 212, 170, 0.15);
+  border-color: rgba(0, 212, 170, 0.3);
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .page-btn.active {
-  background: var(--gradient-primary);
+  background: var(--primary);
   color: #fff;
-  border-color: transparent;
+  border-color: var(--primary);
 }
 
 .timer-error {

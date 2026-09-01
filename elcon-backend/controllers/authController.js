@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Epin = require('../models/Epin');
+const SiteSetting = require('../models/SiteSetting');
 
 /**
  * Generate JWT Token
@@ -33,6 +34,15 @@ const generateToken = (user) => {
  */
 exports.registerUser = async (req, res) => {
   try {
+    const globalSettingsDoc = await SiteSetting.findOne({ settingKey: 'global-settings' });
+    if (globalSettingsDoc && globalSettingsDoc.data && globalSettingsDoc.data.registrationEnabled === false) {
+      return res.status(403).json({
+        success: false,
+        message: 'Registration is currently temporarily disabled by the administrator.',
+        code: 'REGISTRATION_DISABLED'
+      });
+    }
+
     // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

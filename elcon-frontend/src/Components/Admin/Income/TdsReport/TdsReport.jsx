@@ -34,19 +34,21 @@ function TdsReport() {
       .finally(() => setLoading(false));
   }, []);
 
-  const tdsRows = useMemo(() => {
+  const filteredRows = useMemo(() => {
     const memberId = filters.memberId.toLowerCase();
     const panNo = filters.panNo.toLowerCase();
 
-    return memberRows
-      .filter((row) => {
-        return (
-          (!memberId || row.memberId.toLowerCase().includes(memberId)) &&
-          (!panNo || row.panNo.toLowerCase().includes(panNo))
-        );
-      })
-      .slice(0, Number(pageSize));
-  }, [filters, memberRows, pageSize]);
+    return memberRows.filter((row) => {
+      return (
+        (!memberId || row.memberId.toLowerCase().includes(memberId)) &&
+        (!panNo || row.panNo.toLowerCase().includes(panNo))
+      );
+    });
+  }, [filters, memberRows]);
+
+  const tdsRows = useMemo(() => {
+    return filteredRows.slice(0, Number(pageSize));
+  }, [filteredRows, pageSize]);
 
   const onFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
@@ -110,8 +112,11 @@ function TdsReport() {
           </table>
         </div>
 
-        <div className="tds-report-table-footer">
-          <div className="tds-report-pagination">
+        <div className="tds-report-table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', gap: '15px' }}>
+          <div style={{ fontWeight: '600', color: '#00d2ff', fontSize: '16px' }}>
+            Total Entries: {filteredRows.length}
+          </div>
+          <div className="tds-report-pagination" style={{ margin: 0 }}>
             <button type="button" className="tds-report-page-btn">&laquo;</button>
             <button type="button" className="tds-report-page-btn">&lsaquo;</button>
             <button type="button" className="tds-report-page-btn tds-report-active">1</button>

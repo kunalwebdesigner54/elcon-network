@@ -337,9 +337,9 @@
 }
 
 .user-rank-select option {
-  background: var(--card-bg);
-  color: var(--text-main);
-  padding: 8px;
+  background: var(--bg-dark, #0b0f19);
+  color: #ffffff;
+  padding: 10px;
 }
 
 .user-rank-table-footer {

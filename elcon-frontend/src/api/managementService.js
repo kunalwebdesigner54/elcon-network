@@ -30,6 +30,16 @@ export const updateBankAccount = async (payload) => {
   return response.data;
 };
 
+export const getGlobalSettings = async () => {
+  const response = await apiClient.get('/settings/global');
+  return response.data;
+};
+
+export const updateGlobalSettings = async (payload) => {
+  const response = await apiClient.put('/settings/global', payload);
+  return response.data;
+};
+
 export const getNewsPopupList = async (type) => {
   const response = await apiClient.get('/news-popup', { params: type ? { type } : undefined });
   return response.data;
