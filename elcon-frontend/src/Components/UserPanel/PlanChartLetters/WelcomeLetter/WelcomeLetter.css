@@ -48,6 +48,18 @@
   border-top: 0;
 }
 
+/* Force all text inside the frame to be black and override global dark theme */
+.user-root .welcome-letter-page .welcome-letter-frame,
+.user-root .welcome-letter-page .welcome-letter-frame *,
+.user-root .welcome-letter-page .welcome-letter-frame h2,
+.user-root .welcome-letter-page .welcome-letter-frame p,
+.user-root .welcome-letter-page .welcome-letter-frame span,
+.user-root .welcome-letter-page .welcome-letter-frame td,
+.user-root .welcome-letter-page .welcome-letter-frame th,
+.user-root .welcome-letter-page .welcome-letter-frame strong {
+  color: #000000 !important;
+}
+
 .welcome-letter-title {
   margin: 0 0 24px;
   text-align: center;
