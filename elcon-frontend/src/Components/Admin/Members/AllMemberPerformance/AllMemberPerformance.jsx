@@ -18,7 +18,8 @@ const exportColumns = [
   'LEVEL INCOME',
   'REPURCHASE INCOME',
   'DONATION INCOME',
-  'TOTAL INCOME'
+  'TOTAL INCOME',
+  'RANK'
 ];
 
 function AllMemberPerformance() {
@@ -83,7 +84,7 @@ function AllMemberPerformance() {
     row.joinDate,
     row.status,
     row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
-    row.rank,
+    row.unlockLevel,
     row.levelDepth,
     row.activeTeamCount,
     row.inactiveTeamCount,
@@ -91,7 +92,8 @@ function AllMemberPerformance() {
     row.levelIncome,
     row.repurchaseIncome,
     row.donationIncome,
-    row.totalIncome
+    row.totalIncome,
+    row.rank
   ]));
 
   const handleExportExcel = () => {
@@ -195,7 +197,7 @@ function AllMemberPerformance() {
         </div>
 
         <div className="table-wrap">
-          <table className="data-table" style={{ minWidth: '1650px' }}>
+          <table className="data-table" style={{ minWidth: '1750px' }}>
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -214,12 +216,13 @@ function AllMemberPerformance() {
                 <th>REPURCHASE INCOME</th>
                 <th>DONATION INCOME</th>
                 <th>TOTAL INCOME</th>
+                <th>RANK</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="16">Loading...</td>
+                  <td colSpan="17">Loading...</td>
                 </tr>
               ) : visibleRows.length > 0 ? visibleRows.map((row) => (
                 <tr key={row.sNo}>
@@ -230,7 +233,7 @@ function AllMemberPerformance() {
                   <td>{row.joinDate}</td>
                   <td className={row.status === 'IN-ACTIVE' ? 'member-performance-status-inactive' : ''}>{row.status}</td>
                   <td>{row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0}</td>
-                  <td>{row.rank}</td>
+                  <td>{row.unlockLevel}</td>
                   <td>{row.levelDepth}</td>
                   <td>{row.activeTeamCount}</td>
                   <td>{row.inactiveTeamCount}</td>
@@ -239,10 +242,11 @@ function AllMemberPerformance() {
                   <td>{row.repurchaseIncome}</td>
                   <td>{row.donationIncome}</td>
                   <td>{row.totalIncome}</td>
+                  <td>{row.rank}</td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan="16">No member performance found</td>
+                  <td colSpan="17">No member performance found</td>
                 </tr>
               )}
             </tbody>
