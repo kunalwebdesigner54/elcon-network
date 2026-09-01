@@ -10,7 +10,7 @@ const exportColumns = [
   'JOIN DATE',
   'STATUS',
   'LEVEL DEPTH',
-  'UNLOCK LEVEL',
+  'DIRECTS',
   'RANK',
   'ACTIVE TEAM COUNT',
   'IN-ACTIVE TEAM COUNT',
@@ -63,7 +63,8 @@ function AllMemberPerformance() {
       const byName = !filters.memberName || row.memberName.toLowerCase().includes(filters.memberName.toLowerCase());
       const byStatus = !filters.status || row.status === filters.status;
       const byLevelDepth = !filters.levelDepth || String(row.levelDepth) === filters.levelDepth;
-      const byUnlockLevel = !filters.unlockLevel || String(row.unlockLevel) === filters.unlockLevel;
+      const rowDirects = String(row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0);
+      const byUnlockLevel = !filters.unlockLevel || rowDirects === filters.unlockLevel;
       const byRank = !filters.rank || String(row.rank).toLowerCase().includes(filters.rank.toLowerCase());
       const byStartDate = !filters.startDate || joinDateValue >= filters.startDate;
       const byEndDate = !filters.endDate || joinDateValue <= filters.endDate;
@@ -82,7 +83,7 @@ function AllMemberPerformance() {
     row.joinDate,
     row.status,
     row.levelDepth,
-    row.unlockLevel,
+    row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
     row.rank,
     row.activeTeamCount,
     row.inactiveTeamCount,
@@ -172,7 +173,7 @@ function AllMemberPerformance() {
             <option value="9">9</option>
           </select>
           <select className="select-input" style={{ maxWidth: '110px' }} value={filters.unlockLevel} onChange={handleFilterChange('unlockLevel')}>
-            <option value="">UNLOCK LEVEL</option>
+            <option value="">DIRECTS</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="4">4</option>
@@ -204,7 +205,7 @@ function AllMemberPerformance() {
                 <th>JOIN DATE</th>
                 <th>STATUS</th>
                 <th>LEVEL DEPTH</th>
-                <th>UNLOCK LEVEL</th>
+                <th>DIRECTS</th>
                 <th>RANK</th>
                 <th>ACTIVE TEAM COUNT</th>
                 <th>IN-ACTIVE TEAM COUNT</th>
@@ -229,7 +230,7 @@ function AllMemberPerformance() {
                   <td>{row.joinDate}</td>
                   <td className={row.status === 'IN-ACTIVE' ? 'member-performance-status-inactive' : ''}>{row.status}</td>
                   <td>{row.levelDepth}</td>
-                  <td>{row.unlockLevel}</td>
+                  <td>{row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0}</td>
                   <td>{row.rank}</td>
                   <td>{row.activeTeamCount}</td>
                   <td>{row.inactiveTeamCount}</td>
