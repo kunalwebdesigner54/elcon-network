@@ -24,6 +24,7 @@
   border-radius: 18px;
   overflow: hidden;
   height: auto;
+  min-height: 380px;
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   display: flex;
@@ -50,6 +51,7 @@
   background: #ffffff;
   overflow: hidden;
   position: relative;
+  contain: layout style paint;
 }
 
 .user-product-image {
@@ -59,6 +61,8 @@
   object-position: center;
   transform: scale(1);
   transition: transform 0.35s ease;
+  will-change: auto;
+  backface-visibility: hidden;
 }
 
 .user-product-card:hover .user-product-image {
@@ -68,6 +72,7 @@
   object-position: center;
   transform: scale(1.05);
   transition: transform 0.35s ease;
+  will-change: transform;
 }
 
 .user-product-stock-badge {
@@ -95,15 +100,17 @@
 
 .user-product-footer {
   background: #1b2b43;
-  padding: 10px;
+  padding: 12px 12px;
+  margin-top: 8px;
   min-height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .user-product-meta {
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .user-product-meta h3 {

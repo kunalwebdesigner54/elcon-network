@@ -77,6 +77,7 @@ function JoiningPackage() {
                       alt={product.productName || product.name}
                       className="user-product-image"
                       loading="lazy"
+                      decoding="async"
                     />
                     <span className={`user-product-stock-badge ${stockStatus === 'In Stock' ? 'in-stock' : 'out-stock'}`}>
                       {stockStatus === 'In Stock' ? 'IN STOCK' : 'OUT OF STOCK'}
