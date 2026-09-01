@@ -49,6 +49,7 @@ function DonationReport() {
     endDate: ''
   });
   const [pageSize, setPageSize] = useState('10');
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -115,10 +116,18 @@ function DonationReport() {
     });
   }, [filters, donationRows, activeTab]);
 
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
+  const indexOfLastItem = currentPage * Number(pageSize);
+  const indexOfFirstItem = indexOfLastItem - Number(pageSize);
+  const visibleRows = filteredRows.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / Number(pageSize)));
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
+    setCurrentPage(1);
   };
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
@@ -230,7 +239,7 @@ function DonationReport() {
               </select>
               <input className="text-input" type="date" style={{ maxWidth: '130px' }} value={filters.startDate} onChange={handleFilterChange('startDate')} />
               <input className="text-input" type="date" style={{ maxWidth: '120px' }} value={filters.endDate} onChange={handleFilterChange('endDate')} />
-              <select className="select-input" style={{ maxWidth: '92px' }} value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
+              <select className="select-input" style={{ maxWidth: '92px' }} value={pageSize} onChange={(event) => { setPageSize(event.target.value); setCurrentPage(1); }}>
                 <option value="10">10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>
@@ -322,22 +331,25 @@ function DonationReport() {
               </table>
             </div>
 
-            <div className="table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', gap: '15px' }}>
-              <div style={{ fontWeight: '600', color: '#00d2ff', fontSize: '16px' }}>
-                Total Donations: {filteredRows.length}
+            <div className="table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', gap: '15px', background: 'rgba(0, 229, 255, 0.05)', padding: '16px', border: '1px solid rgba(0, 229, 255, 0.2)', borderRadius: '12px' }}>
+              <div style={{ fontWeight: '700', color: '#00e5ff', fontSize: '16px', letterSpacing: '0.5px' }}>
+                <i className="fa-solid fa-chart-pie" style={{ marginRight: '8px' }}></i>
+                Total Donations : {filteredRows.length}
               </div>
-              <div className="pagination" style={{ margin: 0 }}>
-                <button className="page-btn">&lt;&lt;</button>
-                <button className="page-btn">&lt;</button>
-                <button className="page-btn active">1</button>
-                <button className="page-btn">2</button>
-                <button className="page-btn">3</button>
-                <button className="page-btn">4</button>
-                <button className="page-btn">5</button>
-                <button className="page-btn">6</button>
-                <button className="page-btn">7</button>
-                <button className="page-btn">&gt;</button>
-                <button className="page-btn">&gt;&gt;</button>
+              <div className="pagination" style={{ margin: 0, display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => (
+                  <button 
+                    key={i + 1} 
+                    className={`page-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                    onClick={() => handlePageChange(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>&gt;&gt;</button>
               </div>
             </div>
           </>
