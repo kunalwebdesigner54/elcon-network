@@ -144,7 +144,7 @@ exports.generateEpins = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Transaction password is required' });
       }
       
-      const user = await User.findById(req.user.id).select('+password +transactionPassword');
+      const user = await User.findById(req.user.id).select('+password +transactionPassword walletBalance');
       if (!user) {
         return res.status(404).json({ success: false, message: 'User not found' });
       }
@@ -156,6 +156,17 @@ exports.generateEpins = async (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).json({ success: false, message: 'Transaction password is incorrect' });
       }
+      
+      const packageDocForCheck = await EpinPackage.findOne({ packageName: epinName, isActive: true });
+      const costForCheck = packageDocForCheck ? packageDocForCheck.price : Number(req.body.cost || 10);
+      const totalCost = qty * costForCheck;
+
+      if ((user.walletBalance || 0) < totalCost) {
+        return res.status(400).json({ success: false, message: 'Insufficient wallet balance to generate ePins' });
+      }
+      
+      user.walletBalance -= totalCost;
+      await user.save();
     }
     const generatedBy = isAdmin(req)
       ? String(req.body.generatedBy || req.user?.memberId || req.user?.epin || 'ADMIN').trim()
