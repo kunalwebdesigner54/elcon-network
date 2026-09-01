@@ -54,6 +54,7 @@
   font-size: 34px;
   letter-spacing: 0.5px;
   font-weight: 700;
+  color: #000000 !important;
 }
 
 .welcome-letter-joining-date {
@@ -95,9 +96,13 @@
 .welcome-letter-table th,
 .welcome-letter-table td {
   border: 1px solid #7d7d7d;
-  padding: 10px 14px;
+  padding: 10px 14px !important;
   text-align: center;
   white-space: nowrap;
+}
+
+.welcome-letter-table td {
+  color: #000000 !important;
 }
 
 .welcome-letter-footnote {
