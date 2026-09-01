@@ -76,8 +76,6 @@ function JoiningPackage() {
                       src={resolveProductImage(product)}
                       alt={product.productName || product.name}
                       className="user-product-image"
-                      loading="lazy"
-                      decoding="async"
                     />
                   </div>
 
