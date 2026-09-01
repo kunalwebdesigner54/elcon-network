@@ -10,6 +10,23 @@ const {
 
 const { formatDate, formatDateOnly } = require('../utils/dateFormatter');
 
+const stateCodeToName = {
+  'AP': 'Andhra Pradesh', 'AR': 'Arunachal Pradesh', 'AS': 'Assam', 'BR': 'Bihar',
+  'CG': 'Chhattisgarh', 'GA': 'Goa', 'GJ': 'Gujarat', 'HR': 'Haryana', 'HP': 'Himachal Pradesh',
+  'JH': 'Jharkhand', 'KA': 'Karnataka', 'KL': 'Kerala', 'MP': 'Madhya Pradesh', 'MH': 'Maharashtra',
+  'MN': 'Manipur', 'ML': 'Meghalaya', 'MZ': 'Mizoram', 'NL': 'Nagaland', 'OD': 'Odisha',
+  'PB': 'Punjab', 'RJ': 'Rajasthan', 'SK': 'Sikkim', 'TN': 'Tamil Nadu', 'TG': 'Telangana',
+  'TR': 'Tripura', 'UP': 'Uttar Pradesh', 'UK': 'Uttarakhand', 'WB': 'West Bengal',
+  'AN': 'Andaman and Nicobar Islands', 'CH': 'Chandigarh', 'DN': 'Dadra and Nagar Haveli and Daman and Diu',
+  'DL': 'Delhi', 'JK': 'Jammu and Kashmir', 'LA': 'Ladakh', 'LD': 'Lakshadweep', 'PY': 'Puducherry'
+};
+
+const getFullStateName = (code) => {
+  if (!code || code === '---') return '---';
+  return stateCodeToName[code.toUpperCase()] || code;
+};
+
+
 const getKycSnapshot = (user) => ({
   sNo: 0,
   status: user.kycStatus === 'REJECTED' ? 'REJECT' : (user.kycStatus || 'PENDING'),
@@ -354,7 +371,7 @@ exports.getMembersLocation = async (req, res) => {
       adharNo: user.aadharNo || '---',
       panNo: user.panNo || '---',
       address: user.address || '---',
-      state: user.state || '---',
+      state: getFullStateName(user.state),
       district: user.district || '---',
       city: user.city || '---',
       pinCode: user.pincode || '---',
