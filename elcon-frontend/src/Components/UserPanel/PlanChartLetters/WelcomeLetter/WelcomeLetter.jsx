@@ -32,7 +32,7 @@ function WelcomeLetter() {
     <section className="welcome-letter-page">
       <article className="welcome-letter-sheet" aria-label="welcome-letter-sheet">
         <div className="welcome-letter-frame">
-          <h2 className="welcome-letter-title">CONGRATULATION !</h2>
+          <h2 className="welcome-letter-title" style={{ color: '#000' }}>CONGRATULATION !</h2>
 
           <p className="welcome-letter-joining-date">
             <strong>Joining Date :</strong> {joinDateStr}
@@ -95,11 +95,11 @@ function WelcomeLetter() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>{profile.sponsorId || '---'}</td>
-                  <td>{profile.memberId}</td>
-                  <td>{profile.name}</td>
-                  <td>{joinDateStr}</td>
+                <tr style={{ color: '#000' }}>
+                  <td style={{ color: '#000' }}>{profile.sponsorId || '---'}</td>
+                  <td style={{ color: '#000' }}>{profile.memberId}</td>
+                  <td style={{ color: '#000' }}>{profile.name}</td>
+                  <td style={{ color: '#000' }}>{joinDateStr}</td>
                 </tr>
               </tbody>
             </table>
