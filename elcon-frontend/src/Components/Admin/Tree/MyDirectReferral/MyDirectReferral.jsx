@@ -2,18 +2,31 @@ import './MyDirectReferral.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getTeamTree } from '../../../../api/donationsService';
 
-function flattenDirects(node) {
-  return (node?.children || []).map((child, index) => ({
-    sNo: index + 1,
-    memberId: child.memberId,
-    memberName: child.name,
-    totalDirect: child.directCount || child.children?.length || 0,
-    mobile: child.mobile || '---',
-    joinDate: child.joinDate || '---',
-    activeDate: child.joinDate || '---',
-    formStatus: child.status || 'ACTIVE',
-    blockStatus: child.status || 'ACTIVE',
-  }));
+function flattenDirects(node, showAllDescendants = false) {
+  const acc = [];
+  
+  const traverse = (n) => {
+    if (!n) return;
+    (n.children || []).forEach((child) => {
+      acc.push({
+        memberId: child.memberId,
+        memberName: child.name,
+        totalDirect: child.directCount || child.children?.length || 0,
+        mobile: child.mobile || '---',
+        joinDate: child.joinDate || '---',
+        activeDate: child.joinDate || '---',
+        formStatus: child.status || 'ACTIVE',
+        blockStatus: child.status || 'ACTIVE',
+      });
+      if (showAllDescendants) {
+        traverse(child);
+      }
+    });
+  };
+
+  traverse(node);
+  
+  return acc.map((item, index) => ({ ...item, sNo: index + 1 }));
 }
 
 function MyDirectReferral() {
@@ -21,15 +34,25 @@ function MyDirectReferral() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [targetMemberId, setTargetMemberId] = useState('');
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  useEffect(() => {
-    getTeamTree()
-      .then((response) => setRows(flattenDirects(response.data)))
+  const fetchDirects = (memberIdToFetch = '') => {
+    setLoading(true);
+    getTeamTree(memberIdToFetch)
+      .then((response) => setRows(flattenDirects(response.data, memberIdToFetch === '')))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load direct referrals.'))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchDirects('');
   }, []);
+
+  const handleShowDetails = () => {
+    fetchDirects(targetMemberId);
+  };
 
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -58,8 +81,14 @@ function MyDirectReferral() {
 
       <div className="panel" style={{ borderRadius: '28px', padding: '24px' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
-          <input className="text-input" style={{ maxWidth: '140px' }} placeholder="MEMBER ID" />
-          <button className="btn-primary" type="button">SHOW DETAILS</button>
+          <input 
+            className="text-input" 
+            style={{ maxWidth: '140px' }} 
+            placeholder="MEMBER ID" 
+            value={targetMemberId}
+            onChange={(e) => setTargetMemberId(e.target.value)}
+          />
+          <button className="btn-primary" type="button" onClick={handleShowDetails}>SHOW DETAILS</button>
           <button className="btn-outline" type="button">EXCEL</button>
         </div>
 
