@@ -96,13 +96,22 @@ exports.seedProducts = async () => {
   await Product.insertMany(productSeedData);
 };
 
+const productsCache = new Map();
+
 exports.getProducts = async (req, res, isAdmin = false) => {
   try {
     const type = getQueryType(req);
     const filter = isAdmin ? {} : { status: 'SHOWING' };
+    if (type) filter.type = type;
 
-    if (type) {
-      filter.type = type;
+    const cacheKey = JSON.stringify(filter);
+    if (!isAdmin && productsCache.has(cacheKey)) {
+      const cachedData = productsCache.get(cacheKey);
+      return res.status(200).json({
+        success: true,
+        count: cachedData.length,
+        products: cachedData.map(productToApiShape),
+      });
     }
 
     const products = await Product.aggregate([
@@ -117,6 +126,12 @@ exports.getProducts = async (req, res, isAdmin = false) => {
         }
       }
     ]);
+
+    if (!isAdmin) {
+      productsCache.set(cacheKey, products);
+      // clear cache after 5 minutes
+      setTimeout(() => productsCache.delete(cacheKey), 5 * 60 * 1000);
+    }
 
     res.status(200).json({
       success: true,
