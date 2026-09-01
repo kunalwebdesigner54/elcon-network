@@ -39,7 +39,7 @@
 
 .user-product-card:hover {
   border-color: #00c3ff;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.4);
 }
 
 .user-product-image-wrap {
@@ -103,7 +103,7 @@
   min-height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 8px;
   flex-grow: 1;
 }
