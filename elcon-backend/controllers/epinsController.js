@@ -338,11 +338,11 @@ exports.deleteFranchise = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Franchise not found' });
     }
 
-    franchise.status = 'HIDDEN';
-    await franchise.save();
+    await EpinFranchise.deleteOne({ franchiseId: req.params.franchiseId });
 
     res.json({
       success: true,
+      message: 'Franchise deleted successfully',
       franchise: {
         franchiseId: franchise.franchiseId,
         name: franchise.franchiseName,
@@ -350,7 +350,6 @@ exports.deleteFranchise = async (req, res) => {
         whatsapp: franchise.whatsappNo,
         city: franchise.city,
         stock: franchise.stock,
-        status: franchise.status,
       },
     });
   } catch (error) {
