@@ -1,18 +1,32 @@
+import { useState, useEffect } from 'react';
+import { getProfile } from '../../../../api/authService';
 import './WelcomeLetter.css';
 
-const letterData = {
-  joiningDate: '23-11-2024 12:57:37PM',
-  memberName: 'Nishikant Kailas Shirke',
-  memberId: 'EL12345678',
-  address: 'A-201, Oxford Paradise, Vidya Valley School Road Susgaon Pune - 411021',
-  sponsorId: 'EL12345678',
-  joiningMemberId: 'EL12345100'
-};
-
 function WelcomeLetter() {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getProfile()
+      .then((res) => setProfile(res.data))
+      .catch((err) => console.error('Failed to load profile for welcome letter', err))
+      .finally(() => setLoading(false));
+  }, []);
+
   const printLetter = () => {
     window.print();
   };
+
+  if (loading) return <div>Loading Welcome Letter...</div>;
+  if (!profile) return <div>Failed to load data.</div>;
+
+  const joinDateStr = profile.createdAt 
+    ? new Date(profile.createdAt).toLocaleString('en-IN', { hour12: true })
+    : '---';
+
+  const fullAddress = [profile.address, profile.city, profile.state, profile.pincode]
+    .filter(Boolean)
+    .join(', ') || '---';
 
   return (
     <section className="welcome-letter-page">
@@ -21,19 +35,19 @@ function WelcomeLetter() {
           <h2 className="welcome-letter-title">CONGRATULATION !</h2>
 
           <p className="welcome-letter-joining-date">
-            <strong>Joining Date :</strong> {letterData.joiningDate}
+            <strong>Joining Date :</strong> {joinDateStr}
           </p>
 
           <p className="welcome-letter-member-line">
-            <strong>{letterData.memberName}</strong>
+            <strong>{profile.name}</strong>
             <br />
-            [{letterData.memberId}]
+            [{profile.memberId}]
             <br />
-            {letterData.address}
+            {fullAddress}
           </p>
 
           <p>
-            Dear <strong>{letterData.memberName}</strong>,
+            Dear <strong>{profile.name}</strong>,
           </p>
 
           <p>
@@ -82,10 +96,10 @@ function WelcomeLetter() {
               </thead>
               <tbody>
                 <tr>
-                  <td>{letterData.sponsorId}</td>
-                  <td>{letterData.joiningMemberId}</td>
-                  <td>{letterData.memberName}</td>
-                  <td>{letterData.joiningDate.toLowerCase()}</td>
+                  <td>{profile.sponsorId || '---'}</td>
+                  <td>{profile.memberId}</td>
+                  <td>{profile.name}</td>
+                  <td>{joinDateStr}</td>
                 </tr>
               </tbody>
             </table>
