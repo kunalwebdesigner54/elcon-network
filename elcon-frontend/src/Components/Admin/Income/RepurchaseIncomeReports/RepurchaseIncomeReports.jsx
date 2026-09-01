@@ -6,7 +6,7 @@ function RepurchaseIncomeReports() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
   const [filters, setFilters] = useState({
     memberId: '',
     memberName: '',
@@ -23,7 +23,7 @@ function RepurchaseIncomeReports() {
   const fetchReports = () => {
     setLoading(true);
     setError('');
-    
+
     // Ensure date format is standard YYYY-MM-DD when sent to backend (which input type="date" uses natively)
     const params = {
       page: currentPage,
@@ -88,6 +88,8 @@ function RepurchaseIncomeReports() {
     incomeDateTime: row.incomeDateTime,
     memberId: row.memberId,
     memberName: row.memberName,
+    directs: row.directs ?? 0,
+    levelDepth: row.levelDepth ?? 0,
     levelNo: row.levelNo ? `Upline ${String(row.levelNo).replace(/Level|Upline/gi, '').trim()}` : '',
     levelId: row.levelId,
     fromMemberName: row.fromMemberName,
@@ -101,29 +103,29 @@ function RepurchaseIncomeReports() {
     // Just a simple pagination renderer
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, currentPage + 2);
-    
+
     if (startPage > 1) {
       pages.push(<button key="1" onClick={() => setCurrentPage(1)} className="level-income-page-btn">1</button>);
       if (startPage > 2) pages.push(<span key="dots1" className="level-income-page-btn">...</span>);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
-        <button 
-          key={i} 
-          onClick={() => setCurrentPage(i)} 
+        <button
+          key={i}
+          onClick={() => setCurrentPage(i)}
           className={`level-income-page-btn ${currentPage === i ? 'level-income-active' : ''}`}
         >
           {i}
         </button>
       );
     }
-    
+
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) pages.push(<span key="dots2" className="level-income-page-btn">...</span>);
       pages.push(<button key={totalPages} onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">{totalPages}</button>);
     }
-    
+
     return pages;
   };
 
@@ -164,6 +166,8 @@ function RepurchaseIncomeReports() {
                 <th>INCOME DATE & TIME</th>
                 <th>MEMBER ID</th>
                 <th>MEMBER NAME</th>
+                <th>DIRECTS</th>
+                <th>LEVEL DEPTH</th>
                 <th>INCOME SLOT</th>
                 <th>TRIGGERED BY ID</th>
                 <th>FROM MEMBER NAME</th>
@@ -175,7 +179,7 @@ function RepurchaseIncomeReports() {
               {loading ? (
                 <tr><td colSpan={9}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={10} style={{color: 'red'}}>{error}</td></tr>
+                <tr><td colSpan={10} style={{ color: 'red' }}>{error}</td></tr>
               ) : repurchaseIncomeReportsData.length === 0 ? (
                 <tr><td colSpan={10}>No repurchase income reports found.</td></tr>
               ) : (
@@ -186,6 +190,8 @@ function RepurchaseIncomeReports() {
                       <td>{row.incomeDateTime}</td>
                       <td>{row.memberId}</td>
                       <td>{row.memberName}</td>
+                      <td>{row.directs}</td>
+                      <td>{row.levelDepth}</td>
                       <td>{row.levelNo}</td>
                       <td>{row.levelId}</td>
                       <td>{row.fromMemberName}</td>
@@ -194,7 +200,7 @@ function RepurchaseIncomeReports() {
                     </tr>
                   ))}
                   <tr className="level-income-summary-row">
-                    <td colSpan="8" style={{ textAlign: 'right', fontWeight: 700 }}>
+                    <td colSpan="10" style={{ textAlign: 'right', fontWeight: 700 }}>
                       TOTAL AMOUNT (All Pages)
                     </td>
                     <td>{globalTotalAmount.toFixed(2)}</td>

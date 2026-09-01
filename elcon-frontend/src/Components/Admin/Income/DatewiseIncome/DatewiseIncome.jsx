@@ -18,7 +18,8 @@ function DatewiseIncome() {
     sNo: row.sNo,
     incomeDate: row.joinDate,
     memberId: row.memberId,
-    unlockLevel: row.unlockLevel,
+    memberName: row.memberName,
+    directs: row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
     totalIds: row.totalTeamCount,
     levelIncome: Number(row.levelIncome || 0),
     totalBvPoint: Number(row.totalTeamCount || 0) * 100,
@@ -35,7 +36,8 @@ function DatewiseIncome() {
       <section className="panel datewise-income-panel">
         <div className="datewise-income-filter-row">
           <input className="text-input datewise-income-filter-input" placeholder="TO MEMBER ID" />
-          <input className="text-input datewise-income-filter-input" placeholder="UNLOCK LEVEL" />
+          <input className="text-input datewise-income-filter-input" placeholder="MEMBER NAME" />
+          <input className="text-input datewise-income-filter-input" placeholder="DIRECTS" />
           <input className="text-input datewise-income-filter-input" placeholder="TOTAL ID'S" />
           <input className="text-input datewise-income-filter-input" type="date" placeholder="START DATE" />
           <input className="text-input datewise-income-filter-input" type="date" placeholder="END DATE" />
@@ -59,7 +61,8 @@ function DatewiseIncome() {
                 <th>S.NO</th>
                 <th>INCOME DATE</th>
                 <th>MEMBER ID</th>
-                <th>UNLOCK LEVEL</th>
+                <th>MEMBER NAME</th>
+                <th>DIRECTS</th>
                 <th>TOTAL ID'S</th>
                 <th>LEVEL INCOME</th>
                 <th>TOTAL B.V. POINT</th>
@@ -81,7 +84,8 @@ function DatewiseIncome() {
                       <td>{row.sNo}</td>
                       <td>{row.incomeDate}</td>
                       <td>{row.memberId}</td>
-                      <td>{row.unlockLevel}</td>
+                      <td>{row.memberName}</td>
+                      <td>{row.directs}</td>
                       <td>{row.totalIds}</td>
                       <td>{row.levelIncome.toFixed(2)}</td>
                       <td>{row.totalBvPoint}</td>
@@ -90,7 +94,7 @@ function DatewiseIncome() {
                     </tr>
                   ))}
                   <tr className="datewise-income-summary-row">
-                    <td colSpan="8" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL AMOUNT</td>
+                    <td colSpan="9" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL AMOUNT</td>
                     <td>{totalAmount.toFixed(2)}</td>
                   </tr>
                 </>

@@ -4,7 +4,7 @@ const User = require('../models/User');
 exports.getRepurchaseIncomeReports = async (req, res) => {
   try {
     const { page = 1, limit = 10, memberId, memberName, levelNo, startDate, endDate } = req.query;
-    
+
     // Build filter query
     const query = {};
 
@@ -39,7 +39,7 @@ exports.getRepurchaseIncomeReports = async (req, res) => {
 
     // Fetch data
     const total = await RepurchaseIncome.countDocuments(query);
-    
+
     // Calculate global total
     const totalAmountAgg = await RepurchaseIncome.aggregate([
       { $match: query },
@@ -55,25 +55,38 @@ exports.getRepurchaseIncomeReports = async (req, res) => {
 
     // Fetch the names for recipient members
     const recipientMemberIds = [...new Set(records.map(r => r.recipientMemberId))];
-    const users = await User.find({ memberId: { $in: recipientMemberIds } }, 'memberId name').lean();
-    
-    // Create a map for fast lookup
+    const users = await User.find({ memberId: { $in: recipientMemberIds } }, 'memberId name levelDepth sponsorId').lean();
+
     const userMap = {};
+    const levelDepthMap = {};
+    const directCountMap = {};
     users.forEach(u => {
       userMap[u.memberId] = u.name || '---';
+      levelDepthMap[u.memberId] = u.levelDepth ?? 0;
     });
 
-    // Format for frontend
+    if (recipientMemberIds.length) {
+      const directCounts = await User.aggregate([
+        { $match: { sponsorId: { $in: recipientMemberIds } } },
+        { $group: { _id: '$sponsorId', directs: { $sum: 1 } } }
+      ]);
+      directCounts.forEach((item) => {
+        directCountMap[item._id] = item.directs;
+      });
+    }
+
     const formattedData = records.map((record, index) => {
       const skippedIds = Array.isArray(record.skippedMembers) && record.skippedMembers.length > 0
         ? record.skippedMembers[0].memberId
         : '---';
-        
+
       return {
         sNo: skip + index + 1,
         incomeDateTime: new Date(record.createdAt).toLocaleString('en-IN'),
         memberId: record.recipientMemberId,
         memberName: userMap[record.recipientMemberId] || '---',
+        directs: directCountMap[record.recipientMemberId] || 0,
+        levelDepth: levelDepthMap[record.recipientMemberId] || 0,
         levelNo: `Level ${record.level}`,
         levelId: record.purchasingMemberId,
         fromMemberName: record.purchasingMemberName,

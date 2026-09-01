@@ -8,8 +8,8 @@ const { formatDate, formatDateOnly } = require('../utils/dateFormatter');
  */
 exports.getLevelIncomeReports = async (req, res) => {
   try {
-    const { 
-      page = 1, 
+    const {
+      page = 1,
       limit = 10,
       memberId,
       memberName,
@@ -49,7 +49,7 @@ exports.getLevelIncomeReports = async (req, res) => {
     if (levelNo) {
       query.level = Number(levelNo);
     }
-    
+
     if (levelId) {
       query.joiningMemberId = new RegExp(levelId, 'i');
     }
@@ -65,9 +65,9 @@ exports.getLevelIncomeReports = async (req, res) => {
     }
 
     const skip = (Number(page) - 1) * Number(limit);
-    
+
     const total = await LevelIncome.countDocuments(query);
-    
+
     // Calculate global total amount for the matching query
     const totalAmountAgg = await LevelIncome.aggregate([
       { $match: query },
@@ -83,9 +83,24 @@ exports.getLevelIncomeReports = async (req, res) => {
 
     // Populate recipient name for Admin panel
     const recipientIds = [...new Set(records.map(r => r.recipientMemberId))];
-    const recipients = await User.find({ memberId: { $in: recipientIds } }).select('memberId name').lean();
+    const recipients = await User.find({ memberId: { $in: recipientIds } }).select('memberId name levelDepth sponsorId').lean();
     const recipientMap = {};
-    recipients.forEach(r => { recipientMap[r.memberId] = r.name; });
+    const levelDepthMap = {};
+    const directCountMap = {};
+    recipients.forEach(r => {
+      recipientMap[r.memberId] = r.name;
+      levelDepthMap[r.memberId] = r.levelDepth ?? 0;
+    });
+
+    if (recipientIds.length) {
+      const directCounts = await User.aggregate([
+        { $match: { sponsorId: { $in: recipientIds } } },
+        { $group: { _id: '$sponsorId', directs: { $sum: 1 } } }
+      ]);
+      directCounts.forEach((item) => {
+        directCountMap[item._id] = item.directs;
+      });
+    }
 
     const data = records.map((record, index) => {
       const skippedIds = Array.isArray(record.skippedMembers) && record.skippedMembers.length > 0
@@ -97,6 +112,8 @@ exports.getLevelIncomeReports = async (req, res) => {
         incomeDateTime: formatDate(record.createdAt),
         memberId: record.recipientMemberId,
         memberName: recipientMap[record.recipientMemberId] || '---',
+        directs: directCountMap[record.recipientMemberId] || 0,
+        levelDepth: levelDepthMap[record.recipientMemberId] || 0,
         levelNo: record.level,
         levelId: record.joiningMemberId,
         fromMemberName: record.joiningMemberName || '---',

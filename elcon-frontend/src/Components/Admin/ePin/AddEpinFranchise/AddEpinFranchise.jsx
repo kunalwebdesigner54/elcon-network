@@ -147,7 +147,7 @@ function AddEpinFranchise() {
               </div>
               <div className="add-epin-form-group">
                 <label className="field-label">E PIN STOCK</label>
-                <input className="text-input" type="number" name="stock" value={franchise.stock} onChange={handleChange} />
+                <input className="text-input" type="number" name="stock" value={franchise.stock} readOnly />
               </div>
               <div className="add-epin-form-group">
                 <label className="field-label">STATUS</label>

@@ -16,6 +16,35 @@ const formatDate = (date = new Date()) => new Date(date).toLocaleString('en-IN',
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,
 });
 
+const unusedStockMapForOwners = async (ownerIds) => {
+  const ids = [...new Set((ownerIds || []).map((id) => String(id || '').trim()).filter(Boolean))];
+  if (!ids.length) return {};
+
+  const ownerKeys = ids.map((id) => id.toUpperCase());
+  const stockCounts = await Epin.aggregate([
+    { $match: { status: 'Unused' } },
+    {
+      $addFields: {
+        ownerKey: {
+          $toUpper: { $trim: { input: { $ifNull: ['$currentOwner', ''] } } },
+        },
+      },
+    },
+    { $match: { ownerKey: { $in: ownerKeys } } },
+    { $group: { _id: '$ownerKey', count: { $sum: 1 } } },
+  ]);
+
+  return stockCounts.reduce((map, item) => {
+    map[item._id] = item.count;
+    return map;
+  }, {});
+};
+
+const countUnusedEpinsForOwner = async (ownerId) => {
+  const map = await unusedStockMapForOwners([ownerId]);
+  return map[String(ownerId || '').trim().toUpperCase()] || 0;
+};
+
 const mapEpin = (doc, index) => ({
   id: index + 1,
   epinName: doc.epinName,
@@ -143,7 +172,7 @@ exports.generateEpins = async (req, res) => {
       if (!transactionPassword) {
         return res.status(400).json({ success: false, message: 'Transaction password is required' });
       }
-      
+
       const user = await User.findById(req.user.id).select('+password +transactionPassword walletBalance');
       if (!user) {
         return res.status(404).json({ success: false, message: 'User not found' });
@@ -156,7 +185,7 @@ exports.generateEpins = async (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).json({ success: false, message: 'Transaction password is incorrect' });
       }
-      
+
       const packageDocForCheck = await EpinPackage.findOne({ packageName: epinName, isActive: true });
       const costForCheck = packageDocForCheck ? packageDocForCheck.price : Number(req.body.cost || 10);
       const totalCost = qty * costForCheck;
@@ -164,7 +193,7 @@ exports.generateEpins = async (req, res) => {
       if ((user.walletBalance || 0) < totalCost) {
         return res.status(400).json({ success: false, message: 'Insufficient wallet balance to generate ePins' });
       }
-      
+
       user.walletBalance -= totalCost;
       await user.save();
     }
@@ -172,7 +201,7 @@ exports.generateEpins = async (req, res) => {
       ? String(req.body.generatedBy || req.user?.memberId || req.user?.epin || 'ADMIN').trim()
       : identifiers[0];
     const currentOwner = String((isAdmin(req) ? req.body.currentOwner : undefined) || generatedBy).trim();
-    
+
     // Fetch actual package price if available to prevent manipulation
     const packageDoc = await EpinPackage.findOne({ packageName: epinName, isActive: true });
     const cost = packageDoc ? packageDoc.price : Number(req.body.cost || 10);
@@ -300,8 +329,26 @@ exports.getTransferHistory = async (req, res) => {
 exports.getFranchises = async (req, res) => {
   try {
     const filter = isAdmin(req) ? {} : { status: 'SHOWING' };
-    const rows = await EpinFranchise.find(filter).sort({ createdAt: -1 });
-    res.json({ success: true, franchises: rows.map((doc, index) => ({ id: index + 1, _id: doc._id, franchiseId: doc.franchiseId, name: doc.franchiseName, upi: doc.upiId, whatsapp: doc.whatsappNo, city: doc.city, stock: doc.stock, qrImage: doc.qrImage, status: doc.status })) });
+    const franchises = await EpinFranchise.find(filter).sort({ createdAt: -1 });
+    const stockMap = await unusedStockMapForOwners(franchises.map((f) => f.franchiseId));
+
+    const rows = franchises.map((doc, index) => {
+      const liveStock = stockMap[String(doc.franchiseId || '').trim().toUpperCase()] ?? Number(doc.stock || 0);
+      return {
+        id: index + 1,
+        _id: doc._id,
+        franchiseId: doc.franchiseId,
+        name: doc.franchiseName,
+        upi: doc.upiId,
+        whatsapp: doc.whatsappNo,
+        city: doc.city,
+        stock: liveStock,
+        qrImage: doc.qrImage,
+        status: doc.status
+      };
+    });
+
+    res.json({ success: true, franchises: rows });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -310,8 +357,9 @@ exports.getFranchises = async (req, res) => {
 exports.createOrUpdateFranchise = async (req, res) => {
   try {
     const payload = req.body || {};
-    const franchiseId = String(payload.franchiseId || payload.id || '').trim();
+    const franchiseId = String(req.params.franchiseId || payload.franchiseId || payload.id || '').trim();
     if (!franchiseId) return res.status(400).json({ success: false, message: 'franchiseId is required' });
+    const liveStock = await countUnusedEpinsForOwner(franchiseId);
     const franchise = await EpinFranchise.findOneAndUpdate(
       { franchiseId },
       {
@@ -319,7 +367,7 @@ exports.createOrUpdateFranchise = async (req, res) => {
         upiId: payload.upiId || payload.upi || '-',
         whatsappNo: payload.whatsappNo || payload.whatsapp || '-',
         city: payload.city || '-',
-        stock: Number(payload.stock || 0),
+        stock: liveStock,
         qrImage: payload.qrImage || '',
         status: payload.status || 'SHOWING',
       },
@@ -384,11 +432,11 @@ exports.updatePackage = async (req, res) => {
     const { packageName, price, isActive } = req.body;
     const pkg = await EpinPackage.findById(req.params.id);
     if (!pkg) return res.status(404).json({ success: false, message: 'Package not found' });
-    
+
     if (packageName !== undefined) pkg.packageName = packageName.trim();
     if (price !== undefined) pkg.price = Number(price);
     if (isActive !== undefined) pkg.isActive = Boolean(isActive);
-    
+
     await pkg.save();
     res.json({ success: true, package: pkg });
   } catch (error) {
@@ -400,7 +448,7 @@ exports.deletePackage = async (req, res) => {
   try {
     const pkg = await EpinPackage.findById(req.params.id);
     if (!pkg) return res.status(404).json({ success: false, message: 'Package not found' });
-    
+
     pkg.isActive = false;
     await pkg.save();
     res.json({ success: true, message: 'Package removed' });
@@ -417,11 +465,11 @@ exports.deletePackage = async (req, res) => {
 exports.getFranchiseDeliveryReport = async (req, res) => {
   try {
     const memberId = req.user.memberId;
-    
+
     // Check if the user is a franchise
     const franchise = await EpinFranchise.findOne({ franchiseId: memberId });
     if (!franchise) {
-        return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
+      return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
     }
 
     // Find all users who registered using an e-pin distributed by this franchise.
@@ -432,12 +480,12 @@ exports.getFranchiseDeliveryReport = async (req, res) => {
     // Let's find all E-pins where this franchise was the currentOwner or generatedBy.
     // Actually, to be very precise, find all USED E-pins where franchise is the one who distributed it.
     // The easiest way is to find all users whose `epin` matches an E-pin that this franchise generated or currently owned.
-    const franchiseEpins = await Epin.find({ 
-        status: 'Used', 
-        $or: [
-            { generatedBy: memberId },
-            { currentOwner: memberId }
-        ] 
+    const franchiseEpins = await Epin.find({
+      status: 'Used',
+      $or: [
+        { generatedBy: memberId },
+        { currentOwner: memberId }
+      ]
     }).select('epinNo');
 
     const epinNos = franchiseEpins.map(e => e.epinNo);
@@ -445,16 +493,16 @@ exports.getFranchiseDeliveryReport = async (req, res) => {
     const users = await User.find({ epin: { $in: epinNos } }).sort({ createdAt: -1 });
 
     const report = users.map((u, i) => ({
-        id: i + 1,
-        userId: u._id,
-        memberId: u.memberId,
-        name: u.name,
-        contactNo: u.contactNo,
-        joiningPackage: u.joiningPackage || 'N/A',
-        registeredAt: u.createdAt,
-        deliveryStatus: u.joiningPackageDeliveryStatus || 'Pending',
-        deliveredAt: u.joiningPackageDeliveredAt,
-        deliveredBy: u.joiningPackageDeliveredBy
+      id: i + 1,
+      userId: u._id,
+      memberId: u.memberId,
+      name: u.name,
+      contactNo: u.contactNo,
+      joiningPackage: u.joiningPackage || 'N/A',
+      registeredAt: u.createdAt,
+      deliveryStatus: u.joiningPackageDeliveryStatus || 'Pending',
+      deliveredAt: u.joiningPackageDeliveredAt,
+      deliveredBy: u.joiningPackageDeliveredBy
     }));
 
     res.json({ success: true, report });
@@ -464,54 +512,57 @@ exports.getFranchiseDeliveryReport = async (req, res) => {
 };
 
 exports.verifyJoiningPackageDelivery = async (req, res) => {
-    try {
-        const memberId = req.user.memberId;
-        const { userId, deliveryCode } = req.body;
+  try {
+    const memberId = req.user.memberId;
+    const { userId, deliveryCode } = req.body;
 
-        const franchise = await EpinFranchise.findOne({ franchiseId: memberId });
-        if (!franchise) {
-            return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
-        }
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
-        }
-
-        if (user.joiningPackageDeliveryStatus === 'Delivered') {
-            return res.status(400).json({ success: false, message: 'Package already delivered' });
-        }
-
-        if (user.joiningPackageDeliveryCode !== String(deliveryCode).trim()) {
-            return res.status(400).json({ success: false, message: 'Invalid Delivery OTP' });
-        }
-
-        user.joiningPackageDeliveryStatus = 'Delivered';
-        user.joiningPackageDeliveredAt = new Date();
-        user.joiningPackageDeliveredBy = memberId;
-        await user.save();
-
-        res.json({ success: true, message: 'Package marked as delivered successfully' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+    const franchise = await EpinFranchise.findOne({ franchiseId: memberId });
+    if (!franchise) {
+      return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
     }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (user.joiningPackageDeliveryStatus === 'Delivered') {
+      return res.status(400).json({ success: false, message: 'Package already delivered' });
+    }
+
+    if (user.joiningPackageDeliveryCode !== String(deliveryCode).trim()) {
+      return res.status(400).json({ success: false, message: 'Invalid Delivery OTP' });
+    }
+
+    user.joiningPackageDeliveryStatus = 'Delivered';
+    user.joiningPackageDeliveredAt = new Date();
+    user.joiningPackageDeliveredBy = memberId;
+    await user.save();
+
+    res.json({ success: true, message: 'Package marked as delivered successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 exports.getFranchiseStock = async (req, res) => {
-    try {
-        const memberId = req.user.memberId;
-        const franchise = await EpinFranchise.findOne({ franchiseId: memberId });
-        if (!franchise) {
-            return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
-        }
-
-        const stockCount = await Epin.countDocuments({
-            currentOwner: memberId,
-            status: 'Unused'
-        });
-
-        res.json({ success: true, stock: stockCount });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+  try {
+    const memberId = req.user.memberId;
+    const franchise = await EpinFranchise.findOne({ franchiseId: memberId });
+    if (!franchise) {
+      return res.status(403).json({ success: false, message: 'You are not an E-Pin Franchise' });
     }
+
+    const stockCount = await countUnusedEpinsForOwner(memberId);
+
+    res.json({ success: true, stock: stockCount });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = {
+  ...module.exports,
+  unusedStockMapForOwners,
+  countUnusedEpinsForOwner,
 };

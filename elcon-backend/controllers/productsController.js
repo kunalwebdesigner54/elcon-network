@@ -107,19 +107,14 @@ exports.getProducts = async (req, res, isAdmin = false) => {
 
     const products = await Product.aggregate([
       { $match: filter },
-      { 
+      {
         $project: {
           type: 1, productCode: 1, productName: 1, category: 1, hsnCode: 1,
           mrp: 1, dpPrice: 1, discount: 1, gst: 1, shipping: 1, bvPoint: 1, levelPoint: 1,
           quantity: 1, reserveAmount: 1, status: 1, description: 1, specifications: 1,
           features: 1, size: 1, color: 1, weight: 1, dimension: 1,
-          imageKey: { 
-            $cond: { 
-              if: { $lt: [{ $strLenCP: { $ifNull: ["$imageKey", ""] } }, 1000] }, 
-              then: "$imageKey", 
-              else: "" 
-            } 
-          }
+          imageKey: 1,
+          images: 1,
         }
       }
     ]);
@@ -460,29 +455,29 @@ exports.checkoutCart = async (req, res) => {
     let lvPoint = 0;
     let totalReserveAmount = 0;
     let calculatedDiscount = 0;
-    
+
     let remainingCoupon = user.couponWalletBalance || 0;
     const finalOrderItems = [];
 
     for (const item of cart.items) {
       const product = await Product.findById(item.productId);
       const qty = Number(item.quantity || 1);
-      
+
       let itemCouponUsed = 0;
 
       if (product) {
         bvPoint += Number(product.bvPoint || 0) * qty;
         lvPoint += Number(product.levelPoint || 0) * qty;
         totalReserveAmount += Number(product.reserveAmount || 0) * qty;
-        
+
         const itemMaxDiscount = Number(product.discount || 0) * qty;
         calculatedDiscount += itemMaxDiscount;
-        
+
         const appliedToThisItem = Math.min(itemMaxDiscount, remainingCoupon);
         itemCouponUsed = appliedToThisItem;
         remainingCoupon -= appliedToThisItem;
       }
-      
+
       finalOrderItems.push({
         productId: item.productId,
         productCode: item.productCode,
@@ -496,11 +491,11 @@ exports.checkoutCart = async (req, res) => {
     }
 
     let appliedDiscount = (user.couponWalletBalance || 0) - remainingCoupon;
-    
+
     const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
     const shippingCharge = Number(req.body.shippingCharge || 0);
     const finalTotal = totalPrice + shippingCharge - appliedDiscount;
-    
+
     if (appliedDiscount > 0) {
       user.couponWalletBalance -= appliedDiscount;
     }
@@ -710,7 +705,7 @@ exports.getAdminGstReport = async (req, res) => {
               input: '$shippingInformation',
               initialValue: '$user.name',
               in: {
-                $cond: [ { $eq: ['$$this.label', 'Name'] }, '$$this.value', '$$value' ]
+                $cond: [{ $eq: ['$$this.label', 'Name'] }, '$$this.value', '$$value']
               }
             }
           },
@@ -719,7 +714,7 @@ exports.getAdminGstReport = async (req, res) => {
               input: '$shippingInformation',
               initialValue: '$user.contactNo',
               in: {
-                $cond: [ { $eq: ['$$this.label', 'Contact No'] }, '$$this.value', '$$value' ]
+                $cond: [{ $eq: ['$$this.label', 'Contact No'] }, '$$this.value', '$$value']
               }
             }
           },
@@ -728,7 +723,7 @@ exports.getAdminGstReport = async (req, res) => {
               input: '$shippingInformation',
               initialValue: '',
               in: {
-                $cond: [ { $eq: ['$$this.label', 'State,City'] }, '$$this.value', '$$value' ]
+                $cond: [{ $eq: ['$$this.label', 'State,City'] }, '$$this.value', '$$value']
               }
             }
           },
@@ -738,10 +733,10 @@ exports.getAdminGstReport = async (req, res) => {
       {
         $addFields: {
           customerState: {
-            $arrayElemAt: [ { $split: ['$customerStateRaw', ' , '] }, 0 ]
+            $arrayElemAt: [{ $split: ['$customerStateRaw', ' , '] }, 0]
           },
           taxableValue: {
-            $divide: [ '$items.totalPrice', { $add: [1, { $divide: ['$gstRate', 100] }] } ]
+            $divide: ['$items.totalPrice', { $add: [1, { $divide: ['$gstRate', 100] }] }]
           }
         }
       },
@@ -811,7 +806,7 @@ exports.getAdminGstSummary = async (req, res) => {
       {
         $addFields: {
           taxableValue: {
-            $divide: [ '$items.totalPrice', { $add: [1, { $divide: ['$gstRate', 100] }] } ]
+            $divide: ['$items.totalPrice', { $add: [1, { $divide: ['$gstRate', 100] }] }]
           }
         }
       },
@@ -861,30 +856,30 @@ exports.getCouponTransactionHistory = async (req, res) => {
 
     const finalHistory = [];
     orders.forEach(order => {
-        const totalItemsCoupon = order.items.reduce((sum, i) => sum + (i.couponUsed || 0), 0);
-        if (totalItemsCoupon === 0 && order.discountCoupon > 0) {
+      const totalItemsCoupon = order.items.reduce((sum, i) => sum + (i.couponUsed || 0), 0);
+      if (totalItemsCoupon === 0 && order.discountCoupon > 0) {
+        finalHistory.push({
+          orderNo: order.orderNo,
+          orderDate: order.orderDate,
+          productName: order.items.map(i => i.name).join(', '),
+          quantity: order.items.reduce((s, i) => s + i.quantity, 0),
+          couponUsed: order.discountCoupon,
+          isLegacy: true
+        });
+      } else {
+        order.items.forEach(item => {
+          if (item.couponUsed > 0) {
             finalHistory.push({
-                orderNo: order.orderNo,
-                orderDate: order.orderDate,
-                productName: order.items.map(i => i.name).join(', '),
-                quantity: order.items.reduce((s, i) => s + i.quantity, 0),
-                couponUsed: order.discountCoupon,
-                isLegacy: true
+              orderNo: order.orderNo,
+              orderDate: order.orderDate,
+              productName: item.name,
+              quantity: item.quantity,
+              couponUsed: item.couponUsed,
+              isLegacy: false
             });
-        } else {
-            order.items.forEach(item => {
-                if (item.couponUsed > 0) {
-                    finalHistory.push({
-                        orderNo: order.orderNo,
-                        orderDate: order.orderDate,
-                        productName: item.name,
-                        quantity: item.quantity,
-                        couponUsed: item.couponUsed,
-                        isLegacy: false
-                    });
-                }
-            });
-        }
+          }
+        });
+      }
     });
 
     res.status(200).json({ success: true, history: finalHistory });
