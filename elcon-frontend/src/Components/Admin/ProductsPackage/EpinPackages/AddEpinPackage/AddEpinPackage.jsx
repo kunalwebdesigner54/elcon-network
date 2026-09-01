@@ -80,11 +80,11 @@ function AddEpinPackage() {
             </div>
           </div>
 
-          <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
-            <button type="button" className="btn-secondary" onClick={() => navigate(-1)} style={{ marginRight: '10px' }}>
+          <div className="form-actions" style={{ marginTop: '20px', display: 'flex', gap: '10px', width: '100%' }}>
+            <button type="button" className="btn-secondary" onClick={() => navigate(-1)} style={{ flex: 1, textTransform: 'uppercase' }}>
               Cancel
             </button>
-            <button type="submit" className="btn-primary" disabled={loading}>
+            <button type="submit" className="btn-primary" disabled={loading} style={{ flex: 1, textTransform: 'uppercase' }}>
               {loading ? 'Saving...' : 'Save Package'}
             </button>
           </div>
