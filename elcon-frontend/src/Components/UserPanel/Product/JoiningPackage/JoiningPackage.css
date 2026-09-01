@@ -49,6 +49,7 @@
   justify-content: center;
   background: #ffffff;
   overflow: hidden;
+  position: relative;
 }
 
 .user-product-image {
@@ -67,6 +68,29 @@
   object-position: center;
   transform: scale(1.05);
   transition: transform 0.35s ease;
+}
+
+.user-product-stock-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+.user-product-stock-badge.in-stock {
+  background: #00d94a;
+  color: #000;
+}
+
+.user-product-stock-badge.out-stock {
+  background: #ff5f67;
+  color: #fff;
 }
 
 .user-product-footer {
@@ -114,7 +138,7 @@
 
 .user-product-category {
   color: rgba(255, 255, 255, 0.84);
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.6px;
