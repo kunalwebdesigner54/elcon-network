@@ -150,7 +150,7 @@ function MyDirectReferral() {
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
               >
-                Previous
+                Prev
               </button>
               
               {[...Array(Math.min(totalPages, 5))].map((_, i) => {

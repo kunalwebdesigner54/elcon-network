@@ -95,7 +95,7 @@ function TicketHistory() {
         <div className="table-footer">
           <span>Showing {filteredTickets.length ? 1 : 0} to {filteredTickets.length} of {filteredTickets.length} entries</span>
           <div className="pagination">
-            <button className="page-btn">Previous</button>
+            <button className="page-btn">Prev</button>
             <button className="page-btn active">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
