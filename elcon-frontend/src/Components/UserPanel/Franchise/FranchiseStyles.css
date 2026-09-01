@@ -19,8 +19,9 @@
 }
 
 .franchise-split-layout .user-panel {
-  min-height: auto;
-  flex: none;
+  min-height: fit-content !important;
+  height: fit-content !important;
+  flex: none !important;
   margin-bottom: 0; /* Override the mb-4 inline class if present */
 }
 
