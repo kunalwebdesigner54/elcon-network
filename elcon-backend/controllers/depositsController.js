@@ -38,7 +38,7 @@ const toApiRow = (request, index) => ({
   memberId: request.memberId,
   memberName: request.memberName,
   mobileNo: request.mobileNo,
-  transactionId: request.depositId,
+  transactionId: request.transactionId || request.utrNumber || request.depositId,
   paymentMode: request.paymentMode,
   amount: Number(request.amount || 0).toFixed(2),
   utrNumber: request.utrNumber,
@@ -76,6 +76,7 @@ exports.createDepositRequest = async (req, res) => {
   try {
     const amount = Number(req.body.amount || req.body.depositAmount || 0);
     const paymentMode = String(req.body.paymentMode || req.body.transferMethod || '').trim();
+    const transactionId = String(req.body.transactionId || req.body.utrNumber || '').trim();
     const transactionPassword = String(req.body.transactionPassword || '').trim();
     const confirmTransactionPassword = String(req.body.confirmTransactionPassword || '').trim();
     const paymentScreenshot = String(req.body.paymentScreenshot || req.body.slip || '').trim();
@@ -91,6 +92,10 @@ exports.createDepositRequest = async (req, res) => {
 
     if (!paymentScreenshot) {
       return res.status(400).json({ success: false, message: 'Please upload payment screenshot' });
+    }
+
+    if (!transactionId) {
+      return res.status(400).json({ success: false, message: 'Please enter the payment transaction ID' });
     }
 
     if (!transactionPassword || !confirmTransactionPassword) {
@@ -125,6 +130,7 @@ exports.createDepositRequest = async (req, res) => {
       memberId: user.memberId || '---',
       memberName: user.name || '---',
       mobileNo: user.contactNo || '---',
+      transactionId,
       paymentMode: methodLabel,
       amount,
       utrNumber: depositId,
@@ -204,7 +210,7 @@ exports.getDepositSummary = async (req, res) => {
 exports.updateDepositStatus = async (req, res) => {
   try {
     const { orderNo } = req.params;
-    const { status, remark } = req.body;
+    const { status, remark, transactionPassword } = req.body;
 
     if (!['Pending', 'Approve', 'Succeed', 'Rejected', 'Reject'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Invalid deposit status' });
@@ -216,6 +222,23 @@ exports.updateDepositStatus = async (req, res) => {
     }
 
     const normalizedStatus = normalizeStatus(status);
+
+    if (normalizedStatus === 'Succeed') {
+      const password = String(transactionPassword || '').trim();
+      if (!password) {
+        return res.status(400).json({ success: false, message: 'Admin transaction password is required to succeed a deposit' });
+      }
+
+      const adminUser = await User.findById(req.user.id).select('+password +transactionPassword');
+      const isPasswordValid = adminUser?.transactionPassword
+        ? await adminUser.matchTransactionPassword(password)
+        : await adminUser?.matchPassword(password);
+
+      if (!isPasswordValid) {
+        return res.status(401).json({ success: false, message: 'Admin transaction password is incorrect' });
+      }
+    }
+
     await adjustWalletOnStatusChange(request, normalizedStatus);
 
     request.status = normalizedStatus;

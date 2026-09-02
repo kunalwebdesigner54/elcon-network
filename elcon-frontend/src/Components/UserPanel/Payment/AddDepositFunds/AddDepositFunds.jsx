@@ -23,6 +23,7 @@ function AddDepositFunds() {
   const fileInputRef = useRef(null);
   const [selectedMethod, setSelectedMethod] = useState('bank');
   const [amount, setAmount] = useState('');
+  const [transactionId, setTransactionId] = useState('');
   const [paymentProof, setPaymentProof] = useState('');
   const [transactionPassword, setTransactionPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -35,9 +36,9 @@ function AddDepositFunds() {
     const loadDepositMeta = async () => {
       try {
         const [summaryResponse, profileResponse] = await Promise.all([getMyWithdrawalSummary(), getProfile()]);
-        
+
         setWalletSummary(summaryResponse.data || { eWalletBalance: 0, rWalletBalance: 0, totalEarning: 0, totalWithdrawal: 0 });
-        
+
         if (profileResponse?.data) {
           setMemberDetails({
             name: profileResponse.data.name || '',
@@ -93,6 +94,11 @@ function AddDepositFunds() {
       return;
     }
 
+    if (!transactionId.trim()) {
+      alert('Please enter the payment transaction ID');
+      return;
+    }
+
     if (!transactionPassword || !confirmPassword) {
       alert('Please enter both passwords');
       return;
@@ -108,6 +114,7 @@ function AddDepositFunds() {
 
       await createDepositRequest({
         amount,
+        transactionId,
         paymentMode: selectedMethod === 'upi' ? 'UPI ID' : 'BANK TRANSFER',
         paymentScreenshot,
         transactionPassword,
@@ -141,180 +148,193 @@ function AddDepositFunds() {
           )}
         </div>
 
-      <div className="balance-cards-container deposit-stats-grid">
-        {paymentStats.map((item) => (
-          <div key={item.label} className={`balance-card ${item.tone}`}>
-            <div className="card-icon">💼</div>
-            <div className="card-content">
-              <p className="card-label">{item.label}</p>
-              <p className="card-amount">{item.value}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="buyepin-single-flex">
-        <div className="buyepin-single-left">
-          <div className="withdrawal-amount-card deposit-form-card">
-            <h3 className="buyepin-section-title">Deposit Amount</h3>
-
-            <div className="amount-input-section">
-              <label className="amount-label">Enter Amount (₹)</label>
-              <div className="input-wrapper">
-                <span className="rupee-icon">₹</span>
-                <input
-                  id="deposit-amount"
-                  type="number"
-                  value={amount}
-                  onChange={(event) => setAmount(event.target.value)}
-                  placeholder="Enter Amount"
-                  className="amount-input"
-                />
+        <div className="balance-cards-container deposit-stats-grid">
+          {paymentStats.map((item) => (
+            <div key={item.label} className={`balance-card ${item.tone}`}>
+              <div className="card-icon">💼</div>
+              <div className="card-content">
+                <p className="card-label">{item.label}</p>
+                <p className="card-amount">{item.value}</p>
               </div>
             </div>
-
-            <div className="quick-select-section deposit-preset-row">
-              {amountPresets.map((preset) => (
-                <button key={preset} type="button" className="quick-btn deposit-preset-btn" onClick={() => handlePresetAmount(preset)}>
-                  {preset}
-                </button>
-              ))}
-            </div>
-
-            <div className="withdrawal-summary deposit-summary-box">
-              <h4 className="summary-title deposit-summary-head">Deposit Summary</h4>
-              <div className="summary-row">
-                <span className="summary-label">E-Wallet Deposit Amount</span>
-                <span className="summary-value">{summaryAmount}</span>
-              </div>
-            </div>
-
-            <label className="deposit-upload-box" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '30px', border: '2px dashed #4a5568', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', transition: 'all 0.3s' }}>
-              <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: '32px', color: '#00e5ff', marginBottom: '12px' }}></i>
-              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleProofUpload} style={{ display: 'none' }} />
-              <span style={{ color: '#a0aec0', fontSize: '14px', fontWeight: '500' }}>{paymentProof || 'Click to Upload Payment Proof Screenshot'}</span>
-            </label>
-
-            <div className="password-field deposit-password-field">
-              <label className="password-label">Enter Transaction Password</label>
-              <input
-                type="password"
-                value={transactionPassword}
-                onChange={(event) => setTransactionPassword(event.target.value)}
-                placeholder="Enter Transaction Password"
-                className="password-input"
-              />
-            </div>
-
-            <div className="password-field deposit-password-field">
-              <label className="password-label">Re-enter Transaction Password</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-                placeholder="Re-enter Transaction Password"
-                className="password-input"
-              />
-            </div>
-
-            <button type="button" className="confirm-withdrawal-btn deposit-confirm-btn" onClick={handleSubmit}>Confirm Deposit</button>
-          </div>
+          ))}
         </div>
 
-        <div className="buyepin-single-right">
-          <div className="transfer-method-card deposit-method-card">
-            <h3 className="buyepin-section-title">Account Details</h3>
+        <div className="buyepin-single-flex">
+          <div className="buyepin-single-left">
+            <div className="withdrawal-amount-card deposit-form-card">
+              <h3 className="buyepin-section-title">Deposit Amount</h3>
 
-            <div className={`transfer-option deposit-method-option ${selectedMethod === 'bank' ? 'is-active' : ''}`}>
-              <label className="transfer-label" htmlFor="deposit-bank-transfer">
-                <input
-                  id="deposit-bank-transfer"
-                  type="radio"
-                  name="depositMethod"
-                  value="bank"
-                  checked={selectedMethod === 'bank'}
-                  onChange={(event) => setSelectedMethod(event.target.value)}
-                  className="transfer-radio"
-                />
-                <span className="radio-custom"></span>
-                <span className="method-icon">🏦</span>
-                <div className="method-content">
-                  <p className="method-name">Bank Transfer</p>
-                  <p className="method-note">Amount will be sent to your bank account</p>
-                </div>
-              </label>
-            </div>
-
-            <div className={`transfer-option deposit-method-option ${selectedMethod === 'upi' ? 'is-active' : ''}`}>
-              <label className="transfer-label" htmlFor="deposit-upi-transfer">
-                <input
-                  id="deposit-upi-transfer"
-                  type="radio"
-                  name="depositMethod"
-                  value="upi"
-                  checked={selectedMethod === 'upi'}
-                  onChange={(event) => setSelectedMethod(event.target.value)}
-                  className="transfer-radio"
-                />
-                <span className="radio-custom"></span>
-                <span className="method-icon">📱</span>
-                <div className="method-content">
-                  <p className="method-name">UPI Transfer</p>
-                  <p className="method-note">Amount will be sent to your UPI ID</p>
-                </div>
-              </label>
-            </div>
-
-            {selectedMethod === 'upi' ? (
-              <div className="deposit-upi-panel">
-                <div className="deposit-qr-frame">
-                  <img src={qrCode} alt="UPI QR code" className="deposit-qr-image" />
-                </div>
-                <div className="deposit-upi-row">
-                  <span className="deposit-upi-label">UPI ID :</span>
-                  <span className="deposit-upi-value">{bankDetails.upiId}</span>
-                  <button type="button" className="deposit-copy-btn" aria-label="Copy UPI ID">⧉</button>
+              <div className="amount-input-section">
+                <label className="amount-label">Enter Amount (₹)</label>
+                <div className="input-wrapper">
+                  <span className="rupee-icon">₹</span>
+                  <input
+                    id="deposit-amount"
+                    type="number"
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    placeholder="Enter Amount"
+                    className="amount-input"
+                  />
                 </div>
               </div>
-            ) : (
-              <div className="bank-account-details deposit-bank-panel" style={{ padding: '24px', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <h4 className="details-title deposit-bank-title" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '18px', marginBottom: '20px', color: '#00e5ff', borderBottom: '1px solid rgba(0, 229, 255, 0.2)', paddingBottom: '12px' }}>
-                  <i className="fa-solid fa-building-columns"></i>
-                  Bank Account Details
-                </h4>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                  <div>
-                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Bank Name</div>
-                    <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.bankName}</div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Branch</div>
-                    <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.branch}</div>
-                  </div>
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>A/c Holder Name</div>
-                    <div style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>{bankDetails.accountHolder}</div>
-                  </div>
-                  <div style={{ gridColumn: '1 / -1', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Account Number</div>
-                    <div style={{ color: '#00e5ff', fontSize: '20px', fontWeight: '700', letterSpacing: '2px' }}>{bankDetails.accountNo}</div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Account Type</div>
-                    <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.accountType}</div>
-                  </div>
-                  <div>
-                    <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>IFSC Code</div>
-                    <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.ifscCode}</div>
-                  </div>
+
+              <div className="quick-select-section deposit-preset-row">
+                {amountPresets.map((preset) => (
+                  <button key={preset} type="button" className="quick-btn deposit-preset-btn" onClick={() => handlePresetAmount(preset)}>
+                    {preset}
+                  </button>
+                ))}
+              </div>
+
+              <div className="password-field deposit-password-field">
+                <label className="password-label" htmlFor="deposit-transaction-id">Payment Transaction ID</label>
+                <input
+                  id="deposit-transaction-id"
+                  type="text"
+                  value={transactionId}
+                  onChange={(event) => setTransactionId(event.target.value)}
+                  placeholder="Enter payment transaction ID"
+                  className="password-input"
+                  required
+                />
+              </div>
+
+              <div className="withdrawal-summary deposit-summary-box">
+                <h4 className="summary-title deposit-summary-head">Deposit Summary</h4>
+                <div className="summary-row">
+                  <span className="summary-label">E-Wallet Deposit Amount</span>
+                  <span className="summary-value">{summaryAmount}</span>
                 </div>
               </div>
-            )}
+
+              <label className="deposit-upload-box" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '30px', border: '2px dashed #4a5568', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', transition: 'all 0.3s' }}>
+                <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: '32px', color: '#00e5ff', marginBottom: '12px' }}></i>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleProofUpload} style={{ display: 'none' }} />
+                <span style={{ color: '#a0aec0', fontSize: '14px', fontWeight: '500' }}>{paymentProof || 'Click to Upload Payment Proof Screenshot'}</span>
+              </label>
+
+              <div className="password-field deposit-password-field">
+                <label className="password-label">Enter Transaction Password</label>
+                <input
+                  type="password"
+                  value={transactionPassword}
+                  onChange={(event) => setTransactionPassword(event.target.value)}
+                  placeholder="Enter Transaction Password"
+                  className="password-input"
+                />
+              </div>
+
+              <div className="password-field deposit-password-field">
+                <label className="password-label">Re-enter Transaction Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  placeholder="Re-enter Transaction Password"
+                  className="password-input"
+                />
+              </div>
+
+              <button type="button" className="confirm-withdrawal-btn deposit-confirm-btn" onClick={handleSubmit}>Confirm Deposit</button>
+            </div>
+          </div>
+
+          <div className="buyepin-single-right">
+            <div className="transfer-method-card deposit-method-card">
+              <h3 className="buyepin-section-title">Account Details</h3>
+
+              <div className={`transfer-option deposit-method-option ${selectedMethod === 'bank' ? 'is-active' : ''}`}>
+                <label className="transfer-label" htmlFor="deposit-bank-transfer">
+                  <input
+                    id="deposit-bank-transfer"
+                    type="radio"
+                    name="depositMethod"
+                    value="bank"
+                    checked={selectedMethod === 'bank'}
+                    onChange={(event) => setSelectedMethod(event.target.value)}
+                    className="transfer-radio"
+                  />
+                  <span className="radio-custom"></span>
+                  <span className="method-icon">🏦</span>
+                  <div className="method-content">
+                    <p className="method-name">Bank Transfer</p>
+                    <p className="method-note">Amount will be sent to your bank account</p>
+                  </div>
+                </label>
+              </div>
+
+              <div className={`transfer-option deposit-method-option ${selectedMethod === 'upi' ? 'is-active' : ''}`}>
+                <label className="transfer-label" htmlFor="deposit-upi-transfer">
+                  <input
+                    id="deposit-upi-transfer"
+                    type="radio"
+                    name="depositMethod"
+                    value="upi"
+                    checked={selectedMethod === 'upi'}
+                    onChange={(event) => setSelectedMethod(event.target.value)}
+                    className="transfer-radio"
+                  />
+                  <span className="radio-custom"></span>
+                  <span className="method-icon">📱</span>
+                  <div className="method-content">
+                    <p className="method-name">UPI Transfer</p>
+                    <p className="method-note">Amount will be sent to your UPI ID</p>
+                  </div>
+                </label>
+              </div>
+
+              {selectedMethod === 'upi' ? (
+                <div className="deposit-upi-panel">
+                  <div className="deposit-qr-frame">
+                    <img src={qrCode} alt="UPI QR code" className="deposit-qr-image" />
+                  </div>
+                  <div className="deposit-upi-row">
+                    <span className="deposit-upi-label">UPI ID :</span>
+                    <span className="deposit-upi-value">{bankDetails.upiId}</span>
+                    <button type="button" className="deposit-copy-btn" aria-label="Copy UPI ID">⧉</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="bank-account-details deposit-bank-panel" style={{ padding: '24px', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <h4 className="details-title deposit-bank-title" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '18px', marginBottom: '20px', color: '#00e5ff', borderBottom: '1px solid rgba(0, 229, 255, 0.2)', paddingBottom: '12px' }}>
+                    <i className="fa-solid fa-building-columns"></i>
+                    Bank Account Details
+                  </h4>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                    <div>
+                      <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Bank Name</div>
+                      <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.bankName}</div>
+                    </div>
+                    <div>
+                      <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Branch</div>
+                      <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.branch}</div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>A/c Holder Name</div>
+                      <div style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>{bankDetails.accountHolder}</div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Account Number</div>
+                      <div style={{ color: '#00e5ff', fontSize: '20px', fontWeight: '700', letterSpacing: '2px' }}>{bankDetails.accountNo}</div>
+                    </div>
+                    <div>
+                      <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>Account Type</div>
+                      <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.accountType}</div>
+                    </div>
+                    <div>
+                      <div style={{ color: '#a0aec0', fontSize: '12px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '600' }}>IFSC Code</div>
+                      <div style={{ color: '#fff', fontSize: '15px', fontWeight: '500' }}>{bankDetails.ifscCode}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    </div>
     </div>
   );
 }

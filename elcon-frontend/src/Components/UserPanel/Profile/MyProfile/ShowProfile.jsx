@@ -64,10 +64,10 @@ function ShowProfile() {
 
   const formatDate = (date) => {
     if (!date) return 'N/A';
-    return new Date(date).toLocaleDateString('en-IN', { 
-      day: '2-digit', 
-      month: 'long', 
-      year: 'numeric' 
+    return new Date(date).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
     }).toUpperCase();
   };
 
@@ -96,6 +96,7 @@ function ShowProfile() {
                 <div><b>MOBILE</b> <span>{profileData.contactNo || 'N/A'}</span></div>
                 <div><b>EMAIL</b> <span>{profileData.email}</span></div>
                 <div><b>JOINING DATE</b> <span>{formatDate(profileData.createdAt)}</span></div>
+                <div><b>JOINING PACKAGE</b> <span>{profileData.joiningPackage || 'N/A'}</span></div>
                 <div><b>STATUS</b> <span>ACTIVE</span></div>
               </div>
             </div>

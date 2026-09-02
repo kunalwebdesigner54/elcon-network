@@ -13,7 +13,17 @@ function renderActionButtons(orderNo, reloadRows) {
   return (
     <div className="withdrawal-action-group" aria-label="Deposit actions">
       {actionButtons.map((button) => (
-        <button key={button.label} type="button" className={button.className} aria-label={button.label} onClick={async () => { const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label; await updateDepositRequestStatus(orderNo, { status: nextStatus }); reloadRows(); }}>
+        <button key={button.label} type="button" className={button.className} aria-label={button.label} onClick={async () => {
+          const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
+          const transactionPassword = nextStatus === 'Succeed' ? window.prompt('Enter admin transaction password to credit the E-Wallet:') : '';
+          if (nextStatus === 'Succeed' && !transactionPassword) return;
+          try {
+            await updateDepositRequestStatus(orderNo, { status: nextStatus, transactionPassword });
+            reloadRows();
+          } catch (error) {
+            window.alert(error?.response?.data?.message || 'Unable to update deposit status');
+          }
+        }}>
           {button.icon}
         </button>
       ))}
@@ -56,14 +66,14 @@ function PendingDeposits() {
       const matchPaymentMode = !appliedFilters.paymentMode || (row.paymentMode || '').toLowerCase().includes(appliedFilters.paymentMode.toLowerCase());
       const matchUtr = !appliedFilters.utrNumber || (row.utrNumber || '').toLowerCase().includes(appliedFilters.utrNumber.toLowerCase());
       const matchStatus = !appliedFilters.status || row.status === appliedFilters.status;
-      
+
       let matchStartDate = true;
       let matchEndDate = true;
       if (appliedFilters.startDate && row.depositDate) {
-         matchStartDate = new Date(row.depositDate) >= new Date(appliedFilters.startDate);
+        matchStartDate = new Date(row.depositDate) >= new Date(appliedFilters.startDate);
       }
       if (appliedFilters.endDate && row.depositDate) {
-         matchEndDate = new Date(row.depositDate) <= new Date(appliedFilters.endDate);
+        matchEndDate = new Date(row.depositDate) <= new Date(appliedFilters.endDate);
       }
 
       return matchMemberId && matchMemberName && matchTransactionId && matchPaymentMode && matchUtr && matchStatus && matchStartDate && matchEndDate;
@@ -82,7 +92,7 @@ function PendingDeposits() {
       <h2 className="section-title tds-screen-title">Pending Deposits</h2>
 
       <section className="panel tds-panel">
-        
+
 
         <div className="tds-filter-row">
           <input type="date" name="startDate" className="text-input tds-filter-input" placeholder="Start Date" value={filters.startDate} onChange={handleFilterChange} />
