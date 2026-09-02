@@ -24,14 +24,16 @@ function AdminLogin() {
 
 			localStorage.setItem('token', data.token);
 			
-			// Fetch the full profile to get adminType and permissions
+			// Fetch the full profile to get adminType and permissions.
+			// Keep the login payload role as the source of truth because the profile payload
+			// does not always include the role field returned by the auth API.
 			try {
 				const profileData = await getProfile();
-				if (profileData && profileData.data) {
-					localStorage.setItem('user', JSON.stringify(profileData.data));
-				} else {
-					localStorage.setItem('user', JSON.stringify(data.user));
-				}
+				const mergedUser = {
+					...(profileData?.data || {}),
+					...(data?.user || {}),
+				};
+				localStorage.setItem('user', JSON.stringify(mergedUser));
 			} catch (err) {
 				localStorage.setItem('user', JSON.stringify(data.user));
 			}
