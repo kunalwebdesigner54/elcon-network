@@ -16,8 +16,13 @@ function AdminLogin() {
 
 		try {
 			const data = await loginUser({ email, password });
+			const isAdminUser = data?.user?.role === 'admin'
+				|| data?.user?.role === 'SUPER_ADMIN'
+				|| data?.user?.role === 'SUB_ADMIN'
+				|| data?.user?.adminType === 'SUPER_ADMIN'
+				|| data?.user?.adminType === 'SUB_ADMIN';
 
-			if (data?.user?.role !== 'admin') {
+			if (!isAdminUser) {
 				setError('Not an admin account');
 				return;
 			}
@@ -31,6 +36,7 @@ function AdminLogin() {
 				const profileData = await getProfile();
 				const mergedUser = {
 					...(profileData?.data || {}),
+					...(profileData?.user || {}),
 					...(data?.user || {}),
 				};
 				localStorage.setItem('user', JSON.stringify(mergedUser));

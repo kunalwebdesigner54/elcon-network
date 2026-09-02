@@ -39,8 +39,13 @@ function AdminLogin() {
 			// Note: The backend will verify if this user has the 'admin' role.
 
 			const data = await loginUser({ email, password });
+			const isAdminUser = data?.user?.role === 'admin'
+				|| data?.user?.role === 'SUPER_ADMIN'
+				|| data?.user?.role === 'SUB_ADMIN'
+				|| data?.user?.adminType === 'SUPER_ADMIN'
+				|| data?.user?.adminType === 'SUB_ADMIN';
 
-			if (data?.user?.role !== 'admin') {
+			if (!isAdminUser) {
 				setError('Not an admin account');
 				setLoading(false);
 				return;

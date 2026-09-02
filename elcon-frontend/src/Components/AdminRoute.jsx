@@ -15,7 +15,11 @@ function AdminRoute({ children }) {
 			return;
 		}
 
-		const hasAdminRole = user?.role === 'admin' || user?.adminType === 'SUPER_ADMIN' || user?.adminType === 'SUB_ADMIN';
+		const hasAdminRole = user?.role === 'admin'
+			|| user?.role === 'SUPER_ADMIN'
+			|| user?.role === 'SUB_ADMIN'
+			|| user?.adminType === 'SUPER_ADMIN'
+			|| user?.adminType === 'SUB_ADMIN';
 
 		if (hasAdminRole) {
 			setIsAuthorized(true);
