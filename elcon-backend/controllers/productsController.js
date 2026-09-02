@@ -414,6 +414,9 @@ exports.clearCart = async (req, res) => {
 };
 
 exports.checkoutCart = async (req, res) => {
+  let walletDebitAmount = 0;
+  let walletDebitApplied = false;
+
   try {
     const user = await User.findById(req.user.id).select('+transactionPassword');
     const cart = await Cart.findOne({ userId: req.user.id });
@@ -518,17 +521,36 @@ exports.checkoutCart = async (req, res) => {
 
     let appliedDiscount = availableCouponBalance - remainingCoupon;
 
-    const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+    const totalPrice = cart.items.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0);
     const shippingCharge = Number(req.body.shippingCharge || 0);
     const finalTotal = totalPrice + shippingCharge - appliedDiscount;
 
-    if (appliedDiscount > 0) {
-      user.couponWalletBalance = remainingCoupon;
-      user.discountCouponBalance = 0;
+    if (finalTotal < 0) {
+      return res.status(400).json({ success: false, message: 'Order total cannot be negative' });
     }
 
+    walletDebitAmount = paymentMode === 'E-Wallet' ? finalTotal : 0;
+    let updatedUser = user;
+    if (walletDebitAmount > 0 || appliedDiscount > 0) {
+      const balanceFilter = walletDebitAmount > 0
+        ? { _id: user._id, walletBalance: { $gte: walletDebitAmount } }
+        : { _id: user._id };
+      const balanceUpdate = {
+        ...(walletDebitAmount > 0 ? { $inc: { walletBalance: -walletDebitAmount } } : {}),
+        ...(appliedDiscount > 0 ? { $set: { couponWalletBalance: remainingCoupon, discountCouponBalance: 0 } } : {}),
+      };
+      updatedUser = await User.findOneAndUpdate(balanceFilter, balanceUpdate, { new: true });
+    }
+
+    if (!updatedUser) {
+      return res.status(400).json({ success: false, message: 'Insufficient E-Wallet balance' });
+    }
+
+    walletDebitApplied = walletDebitAmount > 0;
+    user.walletBalance = updatedUser.walletBalance;
     if (appliedDiscount > 0) {
-      await user.save();
+      user.couponWalletBalance = updatedUser.couponWalletBalance;
+      user.discountCouponBalance = updatedUser.discountCouponBalance;
     }
 
     const order = await Order.create({
@@ -559,6 +581,9 @@ exports.checkoutCart = async (req, res) => {
 
     res.status(201).json({ success: true, order });
   } catch (error) {
+    if (walletDebitApplied && walletDebitAmount > 0) {
+      await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: walletDebitAmount } });
+    }
     res.status(500).json({ success: false, message: error.message });
   }
 };

@@ -64,7 +64,7 @@ const CompletePayment = () => {
         // If backend exposes wallet balances, map them here.
         // Common field names may be `eWallet` or `wallet`.
         setPaymentBalances({
-          eWallet: data.eWallet ?? data.eWalletBalance ?? data.wallet ?? '',
+          eWallet: data.walletBalance ?? data.eWallet ?? data.eWalletBalance ?? data.wallet ?? '',
         });
       } catch (err) {
         // ignore - keep balances empty
@@ -245,4 +245,3 @@ const CompletePayment = () => {
 };
 
 export default CompletePayment;
-
