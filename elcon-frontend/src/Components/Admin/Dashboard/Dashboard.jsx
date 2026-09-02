@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './Dashboard.css';
 import { getAdminFullDashboard } from '../../../api/dashboardService';
 import { getUser } from '../../../utils/auth';
+import { getProfile } from '../../../api/authService';
 import dashboard1 from '../../../Assets/Pictures/dashbaord1.jpeg';
 import dashboard2 from '../../../Assets/Pictures/dashbaord2.jpeg';
 import dashboard3 from '../../../Assets/Pictures/dashbaord3.jpeg';
@@ -53,8 +54,8 @@ function Dashboard() {
 	const [activeSlide, setActiveSlide] = useState(0);
 	const [stats, setStats] = useState(defaultAdminStats);
 	const user = getUser() || {};
-	const adminName = user.name || (user.adminType === 'SUB_ADMIN' ? 'Sub Administrator' : 'Administrator');
-	const adminUserId = user.memberId || user.id || user._id || 'N/A';
+	const [adminName, setAdminName] = useState(user.name || (user.adminType === 'SUB_ADMIN' ? 'Sub Administrator' : 'Administrator'));
+	const [adminUserId, setAdminUserId] = useState(user.memberId || user.id || user._id || 'N/A');
 
 	useEffect(() => {
 		const timer = window.setInterval(() => {
@@ -62,6 +63,21 @@ function Dashboard() {
 		}, 3500);
 
 		return () => window.clearInterval(timer);
+	}, []);
+
+	useEffect(() => {
+		let mounted = true;
+		getProfile()
+			.then((response) => {
+				if (!mounted || !response?.success || !response.data) return;
+				setAdminName(response.data.name || (response.data.adminType === 'SUB_ADMIN' ? 'Sub Administrator' : 'Administrator'));
+				setAdminUserId(response.data.memberId || response.data._id || 'N/A');
+			})
+			.catch(() => { });
+
+		return () => {
+			mounted = false;
+		};
 	}, []);
 
 	useEffect(() => {
@@ -91,7 +107,7 @@ function Dashboard() {
 	return (
 		<div className="admin-dashboard-shell">
 			<div className="admin-dashboard-root">
-				
+
 
 				<section className="admin-dashboard-carousel-card" aria-label="Dashboard banner carousel">
 					<div className="admin-dashboard-carousel-stage">
@@ -131,12 +147,12 @@ function Dashboard() {
 				</section>
 
 				<section className="admin-dashboard-stats-grid" aria-label="Admin dashboard metrics">
-				{stats.map((stat) => (
-  <article className="admin-dashboard-stat-card" key={stat.label}>
-    <div className="admin-dashboard-stat-label">{stat.label}</div>
-    <div className="admin-dashboard-stat-value">{stat.value}</div>
-  </article>
-))}
+					{stats.map((stat) => (
+						<article className="admin-dashboard-stat-card" key={stat.label}>
+							<div className="admin-dashboard-stat-label">{stat.label}</div>
+							<div className="admin-dashboard-stat-value">{stat.value}</div>
+						</article>
+					))}
 				</section>
 
 				<div className="admin-dashboard-bottom-band" />

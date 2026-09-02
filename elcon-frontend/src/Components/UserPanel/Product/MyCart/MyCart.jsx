@@ -7,7 +7,7 @@ import { resolveProductImage } from '../productImages';
 
 const DeleteIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V4a1 1 0 011-1h6a1 1 0 011 1v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V4a1 1 0 011-1h6a1 1 0 011 1v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
@@ -19,27 +19,27 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => (
         <DeleteIcon />
       </button>
     </div>
-    
+
     <div className="mc-divider"></div>
 
     <div className="mc-item-body">
       <div className="mc-item-image">
         <img src={resolveProductImage(item)} alt="product" />
       </div>
-      
+
       <div className="mc-item-price-section">
         <div className="mc-price">₹ {item.price} x</div>
-        
+
         <div className="mc-qty-vertical">
           <button className="qty-btn-v" onClick={() => onQuantityChange(item, item.quantity + 1)}>+</button>
           <span className="qty-val-v">{item.quantity}</span>
           <button className="qty-btn-v" onClick={() => onQuantityChange(item, Math.max(1, item.quantity - 1))}>-</button>
         </div>
-        
+
         <div className="mc-total">= {(item.price * item.quantity).toFixed(2)}</div>
       </div>
     </div>
-    
+
     <div className="mc-divider"></div>
 
     <div className="mc-item-footer">
@@ -50,7 +50,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => (
   </div>
 )
 
-export default function MyCart(){
+export default function MyCart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +64,8 @@ export default function MyCart(){
     try {
       const response = await getCart();
       setCartItems(response.cart?.items || []);
-      setCouponWalletBalance(response.couponWalletBalance || 0);
+      const cartCouponBalance = Number(response.couponWalletBalance || 0);
+      setCouponWalletBalance(cartCouponBalance);
     } catch (error) {
       setCartItems([]);
     } finally {
@@ -83,6 +84,7 @@ export default function MyCart(){
       if (response?.success && response.data) {
         setDeliveryAddress(response.data);
         setWalletBalance(response.data.walletBalance || 0);
+        setCouponWalletBalance((currentBalance) => Math.max(currentBalance, Number(response.data.couponWalletBalance || 0)));
       }
     } catch (err) {
       // Address will show fallback text
@@ -94,10 +96,10 @@ export default function MyCart(){
     const bvPoint = cartItems.reduce((sum, item) => sum + Number(item.bvPoint || 0) * Number(item.quantity || 0), 0);
     const totalItemDiscount = cartItems.reduce((sum, item) => sum + (Number(item.discount || 0) * Number(item.quantity || 0)), 0);
     const appliedDiscount = Math.min(totalItemDiscount, couponWalletBalance);
-    
+
     setSummary({ subtotal, bvPoint, appliedDiscount });
   }, [cartItems, couponWalletBalance]);
-  
+
   const handleOrderNow = () => {
     navigate('/user/payment/complete-payment', {
       state: {
@@ -124,7 +126,7 @@ export default function MyCart(){
 
   return (
     <div className="mycart-page container">
-     
+
       <div className="mc-top-row">
         <h3 className="mc-header">My Cart</h3>
         <button className="mc-clear" onClick={handleClearCart}>X Clear Cart</button>
@@ -166,7 +168,7 @@ export default function MyCart(){
         <div className="mc-row"><span>Shipping Charge</span><strong>₹ 0.00</strong></div>
         <div className="mc-row coupon"><span>Coupon Discount</span><strong>- ₹ {(summary.appliedDiscount || 0).toFixed(2)}</strong></div>
         <div className="mc-total-row"><span>Total Amount</span><strong>₹ {(summary.subtotal - (summary.appliedDiscount || 0)).toFixed(2)}</strong></div>
-        
+
         <div className="mc-row mc-address-bv" style={{ borderTop: '1px solid var(--glass-border)', marginTop: '8px', paddingTop: '12px', paddingBottom: '0' }}>
           <span>Total B.V Point =</span>
           <strong>{summary.bvPoint}</strong>
@@ -187,7 +189,7 @@ export default function MyCart(){
 
         <div className="mc-actions">
           <button className="btn-order" onClick={handleOrderNow}>Order Now</button>
-         
+
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ const User = require('../models/User');
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -41,6 +41,7 @@ exports.getProfile = async (req, res) => {
         joiningLevel: user.joiningLevel,
         unlockLevel: user.unlockLevel,
         walletBalance: user.walletBalance,
+        couponWalletBalance: Number(user.couponWalletBalance || 0) + Number(user.discountCouponBalance || 0),
         kycStatus: user.kycStatus,
         kycDetails: user.kycDetails,
         kycSubmittedAt: user.kycSubmittedAt,
@@ -75,12 +76,12 @@ exports.updateProfile = async (req, res) => {
     }
 
     // ========== STRICT DUPLICATE VALIDATION ==========
-    
+
     // Check if new mobile number already exists for another user
     if (contactNo && contactNo !== currentUser.contactNo) {
-      const mobileExists = await User.findOne({ 
+      const mobileExists = await User.findOne({
         contactNo,
-        _id: { $ne: req.user.id } 
+        _id: { $ne: req.user.id }
       });
       if (mobileExists) {
         return res.status(409).json({
@@ -93,9 +94,9 @@ exports.updateProfile = async (req, res) => {
 
     // Check if new Aadhaar number already exists for another user
     if (aadharNo && aadharNo !== currentUser.aadharNo) {
-      const aadharExists = await User.findOne({ 
+      const aadharExists = await User.findOne({
         aadharNo,
-        _id: { $ne: req.user.id } 
+        _id: { $ne: req.user.id }
       });
       if (aadharExists) {
         return res.status(409).json({
@@ -137,7 +138,7 @@ exports.updateProfile = async (req, res) => {
         contactNo: 'Mobile number already registered to another user',
         aadharNo: 'Aadhaar number already used by another user',
       };
-      
+
       return res.status(409).json({
         success: false,
         message: fieldMessages[field] || `${field} already exists`,
@@ -169,12 +170,12 @@ exports.updateBankDetails = async (req, res) => {
     }
 
     // ========== STRICT DUPLICATE VALIDATION ==========
-    
+
     // Check if new PAN number already exists for another user
     if (panNo && panNo !== currentUser.panNo) {
-      const panExists = await User.findOne({ 
+      const panExists = await User.findOne({
         panNo,
-        _id: { $ne: req.user.id } 
+        _id: { $ne: req.user.id }
       });
       if (panExists) {
         return res.status(409).json({
@@ -215,7 +216,7 @@ exports.updateBankDetails = async (req, res) => {
       const fieldMessages = {
         panNo: 'PAN card already registered to another user',
       };
-      
+
       return res.status(409).json({
         success: false,
         message: fieldMessages[field] || `${field} already exists`,
