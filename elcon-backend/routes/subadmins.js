@@ -3,7 +3,8 @@ const router = express.Router();
 const {
   createSubAdmin,
   getSubAdmins,
-  updateSubAdmin
+  updateSubAdmin,
+  deleteSubAdmin
 } = require('../controllers/subAdminController');
 const { protect, admin } = require('../middleware/auth');
 const authorizePermission = require('../middleware/authorizePermission');
@@ -18,6 +19,7 @@ router.route('/')
   .get(protect, admin, authorizePermission('manage_subadmins'), getSubAdmins);
 
 router.route('/:id')
-  .put(protect, admin, authorizePermission('manage_subadmins'), updateSubAdmin);
+  .put(protect, admin, authorizePermission('manage_subadmins'), updateSubAdmin)
+  .delete(protect, admin, authorizePermission('manage_subadmins'), deleteSubAdmin);
 
 module.exports = router;

@@ -91,3 +91,26 @@ exports.updateSubAdmin = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
+
+// @desc    Delete sub-admin
+// @route   DELETE /api/subadmins/:id
+// @access  Private/SuperAdmin
+exports.deleteSubAdmin = async (req, res) => {
+  try {
+    const subAdmin = await User.findOne({ _id: req.params.id, role: 'admin', adminType: 'SUB_ADMIN' });
+
+    if (!subAdmin) {
+      return res.status(404).json({ message: 'Sub-admin not found' });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      message: 'Sub-admin deleted successfully',
+      _id: subAdmin._id
+    });
+  } catch (error) {
+    console.error('Error deleting sub-admin:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
