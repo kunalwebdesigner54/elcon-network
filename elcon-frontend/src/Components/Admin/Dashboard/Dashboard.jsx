@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './Dashboard.css';
 import { getAdminFullDashboard } from '../../../api/dashboardService';
+import { getUser } from '../../../utils/auth';
 import dashboard1 from '../../../Assets/Pictures/dashbaord1.jpeg';
 import dashboard2 from '../../../Assets/Pictures/dashbaord2.jpeg';
 import dashboard3 from '../../../Assets/Pictures/dashbaord3.jpeg';
@@ -51,6 +52,9 @@ const defaultAdminStats = [
 function Dashboard() {
 	const [activeSlide, setActiveSlide] = useState(0);
 	const [stats, setStats] = useState(defaultAdminStats);
+	const user = getUser() || {};
+	const adminName = user.name || (user.adminType === 'SUB_ADMIN' ? 'Sub Administrator' : 'Administrator');
+	const adminUserId = user.memberId || user.id || user._id || 'N/A';
 
 	useEffect(() => {
 		const timer = window.setInterval(() => {
@@ -121,7 +125,9 @@ function Dashboard() {
 
 				<section className="admin-dashboard-profile-header">
 					<h1 className="admin-dashboard-profile-title">ELCON NETWORK</h1>
-					<p className="admin-dashboard-profile-meta">Last Login Date : 23.06.2021 12:30:37PM | Admin Login</p>
+					<p className="admin-dashboard-profile-meta">
+						Admin: {adminName} | Admin User ID: {adminUserId}
+					</p>
 				</section>
 
 				<section className="admin-dashboard-stats-grid" aria-label="Admin dashboard metrics">

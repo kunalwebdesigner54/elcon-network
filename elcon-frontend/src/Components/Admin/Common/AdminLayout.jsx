@@ -201,6 +201,8 @@ function AdminLayout() {
       return {};
     }
   }, []);
+  const adminName = user.name || (user.adminType === 'SUB_ADMIN' ? 'Sub Administrator' : 'Administrator');
+  const adminUserId = user.memberId || user.id || user._id || 'N/A';
 
   const filteredMenuItems = useMemo(() => {
     if (user.adminType === 'SUB_ADMIN') {
@@ -261,7 +263,10 @@ function AdminLayout() {
         <div className="sidebar-user">
           <div className="sidebar-user-meta">
             <div className="sidebar-avatar">👤</div>
-            <span>Administrator</span>
+            <div className="sidebar-user-details">
+              <span className="sidebar-user-name">{adminName}</span>
+              <span className="sidebar-user-id">ID: {adminUserId}</span>
+            </div>
           </div>
           <button
             type="button"
