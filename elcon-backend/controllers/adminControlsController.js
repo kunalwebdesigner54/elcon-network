@@ -29,12 +29,17 @@ exports.manageDiscountCoupon = async (req, res) => {
       }
       
       if (action === 'add') {
-        user.couponWalletBalance = (user.couponWalletBalance || 0) + parsedAmount;
+        user.couponWalletBalance =
+          (user.couponWalletBalance || 0) + (user.discountCouponBalance || 0) + parsedAmount;
+        user.discountCouponBalance = 0;
       } else {
-        if ((user.couponWalletBalance || 0) < parsedAmount) {
+        const availableBalance =
+          (user.couponWalletBalance || 0) + (user.discountCouponBalance || 0);
+        if (availableBalance < parsedAmount) {
           return res.status(400).json({ success: false, message: 'Insufficient discount coupon balance' });
         }
-        user.couponWalletBalance -= parsedAmount;
+        user.couponWalletBalance = availableBalance - parsedAmount;
+        user.discountCouponBalance = 0;
       }
       await user.save();
       return res.json({ success: true, message: `Discount coupon balance updated for ${user.memberId}` });
@@ -42,21 +47,32 @@ exports.manageDiscountCoupon = async (req, res) => {
     
     if (target === 'bulk') {
       // Find all active users
-      const users = await User.find({ role: 'user', accountStatus: 'ACTIVE', isBlocked: false });
+      const users = await User.find({ role: 'user', accountStatus: 'ACTIVE', isBlocked: { $ne: true } });
       
       if (action === 'add') {
-        await User.updateMany(
-          { role: 'user', accountStatus: 'ACTIVE', isBlocked: false },
-          { $inc: { couponWalletBalance: parsedAmount } }
-        );
+        const bulkOps = users.map((user) => ({
+          updateOne: {
+            filter: { _id: user._id },
+            update: {
+              $set: { discountCouponBalance: 0 },
+              $inc: {
+                couponWalletBalance: parsedAmount + (user.discountCouponBalance || 0),
+              },
+            },
+          },
+        }));
+        if (bulkOps.length > 0) {
+          await User.bulkWrite(bulkOps);
+        }
       } else {
         const bulkOps = users.map(u => {
-          let newBalance = (u.couponWalletBalance || 0) - parsedAmount;
+          let newBalance =
+            (u.couponWalletBalance || 0) + (u.discountCouponBalance || 0) - parsedAmount;
           if (newBalance < 0) newBalance = 0;
           return {
             updateOne: {
               filter: { _id: u._id },
-              update: { couponWalletBalance: newBalance }
+              update: { couponWalletBalance: newBalance, discountCouponBalance: 0 }
             }
           };
         });

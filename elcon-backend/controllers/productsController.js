@@ -294,11 +294,19 @@ exports.getCart = async (req, res) => {
     const cart = await Cart.findOne({ userId: req.user.id });
     const User = require('../models/User');
     const user = await User.findById(req.user.id);
+    const legacyCouponBalance = Number(user?.discountCouponBalance || 0);
+    const couponWalletBalance = Number(user?.couponWalletBalance || 0) + legacyCouponBalance;
+
+    if (user && legacyCouponBalance > 0) {
+      user.couponWalletBalance = couponWalletBalance;
+      user.discountCouponBalance = 0;
+      await user.save();
+    }
 
     res.status(200).json({
       success: true,
       cart: cart || { items: [], userId: req.user.id },
-      couponWalletBalance: user?.couponWalletBalance || 0,
+      couponWalletBalance,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -470,7 +478,9 @@ exports.checkoutCart = async (req, res) => {
     let totalReserveAmount = 0;
     let calculatedDiscount = 0;
 
-    let remainingCoupon = user.couponWalletBalance || 0;
+    const availableCouponBalance =
+      Number(user.couponWalletBalance || 0) + Number(user.discountCouponBalance || 0);
+    let remainingCoupon = availableCouponBalance;
     const finalOrderItems = [];
 
     for (const item of cart.items) {
@@ -504,14 +514,15 @@ exports.checkoutCart = async (req, res) => {
       });
     }
 
-    let appliedDiscount = (user.couponWalletBalance || 0) - remainingCoupon;
+    let appliedDiscount = availableCouponBalance - remainingCoupon;
 
     const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
     const shippingCharge = Number(req.body.shippingCharge || 0);
     const finalTotal = totalPrice + shippingCharge - appliedDiscount;
 
     if (appliedDiscount > 0) {
-      user.couponWalletBalance -= appliedDiscount;
+      user.couponWalletBalance = remainingCoupon;
+      user.discountCouponBalance = 0;
     }
 
     if (appliedDiscount > 0) {
