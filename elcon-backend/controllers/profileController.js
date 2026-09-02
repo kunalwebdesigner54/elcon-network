@@ -45,6 +45,9 @@ exports.getProfile = async (req, res) => {
         kycDetails: user.kycDetails,
         kycSubmittedAt: user.kycSubmittedAt,
         nomineeDetails: user.nomineeDetails,
+        role: user.role,
+        adminType: user.adminType,
+        permissions: user.permissions,
       },
     });
   } catch (error) {

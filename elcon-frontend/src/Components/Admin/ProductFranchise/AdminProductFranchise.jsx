@@ -29,8 +29,8 @@ function AdminProductFranchise() {
         adminGetProductStocks()
       ]);
 
-      if (franchiseRes.success) setFranchises(franchiseRes.data || []);
-      if (productsRes.success) setProducts(productsRes.data || []);
+      if (franchiseRes.success) setFranchises(franchiseRes.franchises || []);
+      if (productsRes.success) setProducts(productsRes.products || []);
       if (stocksRes.success) setStocks(stocksRes.stocks || []);
     } catch (error) {
       Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load data.' });
@@ -75,7 +75,7 @@ function AdminProductFranchise() {
             <select name="franchiseId" value={formData.franchiseId} onChange={handleInputChange} required>
               <option value="">Select Franchise</option>
               {(Array.isArray(franchises) ? franchises : []).map(f => (
-                <option key={f?._id || Math.random()} value={f?.franchiseId}>{f?.franchiseName} ({f?.franchiseId})</option>
+                <option key={f?._id || Math.random()} value={f?.franchiseId}>{f?.name || f?.franchiseName} ({f?.franchiseId})</option>
               ))}
             </select>
           </div>
