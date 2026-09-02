@@ -29,12 +29,12 @@ exports.manageDiscountCoupon = async (req, res) => {
       }
       
       if (action === 'add') {
-        user.discountCouponBalance = (user.discountCouponBalance || 0) + parsedAmount;
+        user.couponWalletBalance = (user.couponWalletBalance || 0) + parsedAmount;
       } else {
-        if ((user.discountCouponBalance || 0) < parsedAmount) {
+        if ((user.couponWalletBalance || 0) < parsedAmount) {
           return res.status(400).json({ success: false, message: 'Insufficient discount coupon balance' });
         }
-        user.discountCouponBalance -= parsedAmount;
+        user.couponWalletBalance -= parsedAmount;
       }
       await user.save();
       return res.json({ success: true, message: `Discount coupon balance updated for ${user.memberId}` });
@@ -47,16 +47,16 @@ exports.manageDiscountCoupon = async (req, res) => {
       if (action === 'add') {
         await User.updateMany(
           { role: 'user', accountStatus: 'ACTIVE', isBlocked: false },
-          { $inc: { discountCouponBalance: parsedAmount } }
+          { $inc: { couponWalletBalance: parsedAmount } }
         );
       } else {
         const bulkOps = users.map(u => {
-          let newBalance = (u.discountCouponBalance || 0) - parsedAmount;
+          let newBalance = (u.couponWalletBalance || 0) - parsedAmount;
           if (newBalance < 0) newBalance = 0;
           return {
             updateOne: {
               filter: { _id: u._id },
-              update: { discountCouponBalance: newBalance }
+              update: { couponWalletBalance: newBalance }
             }
           };
         });
