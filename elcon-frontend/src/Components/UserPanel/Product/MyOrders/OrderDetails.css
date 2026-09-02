@@ -5,8 +5,10 @@
 }
 
 .order-details-shell {
-  max-width: 1180px;
+  width: min(100%, 1180px);
   margin: 0 auto;
+  padding: 0 12px;
+  box-sizing: border-box;
 }
 
 .order-details-toolbar {
@@ -185,12 +187,17 @@
     padding-bottom: 10px;
   }
 
+  .order-details-shell {
+    padding: 0 10px;
+  }
+
   .order-details-toolbar {
     gap: 12px;
   }
 
   .order-details-title {
     font-size: 22px;
+    width: 100%;
   }
 
   .order-details-print-btn {
@@ -203,29 +210,15 @@
     font-size: 14px;
   }
 
-  /* Keep table as grid on mobile? No – we enable horizontal scroll */
   .order-details-table-wrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .order-details-items-table {
-    min-width: 550px;
+    min-width: 500px;
   }
 
-  .order-details-items-table thead {
-    display: table-header-group; /* keep visible */
-  }
-
-  .order-details-items-table td {
-    display: table-cell; /* keep normal cells */
-  }
-
-  .order-details-items-table td::before {
-    display: none; /* remove pseudo-element */
-  }
-
-  /* For very small devices, ensure readability */
   .order-details-item-product {
     flex-wrap: wrap;
     gap: 8px;
@@ -255,7 +248,13 @@
   }
 
   .order-details-info-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
     padding: 9px 12px;
+  }
+
+  .order-details-info-value {
+    text-align: left;
   }
 
   .order-details-items-table td {
@@ -268,7 +267,7 @@
   }
 
   .order-details-items-table {
-    min-width: 480px;
+    min-width: 440px;
   }
 }
 

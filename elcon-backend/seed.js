@@ -13,34 +13,52 @@ const productSeedData = require('./data/productSeedData');
  */
 const seedAdmin = async () => {
   try {
-    // Check if admin already exists
-    const adminExists = await User.findOne({ email: 'admin@gmail.com' });
+    const adminEmail = 'admin@gmail.com';
+    const defaultPassword = 'admin123';
 
-    if (adminExists) {
-      // Ensure admin always has max unlock level so they can receive any donation
-      if ((adminExists.unlockLevel || 0) < 10) {
-        await User.findByIdAndUpdate(adminExists._id, { unlockLevel: 10 });
-        console.log('✓ Admin unlockLevel updated to 10');
-      } else {
-        console.log('✓ Admin user already exists');
-      }
+    let adminExists = await User.findOne({ email: adminEmail });
+
+    if (!adminExists) {
+      adminExists = await User.create({
+        name: 'Admin',
+        email: adminEmail,
+        password: defaultPassword,
+        role: 'admin',
+        adminType: 'SUPER_ADMIN',
+        unlockLevel: 10,
+      });
+
+      console.log('✓ Admin user seeded successfully');
+      console.log(`  Email: ${adminExists.email}`);
+      console.log(`  Role: ${adminExists.role}`);
+      console.log(`  unlockLevel: ${adminExists.unlockLevel}`);
       return adminExists;
     }
 
-    // Create admin user with max unlock level so they receive skipped donations
-    const admin = await User.create({
-      name: 'Admin',
-      email: 'admin@gmail.com',
-      password: 'admin123',
-      role: 'admin',
-      unlockLevel: 10,
-    });
+    const needsRepair = adminExists.role !== 'admin' || adminExists.adminType !== 'SUPER_ADMIN';
 
-    console.log('✓ Admin user seeded successfully');
-    console.log(`  Email: ${admin.email}`);
-    console.log(`  Role: ${admin.role}`);
-    console.log(`  unlockLevel: ${admin.unlockLevel}`);
-    return admin;
+    if (needsRepair) {
+      adminExists.role = 'admin';
+      adminExists.adminType = 'SUPER_ADMIN';
+      adminExists.unlockLevel = Math.max(adminExists.unlockLevel || 0, 10);
+      await adminExists.save();
+      console.log('✓ Admin account repaired for login access');
+    }
+
+    if ((adminExists.unlockLevel || 0) < 10) {
+      adminExists.unlockLevel = 10;
+      await adminExists.save();
+      console.log('✓ Admin unlockLevel updated to 10');
+    }
+
+    if (!adminExists.password || adminExists.password === '') {
+      adminExists.password = defaultPassword;
+      await adminExists.save();
+      console.log('✓ Admin password reset to default value');
+    }
+
+    console.log('✓ Admin user already exists');
+    return adminExists;
   } catch (error) {
     console.error('✗ Error seeding admin user:', error.message);
     throw error;
