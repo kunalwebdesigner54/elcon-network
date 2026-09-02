@@ -297,6 +297,8 @@ exports.getCart = async (req, res) => {
     const legacyCouponBalance = Number(user?.discountCouponBalance || 0);
     const couponWalletBalance = Number(user?.couponWalletBalance || 0) + legacyCouponBalance;
 
+    console.log(`[CART COUPON DEBUG] userId=${req.user.id}, memberId=${user?.memberId}, couponWalletBalance=${user?.couponWalletBalance}, discountCouponBalance=${user?.discountCouponBalance}, combined=${couponWalletBalance}`);
+
     if (user && legacyCouponBalance > 0) {
       user.couponWalletBalance = couponWalletBalance;
       user.discountCouponBalance = 0;

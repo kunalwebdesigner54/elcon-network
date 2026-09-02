@@ -36,6 +36,7 @@ import FranchiseProductSell from './Components/UserPanel/Franchise/FranchiseProd
 import FranchiseSalesReport from './Components/UserPanel/Franchise/FranchiseSalesReport';
 
 import AdminProductFranchise from './Components/Admin/ProductFranchise/AdminProductFranchise';
+import AdminWalletBalance from './Components/Admin/WalletManage/AdminWalletBalance';
 import AdminLogin from './Components/AdminLogin';
 import ProtectedRoute from './Components/ProtectedRoute';
 import AdminRoute from './Components/AdminRoute';
@@ -368,8 +369,8 @@ function App() {
           <Route path="sub-admins/manage" element={<ManageSubAdmins />} />
           <Route path="discount-coupon/manage" element={<ManageDiscountCoupon />} />
 
-          <Route path="wallet-manage/admin-wallet-deposit" element={<AdminBlankPage />} />
-          <Route path="transaction/main-wallet" element={<AdminBlankPage />} />
+          <Route path="wallet-manage/admin-wallet-deposit" element={<AdminWalletBalance />} />
+          <Route path="transaction/main-wallet" element={<AdminWalletBalance />} />
           <Route path="transactions/transaction-history" element={<AdminTransactionHistory />} />
           <Route path="withdrawals/all-request" element={<AllWithdrawalRequest />} />
           <Route path="withdrawals/approved-request" element={<ApproveWithdrawalRequest />} />

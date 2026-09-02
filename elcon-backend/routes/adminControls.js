@@ -9,6 +9,7 @@ router.use(authorize('admin'));
 
 // Manage Discount Coupons
 router.post('/discount-coupon', adminControlsController.manageDiscountCoupon);
+router.post('/wallet-balance', adminControlsController.manageWalletBalance);
 
 // Manage Rank Visibility
 router.put('/rank-visibility', adminControlsController.toggleRankVisibility);

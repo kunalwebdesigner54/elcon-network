@@ -28,21 +28,49 @@ exports.manageDiscountCoupon = async (req, res) => {
         return res.status(404).json({ success: false, message: 'User not found' });
       }
       
+      const currentCouponBalance = Number(user.couponWalletBalance || 0);
+      const legacyBalance = Number(user.discountCouponBalance || 0);
+      const totalAvailable = currentCouponBalance + legacyBalance;
+
       if (action === 'add') {
-        user.couponWalletBalance =
-          (user.couponWalletBalance || 0) + (user.discountCouponBalance || 0) + parsedAmount;
-        user.discountCouponBalance = 0;
+        // Use atomic findOneAndUpdate to bypass pre-save hook issues
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: user._id },
+          {
+            $set: { discountCouponBalance: 0 },
+            $inc: { couponWalletBalance: legacyBalance + parsedAmount }
+          },
+          { new: true }
+        );
+        console.log(`[COUPON] ADD single: memberId=${updatedUser.memberId}, prevTotal=${totalAvailable}, added=${parsedAmount}, newBalance=${updatedUser.couponWalletBalance}`);
+        return res.json({ 
+          success: true, 
+          message: `Discount coupon balance updated for ${updatedUser.memberId}. New balance: ₹${updatedUser.couponWalletBalance}`,
+          newBalance: updatedUser.couponWalletBalance 
+        });
       } else {
-        const availableBalance =
-          (user.couponWalletBalance || 0) + (user.discountCouponBalance || 0);
-        if (availableBalance < parsedAmount) {
+        if (totalAvailable < parsedAmount) {
           return res.status(400).json({ success: false, message: 'Insufficient discount coupon balance' });
         }
-        user.couponWalletBalance = availableBalance - parsedAmount;
-        user.discountCouponBalance = 0;
+        // First consolidate legacy balance, then debit
+        const newBalance = totalAvailable - parsedAmount;
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: user._id },
+          {
+            $set: { 
+              couponWalletBalance: newBalance,
+              discountCouponBalance: 0 
+            }
+          },
+          { new: true }
+        );
+        console.log(`[COUPON] DEBIT single: memberId=${updatedUser.memberId}, prevTotal=${totalAvailable}, debited=${parsedAmount}, newBalance=${updatedUser.couponWalletBalance}`);
+        return res.json({ 
+          success: true, 
+          message: `Discount coupon balance updated for ${updatedUser.memberId}. New balance: ₹${updatedUser.couponWalletBalance}`,
+          newBalance: updatedUser.couponWalletBalance 
+        });
       }
-      await user.save();
-      return res.json({ success: true, message: `Discount coupon balance updated for ${user.memberId}` });
     } 
     
     if (target === 'bulk') {
@@ -72,7 +100,61 @@ exports.manageDiscountCoupon = async (req, res) => {
           return {
             updateOne: {
               filter: { _id: u._id },
-              update: { couponWalletBalance: newBalance, discountCouponBalance: 0 }
+              update: { $set: { couponWalletBalance: newBalance, discountCouponBalance: 0 } }
+            }
+          };
+
+          /**
+           * @desc    Manage member wallet balance
+           * @route   POST /api/admin-controls/wallet-balance
+           * @access  Private/Admin
+           */
+          exports.manageWalletBalance = async (req, res) => {
+            try {
+              const { action, amount, memberId } = req.body;
+              const parsedAmount = Number(amount);
+
+              if (!['add', 'debit'].includes(action)) {
+                return res.status(400).json({ success: false, message: 'Invalid wallet action' });
+              }
+              if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+                return res.status(400).json({ success: false, message: 'Invalid amount' });
+              }
+              if (!memberId) {
+                return res.status(400).json({ success: false, message: 'Member ID is required' });
+              }
+
+              const user = await User.findOne({
+                memberId: memberId.trim().toUpperCase(),
+                role: 'user',
+              }).select('memberId walletBalance');
+
+              if (!user) {
+                return res.status(404).json({ success: false, message: 'Member not found' });
+              }
+
+              const currentBalance = Number(user.walletBalance || 0);
+              if (action === 'debit' && currentBalance < parsedAmount) {
+                return res.status(400).json({ success: false, message: 'Insufficient wallet balance' });
+              }
+
+              const newBalance = action === 'add'
+                ? currentBalance + parsedAmount
+                : currentBalance - parsedAmount;
+              const updatedUser = await User.findOneAndUpdate(
+                { _id: user._id },
+                { $set: { walletBalance: newBalance } },
+                { new: true }
+              ).select('memberId walletBalance');
+
+              return res.json({
+                success: true,
+                message: `Wallet balance updated for ${updatedUser.memberId}`,
+                newBalance: updatedUser.walletBalance,
+              });
+            } catch (error) {
+              console.error('manageWalletBalance error:', error);
+              return res.status(500).json({ success: false, message: 'Server error managing wallet balance' });
             }
           };
         });

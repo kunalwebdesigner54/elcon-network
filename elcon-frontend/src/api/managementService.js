@@ -148,6 +148,11 @@ export const manageDiscountCoupon = async (payload) => {
   return response.data;
 };
 
+export const manageWalletBalance = async (payload) => {
+  const response = await apiClient.post('/admin-controls/wallet-balance', payload);
+  return response.data;
+};
+
 export const toggleRankVisibility = async (payload) => {
   const response = await apiClient.put('/admin-controls/rank-visibility', payload);
   return response.data;

@@ -1,5 +1,21 @@
 const User = require('../models/User');
 
+// Valid permissions for sub-admins
+const VALID_PERMISSIONS = [
+  'manage_users',
+  'manage_deposits',
+  'manage_withdrawals',
+  'manage_products',
+  'manage_orders',
+  'manage_coupons',
+  'manage_epins',
+  'manage_support',
+  'manage_transactions',
+  'manage_news',
+  'manage_settings',
+  'manage_subadmins'
+];
+
 // @desc    Create a new sub-admin
 // @route   POST /api/subadmins
 // @access  Private/SuperAdmin
@@ -7,9 +23,28 @@ exports.createSubAdmin = async (req, res) => {
   try {
     const { name, email, contactNo, password, transactionPassword, permissions } = req.body;
 
+    // Validation
+    if (!name || !email || !contactNo || !password) {
+      return res.status(400).json({ message: 'Name, email, contact number, and password are required' });
+    }
+
+    // Validate permissions
+    if (permissions && Array.isArray(permissions)) {
+      const invalidPermissions = permissions.filter(p => !VALID_PERMISSIONS.includes(p));
+      if (invalidPermissions.length > 0) {
+        return res.status(400).json({
+          message: 'Invalid permissions provided',
+          invalidPermissions
+        });
+      }
+    }
+
+    // Check if user already exists
     const userExists = await User.findOne({ $or: [{ email }, { contactNo }] });
     if (userExists) {
-      return res.status(400).json({ message: 'User with this email or contact number already exists' });
+      return res.status(400).json({
+        message: 'User with this email or contact number already exists'
+      });
     }
 
     const subAdmin = await User.create({
@@ -26,14 +61,29 @@ exports.createSubAdmin = async (req, res) => {
     });
 
     res.status(201).json({
-      _id: subAdmin._id,
-      name: subAdmin.name,
-      email: subAdmin.email,
-      memberId: subAdmin.memberId,
-      permissions: subAdmin.permissions
+      success: true,
+      message: 'Sub-admin created successfully',
+      data: {
+        _id: subAdmin._id,
+        name: subAdmin.name,
+        email: subAdmin.email,
+        contactNo: subAdmin.contactNo,
+        memberId: subAdmin.memberId,
+        permissions: subAdmin.permissions,
+        accountStatus: subAdmin.accountStatus
+      }
     });
   } catch (error) {
     console.error('Error creating sub-admin:', error);
+
+    // Handle MongoDB duplicate key errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        message: `A user with this ${field} already exists`
+      });
+    }
+
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
@@ -46,9 +96,36 @@ exports.getSubAdmins = async (req, res) => {
     const subAdmins = await User.find({ role: 'admin', adminType: 'SUB_ADMIN' })
       .select('-password -transactionPassword -plainPassword -plainTransactionPassword')
       .sort({ createdAt: -1 });
-    res.status(200).json(subAdmins);
+
+    res.status(200).json({
+      success: true,
+      count: subAdmins.length,
+      data: subAdmins
+    });
   } catch (error) {
     console.error('Error fetching sub-admins:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+
+// @desc    Get a single sub-admin by ID
+// @route   GET /api/subadmins/:id
+// @access  Private/SuperAdmin
+exports.getSubAdminById = async (req, res) => {
+  try {
+    const subAdmin = await User.findOne({ _id: req.params.id, role: 'admin', adminType: 'SUB_ADMIN' })
+      .select('-password -transactionPassword -plainPassword -plainTransactionPassword');
+
+    if (!subAdmin) {
+      return res.status(404).json({ message: 'Sub-admin not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: subAdmin
+    });
+  } catch (error) {
+    console.error('Error fetching sub-admin:', error);
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
@@ -66,28 +143,100 @@ exports.updateSubAdmin = async (req, res) => {
       return res.status(404).json({ message: 'Sub-admin not found' });
     }
 
+    // Validate permissions if provided
+    if (permissions && Array.isArray(permissions)) {
+      const invalidPermissions = permissions.filter(p => !VALID_PERMISSIONS.includes(p));
+      if (invalidPermissions.length > 0) {
+        return res.status(400).json({
+          message: 'Invalid permissions provided',
+          invalidPermissions
+        });
+      }
+    }
+
+    // Check for email/contactNo conflicts only if they're being changed
+    if (email && email !== subAdmin.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Email already in use' });
+      }
+    }
+
+    if (contactNo && contactNo !== subAdmin.contactNo) {
+      const existingUser = await User.findOne({ contactNo });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Contact number already in use' });
+      }
+    }
+
+    // Update allowed fields
     if (name) subAdmin.name = name;
     if (email) subAdmin.email = email;
     if (contactNo) subAdmin.contactNo = contactNo;
     if (permissions) subAdmin.permissions = permissions;
     if (accountStatus) subAdmin.accountStatus = accountStatus;
-    
+
     // Only update passwords if provided
-    if (password) subAdmin.password = password;
-    if (transactionPassword) subAdmin.transactionPassword = transactionPassword;
+    if (password) {
+      subAdmin.password = password;
+      // The pre-save hook should handle plainPassword
+    }
+    if (transactionPassword) {
+      subAdmin.transactionPassword = transactionPassword;
+      // The pre-save hook should handle plainTransactionPassword
+    }
 
     await subAdmin.save();
 
     res.status(200).json({
-      _id: subAdmin._id,
-      name: subAdmin.name,
-      email: subAdmin.email,
-      memberId: subAdmin.memberId,
-      permissions: subAdmin.permissions,
-      accountStatus: subAdmin.accountStatus
+      success: true,
+      message: 'Sub-admin updated successfully',
+      data: {
+        _id: subAdmin._id,
+        name: subAdmin.name,
+        email: subAdmin.email,
+        contactNo: subAdmin.contactNo,
+        memberId: subAdmin.memberId,
+        permissions: subAdmin.permissions,
+        accountStatus: subAdmin.accountStatus
+      }
     });
   } catch (error) {
     console.error('Error updating sub-admin:', error);
+
+    // Handle MongoDB duplicate key errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        message: `${field.charAt(0).toUpperCase() + field.slice(1)} already in use`
+      });
+    }
+
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
+
+// @desc    Delete sub-admin
+// @route   DELETE /api/subadmins/:id
+// @access  Private/SuperAdmin
+exports.deleteSubAdmin = async (req, res) => {
+  try {
+    const subAdmin = await User.findOne({ _id: req.params.id, role: 'admin', adminType: 'SUB_ADMIN' });
+
+    if (!subAdmin) {
+      return res.status(404).json({ message: 'Sub-admin not found' });
+    }
+
+    // Delete the sub-admin
+    await User.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Sub-admin deleted successfully',
+      data: {}
+    });
+  } catch (error) {
+    console.error('Error deleting sub-admin:', error);
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
