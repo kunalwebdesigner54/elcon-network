@@ -2,12 +2,10 @@
 
 .admin-dashboard-shell {
 	min-height: 100%;
-	padding: 10px 0 22px;
-	
+	padding: 0;
 }
 
 .admin-dashboard-root {
-
 	margin: 0 auto;
 	background: transparent;
 	border-radius: 0;
@@ -62,6 +60,7 @@
 	object-fit: cover;
 	display: block;
 	transform: scale(1.01);
+	border-radius: 12px;
 }
 
 .admin-dashboard-carousel-nav {

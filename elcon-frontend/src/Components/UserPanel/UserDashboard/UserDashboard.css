@@ -13,7 +13,7 @@
 
 .user-dashboard1-member-dashboard-root {
   margin: 0 auto;
-  padding: 12px 12px 26px;
+  padding: 0 12px 0;
   position: relative;
   z-index: 1;
 }
@@ -22,7 +22,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--gradient-glass);
+  background: transparent;
   pointer-events: none;
   z-index: -1;
 }
@@ -114,6 +114,7 @@
   object-fit: cover;
   display: block;
   background: #000;
+  border-radius: 12px;
   transform: scale(1.01);
 }
 
