@@ -37,7 +37,8 @@
   border: 0;
   border-radius: 0;
   margin: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .user-orders-table {

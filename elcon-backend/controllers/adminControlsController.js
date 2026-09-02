@@ -8,7 +8,22 @@ const bcrypt = require('bcryptjs');
  */
 exports.manageDiscountCoupon = async (req, res) => {
   try {
-    const { action, amount, target, memberId } = req.body;
+    const { action, amount, target, memberId, transactionPassword } = req.body;
+
+    // Verify admin transaction password
+    if (!transactionPassword || !transactionPassword.toString().trim()) {
+      return res.status(400).json({ success: false, message: 'Transaction password is required' });
+    }
+    const adminUser = await User.findById(req.user.id).select('+password +transactionPassword');
+    if (!adminUser) {
+      return res.status(401).json({ success: false, message: 'Admin not found' });
+    }
+    const isPasswordValid = adminUser.transactionPassword
+      ? await adminUser.matchTransactionPassword(transactionPassword.toString().trim())
+      : await adminUser.matchPassword(transactionPassword.toString().trim());
+    if (!isPasswordValid) {
+      return res.status(401).json({ success: false, message: 'Invalid transaction password' });
+    }
 
     if (!['add', 'debit'].includes(action)) {
       return res.status(400).json({ success: false, message: 'Invalid action' });
