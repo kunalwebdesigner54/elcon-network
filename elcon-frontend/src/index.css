@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
 	/* New Premium Dark Fintech Theme */
@@ -47,7 +47,7 @@
 
 * {
 	box-sizing: border-box;
-	font-family: 'League Spartan', sans-serif !important;
+	font-family: 'Poppins', sans-serif !important;
 }
 
 html,
@@ -58,7 +58,7 @@ body,
 
 body {
 	margin: 0;
-	font-family: 'League Spartan', 'Segoe UI', system-ui, -apple-system, sans-serif;
+	font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
 	font-size: 14px;
 	background: #0b192c;
 	color: var(--dark);
@@ -128,7 +128,7 @@ select option {
 	background: var(--primary) !important;
 	color: #fff !important;
 	border: none !important;
-	padding: 12px 24px 8px; /* Adjusted padding to visually center League Spartan */
+	padding: 12px 24px 8px; /* Adjusted padding to visually center Poppins */
 	font-weight: 600;
 	cursor: pointer;
 	text-decoration: none;
@@ -157,7 +157,7 @@ select option {
 	background: #FF9A3C !important;
 	color: #fff !important;
 	border: none !important;
-	padding: 12px 24px 8px; /* Adjusted padding to visually center League Spartan */
+	padding: 12px 24px 8px; /* Adjusted padding to visually center Poppins */
 	font-weight: 600;
 	cursor: pointer;
 	text-decoration: none;
@@ -316,7 +316,7 @@ select option {
 	background-color: var(--bg-darkest);
 	color: var(--text-main);
 	min-height: 100vh;
-	font-family: 'League Spartan', sans-serif;
+	font-family: 'Poppins', sans-serif;
 }
 
 .admin-root *, .user-root * {
@@ -391,7 +391,7 @@ select option {
 	color: #fff !important;
 	border: none !important;
 	border-radius: var(--border-radius-sm) !important;
-	padding: 14px 24px 10px !important; /* Adjusted padding to visually center League Spartan */
+	padding: 14px 24px 10px !important; /* Adjusted padding to visually center Poppins */
 	font-weight: 600 !important;
 	text-transform: uppercase !important;
 	letter-spacing: 1px !important;
@@ -422,7 +422,7 @@ select option {
 	border: 1px solid var(--primary) !important;
 	color: var(--primary) !important;
 	border-radius: var(--border-radius-sm) !important;
-	padding: 10px 16px 6px !important; /* Adjusted padding to visually center League Spartan */
+	padding: 10px 16px 6px !important; /* Adjusted padding to visually center Poppins */
 	font-weight: 500 !important;
 	transition: var(--transition) !important;
 	line-height: 1 !important;

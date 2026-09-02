@@ -141,15 +141,31 @@ function DailyPayoutReport() {
           <div className="pagination" style={{ margin: 0, display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
             <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
             <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button 
-                key={i + 1} 
-                className={`page-btn ${currentPage === i + 1 ? 'active' : ''}`}
-                onClick={() => handlePageChange(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
+            {[...Array(totalPages)].map((_, i) => {
+              const pageNum = i + 1;
+              if (
+                totalPages <= 7 ||
+                pageNum === 1 ||
+                pageNum === totalPages ||
+                Math.abs(currentPage - pageNum) <= 1
+              ) {
+                return (
+                  <button 
+                    key={pageNum} 
+                    className={`page-btn ${currentPage === pageNum ? 'active' : ''}`}
+                    onClick={() => handlePageChange(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              } else if (
+                (pageNum === 2 && currentPage > 3) ||
+                (pageNum === totalPages - 1 && currentPage < totalPages - 2)
+              ) {
+                return <span key={pageNum} style={{color: '#00e5ff', padding: '0 5px'}}>...</span>;
+              }
+              return null;
+            })}
             <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
             <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
           </div>

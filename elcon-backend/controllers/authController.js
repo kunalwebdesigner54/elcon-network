@@ -327,6 +327,8 @@ exports.loginUser = async (req, res) => {
         epin: user.epin,
         acceptedTerms: user.acceptedTerms,
         role: user.role,
+        adminType: user.adminType,
+        permissions: user.permissions,
       },
     });
   } catch (error) {

@@ -11,7 +11,7 @@ import './AdminLogin.css';
  * Hard-coded credentials: admin@gmail.com / admin123
  */
 function AdminLogin() {
-	const [email, setEmail] = useState('admin@gmail.com');
+	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
@@ -36,12 +36,7 @@ function AdminLogin() {
 				return;
 			}
 
-			// Validate that email is admin account
-			if (email !== 'admin@gmail.com') {
-				setError('Only admin account (admin@gmail.com) can login here');
-				setLoading(false);
-				return;
-			}
+			// Note: The backend will verify if this user has the 'admin' role.
 
 			const data = await loginUser({ email, password });
 
@@ -110,10 +105,9 @@ function AdminLogin() {
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								disabled={success}
-								readOnly={true}
 							/>
 							<small className="admin-login-hint">
-								Only admin@gmail.com can access this portal
+								Only authorized administrators can access this portal
 							</small>
 						</div>
 

@@ -71,12 +71,12 @@ export default function BankAccount(){
   };
 
   return (
-    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column', padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 className="buyepin-title" style={{ margin: 0, paddingLeft: 0, borderLeft: 'none' }}>Company Bank Account</h1>
+    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column', padding: '30px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.05)', margin: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+        <h1 className="buyepin-title" style={{ margin: 0, paddingLeft: 0, borderLeft: 'none', color: '#00e5ff', fontSize: '24px', fontWeight: 'bold' }}>Company Bank Account</h1>
       </div>
 
-      <div className="buyepin-single-card" style={{ flexGrow: 1, padding: '36px 32px' }}>
+      <div className="buyepin-single-card" style={{ flexGrow: 1, padding: '20px 0' }}>
         <div className="buyepin-single-flex" style={{ display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
           
           {/* Left Side - QR Code */}
