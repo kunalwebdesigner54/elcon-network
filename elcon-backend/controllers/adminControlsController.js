@@ -104,59 +104,6 @@ exports.manageDiscountCoupon = async (req, res) => {
             }
           };
 
-          /**
-           * @desc    Manage member wallet balance
-           * @route   POST /api/admin-controls/wallet-balance
-           * @access  Private/Admin
-           */
-          exports.manageWalletBalance = async (req, res) => {
-            try {
-              const { action, amount, memberId } = req.body;
-              const parsedAmount = Number(amount);
-
-              if (!['add', 'debit'].includes(action)) {
-                return res.status(400).json({ success: false, message: 'Invalid wallet action' });
-              }
-              if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-                return res.status(400).json({ success: false, message: 'Invalid amount' });
-              }
-              if (!memberId) {
-                return res.status(400).json({ success: false, message: 'Member ID is required' });
-              }
-
-              const user = await User.findOne({
-                memberId: memberId.trim().toUpperCase(),
-                role: 'user',
-              }).select('memberId walletBalance');
-
-              if (!user) {
-                return res.status(404).json({ success: false, message: 'Member not found' });
-              }
-
-              const currentBalance = Number(user.walletBalance || 0);
-              if (action === 'debit' && currentBalance < parsedAmount) {
-                return res.status(400).json({ success: false, message: 'Insufficient wallet balance' });
-              }
-
-              const newBalance = action === 'add'
-                ? currentBalance + parsedAmount
-                : currentBalance - parsedAmount;
-              const updatedUser = await User.findOneAndUpdate(
-                { _id: user._id },
-                { $set: { walletBalance: newBalance } },
-                { new: true }
-              ).select('memberId walletBalance');
-
-              return res.json({
-                success: true,
-                message: `Wallet balance updated for ${updatedUser.memberId}`,
-                newBalance: updatedUser.walletBalance,
-              });
-            } catch (error) {
-              console.error('manageWalletBalance error:', error);
-              return res.status(500).json({ success: false, message: 'Server error managing wallet balance' });
-            }
-          };
         });
         if (bulkOps.length > 0) {
           await User.bulkWrite(bulkOps);
@@ -169,6 +116,60 @@ exports.manageDiscountCoupon = async (req, res) => {
   } catch (error) {
     console.error('manageDiscountCoupon error:', error);
     res.status(500).json({ success: false, message: 'Server error managing discount coupons' });
+  }
+};
+
+/**
+ * @desc    Manage member wallet balance
+ * @route   POST /api/admin-controls/wallet-balance
+ * @access  Private/Admin
+ */
+exports.manageWalletBalance = async (req, res) => {
+  try {
+    const { action, amount, memberId } = req.body;
+    const parsedAmount = Number(amount);
+
+    if (!['add', 'debit'].includes(action)) {
+      return res.status(400).json({ success: false, message: 'Invalid wallet action' });
+    }
+    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+      return res.status(400).json({ success: false, message: 'Invalid amount' });
+    }
+    if (!memberId) {
+      return res.status(400).json({ success: false, message: 'Member ID is required' });
+    }
+
+    const user = await User.findOne({
+      memberId: memberId.trim().toUpperCase(),
+      role: 'user',
+    }).select('memberId walletBalance');
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Member not found' });
+    }
+
+    const currentBalance = Number(user.walletBalance || 0);
+    if (action === 'debit' && currentBalance < parsedAmount) {
+      return res.status(400).json({ success: false, message: 'Insufficient wallet balance' });
+    }
+
+    const newBalance = action === 'add'
+      ? currentBalance + parsedAmount
+      : currentBalance - parsedAmount;
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: user._id },
+      { $set: { walletBalance: newBalance } },
+      { new: true }
+    ).select('memberId walletBalance');
+
+    return res.json({
+      success: true,
+      message: `Wallet balance updated for ${updatedUser.memberId}`,
+      newBalance: updatedUser.walletBalance,
+    });
+  } catch (error) {
+    console.error('manageWalletBalance error:', error);
+    return res.status(500).json({ success: false, message: 'Server error managing wallet balance' });
   }
 };
 
