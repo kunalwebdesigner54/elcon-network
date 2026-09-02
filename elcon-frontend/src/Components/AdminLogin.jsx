@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../api/authService';
+import { loginUser, getProfile } from '../api/authService';
 
 function AdminLogin() {
-	const [email, setEmail] = useState('admin@gmail.com');
+	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -23,7 +23,19 @@ function AdminLogin() {
 			}
 
 			localStorage.setItem('token', data.token);
-			localStorage.setItem('user', JSON.stringify(data.user));
+			
+			// Fetch the full profile to get adminType and permissions
+			try {
+				const profileData = await getProfile();
+				if (profileData && profileData.data) {
+					localStorage.setItem('user', JSON.stringify(profileData.data));
+				} else {
+					localStorage.setItem('user', JSON.stringify(data.user));
+				}
+			} catch (err) {
+				localStorage.setItem('user', JSON.stringify(data.user));
+			}
+			
 			navigate('/dashboard');
 		} catch (requestError) {
 			const message = requestError?.response?.data?.message || 'Invalid admin credentials';
