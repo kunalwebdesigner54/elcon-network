@@ -2,6 +2,10 @@
   padding: 18px 12px;
   margin: 18px auto;
   font-family: Arial, Helvetica, sans-serif;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
 }
 .mc-breadcrumb {
   color: var(--text-muted);
@@ -299,7 +303,9 @@
 /* Responsive */
 @media (max-width: 700px) {
   .mycart-page {
-    padding: 12px;
+    width: 100%;
+    padding: 12px 0;
+    margin: 0;
   }
   .mc-item {
     margin: 8px;
@@ -309,7 +315,7 @@
     height: 48px;
   }
   .mc-box {
-    padding: 8px;
+    padding: 8px 0;
   }
   .mc-address-edit {
     width: 28px;
@@ -321,18 +327,23 @@
   .mc-clear {
     font-size: 14px;
   }
+
+  .mc-wallet-section,
+  .mc-summary {
+    width: 100%;
+  }
 }
 
 /* tighter mobile layout for narrow phones */
 @media (max-width: 480px) {
   .mycart-page {
-    padding: 10px;
+    padding: 10px 0;
   }
   .mc-header {
     font-size: 18px;
   }
   .mc-item {
-    margin: 8px;
+    margin: 8px 6px;
   }
   .mc-item-image {
     margin-right: 12px;
@@ -398,6 +409,19 @@
   .btn-history {
     width: 100%;
   }
+
+  .mc-balance-cards {
+    gap: 8px;
+  }
+
+  .mc-balance-card {
+    min-width: 0;
+    padding: 12px 8px;
+  }
+
+  .mc-balance-title {
+    text-align: center;
+  }
 }
 
 .mc-balance-cards {
@@ -407,7 +431,8 @@
 }
 .mc-balance-card {
   flex: 1;
-  background: var(--bg-card);
+  min-width: 0;
+  background: rgba(18, 26, 47, 0.7);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: 12px;
@@ -416,10 +441,6 @@
   align-items: center;
   justify-content: center;
   box-shadow: var(--glass-shadow);
-}
-.mc-balance-card.mc-coupon-card {
-  background: rgba(0, 204, 102, 0.05);
-  border-color: rgba(0, 204, 102, 0.2);
 }
 .mc-balance-title {
   font-size: 13px;
@@ -433,7 +454,7 @@
   font-weight: bold;
 }
 .mc-coupon-card .mc-balance-amount {
-  color: #00cc66;
+  color: var(--text-main);
 }
 
 .mc-wallet-section {

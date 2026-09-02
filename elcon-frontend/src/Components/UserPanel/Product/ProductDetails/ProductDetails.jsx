@@ -62,10 +62,11 @@ const buildDetails = (product, stockStatus) => {
     { label: 'PRODUCT CODE', value: productCode },
     { label: 'CATEGORY', value: category },
     { label: 'HSN CODE', value: hsnCode },
+    { label: 'GST - %', value: '18' },
     { label: 'M.R.P PRICE', value: `₹ ${mrp} (Inclusive of all taxes)` },
     { label: 'DP PRICE', value: `₹ ${price} (Inclusive of all taxes)` },
     { label: 'DELIVERY CHARGE', value: 'free' },
-    { label: 'LEVEL POINT', value: String(levelPoint) },
+    { label: 'COUPON AMOUNT', value: String(levelPoint) },
     { label: 'B.V POINT', value: String(bvPoint) },
     { label: 'SIZE', value: size },
     { label: 'COLOR', value: color },
@@ -125,8 +126,8 @@ const ProductDetails = () => {
   }, [product]);
 
   const stockStatus = useMemo(() => {
-    return (product?.quantity !== undefined && product?.quantity !== null && product?.quantity !== '') 
-      ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock') 
+    return (product?.quantity !== undefined && product?.quantity !== null && product?.quantity !== '')
+      ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock')
       : (product?.stock === 'Out of Stock' ? 'Out of Stock' : 'In Stock');
   }, [product]);
 
@@ -163,7 +164,7 @@ const ProductDetails = () => {
   return (
     <div className="product-details-page user-product-page">
       <div className="user-panel product-details-shell">
-     
+
         <h2 className="product-details-page-title">Product Details</h2>
 
         <div className="product-details-grid">
@@ -239,8 +240,8 @@ const ProductDetails = () => {
                 {(String(activeTab === 'specification' ? specificationText : featuresText)
                   .split('\n')
                   .filter(Boolean)).map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
+                    <li key={i}>{item}</li>
+                  ))}
               </ul>
             )}
 
@@ -260,9 +261,9 @@ const ProductDetails = () => {
         </section>
 
         <div className="product-details-footer">
-          <button 
-            type="button" 
-            className="product-details-cart-btn" 
+          <button
+            type="button"
+            className="product-details-cart-btn"
             onClick={handleAddToCart}
             disabled={stockStatus === 'Out of Stock'}
             style={{ opacity: stockStatus === 'Out of Stock' ? 0.5 : 1, cursor: stockStatus === 'Out of Stock' ? 'not-allowed' : 'pointer' }}
