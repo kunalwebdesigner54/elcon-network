@@ -4,6 +4,9 @@ const Epin = require('../models/Epin');
 const EpinTransfer = require('../models/EpinTransfer');
 const WalletTransaction = require('../models/WalletTransaction');
 const User = require('../models/User');
+const LevelIncome = require('../models/LevelIncome');
+const RepurchaseIncome = require('../models/RepurchaseIncome');
+const SiteSetting = require('../models/SiteSetting');
 
 const formatDateTime = (value) => new Date(value).toLocaleString('en-IN', {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
@@ -78,6 +81,50 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
       credit: Number(transaction.credit || 0),
       debit: Number(transaction.debit || 0),
       createdAt: transaction.createdAt,
+    });
+  });
+
+  const tdsSetting = await SiteSetting.findOne({ settingKey: 'plan-setting' }).lean();
+  const tdsRate = Number((tdsSetting?.data?.tdsCharge || '5 %').replace('%', '').trim()) / 100 || 0.05;
+
+  const levelIncomes = await LevelIncome.find().sort({ createdAt: -1 });
+  const repurchaseIncomes = await RepurchaseIncome.find().sort({ createdAt: -1 });
+
+  const incomeMap = new Map();
+
+  const addIncomeRow = (record, type) => {
+    const memberId = record.recipientMemberId || record.purchasingMemberId;
+    if (!memberId) return;
+    const dateKey = new Date(record.createdAt).toISOString().split('T')[0];
+    const key = `${memberId}__${dateKey}`;
+    const current = incomeMap.get(key) || {
+      memberId,
+      date: new Date(dateKey),
+      amount: 0,
+      description: type,
+      createdAt: record.createdAt,
+    };
+    current.amount += Number(record.amount || 0);
+    if (record.createdAt > current.createdAt) {
+      current.createdAt = record.createdAt;
+    }
+    incomeMap.set(key, current);
+  };
+
+  levelIncomes.forEach((record) => addIncomeRow(record, 'LEVEL INCOME'));
+  repurchaseIncomes.forEach((record) => addIncomeRow(record, 'REPURCHASE INCOME'));
+
+  incomeMap.forEach((value) => {
+    const tdsDeduction = Number(value.amount) * tdsRate;
+    const netAmount = Number(value.amount) - tdsDeduction;
+    rows.push({
+      dateTime: formatDateTime(value.createdAt),
+      transactionId: `DAILY-${value.memberId}-${value.description.replace(' ', '-')}`,
+      memberId: value.memberId,
+      description: `${value.description} (TDS ${(tdsRate * 100).toFixed(0)}%)`,
+      credit: Number(netAmount.toFixed(2)),
+      debit: 0,
+      createdAt: value.createdAt,
     });
   });
 

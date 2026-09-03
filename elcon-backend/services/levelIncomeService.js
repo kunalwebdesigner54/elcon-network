@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const LevelIncome = require('../models/LevelIncome');
-const { createWalletTransaction } = require('../utils/walletHelper');
 
 /**
  * Distribute Level Income for a newly joined member.
@@ -94,12 +93,6 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
                  { memberId: currentMemberId },
                  { $inc: { walletBalance: INCOME_AMOUNT } }
                );
-
-               await createWalletTransaction({
-                 memberId: currentMemberId,
-                 description: `LEVEL INCOME CREDIT - Level ${payoutSlotLevel}`,
-                 credit: INCOME_AMOUNT,
-               });
              } catch (error) {
               if (error.code !== 11000) {
                 console.error(`Error distributing level income at slot ${payoutSlotLevel}:`, error);
@@ -144,12 +137,6 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
                  { memberId: admin.memberId },
                  { $inc: { walletBalance: INCOME_AMOUNT } }
                );
-
-               await createWalletTransaction({
-                 memberId: admin.memberId,
-                 description: `LEVEL INCOME CREDIT (ADMIN FLUSH) - Level ${payoutSlotLevel}`,
-                 credit: INCOME_AMOUNT,
-               });
              } catch (error) {
               if (error.code !== 11000) {
                 console.error(`Error flushing level income to admin at slot ${payoutSlotLevel}:`, error);

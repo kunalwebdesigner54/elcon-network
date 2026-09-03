@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const RepurchaseIncome = require('../models/RepurchaseIncome');
-const { createWalletTransaction } = require('../utils/walletHelper');
 
 /**
  * Distribute Repurchase Income for a product purchase order.
@@ -91,12 +90,6 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
                { memberId: currentMemberId },
                { $inc: { walletBalance: INCOME_AMOUNT } }
              );
-
-             await createWalletTransaction({
-               memberId: currentMemberId,
-               description: `REPURCHASE INCOME CREDIT - Level ${payoutSlotLevel}`,
-               credit: INCOME_AMOUNT,
-             });
            } catch (error) {
             if (error.code !== 11000) {
               console.error(`Error distributing repurchase income at slot ${payoutSlotLevel}:`, error);
@@ -139,12 +132,6 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
                  { memberId: admin.memberId },
                  { $inc: { walletBalance: INCOME_AMOUNT } }
                );
-
-               await createWalletTransaction({
-                 memberId: admin.memberId,
-                 description: `REPURCHASE INCOME CREDIT (ADMIN FLUSH) - Level ${payoutSlotLevel}`,
-                 credit: INCOME_AMOUNT,
-               });
              } catch (error) {
               if (error.code !== 11000) {
                 console.error(`Error flushing repurchase income to admin at slot ${payoutSlotLevel}:`, error);
