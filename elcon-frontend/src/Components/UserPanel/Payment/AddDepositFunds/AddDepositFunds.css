@@ -143,6 +143,9 @@
   margin-top: 8px;
   background: var(--gradient-primary);
   border-radius: 8px;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.3;
 }
 
 .deposit-confirm-btn:hover {

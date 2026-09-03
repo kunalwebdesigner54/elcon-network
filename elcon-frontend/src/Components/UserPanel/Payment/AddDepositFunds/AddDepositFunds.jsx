@@ -148,9 +148,12 @@ function AddDepositFunds() {
       <div className="buyepin-single-card deposit-funds-page" style={{ flexGrow: 1, padding: '36px 32px' }}>
         <div style={{ marginBottom: '24px' }}>
           {(memberDetails.name || memberDetails.memberId) && (
-            <div className="member-info-badge" style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '20px', fontSize: '15px', fontWeight: '600', color: 'var(--text-main)', border: '1px solid var(--glass-border)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <div className="member-info-badge" style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '20px', fontSize: '15px', fontWeight: '600', color: 'var(--text-main)', border: '1px solid var(--glass-border)', display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <i className="fa-regular fa-user" style={{ color: '#00e5ff' }}></i>
-              {memberDetails.name} {memberDetails.memberId ? `(${memberDetails.memberId})` : ''}
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <span>{memberDetails.name}</span>
+                {memberDetails.memberId && <span>({memberDetails.memberId})</span>}
+              </span>
             </div>
           )}
         </div>
@@ -257,7 +260,7 @@ function AddDepositFunds() {
                 />
               </div>
 
-              <button type="button" className="confirm-withdrawal-btn deposit-confirm-btn" onClick={handleSubmit}>Confirm Deposit</button>
+              <button type="button" className="confirm-withdrawal-btn deposit-confirm-btn" onClick={handleSubmit}>Confirm<br />Deposit</button>
             </div>
           </div>
 
