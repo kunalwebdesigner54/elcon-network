@@ -24,6 +24,7 @@ function AddDepositFunds() {
   const [selectedMethod, setSelectedMethod] = useState('bank');
   const [amount, setAmount] = useState('');
   const [transactionId, setTransactionId] = useState('');
+  const [utrNumber, setUtrNumber] = useState('');
   const [paymentProof, setPaymentProof] = useState('');
   const [transactionPassword, setTransactionPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -99,6 +100,11 @@ function AddDepositFunds() {
       return;
     }
 
+    if (!utrNumber.trim()) {
+      alert('Please enter the UTR number');
+      return;
+    }
+
     if (!transactionPassword || !confirmPassword) {
       alert('Please enter both passwords');
       return;
@@ -115,6 +121,7 @@ function AddDepositFunds() {
       await createDepositRequest({
         amount,
         transactionId,
+        utrNumber,
         paymentMode: selectedMethod === 'upi' ? 'UPI ID' : 'BANK TRANSFER',
         paymentScreenshot,
         transactionPassword,
@@ -196,6 +203,19 @@ function AddDepositFunds() {
                   value={transactionId}
                   onChange={(event) => setTransactionId(event.target.value)}
                   placeholder="Enter payment transaction ID"
+                  className="password-input"
+                  required
+                />
+              </div>
+
+              <div className="password-field deposit-password-field">
+                <label className="password-label" htmlFor="deposit-utr-number">UTR Number</label>
+                <input
+                  id="deposit-utr-number"
+                  type="text"
+                  value={utrNumber}
+                  onChange={(event) => setUtrNumber(event.target.value)}
+                  placeholder="Enter UTR number"
                   className="password-input"
                   required
                 />
