@@ -42,7 +42,7 @@
 }
 
 .user-orders-table {
-  min-width: 980px;
+  min-width: 1080px;
 }
 
 .user-orders-table thead th {
@@ -143,7 +143,7 @@
   /* Keep table layout on small screens and allow horizontal scrolling
      so it matches the Level Income table behavior. */
   .user-orders-table {
-    min-width: 760px; /* allow the table to scroll inside .table-wrap */
+    min-width: 860px; /* allow the table to scroll inside .table-wrap */
   }
 
   .user-orders-table thead th {
@@ -189,6 +189,5 @@
     flex-basis: 46%;
   }
 }
-
 
 

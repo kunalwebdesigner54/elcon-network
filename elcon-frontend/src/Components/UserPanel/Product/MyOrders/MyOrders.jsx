@@ -70,6 +70,7 @@ function MyOrders() {
                   <th>ORDER DATE</th>
                   <th>ITEMS</th>
                   <th>TOTAL PAID</th>
+                  <th>TOTAL BV POINT</th>
                   <th>PAY MODE</th>
                   <th>PAY STATUS</th>
                   <th>ORDER STATUS</th>
@@ -84,6 +85,7 @@ function MyOrders() {
                     <td data-label="ORDER DATE">{order.orderDate}</td>
                     <td data-label="ITEMS">{order.items}</td>
                     <td data-label="TOTAL PAID">{Number(order.totalPaid ?? order.finalTotal ?? order.totalPrice ?? 0).toFixed(2)}</td>
+                    <td data-label="TOTAL BV POINT">{Number(order.bvPoint ?? 0).toFixed(2)}</td>
                     <td data-label="PAY MODE">{order.payMode ?? order.paymentMode}</td>
                     <td data-label="PAY STATUS">{order.payStatus ?? order.paymentStatus}</td>
                     <td data-label="ORDER STATUS" className={getStatusClass(order.orderStatus)}>
@@ -102,7 +104,7 @@ function MyOrders() {
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan="9" style={{ textAlign: 'center' }}>No orders found.</td>
+                    <td colSpan="10" style={{ textAlign: 'center' }}>No orders found.</td>
                   </tr>
                 )}
               </tbody>
@@ -115,5 +117,4 @@ function MyOrders() {
 }
 
 export default MyOrders;
-
 
