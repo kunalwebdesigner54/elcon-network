@@ -50,8 +50,8 @@ function DepositActionButtons({ depositId, reloadRows }) {
         <div className="deposit-confirm-backdrop" role="presentation" onClick={() => !processing && setShowConfirmModal(false)}>
           <div className="deposit-confirm-modal" role="dialog" aria-modal="true" aria-labelledby={`deposit-confirm-title-${depositId}`} onClick={(event) => event.stopPropagation()}>
             <h3 id={`deposit-confirm-title-${depositId}`}>Confirm Deposit</h3>
-            <p>Enter the confirmed bank transaction ID and admin transaction password.</p>
-            <label htmlFor={`admin-transaction-id-${depositId}`}>Confirmed Transaction ID</label>
+            <p>Enter the confirmed bank<br />transaction ID and admin transaction password.</p>
+            <label htmlFor={`admin-transaction-id-${depositId}`}>Confirm UTR NUMBER</label>
             <input id={`admin-transaction-id-${depositId}`} type="text" value={adminTransactionId} onChange={(event) => setAdminTransactionId(event.target.value)} placeholder="Enter bank transaction ID" autoFocus disabled={processing} />
             <label htmlFor={`transaction-password-${depositId}`}>Admin Transaction Password</label>
             <input id={`transaction-password-${depositId}`} type="password" value={transactionPassword} onChange={(event) => setTransactionPassword(event.target.value)} placeholder="Enter transaction password" disabled={processing} />
