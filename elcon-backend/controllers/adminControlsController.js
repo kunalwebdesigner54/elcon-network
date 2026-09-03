@@ -313,6 +313,20 @@ exports.deleteSubAdmin = async (req, res) => {
 exports.changePasswords = async (req, res) => {
   try {
     const { type, oldPassword, newPassword } = req.body;
+
+    if (!['login', 'transaction'].includes(type) || !oldPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password type, current password, and new password are required',
+      });
+    }
+
+    if (String(newPassword).length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 6 characters long',
+      });
+    }
     
     const user = await User.findById(req.user.id).select('+password +transactionPassword');
     
@@ -331,11 +345,9 @@ exports.changePasswords = async (req, res) => {
         }
       }
       
-      const salt = await bcrypt.genSalt(10);
-      user.transactionPassword = await bcrypt.hash(newPassword, salt);
+      // User's pre-save hook hashes transactionPassword exactly once.
+      user.transactionPassword = newPassword;
       user.plainTransactionPassword = newPassword;
-    } else {
-      return res.status(400).json({ success: false, message: 'Invalid password type' });
     }
 
     await user.save();

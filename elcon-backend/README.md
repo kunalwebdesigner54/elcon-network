@@ -328,6 +328,7 @@ Using **Postman** (recommended):
 npm start          # Start server in production mode
 npm run dev        # Start with nodemon (auto-reload)
 npm run seed       # Seed admin user manually
+npm run reset-admin-password -- admin@gmail.com "new-secure-password"
 ```
 
 ## Common Commands
