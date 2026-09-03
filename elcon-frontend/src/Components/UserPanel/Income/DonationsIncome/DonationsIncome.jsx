@@ -110,7 +110,7 @@ function DonationsIncome() {
               </thead>
               <tbody>
                 {visibleRows.length === 0 ? (
-                  <tr><td colSpan={11} style={{ textAlign: 'center', padding: '20px' }}>No donation income records found.</td></tr>
+                  <tr><td colSpan={10} style={{ textAlign: 'center', padding: '20px' }}>No donation income records found.</td></tr>
                 ) : (
                   visibleRows.map((row, index) => (
                     <tr key={row.donationId || index}>

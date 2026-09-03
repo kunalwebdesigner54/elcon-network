@@ -38,10 +38,10 @@ function RepurchaseIncomeReports() {
 
     getRepurchaseIncomeReports(params)
       .then((response) => {
-        setRows(Array.isArray(response.data) ? response.data : []);
-        setGlobalTotalAmount(response.globalTotalAmount || 0);
-        if (response.pagination) {
-          setTotalPages(response.pagination.pages || 1);
+        setRows(Array.isArray(response?.data?.data) ? response.data.data : []);
+        setGlobalTotalAmount(response?.data?.globalTotalAmount || 0);
+        if (response?.data?.pagination) {
+          setTotalPages(response.data.pagination.pages || 1);
         }
       })
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load repurchase income reports.'))
@@ -177,11 +177,11 @@ function RepurchaseIncomeReports() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9}>Loading...</td></tr>
+                <tr><td colSpan={11}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={10} style={{ color: 'red' }}>{error}</td></tr>
+                <tr><td colSpan={11} style={{ color: 'red' }}>{error}</td></tr>
               ) : repurchaseIncomeReportsData.length === 0 ? (
-                <tr><td colSpan={10}>No repurchase income reports found.</td></tr>
+                <tr><td colSpan={11}>No repurchase income reports found.</td></tr>
               ) : (
                 <>
                   {repurchaseIncomeReportsData.map((row) => (

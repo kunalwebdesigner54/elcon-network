@@ -164,7 +164,7 @@ function LevelIncome() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9}>Loading...</td></tr>
+                <tr><td colSpan={10}>Loading...</td></tr>
               ) : error ? (
                 <tr><td colSpan={10} style={{color: 'red'}}>{error}</td></tr>
               ) : rows.length === 0 ? (
