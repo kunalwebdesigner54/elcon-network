@@ -89,8 +89,14 @@
 .table-toolbar {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 10px;
   margin-bottom: 14px;
+  position: relative;
+}
+
+.transaction-count-badge {
+  margin-left: auto;
 }
 
 .report-total-row td {
@@ -294,7 +300,5 @@
     font-size: 14px;
   }
 }
-
-
 
 

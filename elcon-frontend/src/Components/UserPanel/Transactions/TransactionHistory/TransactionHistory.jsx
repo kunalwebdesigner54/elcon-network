@@ -75,7 +75,6 @@ function TransactionHistory() {
         <div className="transaction-header">
           <div className="transaction-summary-group">
             <h3>Total Balance: {totalBalance ? Number(totalBalance).toFixed(2) : '0.00'}</h3>
-            <span className="transaction-count-badge">Total Transactions: {totalTransactions}</span>
           </div>
           <div className="view-toggle">
             <button 
@@ -110,6 +109,7 @@ function TransactionHistory() {
         <div className="table-toolbar">
           <button className="user-btn-outline" type="button">Excel</button>
           <button className="user-btn-outline" type="button">PDF</button>
+          <span className="transaction-count-badge">Total Transactions: {totalTransactions}</span>
         </div>
 
         <div className="table-wrap">
