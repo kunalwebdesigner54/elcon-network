@@ -51,6 +51,7 @@ function TransactionHistory() {
   const totalCredit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [filteredRows]);
   const totalDebit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [filteredRows]);
   const totalBalance = filteredRows.length ? filteredRows[filteredRows.length - 1].balance : 0;
+  const totalTransactions = filteredRows.length;
   const visibleRows = filteredRows.slice(0, Number(pageSize));
 
   const handleFilterChange = (e) => {
@@ -81,21 +82,24 @@ function TransactionHistory() {
             </select>
             <button className="btn-primary admintransactionhistory-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
           </div>
-          <div className="view-toggle">
-            <button 
-              type="button" 
-              className={`view-toggle-btn ${viewMode === 'statement' ? 'active' : ''}`}
-              onClick={() => handleViewModeChange('statement')}
-            >
-              Statement
-            </button>
-            <button 
-              type="button" 
-              className={`view-toggle-btn ${viewMode === 'audit' ? 'active' : ''}`}
-              onClick={() => handleViewModeChange('audit')}
-            >
-              Audit Log
-            </button>
+          <div className="admintransactionhistory-header-right">
+            <div className="view-toggle">
+              <button 
+                type="button" 
+                className={`view-toggle-btn ${viewMode === 'statement' ? 'active' : ''}`}
+                onClick={() => handleViewModeChange('statement')}
+              >
+                Statement
+              </button>
+              <button 
+                type="button" 
+                className={`view-toggle-btn ${viewMode === 'audit' ? 'active' : ''}`}
+                onClick={() => handleViewModeChange('audit')}
+              >
+                Audit Log
+              </button>
+            </div>
+            <span className="transaction-count-badge">Total Transactions: {totalTransactions}</span>
           </div>
         </div>
 

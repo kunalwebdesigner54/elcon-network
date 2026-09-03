@@ -35,6 +35,13 @@
   margin-bottom: 14px;
 }
 
+.admintransactionhistory-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .admintransactionhistory-filter-row {
   display: flex;
   flex-wrap: wrap;
@@ -86,6 +93,20 @@
   background: linear-gradient(135deg, #06b6d4, #2563eb);
   color: #fff;
   box-shadow: 0 2px 8px rgba(0, 229, 255, 0.25);
+}
+
+.transaction-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(0, 229, 255, 0.1);
+  color: #00e5ff;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  white-space: nowrap;
 }
 
 /* Table wrapper for responsive scrolling */

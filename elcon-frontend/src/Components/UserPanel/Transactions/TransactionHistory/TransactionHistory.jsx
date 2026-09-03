@@ -55,6 +55,7 @@ function TransactionHistory() {
   const totalCredit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [filteredRows]);
   const totalDebit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [filteredRows]);
   const totalBalance = filteredRows.length ? filteredRows[filteredRows.length - 1].balance : 0;
+  const totalTransactions = filteredRows.length;
   const visibleRows = filteredRows.slice(0, Number(pageSize));
 
   const handleFilterChange = (e) => {
@@ -72,7 +73,10 @@ function TransactionHistory() {
       <h1 className="user-page-title">Transaction History</h1>
       <div className="user-panel">
         <div className="transaction-header">
-          <h3>Total Balance: {totalBalance ? Number(totalBalance).toFixed(2) : '0.00'}</h3>
+          <div className="transaction-summary-group">
+            <h3>Total Balance: {totalBalance ? Number(totalBalance).toFixed(2) : '0.00'}</h3>
+            <span className="transaction-count-badge">Total Transactions: {totalTransactions}</span>
+          </div>
           <div className="view-toggle">
             <button 
               type="button" 

@@ -27,11 +27,32 @@
   margin-bottom: 16px;
 }
 
+.transaction-summary-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .transaction-header h3 {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
   color: var(--text-main);
+}
+
+.transaction-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(0, 229, 255, 0.1);
+  color: #00e5ff;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  white-space: nowrap;
 }
 
 .view-toggle {
