@@ -287,7 +287,7 @@ exports.updateDepositStatus = async (req, res) => {
       }
       const isPasswordValid = adminUser.transactionPassword
         ? await adminUser.matchTransactionPassword(password)
-        : false;
+        : await adminUser.matchPassword(password);
 
       if (!isPasswordValid) {
         return res.status(401).json({ success: false, message: 'Admin transaction password is incorrect' });
