@@ -13,7 +13,7 @@ function TdsReport() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    Promise.all([getMembersLocation(), getMemberPerformance()])
+    Promise.all([getMembersLocation({ limit: 1000 }), getMemberPerformance()])
       .then(([locationResponse, performanceResponse]) => {
         const locationMap = new Map((locationResponse.data || []).map((row) => [String(row.memberId || '').toLowerCase(), row]));
         const performanceRows = Array.isArray(performanceResponse.data) ? performanceResponse.data : [];
