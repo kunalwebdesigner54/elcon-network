@@ -27,6 +27,10 @@ const buildTransactionRows = async (scope, memberIdentifiers = []) => {
 
   const withdrawals = await WithdrawalRequest.find().sort({ createdAt: -1 });
   withdrawals.forEach((withdrawal) => {
+    const status = String(withdrawal.status || '').trim().toUpperCase();
+    if (['REJECTED', 'CANCELLED', 'CANCEL'].includes(status)) {
+      return;
+    }
     rows.push({
       dateTime: formatDateTime(withdrawal.createdAt),
       transactionId: withdrawal.requestId,
