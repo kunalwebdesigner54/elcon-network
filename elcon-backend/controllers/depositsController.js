@@ -281,9 +281,14 @@ exports.updateDepositStatus = async (req, res) => {
       if (!adminUser) {
         return res.status(401).json({ success: false, message: 'Admin account not found' });
       }
-      const isPasswordValid = adminUser.transactionPassword
-        ? await adminUser.matchTransactionPassword(password)
-        : await adminUser.matchPassword(password);
+
+      let isPasswordValid = false;
+      if (adminUser.transactionPassword) {
+        isPasswordValid = await adminUser.matchTransactionPassword(password);
+      }
+      if (!isPasswordValid) {
+        isPasswordValid = await adminUser.matchPassword(password);
+      }
 
       if (!isPasswordValid) {
         return res.status(401).json({ success: false, message: 'Admin transaction password is incorrect' });
