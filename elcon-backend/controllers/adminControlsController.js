@@ -313,15 +313,17 @@ exports.deleteSubAdmin = async (req, res) => {
 exports.changePasswords = async (req, res) => {
   try {
     const { type, oldPassword, newPassword } = req.body;
+    const currentPassword = String(oldPassword || '').trim();
+    const nextPassword = String(newPassword || '').trim();
 
-    if (!['login', 'transaction'].includes(type) || !oldPassword || !newPassword) {
+    if (!['login', 'transaction'].includes(type) || !nextPassword) {
       return res.status(400).json({
         success: false,
         message: 'Password type, current password, and new password are required',
       });
     }
 
-    if (String(newPassword).length < 6) {
+    if (nextPassword.length < 6) {
       return res.status(400).json({
         success: false,
         message: 'New password must be at least 6 characters long',
@@ -334,23 +336,29 @@ exports.changePasswords = async (req, res) => {
     }
     
     if (type === 'login') {
-      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!currentPassword) {
+        return res.status(400).json({ success: false, message: 'Current password is required' });
+      }
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) {
         return res.status(400).json({ success: false, message: 'Incorrect old password' });
       }
-      user.password = newPassword;
-      user.plainPassword = newPassword;
+      user.password = nextPassword;
+      user.plainPassword = nextPassword;
     } else if (type === 'transaction') {
       if (user.transactionPassword) {
-        const isMatch = await bcrypt.compare(oldPassword, user.transactionPassword);
+        if (!currentPassword) {
+          return res.status(400).json({ success: false, message: 'Current transaction password is required' });
+        }
+        const isMatch = await user.matchTransactionPassword(currentPassword);
         if (!isMatch) {
           return res.status(400).json({ success: false, message: 'Incorrect old transaction password' });
         }
       }
       
       // User's pre-save hook hashes transactionPassword exactly once.
-      user.transactionPassword = newPassword;
-      user.plainTransactionPassword = newPassword;
+      user.transactionPassword = nextPassword;
+      user.plainTransactionPassword = nextPassword;
     }
 
     await user.save();

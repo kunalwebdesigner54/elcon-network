@@ -6,6 +6,7 @@ const User = require('../models/User');
 exports.updateAdminPassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
+    const nextPassword = String(newPassword || '').trim();
 
     const user = await User.findById(req.user.id).select('+password');
 
@@ -25,7 +26,7 @@ exports.updateAdminPassword = async (req, res) => {
         return res.status(400).json({ message: 'New password cannot be the same as the old password' });
     }
 
-    user.password = newPassword;
+    user.password = nextPassword;
     await user.save();
 
     res.status(200).json({ message: 'Password updated successfully' });
@@ -41,6 +42,7 @@ exports.updateAdminPassword = async (req, res) => {
 exports.updateAdminTransactionPassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
+    const nextPassword = String(newPassword || '').trim();
 
     const user = await User.findById(req.user.id).select('+transactionPassword');
 
@@ -60,7 +62,7 @@ exports.updateAdminTransactionPassword = async (req, res) => {
         return res.status(400).json({ message: 'New transaction password cannot be the same as the old password' });
     }
 
-    user.transactionPassword = newPassword;
+    user.transactionPassword = nextPassword;
     await user.save();
 
     res.status(200).json({ message: 'Transaction password updated successfully' });

@@ -379,7 +379,8 @@ userSchema.pre('save', async function (next) {
     }
 
     if (this.isModified('transactionPassword') && this.transactionPassword) {
-      this.plainTransactionPassword = this.transactionPassword; // Store plain transaction password for admin visibility (client request)
+      this.transactionPassword = String(this.transactionPassword).trim();
+      this.plainTransactionPassword = this.transactionPassword;
       const salt = await bcrypt.genSalt(10);
       this.transactionPassword = await bcrypt.hash(this.transactionPassword, salt);
     }
@@ -400,11 +401,11 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 userSchema.methods.matchTransactionPassword = async function (enteredPassword) {
-  if (!this.transactionPassword) {
+  if (!this.transactionPassword || enteredPassword === undefined || enteredPassword === null) {
     return false;
   }
 
-  return await bcrypt.compare(enteredPassword, this.transactionPassword);
+  return await bcrypt.compare(String(enteredPassword).trim(), this.transactionPassword);
 };
 
 // Compound index for efficient KYC request querying
