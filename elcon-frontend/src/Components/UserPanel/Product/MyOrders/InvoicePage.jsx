@@ -132,7 +132,16 @@ function InvoicePage() {
                           alt={item.name}
                           style={{ width: '34px', height: '34px', objectFit: 'cover', borderRadius: '6px' }}
                         />
-                        {item.name}
+                        <span>
+                          {item.name}
+                          {(item.selectedSize || item.selectedColor) && (
+                            <small>
+                              {item.selectedSize ? `Size: ${item.selectedSize}` : ''}
+                              {item.selectedSize && item.selectedColor ? ' | ' : ''}
+                              {item.selectedColor ? `Color: ${item.selectedColor}` : ''}
+                            </small>
+                          )}
+                        </span>
                       </span>
                     </td>
                     <td className="invoice-text-center">{Number(item.price || 0).toFixed(2)}</td>

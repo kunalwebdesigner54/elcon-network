@@ -170,7 +170,16 @@ function OrderDetails() {
                     <td data-label="Item / Product Name">
                       <div className="order-details-item-product">
                         <img className="order-details-item-thumb" src={resolveProductImage(item.imageKey || item.name)} alt={item.name} />
-                        <span className="order-details-item-name">{item.name}</span>
+                        <span className="order-details-item-name">
+                          {item.name}
+                          {(item.selectedSize || item.selectedColor) && (
+                            <small>
+                              {item.selectedSize ? `Size: ${item.selectedSize}` : ''}
+                              {item.selectedSize && item.selectedColor ? ' | ' : ''}
+                              {item.selectedColor ? `Color: ${item.selectedColor}` : ''}
+                            </small>
+                          )}
+                        </span>
                       </div>
                     </td>
                     <td data-label="Price">{Number(item.price || 0).toFixed(2)}</td>

@@ -327,8 +327,12 @@ exports.addCartItem = async (req, res) => {
     const cart = (await Cart.findOne({ userId: req.user.id })) ||
       new Cart({ userId: req.user.id, items: [] });
 
+    const selectedSize = String(req.body.selectedSize || '').trim();
+    const selectedColor = String(req.body.selectedColor || '').trim();
     const existingItem = cart.items.find(
       (item) => String(item.productId) === String(product._id)
+        && item.selectedSize === selectedSize
+        && item.selectedColor === selectedColor
     );
 
     if (existingItem) {
@@ -347,6 +351,8 @@ exports.addCartItem = async (req, res) => {
         bvPoint: product.bvPoint,
         discount: product.discount || 0,
         reserveAmount: product.reserveAmount,
+        selectedSize,
+        selectedColor,
       });
     }
 
@@ -516,6 +522,8 @@ exports.checkoutCart = async (req, res) => {
         totalPrice: item.totalPrice,
         imageKey: item.imageKey,
         couponUsed: itemCouponUsed,
+        selectedSize: item.selectedSize || '',
+        selectedColor: item.selectedColor || '',
       });
     }
 
@@ -653,6 +661,8 @@ exports.getOrderByNo = async (req, res) => {
           quantity: item.quantity,
           totalPrice: item.totalPrice,
           imageKey: item.imageKey,
+          selectedSize: item.selectedSize || '',
+          selectedColor: item.selectedColor || '',
         })),
       },
     });

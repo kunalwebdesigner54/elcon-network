@@ -47,6 +47,8 @@ const cartItemSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    selectedSize: { type: String, default: '' },
+    selectedColor: { type: String, default: '' },
   },
   { _id: false }
 );

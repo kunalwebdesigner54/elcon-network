@@ -386,3 +386,26 @@
 }
 
 
+.product-variant-picker {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.product-variant-picker label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.product-variant-picker select {
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--darker);
+  color: var(--text-main);
+}

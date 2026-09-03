@@ -81,6 +81,8 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(location.state?.product || null);
   const [activeTab, setActiveTab] = useState('description');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -132,6 +134,8 @@ const ProductDetails = () => {
   }, [product]);
 
   const details = useMemo(() => buildDetails(product, stockStatus), [product, stockStatus]);
+  const sizeOptions = String(product?.size || '').split(',').map((value) => value.trim()).filter(Boolean);
+  const colorOptions = String(product?.color || '').split(',').map((value) => value.trim()).filter(Boolean);
 
   const activeTabData = tabConfig[activeTab];
   const descriptionText = product?.description || activeTabData.content[0];
@@ -152,7 +156,12 @@ const ProductDetails = () => {
       return;
     }
 
-    addCartItem(product._id || product.id || product.productCode, 1)
+    if ((sizeOptions.length > 1 && !selectedSize) || (colorOptions.length > 1 && !selectedColor)) {
+      window.alert('Please select the available size and color before adding this product to cart.');
+      return;
+    }
+
+    addCartItem(product._id || product.id || product.productCode, 1, { selectedSize, selectedColor })
       .then(() => {
         navigate('/user/product/my_cart');
       })
@@ -215,6 +224,28 @@ const ProductDetails = () => {
         </div>
 
         <section className="product-tabs-card">
+          {(sizeOptions.length > 1 || colorOptions.length > 1) && (
+            <div className="product-variant-picker">
+              {sizeOptions.length > 1 && (
+                <label>
+                  Size
+                  <select value={selectedSize} onChange={(event) => setSelectedSize(event.target.value)} required>
+                    <option value="">Select size</option>
+                    {sizeOptions.map((size) => <option key={size} value={size}>{size}</option>)}
+                  </select>
+                </label>
+              )}
+              {colorOptions.length > 1 && (
+                <label>
+                  Color
+                  <select value={selectedColor} onChange={(event) => setSelectedColor(event.target.value)} required>
+                    <option value="">Select color</option>
+                    {colorOptions.map((color) => <option key={color} value={color}>{color}</option>)}
+                  </select>
+                </label>
+              )}
+            </div>
+          )}
           <div className="product-tabs-nav" role="tablist" aria-label="Product details tabs">
             {Object.entries(tabConfig).map(([key, tab]) => (
               <button

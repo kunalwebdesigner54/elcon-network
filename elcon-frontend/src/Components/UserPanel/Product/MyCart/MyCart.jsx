@@ -14,7 +14,7 @@ const DeleteIcon = () => (
 const CartItem = ({ item, onRemove, onQuantityChange }) => (
   <div className="mc-item">
     <div className="mc-item-header">
-      <div className="mc-title">{item.productName}</div>
+    <div className="mc-title">{item.productName}{item.selectedSize ? ` | Size: ${item.selectedSize}` : ''}{item.selectedColor ? ` | Color: ${item.selectedColor}` : ''}</div>
       <button className="mc-delete" aria-label="Delete item" onClick={() => onRemove(item)}>
         <DeleteIcon />
       </button>
@@ -138,7 +138,7 @@ export default function MyCart() {
         ) : cartItems.length ? (
           cartItems.map((item) => (
             <CartItem
-              key={item.productId}
+              key={`${item.productId}-${item.selectedSize || ''}-${item.selectedColor || ''}`}
               item={item}
               onRemove={handleRemove}
               onQuantityChange={handleQuantityChange}
