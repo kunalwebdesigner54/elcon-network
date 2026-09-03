@@ -4,16 +4,12 @@ import { getAdminDepositRequests, updateDepositRequestStatus } from '../../../..
 
 const actionButtons = [
   { className: 'withdrawal-action-btn withdrawal-action-btn--approve', label: 'Approve', icon: '⏳' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--succeed', label: 'Succeed', icon: '✓' },
   { className: 'withdrawal-action-btn withdrawal-action-btn--reject', label: 'Reject', icon: '✕' },
   { className: 'withdrawal-action-btn withdrawal-action-btn--reset', label: 'Change Status', icon: '↻' }
 ];
 
 function DepositActionButtons({ depositId, reloadRows }) {
   const [processing, setProcessing] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [adminTransactionId, setAdminTransactionId] = useState('');
-  const [transactionPassword, setTransactionPassword] = useState('');
 
   const updateStatus = async (nextStatus, confirmation = {}) => {
     setProcessing(true);
@@ -23,9 +19,6 @@ function DepositActionButtons({ depositId, reloadRows }) {
         ...confirmation,
       });
       await reloadRows();
-      setShowConfirmModal(false);
-      setAdminTransactionId('');
-      setTransactionPassword('');
     } catch (error) {
       window.alert(error?.response?.data?.message || 'Unable to update deposit status');
     } finally {
@@ -34,7 +27,6 @@ function DepositActionButtons({ depositId, reloadRows }) {
   };
 
   return (
-    <>
       <div className="withdrawal-action-group" aria-label="Deposit actions">
         {actionButtons.map((button) => (
           <button
@@ -46,60 +38,13 @@ function DepositActionButtons({ depositId, reloadRows }) {
             disabled={processing}
             onClick={() => {
               const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
-              if (nextStatus === 'Succeed') {
-                setShowConfirmModal(true);
-              } else {
-                updateStatus(nextStatus);
-              }
+              updateStatus(nextStatus);
             }}
           >
             {button.icon}
           </button>
         ))}
       </div>
-
-      {showConfirmModal && (
-        <div className="deposit-confirm-backdrop" role="presentation" onClick={() => !processing && setShowConfirmModal(false)}>
-          <div className="deposit-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="deposit-confirm-title" onClick={(event) => event.stopPropagation()}>
-            <h3 id="deposit-confirm-title">Confirm Deposit</h3>
-            <p>Enter the confirmed bank transaction details to credit the member wallet.</p>
-            <label htmlFor={`admin-transaction-id-${depositId}`}>Confirmed Transaction ID</label>
-            <input
-              id={`admin-transaction-id-${depositId}`}
-              type="text"
-              value={adminTransactionId}
-              onChange={(event) => setAdminTransactionId(event.target.value)}
-              placeholder="Enter bank transaction ID"
-              autoFocus
-              disabled={processing}
-            />
-            <label htmlFor={`transaction-password-${depositId}`}>Admin Transaction Password</label>
-            <input
-              id={`transaction-password-${depositId}`}
-              type="password"
-              value={transactionPassword}
-              onChange={(event) => setTransactionPassword(event.target.value)}
-              placeholder="Enter transaction password"
-              disabled={processing}
-            />
-            <div className="deposit-confirm-actions">
-              <button type="button" className="deposit-confirm-cancel" onClick={() => setShowConfirmModal(false)} disabled={processing}>Cancel</button>
-              <button
-                type="button"
-                className="deposit-confirm-submit"
-                disabled={processing || !adminTransactionId.trim() || !transactionPassword}
-                onClick={() => updateStatus('Succeed', {
-                  adminTransactionId: adminTransactionId.trim(),
-                  transactionPassword,
-                })}
-              >
-                {processing ? 'Confirming...' : 'Confirm Deposit'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
   );
 }
 

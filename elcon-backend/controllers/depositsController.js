@@ -227,6 +227,9 @@ exports.updateDepositStatus = async (req, res) => {
     const normalizedStatus = normalizeStatus(status);
 
     if (normalizedStatus === 'Succeed') {
+      if (request.status !== 'Approve') {
+        return res.status(400).json({ success: false, message: 'Only approved deposits can be completed' });
+      }
       const confirmedTransactionId = String(adminTransactionId || '').trim();
       if (!confirmedTransactionId) {
         return res.status(400).json({ success: false, message: 'Admin transaction ID is required to complete a deposit' });

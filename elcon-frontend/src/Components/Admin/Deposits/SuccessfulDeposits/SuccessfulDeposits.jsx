@@ -157,7 +157,7 @@ function SuccessfulDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell">{renderActionButtons(row.transactionId, loadRows)}</td>
+                  <td className="action-cell">{renderActionButtons(row.depositId, loadRows)}</td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (<tr><td colSpan="13">No successful deposits found</td></tr>)}

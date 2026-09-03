@@ -9,27 +9,62 @@ const actionButtons = [
   { className: 'withdrawal-action-btn withdrawal-action-btn--reset', label: 'Change Status', icon: '↻' }
 ];
 
-function renderActionButtons(orderNo, reloadRows) {
+function DepositActionButtons({ depositId, reloadRows }) {
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [adminTransactionId, setAdminTransactionId] = useState('');
+  const [transactionPassword, setTransactionPassword] = useState('');
+  const [processing, setProcessing] = useState(false);
+
+  const updateStatus = async (nextStatus, confirmation = {}) => {
+    setProcessing(true);
+    try {
+      await updateDepositRequestStatus(depositId, { status: nextStatus, ...confirmation });
+      await reloadRows();
+      setShowConfirmModal(false);
+      setAdminTransactionId('');
+      setTransactionPassword('');
+    } catch (error) {
+      window.alert(error?.response?.data?.message || 'Unable to update deposit status');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   return (
-    <div className="withdrawal-action-group" aria-label="Deposit actions">
-      {actionButtons.map((button) => (
-        <button key={button.label} type="button" className={button.className} aria-label={button.label} onClick={async () => {
-          const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
-          const adminTransactionId = nextStatus === 'Succeed' ? window.prompt('Enter the confirmed bank transaction ID:') : '';
-          if (nextStatus === 'Succeed' && !adminTransactionId?.trim()) return;
-          const transactionPassword = nextStatus === 'Succeed' ? window.prompt('Enter admin transaction password to credit the E-Wallet:') : '';
-          if (nextStatus === 'Succeed' && !transactionPassword) return;
-          try {
-            await updateDepositRequestStatus(orderNo, { status: nextStatus, adminTransactionId: adminTransactionId.trim(), transactionPassword });
-            reloadRows();
-          } catch (error) {
-            window.alert(error?.response?.data?.message || 'Unable to update deposit status');
-          }
-        }}>
-          {button.icon}
-        </button>
-      ))}
-    </div>
+    <>
+      <div className="withdrawal-action-group" aria-label="Deposit actions">
+        {actionButtons.map((button) => (
+          <button key={button.label} type="button" className={button.className} aria-label={button.label} title={button.label} disabled={processing} onClick={() => {
+            const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
+            if (nextStatus === 'Succeed') {
+              setShowConfirmModal(true);
+            } else {
+              updateStatus(nextStatus);
+            }
+          }}>
+            {button.icon}
+          </button>
+        ))}
+      </div>
+      {showConfirmModal && (
+        <div className="deposit-confirm-backdrop" role="presentation" onClick={() => !processing && setShowConfirmModal(false)}>
+          <div className="deposit-confirm-modal" role="dialog" aria-modal="true" aria-labelledby={`deposit-confirm-title-${depositId}`} onClick={(event) => event.stopPropagation()}>
+            <h3 id={`deposit-confirm-title-${depositId}`}>Confirm Deposit</h3>
+            <p>Enter the confirmed bank transaction ID and admin transaction password.</p>
+            <label htmlFor={`admin-transaction-id-${depositId}`}>Confirmed Transaction ID</label>
+            <input id={`admin-transaction-id-${depositId}`} type="text" value={adminTransactionId} onChange={(event) => setAdminTransactionId(event.target.value)} placeholder="Enter bank transaction ID" autoFocus disabled={processing} />
+            <label htmlFor={`transaction-password-${depositId}`}>Admin Transaction Password</label>
+            <input id={`transaction-password-${depositId}`} type="password" value={transactionPassword} onChange={(event) => setTransactionPassword(event.target.value)} placeholder="Enter transaction password" disabled={processing} />
+            <div className="deposit-confirm-actions">
+              <button type="button" className="deposit-confirm-cancel" onClick={() => setShowConfirmModal(false)} disabled={processing}>Cancel</button>
+              <button type="button" className="deposit-confirm-submit" disabled={processing || !adminTransactionId.trim() || !transactionPassword} onClick={() => updateStatus('Succeed', { adminTransactionId: adminTransactionId.trim(), transactionPassword })}>
+                {processing ? 'Confirming...' : 'Confirm Deposit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -163,7 +198,7 @@ function ApproveDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell">{renderActionButtons(row.transactionId, loadRows)}</td>
+                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} reloadRows={loadRows} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (<tr><td colSpan="13">No approved deposits found</td></tr>)}
