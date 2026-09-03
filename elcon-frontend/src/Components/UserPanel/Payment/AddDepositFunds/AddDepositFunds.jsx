@@ -23,7 +23,6 @@ function AddDepositFunds() {
   const fileInputRef = useRef(null);
   const [selectedMethod, setSelectedMethod] = useState('bank');
   const [amount, setAmount] = useState('');
-  const [transactionId, setTransactionId] = useState('');
   const [utrNumber, setUtrNumber] = useState('');
   const [paymentProof, setPaymentProof] = useState('');
   const [transactionPassword, setTransactionPassword] = useState('');
@@ -96,11 +95,6 @@ function AddDepositFunds() {
       return;
     }
 
-    if (!transactionId.trim()) {
-      alert('Please enter the payment transaction ID');
-      return;
-    }
-
     if (!utrNumber.trim()) {
       alert('Please enter the UTR number');
       return;
@@ -122,7 +116,6 @@ function AddDepositFunds() {
 
       await createDepositRequest({
         amount,
-        transactionId,
         utrNumber,
         paymentMode: selectedMethod === 'upi' ? 'UPI ID' : 'BANK TRANSFER',
         paymentScreenshot,
@@ -209,27 +202,15 @@ function AddDepositFunds() {
                 </div>
               </div>
 
-              <div className="deposit-input-group">
-                <div className="deposit-field">
-                  <label>Payment Transaction ID</label>
-                  <input
-                    id="deposit-transaction-id"
-                    type="text"
-                    value={transactionId}
-                    onChange={(event) => setTransactionId(event.target.value)}
-                    placeholder="Enter payment transaction ID"
-                  />
-                </div>
-                <div className="deposit-field">
-                  <label>UTR Number</label>
-                  <input
-                    id="deposit-utr-number"
-                    type="text"
-                    value={utrNumber}
-                    onChange={(event) => setUtrNumber(event.target.value)}
-                    placeholder="Enter UTR number"
-                  />
-                </div>
+              <div className="deposit-field">
+                <label>UTR Number</label>
+                <input
+                  id="deposit-utr-number"
+                  type="text"
+                  value={utrNumber}
+                  onChange={(event) => setUtrNumber(event.target.value)}
+                  placeholder="Enter UTR number"
+                />
               </div>
 
               <label className="deposit-upload-box">
