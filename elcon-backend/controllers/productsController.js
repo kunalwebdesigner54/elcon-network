@@ -623,7 +623,8 @@ exports.getOrderByNo = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Order not found' });
     }
 
-    if (String(order.userId) !== String(req.user.id) && req.user.role !== 'admin') {
+    const orderOwnerId = order.userId?._id || order.userId;
+    if (String(orderOwnerId) !== String(req.user.id) && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'Not authorized to view this order' });
     }
 
@@ -646,7 +647,7 @@ exports.getOrderByNo = async (req, res) => {
         discountCoupon: order.discountCoupon,
         finalTotal: order.finalTotal,
         shippingInformation: order.shippingInformation,
-        items: order.items.map((item) => ({
+        items: (order.items || []).map((item) => ({
           name: item.name,
           price: item.price,
           quantity: item.quantity,

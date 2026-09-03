@@ -81,10 +81,11 @@ function InvoicePage() {
   const shippingInfo = getShippingInfo();
 
   // Calculate subtotal and other values
-  const subtotal = invoiceData?.items?.reduce((sum, item) => sum + item.totalPrice, 0) || 0;
-  const shipping = invoiceData?.shippingCharge || 0;
-  const discount = invoiceData?.discountCoupon || 0;
-  const total = invoiceData?.finalTotal || (subtotal + shipping - discount);
+  const items = Array.isArray(invoiceData.items) ? invoiceData.items : [];
+  const subtotal = items.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0);
+  const shipping = Number(invoiceData.shippingCharge || 0);
+  const discount = Number(invoiceData.discountCoupon || 0);
+  const total = Number(invoiceData.finalTotal ?? (subtotal + shipping - discount));
 
   return (
     <div className="invoice-container">
@@ -122,7 +123,7 @@ function InvoicePage() {
                 </tr>
               </thead>
               <tbody>
-                {invoiceData?.items?.map((item, index) => (
+                {items.map((item, index) => (
                   <tr key={index}>
                     <td className="invoice-product-name">
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
@@ -134,16 +135,16 @@ function InvoicePage() {
                         {item.name}
                       </span>
                     </td>
-                    <td className="invoice-text-center">{item.price.toFixed(2)}</td>
+                    <td className="invoice-text-center">{Number(item.price || 0).toFixed(2)}</td>
                     <td className="invoice-text-center">{item.quantity}</td>
-                    <td className="invoice-text-center">{item.totalPrice.toFixed(2)}</td>
+                    <td className="invoice-text-center">{Number(item.totalPrice || 0).toFixed(2)}</td>
                     <td className="invoice-text-center">
-                      {(discount / invoiceData.items.length).toFixed(2)}
+                      {(items.length ? discount / items.length : 0).toFixed(2)}
                     </td>
                     <td className="invoice-text-center">
                       {(
                         item.totalPrice -
-                        discount / invoiceData.items.length
+                        items.length ? discount / items.length : 0
                       ).toFixed(2)}
                     </td>
                   </tr>
