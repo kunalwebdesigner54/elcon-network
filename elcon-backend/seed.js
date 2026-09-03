@@ -60,6 +60,7 @@ const seedStarterUser = async (admin) => {
     name: 'User One',
     email: 'user@gmail.com',
     password: 'user123',
+    transactionPassword: 'user123',
     contactNo: '9000000001',
     sponsorId: admin?.memberId,
     sponsorName: admin?.name || 'Admin',
