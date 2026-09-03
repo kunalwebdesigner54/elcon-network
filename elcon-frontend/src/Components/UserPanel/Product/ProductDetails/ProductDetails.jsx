@@ -44,6 +44,16 @@ const tabConfig = {
   }
 };
 
+const normalizeOptionalValue = (value) => {
+  const normalizedValue = String(value ?? '').trim();
+  return normalizedValue && normalizedValue !== '-' ? normalizedValue : '';
+};
+
+const getOptions = (value) => normalizeOptionalValue(value)
+  .split(',')
+  .map((option) => option.trim())
+  .filter(Boolean);
+
 const buildDetails = (product, stockStatus) => {
   const name = product?.productName || product?.name || 'Product';
   const category = product?.category || 'Health Care Products';
@@ -53,8 +63,12 @@ const buildDetails = (product, stockStatus) => {
   const hsnCode = product?.hsnCode || (/electronic|watch|head|laptop|phone|pod/i.test(`${name} ${category}`) ? '8517' : '4440');
   const levelPoint = product?.levelPoint ?? product?.levelPlan ?? (/electronic|watch|head|laptop|phone|pod/i.test(`${name} ${category}`) ? 100 : 200);
   const bvPoint = product?.bvPoint ?? product?.bv ?? 0;
-  const size = product?.size || (/electronic|watch|head|laptop|phone|pod/i.test(`${name} ${category}`) ? 'Standard' : 'XL');
-  const color = product?.color || (/electronic|watch|head|laptop|phone|pod/i.test(`${name} ${category}`) ? 'Black' : 'Green');
+  const optionalDetails = [
+    { label: 'SIZE', value: normalizeOptionalValue(product?.size) },
+    { label: 'COLOR', value: normalizeOptionalValue(product?.color) },
+    { label: 'WEIGHT', value: normalizeOptionalValue(product?.weight) },
+    { label: 'DIMENSION', value: normalizeOptionalValue(product?.dimension) }
+  ];
 
   return [
     { label: 'STOCK STATUS', value: stockStatus },
@@ -68,10 +82,7 @@ const buildDetails = (product, stockStatus) => {
     { label: 'DELIVERY CHARGE', value: 'free' },
     { label: 'COUPON AMOUNT', value: String(levelPoint) },
     { label: 'B.V POINT', value: String(bvPoint) },
-    { label: 'SIZE', value: size },
-    { label: 'COLOR', value: color },
-    { label: 'WEIGHT', value: product?.weight || '500gm' },
-    { label: 'DIMENSION', value: product?.dimension || '300mm x 200mm x 100mm' }
+    ...optionalDetails.filter((detail) => detail.value)
   ];
 };
 
@@ -134,8 +145,8 @@ const ProductDetails = () => {
   }, [product]);
 
   const details = useMemo(() => buildDetails(product, stockStatus), [product, stockStatus]);
-  const sizeOptions = String(product?.size || '').split(',').map((value) => value.trim()).filter(Boolean);
-  const colorOptions = String(product?.color || '').split(',').map((value) => value.trim()).filter(Boolean);
+  const sizeOptions = getOptions(product?.size);
+  const colorOptions = getOptions(product?.color);
 
   const activeTabData = tabConfig[activeTab];
   const descriptionText = product?.description || activeTabData.content[0];

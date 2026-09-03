@@ -259,19 +259,19 @@ function AddJoiningPackage() {
               </label>
               <label className="admin-add-product-row">
                 <span>Size</span>
-                <input name="size" type="text" defaultValue="XL" />
+                <input name="size" type="text" placeholder="Optional (e.g. S,M,L)" />
               </label>
               <label className="admin-add-product-row">
                 <span>Color</span>
-                <input name="color" type="text" defaultValue="Green" />
+                <input name="color" type="text" placeholder="Optional (e.g. Red,Blue)" />
               </label>
               <label className="admin-add-product-row">
                 <span>Weight</span>
-                <input name="weight" type="text" defaultValue="500gm" />
+                <input name="weight" type="text" placeholder="Optional" />
               </label>
               <label className="admin-add-product-row">
                 <span>Dimension</span>
-                <input name="dimension" type="text" defaultValue="300mm x 200mm x 100mm" />
+                <input name="dimension" type="text" placeholder="Optional" />
               </label>
             </div>
           </div>
