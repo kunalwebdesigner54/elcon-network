@@ -13,6 +13,9 @@
 
 .deposit-confirm-modal {
   width: min(100%, 440px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  box-sizing: border-box;
   padding: 26px;
   border: 1px solid rgba(34, 211, 238, 0.35);
   border-radius: 18px;
@@ -30,6 +33,7 @@
   margin: 0 0 20px;
   color: #cbd5e1;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .deposit-confirm-modal label {
@@ -41,6 +45,8 @@
 .deposit-confirm-modal input {
   width: 100%;
   box-sizing: border-box;
+  min-width: 0;
+  overflow-wrap: anywhere;
   padding: 12px 14px;
   border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 9px;
@@ -187,6 +193,24 @@
 }
 
 @media (max-width: 768px) {
+  .deposit-confirm-backdrop {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .deposit-confirm-modal {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .deposit-confirm-actions {
+    flex-direction: column-reverse;
+  }
+
+  .deposit-confirm-actions button {
+    width: 100%;
+  }
+
   .tds-panel {
     border-radius: 18px;
     padding: 12px;

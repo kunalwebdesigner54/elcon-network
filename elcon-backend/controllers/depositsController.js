@@ -31,6 +31,14 @@ const formatDateTime = (value) => {
 };
 
 const normalizeStatus = (status) => (status === 'Reject' ? 'Rejected' : status);
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const transactionReferenceQuery = (transactionId) => ({
+  $or: [
+    { transactionId: new RegExp(`^${escapeRegex(transactionId)}$`, 'i') },
+    { adminTransactionId: new RegExp(`^${escapeRegex(transactionId)}$`, 'i') },
+    { utrNumber: new RegExp(`^${escapeRegex(transactionId)}$`, 'i') },
+  ],
+});
 
 const toApiRow = (request, index) => ({
   depositId: request.depositId,
@@ -79,7 +87,7 @@ exports.createDepositRequest = async (req, res) => {
   try {
     const amount = Number(req.body.amount || req.body.depositAmount || 0);
     const paymentMode = String(req.body.paymentMode || req.body.transferMethod || '').trim();
-    const transactionId = String(req.body.transactionId || '').trim();
+    const transactionId = String(req.body.transactionId || '').trim().toUpperCase();
     const utrNumber = String(req.body.utrNumber || '').trim();
     const transactionPassword = String(req.body.transactionPassword || '').trim();
     const confirmTransactionPassword = String(req.body.confirmTransactionPassword || '').trim();
@@ -104,6 +112,11 @@ exports.createDepositRequest = async (req, res) => {
 
     if (!utrNumber) {
       return res.status(400).json({ success: false, message: 'Please enter the UTR number' });
+    }
+
+    const existingTransaction = await DepositRequest.findOne(transactionReferenceQuery(transactionId)).select('_id');
+    if (existingTransaction) {
+      return res.status(409).json({ success: false, message: 'This transaction ID has already been used' });
     }
 
     if (!transactionPassword || !confirmTransactionPassword) {
@@ -235,9 +248,16 @@ exports.updateDepositStatus = async (req, res) => {
       if (request.status !== 'Approve') {
         return res.status(400).json({ success: false, message: 'Only approved deposits can be completed' });
       }
-      const confirmedTransactionId = String(adminTransactionId || '').trim();
+      const confirmedTransactionId = String(adminTransactionId || '').trim().toUpperCase();
       if (!confirmedTransactionId) {
         return res.status(400).json({ success: false, message: 'Admin transaction ID is required to complete a deposit' });
+      }
+      const existingTransaction = await DepositRequest.findOne({
+        ...transactionReferenceQuery(confirmedTransactionId),
+        _id: { $ne: request._id },
+      }).select('_id');
+      if (existingTransaction) {
+        return res.status(409).json({ success: false, message: 'This transaction ID has already been used' });
       }
       const password = String(transactionPassword || '').trim();
       if (!password) {
