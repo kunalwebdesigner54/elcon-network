@@ -1,7 +1,6 @@
 const Order = require('../models/Order');
 const WithdrawalRequest = require('../models/WithdrawalRequest');
 const Epin = require('../models/Epin');
-const EpinTransfer = require('../models/EpinTransfer');
 const WalletTransaction = require('../models/WalletTransaction');
 const User = require('../models/User');
 const LevelIncome = require('../models/LevelIncome');
@@ -35,7 +34,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   const withdrawals = await WithdrawalRequest.find().sort({ createdAt: -1 });
   withdrawals.forEach((withdrawal) => {
     const status = String(withdrawal.status || '').trim().toUpperCase();
-    if (!includeAudit && ['REJECTED', 'CANCELLED', 'CANCEL'].includes(status)) {
+    if (['REJECTED', 'CANCELLED', 'CANCEL'].includes(status)) {
       return;
     }
     rows.push({
@@ -59,19 +58,6 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
       credit: 0,
       debit: Number(epin.cost || 0),
       createdAt: epin.createdAt,
-    });
-  });
-
-  const transfers = await EpinTransfer.find().sort({ createdAt: -1 });
-  transfers.forEach((transfer) => {
-    rows.push({
-      dateTime: formatDateTime(transfer.createdAt),
-      transactionId: transfer.epinNo,
-      memberId: transfer.fromMember,
-      description: 'EPIN TRANSFER',
-      credit: 0,
-      debit: Number(transfer.amount || 0),
-      createdAt: transfer.createdAt,
     });
   });
 
