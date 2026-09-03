@@ -3,6 +3,7 @@ const WithdrawalRequest = require('../models/WithdrawalRequest');
 const Epin = require('../models/Epin');
 const EpinTransfer = require('../models/EpinTransfer');
 const WalletTransaction = require('../models/WalletTransaction');
+const User = require('../models/User');
 
 const formatDateTime = (value) => new Date(value).toLocaleString('en-IN', {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
@@ -78,6 +79,14 @@ const buildTransactionRows = async (scope, memberIdentifiers = []) => {
 
   rows.sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
 
+  const uniqueMemberIds = [...new Set(rows.map((row) => row.memberId).filter(Boolean))];
+  const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId name').lean();
+  const memberNameMap = new Map(users.map((user) => [String(user.memberId).trim(), user.name || '']));
+
+  rows.forEach((row) => {
+    row.memberName = memberNameMap.get(String(row.memberId).trim()) || '';
+  });
+
   if (scope === 'user' && memberIdentifiers.length) {
     return rows.filter((row) => memberIdentifiers.includes(row.memberId) || memberIdentifiers.includes(row.transactionId));
   }
@@ -101,6 +110,7 @@ exports.getTransactionHistory = async (req, res) => {
         dateTime: row.dateTime,
         transactionId: row.transactionId,
         memberId: row.memberId,
+        memberName: row.memberName || '',
         description: row.description,
         credit: Number(row.credit || 0),
         debit: Number(row.debit || 0),

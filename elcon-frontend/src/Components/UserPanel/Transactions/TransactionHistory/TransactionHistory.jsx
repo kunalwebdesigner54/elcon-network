@@ -91,6 +91,7 @@ function TransactionHistory() {
                 <th>TRANSACTION DATE & TIME</th>
                 <th>TRANSACTION ID</th>
                 <th>MEMBER ID</th>
+                <th>MEMBER NAME</th>
                 <th>DISCRIPTIONS</th>
                 <th>CREDIT</th>
                 <th>DEBIT</th>
@@ -99,21 +100,22 @@ function TransactionHistory() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="8">Loading...</td></tr>
+                <tr><td colSpan="9">Loading...</td></tr>
               ) : visibleRows.length ? visibleRows.map((row) => (
                 <tr key={row.sNo}>
                   <td>{row.sNo}</td>
                   <td>{row.dateTime}</td>
                   <td>{row.transactionId}</td>
                   <td>{row.memberId}</td>
+                  <td>{row.memberName}</td>
                   <td>{row.description}</td>
                   <td>{formatAmount(row.credit)}</td>
                   <td>{formatAmount(row.debit)}</td>
                   <td>{formatAmount(row.balance)}</td>
                 </tr>
-              )) : (<tr><td colSpan="8">No transactions found</td></tr>)}
+              )) : (<tr><td colSpan="9">No transactions found</td></tr>)}
               <tr className="report-total-row">
-                <td colSpan="5" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL</td>
+                <td colSpan="6" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL</td>
                 <td>{totalCredit.toFixed(2)}</td>
                 <td>{totalDebit.toFixed(2)}</td>
                 <td>{totalBalance.toFixed(2)}</td>
