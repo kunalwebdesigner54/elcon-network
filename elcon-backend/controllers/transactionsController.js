@@ -121,8 +121,8 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   rows.sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
 
   const uniqueMemberIds = [...new Set(rows.map((row) => row.memberId).filter(Boolean))];
-  const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId name').lean();
-  const memberNameMap = new Map(users.map((user) => [String(user.memberId).trim(), user.name || '']));
+  const incomeUsers = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId name').lean();
+  const memberNameMap = new Map(incomeUsers.map((user) => [String(user.memberId).trim(), user.name || '']));
 
   rows.forEach((row) => {
     row.memberName = memberNameMap.get(String(row.memberId).trim()) || '';
