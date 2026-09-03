@@ -329,6 +329,9 @@ exports.changePasswords = async (req, res) => {
     }
     
     const user = await User.findById(req.user.id).select('+password +transactionPassword');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Admin user not found' });
+    }
     
     if (type === 'login') {
       const isMatch = await bcrypt.compare(oldPassword, user.password);

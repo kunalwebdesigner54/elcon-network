@@ -7,7 +7,7 @@ exports.updateAdminPassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
-    const user = await User.findById(req.user._id).select('+password');
+    const user = await User.findById(req.user.id).select('+password');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -42,7 +42,7 @@ exports.updateAdminTransactionPassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
-    const user = await User.findById(req.user._id).select('+transactionPassword');
+    const user = await User.findById(req.user.id).select('+transactionPassword');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
