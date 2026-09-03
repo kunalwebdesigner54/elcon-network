@@ -1,12 +1,12 @@
 import apiClient from './config';
 
-export const getAdminTransactionHistory = async () => {
-  const response = await apiClient.get('/transactions', { params: { scope: 'admin' } });
+export const getAdminTransactionHistory = async (audit = false) => {
+  const response = await apiClient.get('/transactions', { params: { scope: 'admin', audit } });
   return response.data;
 };
 
-export const getUserTransactionHistory = async () => {
-  const response = await apiClient.get('/transactions', { params: { scope: 'user' } });
+export const getUserTransactionHistory = async (audit = false) => {
+  const response = await apiClient.get('/transactions', { params: { scope: 'user', audit } });
   return response.data;
 };
 

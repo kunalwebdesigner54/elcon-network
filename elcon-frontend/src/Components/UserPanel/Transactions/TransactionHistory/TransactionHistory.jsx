@@ -11,6 +11,7 @@ function TransactionHistory() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
+  const [viewMode, setViewMode] = useState('statement');
 
   const [filters, setFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
   const [appliedFilters, setAppliedFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
@@ -18,7 +19,8 @@ function TransactionHistory() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await getUserTransactionHistory();
+        const includeAudit = viewMode === 'audit';
+        const response = await getUserTransactionHistory(includeAudit);
         setRows(response.transactions || []);
       } catch (error) {
         setRows([]);
@@ -26,7 +28,7 @@ function TransactionHistory() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [viewMode]);
 
   const handleSearch = () => {
     setAppliedFilters(filters);
@@ -60,11 +62,34 @@ function TransactionHistory() {
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    setLoading(true);
+  };
+
   return (
     <div>
       <h1 className="user-page-title">Transaction History</h1>
       <div className="user-panel">
-        <h3>Total Balance: {totalBalance ? Number(totalBalance).toFixed(2) : '0.00'}</h3>
+        <div className="transaction-header">
+          <h3>Total Balance: {totalBalance ? Number(totalBalance).toFixed(2) : '0.00'}</h3>
+          <div className="view-toggle">
+            <button 
+              type="button" 
+              className={`view-toggle-btn ${viewMode === 'statement' ? 'active' : ''}`}
+              onClick={() => handleViewModeChange('statement')}
+            >
+              Statement
+            </button>
+            <button 
+              type="button" 
+              className={`view-toggle-btn ${viewMode === 'audit' ? 'active' : ''}`}
+              onClick={() => handleViewModeChange('audit')}
+            >
+              Audit Log
+            </button>
+          </div>
+        </div>
 
         <div className="report-filters">
           <input type="text" name="transactionId" placeholder="TRANSACTION ID" aria-label="Transaction ID" value={filters.transactionId} onChange={handleFilterChange} />

@@ -6,6 +6,7 @@ function TransactionHistory() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
+  const [viewMode, setViewMode] = useState('statement');
 
   const [filters, setFilters] = useState({ memberId: '', transactionId: '', startDate: '', endDate: '' });
   const [appliedFilters, setAppliedFilters] = useState({ memberId: '', transactionId: '', startDate: '', endDate: '' });
@@ -13,7 +14,8 @@ function TransactionHistory() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await getAdminTransactionHistory();
+        const includeAudit = viewMode === 'audit';
+        const response = await getAdminTransactionHistory(includeAudit);
         setRows(response.transactions || []);
       } catch (error) {
         setRows([]);
@@ -21,7 +23,7 @@ function TransactionHistory() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [viewMode]);
 
   const handleSearch = () => {
     setAppliedFilters(filters);
@@ -56,22 +58,45 @@ function TransactionHistory() {
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    setLoading(true);
+  };
+
   return (
     <div className="admintransactionhistory-report-page">
       <h2 className="admintransactionhistory-screen-title">Transaction History</h2>
 
       <section className="panel admintransactionhistory-panel">
-        <div className="admintransactionhistory-filter-row">
-          <input type="text" name="memberId" className="text-input admintransactionhistory-filter-input" placeholder="MEMBER ID" value={filters.memberId} onChange={handleFilterChange} />
-          <input type="text" name="transactionId" className="text-input admintransactionhistory-filter-input" placeholder="TRANSACTION ID" value={filters.transactionId} onChange={handleFilterChange} />
-          <input type="date" name="startDate" className="text-input admintransactionhistory-filter-input" placeholder="START DATE" value={filters.startDate} onChange={handleFilterChange} />
-          <input type="date" name="endDate" className="text-input admintransactionhistory-filter-input" placeholder="END DATE" value={filters.endDate} onChange={handleFilterChange} />
-          <select className="select-input admintransactionhistory-filter-input admintransactionhistory-size-select" value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
-            <option value="10">10</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-          <button className="btn-primary admintransactionhistory-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
+        <div className="admintransactionhistory-filter-header">
+          <div className="admintransactionhistory-filter-row">
+            <input type="text" name="memberId" className="text-input admintransactionhistory-filter-input" placeholder="MEMBER ID" value={filters.memberId} onChange={handleFilterChange} />
+            <input type="text" name="transactionId" className="text-input admintransactionhistory-filter-input" placeholder="TRANSACTION ID" value={filters.transactionId} onChange={handleFilterChange} />
+            <input type="date" name="startDate" className="text-input admintransactionhistory-filter-input" placeholder="START DATE" value={filters.startDate} onChange={handleFilterChange} />
+            <input type="date" name="endDate" className="text-input admintransactionhistory-filter-input" placeholder="END DATE" value={filters.endDate} onChange={handleFilterChange} />
+            <select className="select-input admintransactionhistory-filter-input admintransactionhistory-size-select" value={pageSize} onChange={(event) => setPageSize(event.target.value)}>
+              <option value="10">10</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <button className="btn-primary admintransactionhistory-search-btn" type="button" onClick={handleSearch}>SEARCH</button>
+          </div>
+          <div className="view-toggle">
+            <button 
+              type="button" 
+              className={`view-toggle-btn ${viewMode === 'statement' ? 'active' : ''}`}
+              onClick={() => handleViewModeChange('statement')}
+            >
+              Statement
+            </button>
+            <button 
+              type="button" 
+              className={`view-toggle-btn ${viewMode === 'audit' ? 'active' : ''}`}
+              onClick={() => handleViewModeChange('audit')}
+            >
+              Audit Log
+            </button>
+          </div>
         </div>
 
         <div className="admintransactionhistory-export-row">

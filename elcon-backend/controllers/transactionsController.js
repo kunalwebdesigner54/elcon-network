@@ -9,7 +9,7 @@ const formatDateTime = (value) => new Date(value).toLocaleString('en-IN', {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
 });
 
-const buildTransactionRows = async (scope, memberIdentifiers = []) => {
+const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit = false) => {
   const rows = [];
 
   const orders = await Order.find().populate('userId', 'memberId').sort({ createdAt: -1 });
@@ -28,7 +28,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = []) => {
   const withdrawals = await WithdrawalRequest.find().sort({ createdAt: -1 });
   withdrawals.forEach((withdrawal) => {
     const status = String(withdrawal.status || '').trim().toUpperCase();
-    if (['REJECTED', 'CANCELLED', 'CANCEL'].includes(status)) {
+    if (!includeAudit && ['REJECTED', 'CANCELLED', 'CANCEL'].includes(status)) {
       return;
     }
     rows.push({
@@ -101,11 +101,12 @@ const buildTransactionRows = async (scope, memberIdentifiers = []) => {
 exports.getTransactionHistory = async (req, res) => {
   try {
     const requestedScope = String(req.query.scope || 'admin').toLowerCase();
+    const includeAudit = String(req.query.audit || 'false').toLowerCase() === 'true';
     const scope = req.user?.role === 'admin' ? requestedScope : 'user';
     const memberIdentifiers = [req.query.memberId, req.user?.memberId, req.user?.epin, req.user?.id]
       .map((value) => String(value || '').trim())
       .filter(Boolean);
-    const rows = await buildTransactionRows(scope, memberIdentifiers);
+    const rows = await buildTransactionRows(scope, memberIdentifiers, includeAudit);
     let runningBalance = 0;
     const mappedRows = rows.map((row, index) => {
       runningBalance += Number(row.credit || 0) - Number(row.debit || 0);
