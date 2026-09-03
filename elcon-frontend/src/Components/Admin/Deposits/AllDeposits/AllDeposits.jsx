@@ -3,13 +3,15 @@ import './AllDeposits.css';
 import { getAdminDepositRequests, updateDepositRequestStatus } from '../../../../api/paymentService';
 
 const actionButtons = [
-  { className: 'withdrawal-action-btn withdrawal-action-btn--approve', label: 'Approve', icon: '◌' },
+  { className: 'withdrawal-action-btn withdrawal-action-btn--approve', label: 'Approve', icon: '⏳' },
   { className: 'withdrawal-action-btn withdrawal-action-btn--succeed', label: 'Succeed', icon: '✓' },
   { className: 'withdrawal-action-btn withdrawal-action-btn--reject', label: 'Reject', icon: '✕' },
   { className: 'withdrawal-action-btn withdrawal-action-btn--reset', label: 'Change Status', icon: '↻' }
 ];
 
-function renderActionButtons(orderNo, reloadRows) {
+function DepositActionButtons({ depositId, reloadRows }) {
+  const [processing, setProcessing] = useState(false);
+
   return (
     <div className="withdrawal-action-group" aria-label="Deposit actions">
       {actionButtons.map((button) => (
@@ -18,10 +20,23 @@ function renderActionButtons(orderNo, reloadRows) {
           type="button"
           className={button.className}
           aria-label={button.label}
+          title={button.label}
+          disabled={processing}
           onClick={async () => {
             const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
-            await updateDepositRequestStatus(orderNo, { status: nextStatus });
-            reloadRows();
+            const transactionPassword = nextStatus === 'Succeed'
+              ? window.prompt('Enter admin transaction password to credit the E-Wallet:')
+              : '';
+            if (nextStatus === 'Succeed' && !transactionPassword) return;
+            setProcessing(true);
+            try {
+              await updateDepositRequestStatus(depositId, { status: nextStatus, transactionPassword });
+              await reloadRows();
+            } catch (error) {
+              window.alert(error?.response?.data?.message || 'Unable to update deposit status');
+            } finally {
+              setProcessing(false);
+            }
           }}
         >
           {button.icon}
@@ -163,7 +178,7 @@ function AllDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell">{renderActionButtons(row.transactionId, loadRows)}</td>
+                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} reloadRows={loadRows} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (
@@ -182,4 +197,3 @@ function AllDeposits() {
 }
 
 export default AllDeposits;
-

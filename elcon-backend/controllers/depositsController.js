@@ -33,6 +33,7 @@ const formatDateTime = (value) => {
 const normalizeStatus = (status) => (status === 'Reject' ? 'Rejected' : status);
 
 const toApiRow = (request, index) => ({
+  depositId: request.depositId,
   sno: index + 1,
   depositDate: request.depositDate,
   memberId: request.memberId,

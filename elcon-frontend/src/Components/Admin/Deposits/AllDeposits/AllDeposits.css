@@ -61,23 +61,39 @@
 
 .withdrawal-action-group {
   display: inline-flex;
-  gap: 4px;
+  gap: 8px;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .withdrawal-action-btn {
-  height: 22px;
-  height: 22px;
-  border: 0;
-  border-radius: 2px;
-  font-size: 14px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 9px;
+  font-size: 22px;
   line-height: 1;
-  padding: 0;
+  padding: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: #fff;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.withdrawal-action-btn:hover:not(:disabled),
+.withdrawal-action-btn:focus-visible {
+  transform: translateY(-2px);
+  filter: brightness(1.12);
+  outline: 2px solid rgba(34, 211, 238, 0.75);
+  outline-offset: 2px;
+}
+
+.withdrawal-action-btn:disabled {
+  cursor: wait;
+  opacity: 0.55;
 }
 
 .withdrawal-action-btn--approve {
@@ -139,5 +155,4 @@
     justify-content: flex-start;
   }
 }
-
 
