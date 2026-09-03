@@ -200,22 +200,25 @@ exports.sellProduct = async (req, res) => {
 exports.getSales = async (req, res) => {
   try {
     const memberId = req.user.memberId;
-    const orders = await Order.find({ franchiseId: memberId })
-                              .populate('userId', 'memberId name contactNo')
-                              .sort({ createdAt: -1 })
-                              .lean();
-    
-    const report = orders.map((o, i) => ({
-      id: i + 1,
-      orderNo: o.orderNo,
-      orderDate: o.orderDate,
-      buyerId: o.userId ? o.userId.memberId : 'N/A',
-      buyerName: o.userId ? o.userId.name : 'N/A',
-      buyerContact: o.userId ? o.userId.contactNo : 'N/A',
-      items: o.items.map(item => `${item.name} (x${item.quantity})`).join(', '),
-      totalPrice: o.finalTotal,
-      status: o.orderStatus
-    }));
+    const orders = await Order.find({ franchiseId: memberId }).sort({ createdAt: -1 }).lean();
+    const userIds = [...new Set(orders.map((order) => String(order.userId || '')).filter(Boolean))];
+    const users = await User.find({ _id: { $in: userIds } }).select('_id memberId name contactNo').lean();
+    const userMap = new Map(users.map((user) => [String(user._id), user]));
+
+    const report = orders.map((o, i) => {
+      const owner = userMap.get(String(o.userId)) || {};
+      return {
+        id: i + 1,
+        orderNo: o.orderNo,
+        orderDate: o.orderDate,
+        buyerId: owner.memberId || 'N/A',
+        buyerName: owner.name || 'N/A',
+        buyerContact: owner.contactNo || 'N/A',
+        items: (o.items || []).map(item => `${item.name} (x${item.quantity})`).join(', '),
+        totalPrice: o.finalTotal,
+        status: o.orderStatus
+      };
+    });
 
     res.json({ success: true, report });
   } catch (error) {

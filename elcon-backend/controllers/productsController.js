@@ -638,13 +638,18 @@ exports.getOrders = async (req, res) => {
 
 exports.getOrderByNo = async (req, res) => {
   try {
-    const order = await Order.findOne({ orderNo: req.params.orderNo }).populate('userId', 'memberId name contactNo');
+    const order = await Order.findOne({ orderNo: req.params.orderNo });
 
     if (!order) {
       return res.status(404).json({ success: false, message: 'Order not found' });
     }
 
-    const orderOwnerId = order.userId?._id || order.userId;
+    const ownerIds = [String(order.userId)].filter(Boolean);
+    const users = await User.find({ _id: { $in: ownerIds } }).select('_id memberId name contactNo').lean();
+    const userMap = new Map(users.map((user) => [String(user._id), user]));
+    const owner = userMap.get(String(order.userId)) || {};
+
+    const orderOwnerId = owner._id || order.userId;
     if (String(orderOwnerId) !== String(req.user.id) && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'Not authorized to view this order' });
     }
@@ -654,7 +659,7 @@ exports.getOrderByNo = async (req, res) => {
       order: {
         orderNo: order.orderNo,
         orderDate: order.orderDate,
-        memberId: order.userId?.memberId || String(order.userId?._id || ''),
+        memberId: owner.memberId || String(order.userId || ''),
         paymentMode: order.paymentMode,
         orderItems: order.orderItems,
         orderStatus: order.orderStatus,
@@ -686,26 +691,32 @@ exports.getOrderByNo = async (req, res) => {
 
 exports.getAdminOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate('userId', 'memberId name contactNo').sort({ createdAt: -1 });
+    const orders = await Order.find().sort({ createdAt: -1 });
+    const userIds = [...new Set(orders.map((order) => String(order.userId || '')).filter(Boolean))];
+    const users = await User.find({ _id: { $in: userIds } }).select('_id memberId name contactNo').lean();
+    const userMap = new Map(users.map((user) => [String(user._id), user]));
 
     res.status(200).json({
       success: true,
-      orders: orders.map((order, index) => ({
-        sNo: index + 1,
-        id: order._id,
-        orderNo: order.orderNo,
-        memberId: order.userId?.memberId || String(order.userId?._id || ''),
-        orderDate: order.orderDate,
-        items: `${order.orderItems} ITEMS`,
-        totalPaid: order.finalTotal,
-        payMode: order.paymentMode,
-        payStatus: order.paymentStatus,
-        orderStatus: order.orderStatus,
-        lvPoint: Number(order.lvPoint || 0),
-        bvPoint: Number(order.bvPoint || 0),
-        startDate: order.startDate || order.orderDate,
-        endDate: order.endDate || order.orderDate,
-      })),
+      orders: orders.map((order, index) => {
+        const owner = userMap.get(String(order.userId)) || {};
+        return {
+          sNo: index + 1,
+          id: order._id,
+          orderNo: order.orderNo,
+          memberId: owner.memberId || String(order.userId || ''),
+          orderDate: order.orderDate,
+          items: `${order.orderItems} ITEMS`,
+          totalPaid: order.finalTotal,
+          payMode: order.paymentMode,
+          payStatus: order.paymentStatus,
+          orderStatus: order.orderStatus,
+          lvPoint: Number(order.lvPoint || 0),
+          bvPoint: Number(order.bvPoint || 0),
+          startDate: order.startDate || order.orderDate,
+          endDate: order.endDate || order.orderDate,
+        };
+      }),
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

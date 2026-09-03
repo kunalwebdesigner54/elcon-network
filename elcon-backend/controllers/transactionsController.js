@@ -15,12 +15,16 @@ const formatDateTime = (value) => new Date(value).toLocaleString('en-IN', {
 const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit = false) => {
   const rows = [];
 
-  const orders = await Order.find().populate('userId', 'memberId').sort({ createdAt: -1 });
+  const orders = await Order.find().sort({ createdAt: -1 });
+  const userIds = [...new Set(orders.map((order) => String(order.userId || '')).filter(Boolean))];
+  const users = await User.find({ _id: { $in: userIds } }).select('_id memberId').lean();
+  const userMap = new Map(users.map((user) => [String(user._id), user.memberId || '']));
+
   orders.forEach((order) => {
     rows.push({
       dateTime: formatDateTime(order.createdAt),
       transactionId: order.orderNo,
-      memberId: order.userId?.memberId || String(order.userId),
+      memberId: userMap.get(String(order.userId)) || String(order.userId),
       description: 'PRODUCT PURCHASE',
       credit: 0,
       debit: Number(order.finalTotal || 0),
