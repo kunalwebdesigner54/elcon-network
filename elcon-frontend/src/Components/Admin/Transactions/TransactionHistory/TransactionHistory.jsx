@@ -6,6 +6,7 @@ function TransactionHistory() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
+  const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState('statement');
 
   const [filters, setFilters] = useState({ memberId: '', transactionId: '', startDate: '', endDate: '' });
@@ -17,6 +18,7 @@ function TransactionHistory() {
         const includeAudit = viewMode === 'audit';
         const response = await getAdminTransactionHistory(includeAudit);
         setRows(response.transactions || []);
+        setCurrentPage(1);
       } catch (error) {
         setRows([]);
       } finally {
@@ -27,6 +29,7 @@ function TransactionHistory() {
 
   const handleSearch = () => {
     setAppliedFilters(filters);
+    setCurrentPage(1);
   };
 
   const filteredRows = useMemo(() => {
@@ -52,7 +55,10 @@ function TransactionHistory() {
   const totalDebit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [filteredRows]);
   const totalBalance = filteredRows.length ? filteredRows[filteredRows.length - 1].balance : 0;
   const totalTransactions = filteredRows.length;
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / Number(pageSize)));
+  const indexOfLastItem = currentPage * Number(pageSize);
+  const indexOfFirstItem = indexOfLastItem - Number(pageSize);
+  const visibleRows = filteredRows.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -62,6 +68,10 @@ function TransactionHistory() {
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
     setLoading(true);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -151,17 +161,36 @@ function TransactionHistory() {
 
         <div className="admintransactionhistory-table-footer">
           <div className="admintransactionhistory-pagination">
-            <button className="admintransactionhistory-page-btn">«</button>
-            <button className="admintransactionhistory-page-btn">‹</button>
-            <button className="admintransactionhistory-page-btn admintransactionhistory-active">1</button>
-            <button className="admintransactionhistory-page-btn">2</button>
-            <button className="admintransactionhistory-page-btn">3</button>
-            <button className="admintransactionhistory-page-btn">4</button>
-            <button className="admintransactionhistory-page-btn">5</button>
-            <button className="admintransactionhistory-page-btn">6</button>
-            <button className="admintransactionhistory-page-btn">7</button>
-            <button className="admintransactionhistory-page-btn">›</button>
-            <button className="admintransactionhistory-page-btn">»</button>
+            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
+            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+            {[...Array(totalPages)].map((_, i) => {
+              const pageNum = i + 1;
+              if (
+                totalPages <= 7 ||
+                pageNum === 1 ||
+                pageNum === totalPages ||
+                Math.abs(currentPage - pageNum) <= 1
+              ) {
+                return (
+                  <button 
+                    key={pageNum} 
+                    type="button"
+                    className={`admintransactionhistory-page-btn ${currentPage === pageNum ? 'admintransactionhistory-active' : ''}`}
+                    onClick={() => handlePageChange(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              } else if (
+                (pageNum === 2 && currentPage > 3) ||
+                (pageNum === totalPages - 1 && currentPage < totalPages - 2)
+              ) {
+                return <span key={pageNum} style={{ color: '#00e5ff', padding: '0 5px' }}>...</span>;
+              }
+              return null;
+            })}
+            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
           </div>
         </div>
       </section>

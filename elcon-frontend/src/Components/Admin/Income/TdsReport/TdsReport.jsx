@@ -7,6 +7,7 @@ import { getMembersLocation } from '../../../../api/membersService';
 function TdsReport() {
   const [filters, setFilters] = useState({ memberId: '', panNo: '', startDate: '', endDate: '' });
   const [pageSize, setPageSize] = useState('10');
+  const [currentPage, setCurrentPage] = useState(1);
   const [memberRows, setMemberRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -35,23 +36,31 @@ function TdsReport() {
   }, []);
 
   const filteredRows = useMemo(() => {
-    const memberId = filters.memberId.toLowerCase();
-    const panNo = filters.panNo.toLowerCase();
+    const memberId = (filters.memberId || '').toLowerCase();
+    const panNo = (filters.panNo || '').toLowerCase();
 
     return memberRows.filter((row) => {
       return (
-        (!memberId || row.memberId.toLowerCase().includes(memberId)) &&
-        (!panNo || row.panNo.toLowerCase().includes(panNo))
+        (!memberId || String(row.memberId || '').toLowerCase().includes(memberId)) &&
+        (!panNo || String(row.panNo || '').toLowerCase().includes(panNo))
       );
     });
   }, [filters, memberRows]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / Number(pageSize)));
+  const indexOfLastItem = currentPage * Number(pageSize);
+  const indexOfFirstItem = indexOfLastItem - Number(pageSize);
   const tdsRows = useMemo(() => {
-    return filteredRows.slice(0, Number(pageSize));
-  }, [filteredRows, pageSize]);
+    return filteredRows.slice(indexOfFirstItem, indexOfLastItem);
+  }, [filteredRows, indexOfFirstItem, indexOfLastItem]);
 
   const onFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -117,17 +126,36 @@ function TdsReport() {
             Total Entries: {filteredRows.length}
           </div>
           <div className="tds-report-pagination" style={{ margin: 0 }}>
-            <button type="button" className="tds-report-page-btn">&laquo;</button>
-            <button type="button" className="tds-report-page-btn">&lsaquo;</button>
-            <button type="button" className="tds-report-page-btn tds-report-active">1</button>
-            <button type="button" className="tds-report-page-btn">2</button>
-            <button type="button" className="tds-report-page-btn">3</button>
-            <button type="button" className="tds-report-page-btn">4</button>
-            <button type="button" className="tds-report-page-btn">5</button>
-            <button type="button" className="tds-report-page-btn">6</button>
-            <button type="button" className="tds-report-page-btn">7</button>
-            <button type="button" className="tds-report-page-btn">&rsaquo;</button>
-            <button type="button" className="tds-report-page-btn">&raquo;</button>
+            <button type="button" className="tds-report-page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
+            <button type="button" className="tds-report-page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+            {[...Array(totalPages)].map((_, i) => {
+              const pageNum = i + 1;
+              if (
+                totalPages <= 7 ||
+                pageNum === 1 ||
+                pageNum === totalPages ||
+                Math.abs(currentPage - pageNum) <= 1
+              ) {
+                return (
+                  <button 
+                    key={pageNum} 
+                    type="button"
+                    className={`tds-report-page-btn ${currentPage === pageNum ? 'tds-report-active' : ''}`}
+                    onClick={() => handlePageChange(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              } else if (
+                (pageNum === 2 && currentPage > 3) ||
+                (pageNum === totalPages - 1 && currentPage < totalPages - 2)
+              ) {
+                return <span key={pageNum} style={{ color: '#00e5ff', padding: '0 5px' }}>...</span>;
+              }
+              return null;
+            })}
+            <button type="button" className="tds-report-page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+            <button type="button" className="tds-report-page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
           </div>
         </div>
       </section>
