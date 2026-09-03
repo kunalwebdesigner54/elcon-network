@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../../Common/UserLayout.css';
 import './OrderDetails.css';
@@ -24,6 +24,8 @@ function OrderDetails() {
   const { orderNo } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const loadOrder = async () => {
@@ -32,28 +34,32 @@ function OrderDetails() {
         setOrder(response.order);
       } catch (error) {
         setOrder(null);
+        setErrorMessage(error?.response?.data?.message || 'Unable to load order details');
+      } finally {
+        setLoading(false);
       }
     };
 
     loadOrder();
   }, [orderNo]);
 
-  const fallbackOrder = useMemo(() => ({
-    orderNo,
-    orderDate: '23-04-2026 04.36 PM',
-    paymentMode: 'E-wallet',
-    orderItems: 0,
-    orderStatus: 'Pending',
-    paymentStatus: 'Paid',
-    totalPrice: 0,
-    shippingCharge: 0,
-    discountCoupon: 0,
-    finalTotal: 0,
-    shippingInformation: [],
-    items: [],
-  }), [orderNo]);
+  if (loading) {
+    return <div className="order-details-page"><div className="order-details-shell">Loading order details...</div></div>;
+  }
 
-  const activeOrder = order || fallbackOrder;
+  if (!order) {
+    return (
+      <div className="order-details-page">
+        <div className="order-details-shell">
+          <h1 className="order-details-title">Order Details</h1>
+          <p>{errorMessage || 'Order details are unavailable.'}</p>
+          <button type="button" className="order-details-print-btn" onClick={handleBackToOrders}>Back to Orders</button>
+        </div>
+      </div>
+    );
+  }
+
+  const activeOrder = order;
 
   // Normalize numeric fields to avoid crashes when backend uses different names
   const totalPrice = Number(activeOrder.totalPrice ?? activeOrder.finalTotal ?? 0);
@@ -167,9 +173,9 @@ function OrderDetails() {
                         <span className="order-details-item-name">{item.name}</span>
                       </div>
                     </td>
-                    <td data-label="Price">{item.price.toFixed(2)}</td>
+                    <td data-label="Price">{Number(item.price || 0).toFixed(2)}</td>
                     <td data-label="Quantity">{item.quantity}</td>
-                    <td data-label="Total Price">{item.totalPrice.toFixed(2)}</td>
+                    <td data-label="Total Price">{Number(item.totalPrice || 0).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
