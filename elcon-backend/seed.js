@@ -32,6 +32,7 @@ const seedAdmin = async () => {
       name: 'Admin',
       email: 'admin@gmail.com',
       password: 'admin123',
+      transactionPassword: 'admin123',
       role: 'admin',
       unlockLevel: 10,
     });
