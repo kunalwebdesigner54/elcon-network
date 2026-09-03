@@ -1,62 +1,47 @@
-import { useEffect, useMemo, useState } from 'react';
-import { getEpinList, transferEpin } from '../../../api/managementService';
+import { useEffect, useState } from 'react';
+import { getEpinList, transferEpins } from '../../../api/managementService';
 
 export default function TransferEPin() {
   const [epins, setEpins] = useState([]);
-  const [selectedEpin, setSelectedEpin] = useState('');
+  const [selectedEpins, setSelectedEpins] = useState([]);
   const [toMember, setToMember] = useState('');
-  const [amount, setAmount] = useState('');
   const [transactionPassword, setTransactionPassword] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  const loadEpins = async () => {
+    const response = await getEpinList({ status: 'Unused' });
+    setEpins(response.epins || []);
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await getEpinList({ status: 'Unused' });
-        setEpins(response.epins || []);
-      } catch (err) {
-        setEpins([]);
-      } finally {
-        setLoading(false);
-      }
-    })();
+    loadEpins().catch(() => setError('Unable to load available ePins.')).finally(() => setLoading(false));
   }, []);
 
-  const selectedRecord = useMemo(() => epins.find((item) => item.epin === selectedEpin), [epins, selectedEpin]);
-
-  useEffect(() => {
-    if (selectedRecord && !amount) {
-      setAmount(String(selectedRecord.cost || ''));
-    }
-  }, [selectedRecord, amount]);
+  const toggleEpin = (epinNo) => {
+    setSelectedEpins((current) => current.includes(epinNo)
+      ? current.filter((value) => value !== epinNo)
+      : [...current, epinNo]);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
     setMessage('');
-
-    if (!selectedEpin || !toMember.trim()) {
-      setError('Select an ePin and enter a recipient member id.');
+    if (!selectedEpins.length || !toMember.trim() || !transactionPassword) {
+      setError('Select one or more ePins, enter recipient member id and transaction password.');
       return;
     }
-
     setSubmitting(true);
     try {
-      await transferEpin(selectedEpin, {
-        toMember: toMember.trim(),
-        amount: amount ? Number(amount) : selectedRecord?.cost,
-        transactionPassword,
-      });
-      setMessage('ePin transferred successfully.');
-      setSelectedEpin('');
+      await transferEpins(selectedEpins, { toMember: toMember.trim(), transactionPassword });
+      setMessage(`${selectedEpins.length} ePin(s) transferred successfully.`);
+      setSelectedEpins([]);
       setToMember('');
-      setAmount('');
       setTransactionPassword('');
-      const response = await getEpinList({ status: 'Unused' });
-      setEpins(response.epins || []);
+      await loadEpins();
     } catch (err) {
       setError(err?.response?.data?.message || err.message || 'Transfer failed.');
     } finally {
@@ -70,21 +55,20 @@ export default function TransferEPin() {
       <div className="user-panel">
         <form onSubmit={handleSubmit}>
           <div className="report-filters">
-            <select aria-label="Select ePin" value={selectedEpin} onChange={(event) => setSelectedEpin(event.target.value)} disabled={loading || submitting}>
-              <option value="">{loading ? 'Loading ePins...' : 'Select ePin'}</option>
-              {epins.map((epin) => (
-                <option key={epin.epin} value={epin.epin}>
-                  {epin.epin} - {epin.epinName}
-                </option>
-              ))}
-            </select>
             <input type="text" placeholder="RECIPIENT MEMBER ID" aria-label="Recipient Member ID" value={toMember} onChange={(event) => setToMember(event.target.value)} disabled={submitting} />
-            <input type="number" placeholder="AMOUNT" aria-label="Amount" value={amount} onChange={(event) => setAmount(event.target.value)} disabled={submitting} />
             <input type="password" placeholder="TRANSACTION PASSWORD" aria-label="Transaction Password" value={transactionPassword} onChange={(event) => setTransactionPassword(event.target.value)} disabled={submitting} required />
-            <button className="user-btn-blue" type="submit" disabled={submitting || loading}>{submitting ? 'TRANSFER...' : 'TRANSFER'}</button>
           </div>
+          <p>Select ePins ({selectedEpins.length} selected)</p>
+          <div className="epin-selection-list">
+            {loading ? <p>Loading ePins...</p> : epins.length ? epins.map((epin) => (
+              <label key={epin.epin} className="epin-selection-item">
+                <input type="checkbox" checked={selectedEpins.includes(epin.epin)} onChange={() => toggleEpin(epin.epin)} disabled={submitting} />
+                <span>{epin.epin} - {epin.epinName} (₹{epin.cost})</span>
+              </label>
+            )) : <p>No unused ePins available.</p>}
+          </div>
+          <button className="user-btn-blue" type="submit" disabled={submitting || loading || !selectedEpins.length}>{submitting ? 'TRANSFER...' : `TRANSFER ${selectedEpins.length || ''}`}</button>
         </form>
-
         {message ? <p style={{ color: '#166534', marginTop: 12 }}>{message}</p> : null}
         {error ? <p style={{ color: '#b91c1c', marginTop: 12 }}>{error}</p> : null}
       </div>

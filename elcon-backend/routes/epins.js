@@ -7,6 +7,7 @@ const {
   getEpins,
   generateEpins,
   updateEpinStatus,
+  transferEpins,
   transferEpin,
   getTransferHistory,
   getFranchises,
@@ -31,6 +32,7 @@ router.patch('/requests/:requestId/status', authorize('admin'), updateEpinReques
 
 router.get('/', getEpins);
 router.post('/generate', generateEpins);
+router.post('/transfer', transferEpins);
 router.patch('/:epinNo/status', updateEpinStatus);
 router.post('/:epinNo/transfer', transferEpin);
 router.get('/transfers', getTransferHistory);

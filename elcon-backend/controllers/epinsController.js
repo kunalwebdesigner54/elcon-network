@@ -253,13 +253,23 @@ exports.updateEpinStatus = async (req, res) => {
   }
 };
 
-exports.transferEpin = async (req, res) => {
+exports.transferEpins = async (req, res) => {
   try {
-    const epin = await Epin.findOne({ epinNo: req.params.epinNo });
-    if (!epin) return res.status(404).json({ success: false, message: 'ePin not found' });
+    const requestedEpins = Array.isArray(req.body.epinNos)
+      ? req.body.epinNos
+      : [req.params.epinNo || req.body.epinNo];
+    const epinNos = [...new Set(requestedEpins.map((value) => String(value || '').trim()).filter(Boolean))];
+    if (!epinNos.length) return res.status(400).json({ success: false, message: 'At least one ePin is required' });
+
+    const epins = await Epin.find({ epinNo: { $in: epinNos }, status: 'Unused' });
+    if (epins.length !== epinNos.length) {
+      return res.status(400).json({ success: false, message: 'One or more selected ePins are unavailable' });
+    }
+
     const identifiers = getUserIdentifiers(req);
     if (!isAdmin(req)) {
-      if (!identifiers.includes(epin.currentOwner)) {
+      const ownerKeys = identifiers.map((value) => value.toUpperCase());
+      if (epins.some((epin) => !ownerKeys.includes(String(epin.currentOwner || '').toUpperCase()))) {
         return res.status(403).json({ success: false, message: 'You can only transfer your own ePins' });
       }
 
@@ -281,7 +291,7 @@ exports.transferEpin = async (req, res) => {
         return res.status(401).json({ success: false, message: 'Transaction password is incorrect' });
       }
     }
-    const toMember = String(req.body.toMember || '').trim();
+    const toMember = String(req.body.toMember || '').trim().toUpperCase();
     if (!toMember) {
       return res.status(400).json({ success: false, message: 'toMember is required' });
     }
@@ -289,21 +299,33 @@ exports.transferEpin = async (req, res) => {
     if (!targetUser && toMember.toUpperCase() !== 'ADMIN') {
       return res.status(404).json({ success: false, message: 'Target member not found' });
     }
-    const transfer = await EpinTransfer.create({
+    const status = String(req.body.status || 'Success').trim();
+    const transfers = await EpinTransfer.insertMany(epins.map((epin) => ({
       epinNo: epin.epinNo,
       fromMember: String(isAdmin(req) ? req.body.fromMember || epin.currentOwner : epin.currentOwner).trim(),
       toMember,
-      amount: Number(req.body.amount || epin.cost || 0),
-      status: String(req.body.status || 'Success').trim(),
+      amount: Number(epin.cost || 0),
+      status,
+    })));
+    await Epin.updateMany({ epinNo: { $in: epinNos } }, { $set: { currentOwner: toMember } });
+    res.status(201).json({
+      success: true,
+      transfers: transfers.map((transfer) => ({
+        id: transfer._id,
+        epin: transfer.epinNo,
+        fromMember: transfer.fromMember,
+        toMember: transfer.toMember,
+        transferDate: formatDate(transfer.createdAt),
+        amount: Number(transfer.amount).toFixed(2),
+        status: transfer.status,
+      })),
     });
-    epin.currentOwner = transfer.toMember;
-    epin.status = req.body.status === 'Pending' ? 'Unused' : epin.status;
-    await epin.save();
-    res.status(201).json({ success: true, transfer: { id: transfer._id, epin: transfer.epinNo, fromMember: transfer.fromMember, toMember: transfer.toMember, transferDate: formatDate(transfer.createdAt), amount: Number(transfer.amount).toFixed(2), status: transfer.status } });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.transferEpin = exports.transferEpins;
 
 exports.getTransferHistory = async (req, res) => {
   try {

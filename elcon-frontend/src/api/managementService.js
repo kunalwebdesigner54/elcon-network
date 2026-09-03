@@ -117,7 +117,12 @@ export const updateEpinStatus = async (epinNo, payload) => {
 };
 
 export const transferEpin = async (epinNo, payload) => {
-  const response = await apiClient.post(`/epins/${epinNo}/transfer`, payload);
+  const response = await apiClient.post(epinNo ? `/epins/${epinNo}/transfer` : '/epins/transfer', payload);
+  return response.data;
+};
+
+export const transferEpins = async (epinNos, payload) => {
+  const response = await apiClient.post('/epins/transfer', { ...payload, epinNos });
   return response.data;
 };
 
