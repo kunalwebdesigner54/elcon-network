@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Donation = require('../models/Donation');
+const { createWalletTransaction } = require('../utils/walletHelper');
 
 const DONATION_AMOUNTS = Donation.DONATION_AMOUNTS;
 
@@ -146,9 +147,21 @@ exports.upgradeMember = async (req, res) => {
     
     await user.save();
 
+    await createWalletTransaction({
+      memberId: user.memberId,
+      description: `DONATION DEBIT - Level ${targetLevel}`,
+      debit: amount,
+    });
+
     // Credit upline's wallet
     upline.walletBalance = (upline.walletBalance || 0) + amount;
     await upline.save();
+
+    await createWalletTransaction({
+      memberId: upline.memberId,
+      description: `DONATION CREDIT - Level ${targetLevel}`,
+      credit: amount,
+    });
 
     // Record the donation
     const donation = await Donation.create({
@@ -301,6 +314,12 @@ exports.updateDonationStatus = async (req, res) => {
       if (receiver) {
         receiver.walletBalance = (receiver.walletBalance || 0) + donation.amount;
         await receiver.save();
+
+        await createWalletTransaction({
+          memberId: receiver.memberId,
+          description: `DONATION CREDIT - ${donation.donationId}`,
+          credit: donation.amount,
+        });
       }
     }
 

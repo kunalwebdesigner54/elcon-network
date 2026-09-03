@@ -38,10 +38,10 @@ function LevelIncomeReports() {
 
     getLevelIncomeReports(params)
       .then((response) => {
-        setRows(Array.isArray(response?.data?.data) ? response.data.data : []);
-        setGlobalTotalAmount(response?.data?.globalTotalAmount || 0);
-        if (response?.data?.pagination) {
-          setTotalPages(response.data.pagination.pages || 1);
+        setRows(Array.isArray(response?.data) ? response.data : []);
+        setGlobalTotalAmount(response?.globalTotalAmount || 0);
+        if (response?.pagination) {
+          setTotalPages(response.pagination.pages || 1);
         }
       })
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load level income reports.'))

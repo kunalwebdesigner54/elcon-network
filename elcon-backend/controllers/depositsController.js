@@ -1,5 +1,6 @@
 const DepositRequest = require('../models/DepositRequest');
 const User = require('../models/User');
+const { createWalletTransaction } = require('../utils/walletHelper');
 
 const buildDepositId = async () => {
   let depositId = '';
@@ -81,6 +82,22 @@ const adjustWalletOnStatusChange = async (request, nextStatus) => {
   }
 
   await user.save();
+
+  if (request.status === 'Succeed' && nextStatus !== 'Succeed') {
+    await createWalletTransaction({
+      memberId: user.memberId,
+      description: `DEPOSIT REVERSED - ${request.depositId}`,
+      debit: requestAmount,
+    });
+  }
+
+  if (request.status !== 'Succeed' && nextStatus === 'Succeed') {
+    await createWalletTransaction({
+      memberId: user.memberId,
+      description: `DEPOSIT CREDIT - ${request.depositId}`,
+      credit: requestAmount,
+    });
+  }
 };
 
 exports.createDepositRequest = async (req, res) => {

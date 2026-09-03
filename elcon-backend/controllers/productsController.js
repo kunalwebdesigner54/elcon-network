@@ -4,6 +4,7 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const productSeedData = require('../data/productSeedData');
 const { distributeRepurchaseIncome } = require('../services/repurchaseIncomeService');
+const { createWalletTransaction } = require('../utils/walletHelper');
 
 const productToApiShape = (product) => ({
   id: product._id,
@@ -548,6 +549,13 @@ exports.checkoutCart = async (req, res) => {
         ...(appliedDiscount > 0 ? { $set: { couponWalletBalance: remainingCoupon, discountCouponBalance: 0 } } : {}),
       };
       updatedUser = await User.findOneAndUpdate(balanceFilter, balanceUpdate, { new: true });
+      if (walletDebitAmount > 0) {
+        await createWalletTransaction({
+          memberId: user.memberId,
+          description: `PRODUCT PURCHASE - ${orderNo}`,
+          debit: walletDebitAmount,
+        });
+      }
     }
 
     if (!updatedUser) {
@@ -591,6 +599,11 @@ exports.checkoutCart = async (req, res) => {
   } catch (error) {
     if (walletDebitApplied && walletDebitAmount > 0) {
       await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: walletDebitAmount } });
+      await createWalletTransaction({
+        memberId: user.memberId,
+        description: `PRODUCT PURCHASE REFUND - ${orderNo}`,
+        credit: walletDebitAmount,
+      });
     }
     res.status(500).json({ success: false, message: error.message });
   }

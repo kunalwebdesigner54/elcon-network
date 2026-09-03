@@ -1,5 +1,6 @@
 const WithdrawalRequest = require('../models/WithdrawalRequest');
 const User = require('../models/User');
+const { createWalletTransaction } = require('../utils/walletHelper');
 
 const buildRequestId = async () => {
   let requestId = '';
@@ -72,6 +73,22 @@ const adjustWalletOnStatusChange = async (request, nextStatus) => {
   }
 
   await user.save();
+
+  if (request.status === 'Reject' && nextStatus !== 'Reject') {
+    await createWalletTransaction({
+      memberId: user.memberId,
+      description: `WITHDRAWAL DEBIT - ${request.requestId}`,
+      debit: requestAmount,
+    });
+  }
+
+  if (request.status !== 'Reject' && nextStatus === 'Reject') {
+    await createWalletTransaction({
+      memberId: user.memberId,
+      description: `WITHDRAWAL REVERSED - ${request.requestId}`,
+      credit: requestAmount,
+    });
+  }
 };
 
 exports.createWithdrawalRequest = async (req, res) => {

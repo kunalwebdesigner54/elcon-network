@@ -189,6 +189,13 @@ exports.manageWalletBalance = async (req, res) => {
       });
     } catch (ledgerError) {
       await User.findByIdAndUpdate(user._id, { $inc: { walletBalance: -balanceChange } });
+      await WalletTransaction.create({
+        transactionId: `WLT${Date.now()}${crypto.randomBytes(3).toString('hex').toUpperCase()}`,
+        memberId: updatedUser.memberId,
+        description: action === 'add' ? 'WALLET CREDIT ROLLBACK' : 'WALLET DEBIT ROLLBACK',
+        credit: action === 'add' ? 0 : parsedAmount,
+        debit: action === 'add' ? parsedAmount : 0,
+      });
       throw ledgerError;
     }
 
