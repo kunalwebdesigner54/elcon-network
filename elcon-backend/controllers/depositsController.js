@@ -104,7 +104,7 @@ exports.createDepositRequest = async (req, res) => {
   try {
     const amount = Number(req.body.amount || req.body.depositAmount || 0);
     const paymentMode = String(req.body.paymentMode || req.body.transferMethod || '').trim();
-    const transactionId = String(req.body.transactionId || '').trim().toUpperCase();
+    let transactionId = String(req.body.transactionId || '').trim().toUpperCase();
     const utrNumber = String(req.body.utrNumber || '').trim();
     const transactionPassword = String(req.body.transactionPassword || '').trim();
     const confirmTransactionPassword = String(req.body.confirmTransactionPassword || '').trim();
@@ -124,11 +124,7 @@ exports.createDepositRequest = async (req, res) => {
     }
 
     if (!transactionId) {
-      return res.status(400).json({ success: false, message: 'Please enter the payment transaction ID' });
-    }
-
-    if (!utrNumber) {
-      return res.status(400).json({ success: false, message: 'Please enter the UTR number' });
+      transactionId = `TXN${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
     }
 
     const existingTransaction = await DepositRequest.findOne(transactionReferenceQuery(transactionId)).select('_id');
