@@ -24,13 +24,17 @@ function DepositActionButtons({ depositId, reloadRows }) {
           disabled={processing}
           onClick={async () => {
             const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
+            const adminTransactionId = nextStatus === 'Succeed'
+              ? window.prompt('Enter the confirmed bank transaction ID:')
+              : '';
+            if (nextStatus === 'Succeed' && !adminTransactionId?.trim()) return;
             const transactionPassword = nextStatus === 'Succeed'
               ? window.prompt('Enter admin transaction password to credit the E-Wallet:')
               : '';
             if (nextStatus === 'Succeed' && !transactionPassword) return;
             setProcessing(true);
             try {
-              await updateDepositRequestStatus(depositId, { status: nextStatus, transactionPassword });
+              await updateDepositRequestStatus(depositId, { status: nextStatus, adminTransactionId: adminTransactionId.trim(), transactionPassword });
               await reloadRows();
             } catch (error) {
               window.alert(error?.response?.data?.message || 'Unable to update deposit status');

@@ -39,7 +39,9 @@ const toApiRow = (request, index) => ({
   memberId: request.memberId,
   memberName: request.memberName,
   mobileNo: request.mobileNo,
-  transactionId: request.transactionId || request.utrNumber || request.depositId,
+  transactionId: request.adminTransactionId || request.transactionId || request.utrNumber || request.depositId,
+  memberTransactionId: request.transactionId || request.utrNumber || request.depositId,
+  adminTransactionId: request.adminTransactionId || '',
   paymentMode: request.paymentMode,
   amount: Number(request.amount || 0).toFixed(2),
   utrNumber: request.utrNumber,
@@ -211,7 +213,7 @@ exports.getDepositSummary = async (req, res) => {
 exports.updateDepositStatus = async (req, res) => {
   try {
     const { orderNo } = req.params;
-    const { status, remark, transactionPassword } = req.body;
+    const { status, remark, transactionPassword, adminTransactionId } = req.body;
 
     if (!['Pending', 'Approve', 'Succeed', 'Rejected', 'Reject'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Invalid deposit status' });
@@ -225,6 +227,10 @@ exports.updateDepositStatus = async (req, res) => {
     const normalizedStatus = normalizeStatus(status);
 
     if (normalizedStatus === 'Succeed') {
+      const confirmedTransactionId = String(adminTransactionId || '').trim();
+      if (!confirmedTransactionId) {
+        return res.status(400).json({ success: false, message: 'Admin transaction ID is required to complete a deposit' });
+      }
       const password = String(transactionPassword || '').trim();
       if (!password) {
         return res.status(400).json({ success: false, message: 'Admin transaction password is required to succeed a deposit' });
@@ -238,6 +244,7 @@ exports.updateDepositStatus = async (req, res) => {
       if (!isPasswordValid) {
         return res.status(401).json({ success: false, message: 'Admin transaction password is incorrect' });
       }
+      request.adminTransactionId = confirmedTransactionId;
     }
 
     await adjustWalletOnStatusChange(request, normalizedStatus);

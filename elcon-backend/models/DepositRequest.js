@@ -38,6 +38,11 @@ const depositRequestSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    adminTransactionId: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     paymentMode: {
       type: String,
       required: true,

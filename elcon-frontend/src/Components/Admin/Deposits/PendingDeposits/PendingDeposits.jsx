@@ -15,10 +15,12 @@ function renderActionButtons(orderNo, reloadRows) {
       {actionButtons.map((button) => (
         <button key={button.label} type="button" className={button.className} aria-label={button.label} onClick={async () => {
           const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
+          const adminTransactionId = nextStatus === 'Succeed' ? window.prompt('Enter the confirmed bank transaction ID:') : '';
+          if (nextStatus === 'Succeed' && !adminTransactionId?.trim()) return;
           const transactionPassword = nextStatus === 'Succeed' ? window.prompt('Enter admin transaction password to credit the E-Wallet:') : '';
           if (nextStatus === 'Succeed' && !transactionPassword) return;
           try {
-            await updateDepositRequestStatus(orderNo, { status: nextStatus, transactionPassword });
+            await updateDepositRequestStatus(orderNo, { status: nextStatus, adminTransactionId: adminTransactionId.trim(), transactionPassword });
             reloadRows();
           } catch (error) {
             window.alert(error?.response?.data?.message || 'Unable to update deposit status');
