@@ -233,6 +233,7 @@ const ProductDetails = () => {
                     <option value="">Select size</option>
                     {sizeOptions.map((size) => <option key={size} value={size}>{size}</option>)}
                   </select>
+                  {selectedSize && <span className="product-variant-selected">✓ Selected: {selectedSize}</span>}
                 </label>
               )}
               {colorOptions.length > 1 && (
@@ -242,6 +243,7 @@ const ProductDetails = () => {
                     <option value="">Select color</option>
                     {colorOptions.map((color) => <option key={color} value={color}>{color}</option>)}
                   </select>
+                  {selectedColor && <span className="product-variant-selected">✓ Selected: {selectedColor}</span>}
                 </label>
               )}
             </div>

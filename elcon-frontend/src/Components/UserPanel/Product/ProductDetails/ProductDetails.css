@@ -409,3 +409,9 @@
   background: var(--darker);
   color: var(--text-main);
 }
+
+.product-variant-selected {
+  color: #16c784;
+  font-size: 12px;
+  font-weight: 700;
+}
