@@ -125,7 +125,7 @@ function PublicLayout() {
         <div className="public-container public-footer-grid">
           <div>
             <NavLink to="/" className="public-logo-wrap" style={{ display: 'flex', marginBottom: '20px' }}>
-              <div className="public-logo-mark">IHH</div>
+              <div className="public-logo-mark">ELCON</div>
               <div className="public-logo-text">Elcon Network</div>
             </NavLink>
             <p style={{ lineHeight: '1.7', color: '#c8d4de' }}>

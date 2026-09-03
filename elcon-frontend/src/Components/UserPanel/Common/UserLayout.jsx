@@ -215,7 +215,7 @@ function UserLayout() {
   return (
     <div className={`user-root ${isSidebarOpen ? 'user-sidebar-open' : 'user-sidebar-collapsed'}`}>
       <aside className="user-sidebar">
-        <div className="user-brand">IHH</div>
+        <div className="user-brand">ELCON</div>
         <div className="user-member-card">
           <div className="user-member-meta">
             <div className="user-member-avatar">👤</div>

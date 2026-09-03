@@ -259,7 +259,7 @@ function AdminLayout() {
   return (
     <div className={`admin-root ${isSidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
       <aside className="sidebar">
-        <div className="sidebar-brand">IHH</div>
+        <div className="sidebar-brand">ELCON</div>
         <div className="sidebar-user">
           <div className="sidebar-user-meta">
             <div className="sidebar-avatar">👤</div>
