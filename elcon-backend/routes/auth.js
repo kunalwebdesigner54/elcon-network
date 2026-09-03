@@ -2,7 +2,7 @@
 
 const express = require('express');
 const { body, validationRules } = require('express-validator');
-const { registerUser, loginUser, loginAsUser, getMe, getSponsorDetails } = require('../controllers/authController');
+const { registerUser, loginUser, loginAsUser, getMe, getSponsorDetails, requestAdminPasswordReset, resetAdminPassword } = require('../controllers/authController');
 const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
@@ -42,6 +42,9 @@ router.post(
   ],
   loginUser
 );
+
+router.post('/admin/forgot-password', [body('email', 'Please provide a valid email').isEmail().normalizeEmail()], requestAdminPasswordReset);
+router.post('/admin/reset-password', resetAdminPassword);
 
 router.post(
   '/admin-login-user',

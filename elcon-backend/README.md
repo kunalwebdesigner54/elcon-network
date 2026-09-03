@@ -329,6 +329,9 @@ npm start          # Start server in production mode
 npm run dev        # Start with nodemon (auto-reload)
 npm run seed       # Seed admin user manually
 npm run reset-admin-password -- admin@gmail.com "new-secure-password"
+
+# Email password recovery requires these server environment variables:
+# SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, FRONTEND_URL
 ```
 
 ## Common Commands

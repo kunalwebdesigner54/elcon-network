@@ -5,6 +5,24 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Epin = require('../models/Epin');
 const SiteSetting = require('../models/SiteSetting');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+const sendPasswordResetEmail = async (email, token) => {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD },
+  });
+  const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin/reset-password/${token}`;
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    to: email,
+    subject: 'Admin password reset request',
+    text: `Use this link to reset your admin password (valid for 15 minutes): ${resetUrl}`,
+  });
+};
 
 /**
  * Generate JWT Token
@@ -337,6 +355,60 @@ exports.loginUser = async (req, res) => {
       message: 'Server error during login',
       error: error.message,
     });
+  }
+};
+
+exports.requestAdminPasswordReset = async (req, res) => {
+  const genericResponse = {
+    success: true,
+    message: 'If an admin account exists for this email, a reset link has been sent.',
+  };
+  try {
+    const email = String(req.body.email || '').trim().toLowerCase();
+    if (!email) return res.status(400).json({ success: false, message: 'Email is required' });
+    const admin = await User.findOne({ email, role: 'admin' }).select('+passwordResetTokenHash +passwordResetExpiresAt');
+    if (!admin) return res.json(genericResponse);
+
+    const token = crypto.randomBytes(32).toString('hex');
+    admin.passwordResetTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    admin.passwordResetExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    await admin.save({ validateBeforeSave: false });
+    try {
+      await sendPasswordResetEmail(email, token);
+    } catch (error) {
+      admin.passwordResetTokenHash = undefined;
+      admin.passwordResetExpiresAt = undefined;
+      await admin.save({ validateBeforeSave: false });
+      throw error;
+    }
+    return res.json(genericResponse);
+  } catch (error) {
+    console.error('requestAdminPasswordReset error:', error);
+    return res.status(500).json({ success: false, message: 'Unable to send reset email' });
+  }
+};
+
+exports.resetAdminPassword = async (req, res) => {
+  try {
+    const { token, newPassword, confirmPassword } = req.body;
+    if (!token || !newPassword || newPassword !== confirmPassword || newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Valid token and matching password of at least 6 characters are required' });
+    }
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const admin = await User.findOne({
+      role: 'admin',
+      passwordResetTokenHash: tokenHash,
+      passwordResetExpiresAt: { $gt: new Date() },
+    }).select('+passwordResetTokenHash +passwordResetExpiresAt');
+    if (!admin) return res.status(400).json({ success: false, message: 'Reset link is invalid or expired' });
+    admin.password = newPassword;
+    admin.passwordResetTokenHash = undefined;
+    admin.passwordResetExpiresAt = undefined;
+    await admin.save();
+    return res.json({ success: true, message: 'Admin password reset successfully' });
+  } catch (error) {
+    console.error('resetAdminPassword error:', error);
+    return res.status(500).json({ success: false, message: 'Unable to reset password' });
   }
 };
 

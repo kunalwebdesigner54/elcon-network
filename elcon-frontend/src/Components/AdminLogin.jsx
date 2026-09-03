@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { loginUser, getProfile } from '../api/authService';
 
 function AdminLogin() {
@@ -114,6 +114,9 @@ function AdminLogin() {
 				>
 					{loading ? 'Signing in...' : 'Login'}
 				</button>
+				<p style={{ textAlign: 'center', marginTop: '16px' }}>
+					<Link to="/admin/forgot-password">Forgot password?</Link>
+				</p>
 			</form>
 		</div>
 	);

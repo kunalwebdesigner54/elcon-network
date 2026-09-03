@@ -38,6 +38,8 @@ import FranchiseSalesReport from './Components/UserPanel/Franchise/FranchiseSale
 import AdminProductFranchise from './Components/Admin/ProductFranchise/AdminProductFranchise';
 import AdminWalletBalance from './Components/Admin/WalletManage/AdminWalletBalance';
 import AdminLogin from './Components/AdminLogin';
+import AdminForgotPassword from './Components/AdminForgotPassword';
+import AdminResetPassword from './Components/AdminResetPassword';
 import ProtectedRoute from './Components/ProtectedRoute';
 import AdminRoute from './Components/AdminRoute';
 import UserLayout from './Components/UserPanel/Common/UserLayout';
@@ -192,6 +194,8 @@ function App() {
         <Route path="/login" element={<UserLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
+        <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
         <Route path="/invoice" element={<ProtectedRoute><InvoicePage /></ProtectedRoute>} />
 
         <Route path="/" element={<PublicLayout />}>

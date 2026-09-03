@@ -68,6 +68,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       select: false,
     },
+    passwordResetTokenHash: {
+      type: String,
+      select: false,
+    },
+    passwordResetExpiresAt: {
+      type: Date,
+      select: false,
+    },
     aadharNo: {
       type: String,
       trim: true,

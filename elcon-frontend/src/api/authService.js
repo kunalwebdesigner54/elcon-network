@@ -10,6 +10,16 @@ export const loginUser = async (credentials) => {
 	return response.data;
 };
 
+export const requestAdminPasswordReset = async (email) => {
+	const response = await apiClient.post('/auth/admin/forgot-password', { email });
+	return response.data;
+};
+
+export const resetAdminPassword = async (payload) => {
+	const response = await apiClient.post('/auth/admin/reset-password', payload);
+	return response.data;
+};
+
 export const loginAsUser = async (memberId) => {
 	const response = await apiClient.post('/auth/admin-login-user', { memberId });
 	return response.data;
@@ -55,4 +65,3 @@ export const updateTransactionPassword = async (passwordData) => {
 	const response = await apiClient.put('/profile/transaction-password', passwordData);
 	return response.data;
 };
-
