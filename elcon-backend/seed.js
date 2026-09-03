@@ -13,21 +13,28 @@ const productSeedData = require('./data/productSeedData');
  */
 const seedAdmin = async () => {
   try {
-    // Check if admin already exists
-    const adminExists = await User.findOne({ email: 'admin@gmail.com' });
+    const adminExists = await User.findOne({ email: 'admin@gmail.com' }).select('+transactionPassword');
 
     if (adminExists) {
-      // Ensure admin always has max unlock level so they can receive any donation
       if ((adminExists.unlockLevel || 0) < 10) {
         await User.findByIdAndUpdate(adminExists._id, { unlockLevel: 10 });
         console.log('✓ Admin unlockLevel updated to 10');
-      } else {
-        console.log('✓ Admin user already exists');
       }
+
+      if (!adminExists.transactionPassword) {
+        const updatedAdmin = await User.findByIdAndUpdate(
+          adminExists._id,
+          { transactionPassword: 'admin123' },
+          { new: true }
+        ).select('+transactionPassword');
+        console.log('✓ Admin transactionPassword seeded');
+        return updatedAdmin;
+      }
+
+      console.log('✓ Admin user already exists');
       return adminExists;
     }
 
-    // Create admin user with max unlock level so they receive skipped donations
     const admin = await User.create({
       name: 'Admin',
       email: 'admin@gmail.com',
@@ -49,10 +56,15 @@ const seedAdmin = async () => {
 };
 
 const seedStarterUser = async (admin) => {
-  const existingUser = await User.findOne({ email: 'user@gmail.com' });
+  const existingUser = await User.findOne({ email: 'user@gmail.com' }).select('+transactionPassword');
 
   if (existingUser) {
-    console.log('✓ Starter user already exists');
+    if (!existingUser.transactionPassword) {
+      await User.findByIdAndUpdate(existingUser._id, { transactionPassword: 'user123' });
+      console.log('✓ Starter user transactionPassword seeded');
+    } else {
+      console.log('✓ Starter user already exists');
+    }
     return existingUser;
   }
 

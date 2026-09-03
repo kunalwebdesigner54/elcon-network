@@ -44,22 +44,27 @@ exports.updateAdminTransactionPassword = async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     const nextPassword = String(newPassword || '').trim();
 
-    const user = await User.findById(req.user.id).select('+transactionPassword');
+    const user = await User.findById(req.user.id).select('+password +transactionPassword');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check if current transaction password is correct
-    const isMatch = await user.matchTransactionPassword(currentPassword);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Incorrect current transaction password' });
+    const hasTransactionPassword = Boolean(user.transactionPassword);
+    const isCurrentPasswordValid = hasTransactionPassword
+      ? await user.matchTransactionPassword(currentPassword)
+      : await user.matchPassword(currentPassword);
+
+    if (!isCurrentPasswordValid) {
+      return res.status(401).json({ message: hasTransactionPassword ? 'Incorrect current transaction password' : 'Incorrect current password' });
     }
 
-    // Check if user provided same password
-    const isSame = await user.matchTransactionPassword(newPassword);
+    const isSame = hasTransactionPassword
+      ? await user.matchTransactionPassword(newPassword)
+      : await user.matchPassword(newPassword);
+
     if (isSame) {
-        return res.status(400).json({ message: 'New transaction password cannot be the same as the old password' });
+      return res.status(400).json({ message: 'New transaction password cannot be the same as the old password' });
     }
 
     user.transactionPassword = nextPassword;
