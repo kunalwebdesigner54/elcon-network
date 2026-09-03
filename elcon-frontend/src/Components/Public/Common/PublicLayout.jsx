@@ -30,7 +30,7 @@ function PublicLayout() {
       <header className={`public-header ${scrolled ? 'scrolled' : ''}`}>
         <div className="public-container public-header-inner">
           <NavLink to="/" className="public-logo-wrap">
-            <div className="public-logo-mark">IHH</div>
+            <div className="public-logo-mark">ELCON</div>
             <div className="public-logo-text">Elcon Network</div>
           </NavLink>
 

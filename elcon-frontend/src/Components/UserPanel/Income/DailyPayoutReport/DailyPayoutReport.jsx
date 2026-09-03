@@ -1,7 +1,7 @@
 import "../../Common/UserLayout.css";
 import "./DailyPayoutReport.css";
 import { useEffect, useMemo, useState } from 'react';
-import { getMyDonations } from '../../../../api/donationsService';
+import { getMyDailyPayout } from '../../../../api/membersService';
 
 function DailyPayoutReport() {
   const [rows, setRows] = useState([]);
@@ -11,8 +11,8 @@ function DailyPayoutReport() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    getMyDonations()
-      .then((response) => setRows(response.data?.received || []))
+    getMyDailyPayout()
+      .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load daily payout report.'))
       .finally(() => setLoading(false));
   }, []);

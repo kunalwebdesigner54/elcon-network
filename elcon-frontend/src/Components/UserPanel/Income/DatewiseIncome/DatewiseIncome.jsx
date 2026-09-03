@@ -1,7 +1,7 @@
 import '../../Common/UserLayout.css';
 import './DatewiseIncome.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getMyDonations } from '../../../../api/donationsService';
+import { getMyDatewiseIncome } from '../../../../api/membersService';
 import { getUser } from '../../../../utils/auth';
 
 function DatewiseIncome() {
@@ -13,8 +13,8 @@ function DatewiseIncome() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    getMyDonations()
-      .then((response) => setRows(response.data?.received || []))
+    getMyDatewiseIncome()
+      .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load datewise income.'))
       .finally(() => setLoading(false));
   }, []);

@@ -41,6 +41,16 @@ export const getMemberPerformance = async () => {
   return response.data;
 };
 
+export const getMyDatewiseIncome = async () => {
+  const response = await apiClient.get('/members/my-datewise-income');
+  return response.data;
+};
+
+export const getMyDailyPayout = async () => {
+  const response = await apiClient.get('/members/my-daily-payout');
+  return response.data;
+};
+
 export const getRepurchaseIncomeReports = async (params = {}) => {
   const response = await apiClient.get('/repurchase-income/reports', { params });
   return response.data;

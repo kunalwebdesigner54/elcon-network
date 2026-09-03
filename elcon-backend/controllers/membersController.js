@@ -719,3 +719,85 @@ exports.updateMemberProfile = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/members/my-datewise-income — logged-in user's datewise income summary
+// ─────────────────────────────────────────────────────────────────────────────
+exports.getMyDatewiseIncome = async (req, res) => {
+  try {
+    const memberId = req.user.memberId;
+    if (!memberId) {
+      return res.status(400).json({ success: false, message: 'Member ID not found for current user' });
+    }
+
+    const user = await User.findOne({ memberId }).lean();
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Member not found' });
+    }
+
+    const levelIncome = Number(user.levelIncome || 0);
+    const repurchaseIncome = Number(user.repurchaseIncome || 0);
+    const donationIncome = Number(user.donationIncome || 0);
+    const totalIncome = levelIncome + repurchaseIncome + donationIncome;
+    const totalTeamCount = Number(user.totalTeamCount || user.teamCount || 0);
+    const directsCount = Number(user.directsCount || user.directMembers || 0);
+
+    const row = {
+      sNo: 1,
+      incomeDate: formatDate(user.createdAt),
+      memberId: user.memberId,
+      memberName: user.name || '---',
+      totalIds: totalTeamCount,
+      levelIncome,
+      totalBvPoint: totalTeamCount * 100,
+      repurchaseIncome,
+      dailyIncome: totalIncome,
+    };
+
+    res.status(200).json({ success: true, data: [row] });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/members/my-daily-payout — logged-in user's daily payout summary
+// ─────────────────────────────────────────────────────────────────────────────
+exports.getMyDailyPayout = async (req, res) => {
+  try {
+    const memberId = req.user.memberId;
+    if (!memberId) {
+      return res.status(400).json({ success: false, message: 'Member ID not found for current user' });
+    }
+
+    const user = await User.findOne({ memberId }).lean();
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Member not found' });
+    }
+
+    const levelIncome = Number(user.levelIncome || 0);
+    const repurchaseIncome = Number(user.repurchaseIncome || 0);
+    const grossIncome = levelIncome + repurchaseIncome;
+    const tds = grossIncome * 0.05;
+    const adminCharge = grossIncome * 0.05;
+    const netPayable = grossIncome - tds - adminCharge;
+
+    const row = {
+      sNo: 1,
+      incomeDate: formatDate(user.createdAt),
+      memberId: user.memberId,
+      memberName: user.name || '---',
+      levelIncome,
+      repurchaseIncome,
+      grossIncome,
+      tds,
+      adminCharge,
+      netPayable,
+      status: user.accountStatus === 'IN-ACTIVE' ? 'Pending' : 'Credited To E-wallet',
+    };
+
+    res.status(200).json({ success: true, data: [row] });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
