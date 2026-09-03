@@ -1,5 +1,7 @@
 const User = require('../models/User');
+const WalletTransaction = require('../models/WalletTransaction');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 /**
  * @desc    Manage Discount Coupon Balance
@@ -163,19 +165,32 @@ exports.manageWalletBalance = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Member not found' });
     }
 
-    const currentBalance = Number(user.walletBalance || 0);
-    if (action === 'debit' && currentBalance < parsedAmount) {
+    const balanceChange = action === 'add' ? parsedAmount : -parsedAmount;
+    const balanceFilter = action === 'debit'
+      ? { _id: user._id, walletBalance: { $gte: parsedAmount } }
+      : { _id: user._id };
+    const updatedUser = await User.findOneAndUpdate(
+      balanceFilter,
+      { $inc: { walletBalance: balanceChange } },
+      { new: true }
+    ).select('memberId walletBalance');
+
+    if (!updatedUser) {
       return res.status(400).json({ success: false, message: 'Insufficient wallet balance' });
     }
 
-    const newBalance = action === 'add'
-      ? currentBalance + parsedAmount
-      : currentBalance - parsedAmount;
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: user._id },
-      { $set: { walletBalance: newBalance } },
-      { new: true }
-    ).select('memberId walletBalance');
+    try {
+      await WalletTransaction.create({
+        transactionId: `WLT${Date.now()}${crypto.randomBytes(3).toString('hex').toUpperCase()}`,
+        memberId: updatedUser.memberId,
+        description: action === 'add' ? 'WALLET CREDIT' : 'WALLET DEBIT',
+        credit: action === 'add' ? parsedAmount : 0,
+        debit: action === 'debit' ? parsedAmount : 0,
+      });
+    } catch (ledgerError) {
+      await User.findByIdAndUpdate(user._id, { $inc: { walletBalance: -balanceChange } });
+      throw ledgerError;
+    }
 
     return res.json({
       success: true,

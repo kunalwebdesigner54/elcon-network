@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const WithdrawalRequest = require('../models/WithdrawalRequest');
 const Epin = require('../models/Epin');
 const EpinTransfer = require('../models/EpinTransfer');
+const WalletTransaction = require('../models/WalletTransaction');
 
 const formatDateTime = (value) => new Date(value).toLocaleString('en-IN', {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
@@ -19,6 +20,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = []) => {
       description: 'PRODUCT PURCHASE',
       credit: 0,
       debit: Number(order.finalTotal || 0),
+      createdAt: order.createdAt,
     });
   });
 
@@ -31,6 +33,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = []) => {
       description: `WITHDRAWAL ${withdrawal.status}`,
       credit: 0,
       debit: Number(withdrawal.amount || 0),
+      createdAt: withdrawal.createdAt,
     });
   });
 
@@ -43,6 +46,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = []) => {
       description: 'EPIN GENERATION',
       credit: 0,
       debit: Number(epin.cost || 0),
+      createdAt: epin.createdAt,
     });
   });
 
@@ -55,8 +59,24 @@ const buildTransactionRows = async (scope, memberIdentifiers = []) => {
       description: 'EPIN TRANSFER',
       credit: 0,
       debit: Number(transfer.amount || 0),
+      createdAt: transfer.createdAt,
     });
   });
+
+  const walletTransactions = await WalletTransaction.find().sort({ createdAt: -1 });
+  walletTransactions.forEach((transaction) => {
+    rows.push({
+      dateTime: formatDateTime(transaction.createdAt),
+      transactionId: transaction.transactionId,
+      memberId: transaction.memberId,
+      description: transaction.description,
+      credit: Number(transaction.credit || 0),
+      debit: Number(transaction.debit || 0),
+      createdAt: transaction.createdAt,
+    });
+  });
+
+  rows.sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
 
   if (scope === 'user' && memberIdentifiers.length) {
     return rows.filter((row) => memberIdentifiers.includes(row.memberId) || memberIdentifiers.includes(row.transactionId));
