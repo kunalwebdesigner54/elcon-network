@@ -104,14 +104,29 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   levelIncomes.forEach((record) => addIncomeRow(record, 'LEVEL INCOME'));
   repurchaseIncomes.forEach((record) => addIncomeRow(record, 'REPURCHASE INCOME'));
 
-  incomeMap.forEach((value) => {
+  const incomeValues = Array.from(incomeMap.values()).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const dailyCounters = {};
+
+  incomeValues.forEach((value) => {
     const tdsDeduction = Number(value.amount) * tdsRate;
     const netAmount = Number(value.amount) - tdsDeduction;
+
+    const d = new Date(value.createdAt);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const dateStr = `${day}${month}${year}`;
+
+    if (!dailyCounters[dateStr]) dailyCounters[dateStr] = 0;
+    dailyCounters[dateStr]++;
+    
+    const seq = String(dailyCounters[dateStr]).padStart(4, '0');
+
     rows.push({
       dateTime: formatDateTime(value.createdAt),
-      transactionId: `DAILY-${value.memberId}-${value.description.replace(' ', '-')}`,
+      transactionId: `DINC-${dateStr}-${seq}`,
       memberId: value.memberId,
-      description: `${value.description} (TDS ${(tdsRate * 100).toFixed(0)}%)`,
+      description: `Daily_Income`,
       credit: Number(netAmount.toFixed(2)),
       debit: 0,
       createdAt: value.createdAt,
