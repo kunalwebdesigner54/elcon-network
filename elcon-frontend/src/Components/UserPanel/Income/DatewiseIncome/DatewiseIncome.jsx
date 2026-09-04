@@ -23,10 +23,13 @@ function DatewiseIncome() {
     const grouped = new Map();
 
     rows.forEach((row) => {
-      const key = row.dateRaw ? new Date(row.dateRaw).toISOString().slice(0, 10) : row.date;
-      const current = grouped.get(key) || { count: 0, amount: 0, latest: row };
+      const key = row.dateRaw ? new Date(row.dateRaw).toISOString().slice(0, 10) : (row.incomeDate || row.date);
+      const current = grouped.get(key) || { count: 0, levelIncome: 0, totalBvPoint: 0, repurchaseIncome: 0, dailyIncome: 0, latest: row };
       current.count += 1;
-      current.amount += Number(row.amount || 0);
+      current.levelIncome += Number(row.levelIncome || 0);
+      current.totalBvPoint += Number(row.totalBvPoint || 0);
+      current.repurchaseIncome += Number(row.repurchaseIncome || 0);
+      current.dailyIncome += Number(row.dailyIncome || row.amount || 0);
       current.latest = row;
       grouped.set(key, current);
     });
@@ -36,15 +39,15 @@ function DatewiseIncome() {
       .map(([date, group], index) => ({
         sNo: index + 1,
         incomeDate: date,
-        memberId: group.latest.toMemberId || currentUser.memberId,
-        memberName: group.latest.toName || currentUser.name || '---',
+        memberId: group.latest.memberId || group.latest.toMemberId || currentUser.memberId,
+        memberName: group.latest.memberName || group.latest.toName || currentUser.name || '---',
         totalIds: group.count,
-        levelIncome: group.amount * 0.5,
-        totalBvPoint: group.amount * 0.5,
-        repurchaseIncome: group.amount * 0.5,
-        dailyIncome: group.amount,
+        levelIncome: group.levelIncome,
+        totalBvPoint: group.totalBvPoint,
+        repurchaseIncome: group.repurchaseIncome,
+        dailyIncome: group.dailyIncome,
       }));
-  }, [rows]);
+  }, [rows, currentUser.memberId, currentUser.name]);
 
   const indexOfLastItem = currentPage * Number(pageSize);
   const indexOfFirstItem = indexOfLastItem - Number(pageSize);
@@ -55,7 +58,7 @@ function DatewiseIncome() {
     setCurrentPage(pageNumber);
   };
 
-  const totalAmount = visibleRows.reduce((sum, row) => sum + row.dailyIncome, 0);
+  const totalAmount = visibleRows.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
 
   return (
     <div>
