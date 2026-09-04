@@ -62,7 +62,7 @@ function Invoice({ invoiceData, onClose }) {
         </div>
 
         {/* Company Name */}
-        <div className="invoice-company-name">Earn Learn And Contribution</div>
+        <div className="invoice-company-name">ELCON</div>
 
         {/* Order Items Section */}
         <div className="invoice-section">

@@ -570,6 +570,7 @@ exports.getMemberPerformance = async (req, res) => {
         repurchaseIncome,
         donationIncome,
         totalIncome,
+        panNo: user.panNo || '---',
       };
     });
 

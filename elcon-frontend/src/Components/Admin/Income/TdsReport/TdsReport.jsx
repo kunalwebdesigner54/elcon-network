@@ -13,20 +13,18 @@ function TdsReport() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    Promise.all([getMembersLocation({ limit: 1000 }), getMemberPerformance()])
-      .then(([locationResponse, performanceResponse]) => {
-        const locationMap = new Map((locationResponse.data || []).map((row) => [String(row.memberId || '').toLowerCase(), row]));
+    Promise.all([getMemberPerformance()])
+      .then(([performanceResponse]) => {
         const performanceRows = Array.isArray(performanceResponse.data) ? performanceResponse.data : [];
 
         setMemberRows(performanceRows.map((row, index) => {
-          const location = locationMap.get(String(row.memberId || '').toLowerCase()) || {};
           return {
             sno: index + 1,
             memberId: row.memberId,
             memberName: row.memberName,
-            mobileNo: location.mobile || row.mobile || '---',
-            email: location.emailId || '---',
-            panNo: location.panNo || '---',
+            mobileNo: row.mobile || '---',
+            email: '---',
+            panNo: row.panNo || '---',
             totalTds: (Number(row.totalIncome || 0) * 0.05).toFixed(2),
           };
         }));
