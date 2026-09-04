@@ -225,6 +225,13 @@ const AllMembersList = () => {
                   <td colSpan="15">No members found</td>
                 </tr>
               )}
+              {!loading && membersData.length > 0 && (
+                <tr className="report-total-row">
+                  <td colSpan="13" style={{ textAlign: 'end', fontWeight: 700 }}>Total Wallet Balance</td>
+                  <td style={{ fontWeight: 700 }}>₹{Number(totalWalletBalance || 0).toFixed(2)}</td>
+                  <td colSpan="2" />
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -232,9 +239,6 @@ const AllMembersList = () => {
         <div className="table-footer" style={{ justifyContent: 'space-between', marginTop: '12px', marginBottom: '40px' }}>
           <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
             Total: {pagination.total} members
-          </span>
-          <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '24px' }}>
-            Total Wallet Balance: ₹{Number(totalWalletBalance || 0).toFixed(2)}
           </span>
           <div className="pagination">
             <button className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>

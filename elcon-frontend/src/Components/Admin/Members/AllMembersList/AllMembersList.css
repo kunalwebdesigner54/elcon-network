@@ -73,6 +73,12 @@
   pointer-events: none;
 }
 
+.report-total-row td {
+  border-top: 2px solid #00bcd4;
+  background-color: rgba(0, 188, 212, 0.08);
+  font-weight: 700;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .data-table {
