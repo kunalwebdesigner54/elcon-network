@@ -27,7 +27,7 @@ function AdminLogin() {
 				return;
 			}
 
-			localStorage.setItem('token', data.token);
+			sessionStorage.setItem('token', data.token);
 			
 			// Fetch the full profile to get adminType and permissions.
 			// Keep the login payload role as the source of truth because the profile payload
@@ -39,9 +39,9 @@ function AdminLogin() {
 					...(profileData?.user || {}),
 					...(data?.user || {}),
 				};
-				localStorage.setItem('user', JSON.stringify(mergedUser));
+				sessionStorage.setItem('user', JSON.stringify(mergedUser));
 			} catch (err) {
-				localStorage.setItem('user', JSON.stringify(data.user));
+				sessionStorage.setItem('user', JSON.stringify(data.user));
 			}
 			
 			navigate('/dashboard');

@@ -20,8 +20,8 @@ function UserLogin() {
 			const isEmail = loginId.includes('@');
 			const payload = isEmail ? { email: loginId, password } : { memberId: loginId, password };
 			const data = await loginUser(payload);
-			localStorage.setItem('token', data.token);
-			localStorage.setItem('user', JSON.stringify(data.user));
+		sessionStorage.setItem('token', data.token);
+		sessionStorage.setItem('user', JSON.stringify(data.user));
 
 			const isAdminUser = data?.user?.role === 'admin'
 				|| data?.user?.role === 'SUPER_ADMIN'

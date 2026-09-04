@@ -6,7 +6,7 @@ export const getToken = () => {
     }
     
     // Fallback to normal logged in user/admin
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
 };
 
 export const getUser = () => {
@@ -21,7 +21,7 @@ export const getUser = () => {
     }
     
     // Fallback to normal logged in user/admin
-    const user = localStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
     if (user) {
         try {
             return JSON.parse(user);
