@@ -79,9 +79,9 @@ function AllDeposits() {
     return depositRows.filter(row => {
       const matchMemberId = !appliedFilters.memberId || (row.memberId || '').toLowerCase().includes(appliedFilters.memberId.toLowerCase());
       const matchMemberName = !appliedFilters.memberName || (row.memberName || '').toLowerCase().includes(appliedFilters.memberName.toLowerCase());
-      const matchTransactionId = !appliedFilters.transactionId || (row.utrNumber || '').toLowerCase().includes(appliedFilters.transactionId.toLowerCase());
+      const matchTransactionId = !appliedFilters.transactionId || (row.transactionId || '').toLowerCase().includes(appliedFilters.transactionId.toLowerCase());
       const matchPaymentMode = !appliedFilters.paymentMode || (row.paymentMode || '').toLowerCase().includes(appliedFilters.paymentMode.toLowerCase());
-      const matchUtr = !appliedFilters.utrNumber || (row.transactionId || '').toLowerCase().includes(appliedFilters.utrNumber.toLowerCase());
+      const matchUtr = !appliedFilters.utrNumber || (row.utrNumber || '').toLowerCase().includes(appliedFilters.utrNumber.toLowerCase());
       const matchStatus = !appliedFilters.status || row.status === appliedFilters.status;
       
       let matchStartDate = true;
@@ -170,10 +170,10 @@ function AllDeposits() {
                   <td>{row.memberId}</td>
                   <td>{row.memberName}</td>
                   <td>{row.mobileNo}</td>
-                  <td>{row.utrNumber}</td>
+                  <td>{row.transactionId}</td>
                   <td>{row.paymentMode}</td>
                   <td>{Number(row.amount || 0).toFixed(2)}</td>
-                  <td>{row.transactionId}</td>
+                  <td>{row.utrNumber}</td>
                   <td>
                     <button type="button" className="deposit-slip-btn" onClick={() => row.slip && window.open(row.slip, '_blank')}>
                       VIEW
