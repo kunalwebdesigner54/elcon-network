@@ -109,7 +109,6 @@ function TransactionHistory() {
                 Audit Log
               </button>
             </div>
-            <span className="transaction-count-badge">Total Transactions: {totalTransactions}</span>
           </div>
         </div>
 
@@ -159,8 +158,11 @@ function TransactionHistory() {
           </table>
         </div>
 
-        <div className="admintransactionhistory-table-footer">
-          <div className="admintransactionhistory-pagination">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '10px 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+          <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
+            Total Transactions : <span style={{ color: '#fff', fontWeight: 'bold' }}>{totalTransactions}</span>
+          </div>
+          <div className="admintransactionhistory-pagination" style={{ display: 'flex', gap: '5px' }}>
             <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
             <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
             {[...Array(totalPages)].map((_, i) => {

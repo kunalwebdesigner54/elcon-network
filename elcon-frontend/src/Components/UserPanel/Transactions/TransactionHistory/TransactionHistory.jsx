@@ -109,7 +109,6 @@ function TransactionHistory() {
         <div className="table-toolbar">
           <button className="user-btn-outline" type="button">Excel</button>
           <button className="user-btn-outline" type="button">PDF</button>
-          <span className="transaction-count-badge">Total Transactions: {totalTransactions}</span>
         </div>
 
         <div className="table-wrap">
@@ -153,18 +152,23 @@ function TransactionHistory() {
           </table>
         </div>
 
-        <div className="pagination-row">
-          <button className="page-btn">«</button>
-          <button className="page-btn">‹</button>
-          <button className="page-btn active">1</button>
-          <button className="page-btn">2</button>
-          <button className="page-btn">3</button>
-          <button className="page-btn">4</button>
-          <button className="page-btn">5</button>
-          <button className="page-btn">6</button>
-          <button className="page-btn">7</button>
-          <button className="page-btn">›</button>
-          <button className="page-btn">»</button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '10px 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+          <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
+            Total Transactions : <span style={{ color: '#fff', fontWeight: 'bold' }}>{totalTransactions}</span>
+          </div>
+          <div className="pagination-row" style={{ display: 'flex', gap: '5px' }}>
+            <button className="page-btn">«</button>
+            <button className="page-btn">‹</button>
+            <button className="page-btn active">1</button>
+            <button className="page-btn">2</button>
+            <button className="page-btn">3</button>
+            <button className="page-btn">4</button>
+            <button className="page-btn">5</button>
+            <button className="page-btn">6</button>
+            <button className="page-btn">7</button>
+            <button className="page-btn">›</button>
+            <button className="page-btn">»</button>
+          </div>
         </div>
       </div>
     </div>

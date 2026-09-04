@@ -216,7 +216,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '10px 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
           <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
-            Total Epins : <span style={{ color: '#00e5ff', fontWeight: 'bold' }}>{filteredRows.length}</span>
+            Total Epins : <span style={{ color: '#fff', fontWeight: 'bold' }}>{filteredRows.length}</span>
           </div>
           
           <div style={{ display: 'flex', gap: '5px' }}>

@@ -130,8 +130,23 @@
 /* Pagination */
 .admintransactionhistory-table-footer {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
   margin-top: 20px;
+}
+
+/* Left/right footer columns keep the pagination visually centred */
+.admintransactionhistory-footer-side {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.admintransactionhistory-footer-spacer {
+  justify-content: flex-end;
 }
 
 .admintransactionhistory-pagination {
@@ -187,6 +202,21 @@
   .data-table td {
     font-size: 0.75rem;
     padding: 8px 4px;
+  }
+
+  .admintransactionhistory-table-footer {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .admintransactionhistory-footer-side {
+    width: 100%;
+    flex: 0 0 auto;
+    justify-content: center;
+  }
+
+  .admintransactionhistory-footer-spacer {
+    display: none;
   }
 }
 

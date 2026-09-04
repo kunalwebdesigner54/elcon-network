@@ -823,7 +823,14 @@ exports.getAdminGstReport = async (req, res) => {
               }
             }
           },
-          gstRate: { $ifNull: ['$productDetails.gst', 18] } // fallback to 18% if missing
+          gstRate: {
+            $let: {
+              vars: {
+                actualGst: { $ifNull: ['$productDetails.gst', 0] }
+              },
+              in: { $cond: [{ $eq: ['$$actualGst', 0] }, 18, '$$actualGst'] }
+            }
+          }
         }
       },
       {
@@ -896,7 +903,14 @@ exports.getAdminGstSummary = async (req, res) => {
       { $unwind: { path: '$productDetails', preserveNullAndEmptyArrays: true } },
       {
         $addFields: {
-          gstRate: { $ifNull: ['$productDetails.gst', 18] }
+          gstRate: {
+            $let: {
+              vars: {
+                actualGst: { $ifNull: ['$productDetails.gst', 0] }
+              },
+              in: { $cond: [{ $eq: ['$$actualGst', 0] }, 18, '$$actualGst'] }
+            }
+          }
         }
       },
       {

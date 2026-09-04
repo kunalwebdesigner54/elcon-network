@@ -188,6 +188,20 @@ function AdminSettings() {
                 </span>
               </div>
             </div>
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">E-Pin Generation</label>
+              <div className="col-sm-9" style={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="checkbox"
+                  checked={globalSettings.ePinGenerationEnabled}
+                  onChange={(e) => setGlobalSettings({ ...globalSettings, ePinGenerationEnabled: e.target.checked })}
+                  style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                />
+                <span style={{ marginLeft: '10px', color: 'var(--text-main)' }}>
+                  {globalSettings.ePinGenerationEnabled ? 'E-Pin Generation are currently ENABLED.' : 'E-Pin Generation are currently DISABLED.'}
+                </span>
+              </div>
+            </div>
             <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
               <button type="submit" className="btn-primary" disabled={loading}>
                 {loading ? 'Processing...' : 'Save Global Settings'}
