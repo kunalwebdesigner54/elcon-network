@@ -2,7 +2,17 @@
 
 const express = require('express');
 const { body, validationRules } = require('express-validator');
-const { registerUser, loginUser, loginAsUser, getMe, getSponsorDetails, requestAdminPasswordReset, resetAdminPassword } = require('../controllers/authController');
+const {
+  registerUser,
+  loginUser,
+  loginAsUser,
+  getMe,
+  getSponsorDetails,
+  requestAdminPasswordReset,
+  resetAdminPassword,
+  getJoiningPackages,
+  verifyEpin,
+} = require('../controllers/authController');
 const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
@@ -67,5 +77,19 @@ router.get('/me', protect, getMe);
  * Public route (no authentication required)
  */
 router.get('/sponsor/:id', getSponsorDetails);
+
+/**
+ * GET /api/auth/joining-packages
+ * Get all available joining packages with costs
+ * Public route
+ */
+router.get('/joining-packages', getJoiningPackages);
+
+/**
+ * POST /api/auth/verify-epin
+ * Verify E-Pin validity and match against selected Joining Package & amount
+ * Public route
+ */
+router.post('/verify-epin', verifyEpin);
 
 module.exports = router;

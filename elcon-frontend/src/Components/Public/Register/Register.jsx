@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { City, Country, State } from 'country-state-city';
 import { getDistricts } from 'india-state-district';
 import PublicPageHeader from '../Common/PublicPageHeader';
-import { registerUser, getSponsorDetails } from '../../../api/authService';
+import { registerUser, getSponsorDetails, getJoiningPackages, verifyEpin } from '../../../api/authService';
 import { getGlobalSettings } from '../../../api/managementService';
 import Swal from 'sweetalert2';
 import './Register.css';
@@ -48,8 +48,75 @@ function Register() {
   const [sponsorError, setSponsorError] = useState('');
   const [registrationEnabled, setRegistrationEnabled] = useState(true);
   const [checkingSettings, setCheckingSettings] = useState(true);
+  const [packageList, setPackageList] = useState([]);
+  const [selectedPackageObj, setSelectedPackageObj] = useState(null);
+  const [epinCheckStatus, setEpinCheckStatus] = useState(null);
 
   const countryOptions = useMemo(() => Country.getAllCountries(), []);
+
+  // Fetch joining packages dynamically with costs
+  useEffect(() => {
+    getJoiningPackages()
+      .then((res) => {
+        if (res.success && Array.isArray(res.packages) && res.packages.length > 0) {
+          setPackageList(res.packages);
+        } else {
+          setPackageList(joiningPackageOptions.map(name => ({ name, price: 350 })));
+        }
+      })
+      .catch(() => {
+        setPackageList(joiningPackageOptions.map(name => ({ name, price: 350 })));
+      });
+  }, []);
+
+  const verifyEpinMatch = async (epinVal, pkgName) => {
+    if (!epinVal || epinVal.trim().length < 4) {
+      setEpinCheckStatus(null);
+      return;
+    }
+
+    setEpinCheckStatus({ loading: true, message: 'Verifying E-Pin...' });
+
+    try {
+      const res = await verifyEpin({ epin: epinVal.trim(), packageName: pkgName });
+      setEpinCheckStatus({
+        loading: false,
+        valid: res.valid,
+        matched: res.matched,
+        message: res.message,
+        epinAmount: res.epinAmount,
+        packageAmount: res.packageAmount,
+      });
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'Invalid E-Pin or already used.';
+      setEpinCheckStatus({
+        loading: false,
+        valid: false,
+        matched: false,
+        message: `⚠️ ${msg}`,
+      });
+    }
+  };
+
+  const handlePackageChange = (e) => {
+    const val = e.target.value;
+    setJoiningPackage(val);
+    const found = packageList.find((p) => p.name === val) || null;
+    setSelectedPackageObj(found);
+    if (epin.trim()) {
+      verifyEpinMatch(epin.trim(), val);
+    }
+  };
+
+  const handleEpinChange = (e) => {
+    const val = e.target.value;
+    setEpin(val);
+    if (val.trim().length >= 4) {
+      verifyEpinMatch(val.trim(), joiningPackage);
+    } else {
+      setEpinCheckStatus(null);
+    }
+  };
 
   // Auto-fetch sponsor name when sponsor ID is entered
   useEffect(() => {
@@ -150,6 +217,21 @@ function Register() {
     event.preventDefault();
     setError('');
 
+    if (!joiningPackage || joiningPackage.trim() === '') {
+      setError('Please select a Joining Package');
+      return;
+    }
+
+    if (!epin || epin.trim() === '') {
+      setError('Please enter a valid E-Pin');
+      return;
+    }
+
+    if (epinCheckStatus && epinCheckStatus.matched === false) {
+      setError(epinCheckStatus.message || 'E-Pin amount and selected Package amount must match!');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Password and confirm password do not match');
       return;
@@ -185,7 +267,7 @@ function Register() {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      
+
       const registeredUser = data.user || {};
       const memberId = registeredUser.memberId || 'Pending';
       const memberName = registeredUser.name || applicantName;
@@ -196,11 +278,11 @@ function Register() {
           <div style="font-size: 16px; margin-bottom: 15px;">Welcome to Elcon Network!</div>
           <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; text-align: left;">
             <div style="margin-bottom: 8px; font-size: 15px;">
-              <span style="color: #aaa; margin-right: 8px;">Name:</span> 
+              <span style="color: #aaa; margin-right: 8px;">Name:</span>
               <strong style="color: #fff;">${memberName}</strong>
             </div>
             <div style="font-size: 15px;">
-              <span style="color: #aaa; margin-right: 8px;">Member ID:</span> 
+              <span style="color: #aaa; margin-right: 8px;">Member ID:</span>
               <strong style="color: #00e5ff; font-size: 18px;">${memberId}</strong>
             </div>
           </div>
@@ -212,7 +294,7 @@ function Register() {
         background: '#1a1f2c',
         color: '#fff'
       });
-      
+
       navigate('/user/dashboard');
     } catch (requestError) {
       const message = requestError?.response?.data?.message || 'Registration failed';
@@ -271,7 +353,7 @@ function Register() {
                     value={sponsorName}
                     onChange={(event) => setSponsorName(event.target.value)}
                     readOnly={sponsorId && sponsorName && !sponsorError}
-                    style={{ 
+                    style={{
                       backgroundColor: sponsorId && sponsorName && !sponsorError ? 'rgba(0, 0, 0, 0.2)' : undefined,
                       cursor: sponsorId && sponsorName && !sponsorError ? 'not-allowed' : 'text'
                     }}
@@ -433,16 +515,21 @@ function Register() {
                   <label htmlFor="joiningPackage">
                     Joining Package <span className="register-required">*</span>
                   </label>
-                  <select id="joiningPackage" value={joiningPackage} onChange={(event) => setJoiningPackage(event.target.value)}>
+                  <select id="joiningPackage" value={joiningPackage} onChange={handlePackageChange}>
                     <option value="" disabled>
                       Select Joining Package
                     </option>
-                    {joiningPackageOptions.map((packageName) => (
-                      <option key={packageName} value={packageName}>
-                        {packageName}
+                    {packageList.map((pkg) => (
+                      <option key={pkg.name} value={pkg.name}>
+                        {pkg.name} (₹{pkg.price})
                       </option>
                     ))}
                   </select>
+                  {selectedPackageObj && (
+                    <div style={{ fontSize: '13px', color: '#00e5ff', marginTop: '5px', fontWeight: '600' }}>
+                      Package Amount: ₹{selectedPackageObj.price}
+                    </div>
+                  )}
                 </div>
 
                 <div className="register-field register-lock-field">
@@ -454,11 +541,27 @@ function Register() {
                     type="text"
                     placeholder="Enter E pin"
                     value={epin}
-                    onChange={(event) => setEpin(event.target.value)}
+                    onChange={handleEpinChange}
                   />
                   <span className="register-lock-icon" aria-hidden="true">
                     🔒
                   </span>
+                  {epinCheckStatus && (
+                    <div
+                      style={{
+                        fontSize: '13px',
+                        marginTop: '6px',
+                        fontWeight: '600',
+                        padding: '6px 10px',
+                        borderRadius: '6px',
+                        backgroundColor: epinCheckStatus.matched ? 'rgba(30, 126, 52, 0.15)' : 'rgba(220, 53, 69, 0.15)',
+                        color: epinCheckStatus.matched ? '#28a745' : '#ff4d4f',
+                        border: `1px solid ${epinCheckStatus.matched ? 'rgba(40, 167, 69, 0.4)' : 'rgba(255, 77, 79, 0.4)'}`,
+                      }}
+                    >
+                      {epinCheckStatus.loading ? 'Verifying E-Pin...' : epinCheckStatus.message}
+                    </div>
+                  )}
                 </div>
 
                 <div className="register-field register-lock-field">

@@ -5,10 +5,18 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Epin = require('../models/Epin');
 const SiteSetting = require('../models/SiteSetting');
+const Product = require('../models/Product');
+const EpinPackage = require('../models/EpinPackage');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 
 const sendPasswordResetEmail = async (email, token) => {
+  let nodemailer;
+  try {
+    nodemailer = require('nodemailer');
+  } catch (err) {
+    console.warn('nodemailer is not installed. Skipping email send.');
+    return;
+  }
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT || 587),
@@ -93,7 +101,7 @@ exports.registerUser = async (req, res) => {
     } = req.body;
 
     // ========== STRICT DUPLICATE VALIDATION - "ONE PERSON, ONE ID POLICY" ==========
-    
+
     // 1. Check if email already exists
     if (email) {
       const emailExists = await User.findOne({ email: email.toLowerCase() });
@@ -144,18 +152,83 @@ exports.registerUser = async (req, res) => {
 
     // ========== ALL VALIDATION PASSED - CREATE USER ==========
 
-    let joiningAmount = 0;
-    let foundEpin = null;
-    if (epin) {
-      foundEpin = await Epin.findOne({ epinNo: epin });
-      if (!foundEpin) {
-        return res.status(404).json({ success: false, message: 'E-Pin not found', code: 'EPIN_NOT_FOUND' });
-      }
-      if (foundEpin.status !== 'Unused') {
-        return res.status(400).json({ success: false, message: 'E-Pin is already used or deleted', code: 'EPIN_INVALID' });
-      }
-      joiningAmount = foundEpin.cost || 0;
+    // ========== 3-WAY VALIDATION: PACKAGE, EPIN & AMOUNTS MUST MATCH ==========
+    if (!joiningPackage || String(joiningPackage).trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'Please select a Joining Package.',
+        code: 'JOINING_PACKAGE_REQUIRED',
+      });
     }
+
+    if (!epin || String(epin).trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter an E-Pin for the selected Joining Package.',
+        code: 'EPIN_REQUIRED',
+      });
+    }
+
+    const foundEpin = await Epin.findOne({ epinNo: String(epin).trim() });
+    if (!foundEpin) {
+      return res.status(404).json({
+        success: false,
+        message: 'E-Pin not found. Please provide a valid E-Pin.',
+        code: 'EPIN_NOT_FOUND',
+      });
+    }
+
+    if (foundEpin.status !== 'Unused') {
+      return res.status(400).json({
+        success: false,
+        message: `E-Pin is already ${foundEpin.status.toLowerCase()}. Only unused E-Pins can be used for registration.`,
+        code: 'EPIN_INVALID',
+      });
+    }
+
+    const epinCost = Number(foundEpin.cost || 0);
+    let expectedPackageAmount = 350;
+
+    // Check Product collection (joining products)
+    const productDoc = await Product.findOne({
+      type: 'joining',
+      productName: new RegExp(`^${joiningPackage.trim()}$`, 'i'),
+    }).lean();
+
+    if (productDoc) {
+      expectedPackageAmount = Number(productDoc.mrp || productDoc.dpPrice || 350);
+      const isPriceMatch = epinCost === Number(productDoc.mrp) || epinCost === Number(productDoc.dpPrice);
+      if (!isPriceMatch) {
+        return res.status(400).json({
+          success: false,
+          message: `E-Pin amount (₹${epinCost}) does not match selected Package amount (₹${expectedPackageAmount}). Package and E-Pin amount must match to complete registration.`,
+          code: 'EPIN_AMOUNT_MISMATCH',
+          packageAmount: expectedPackageAmount,
+          epinCost,
+        });
+      }
+    } else {
+      // Check EpinPackage collection
+      const epinPkgDoc = await EpinPackage.findOne({
+        packageName: new RegExp(`^${joiningPackage.trim()}$`, 'i'),
+      }).lean();
+
+      if (epinPkgDoc) {
+        expectedPackageAmount = Number(epinPkgDoc.price || 0);
+      }
+
+      if (epinCost !== expectedPackageAmount) {
+        return res.status(400).json({
+          success: false,
+          message: `E-Pin amount (₹${epinCost}) does not match selected Package amount (₹${expectedPackageAmount}). Package and E-Pin amount must match to complete registration.`,
+          code: 'EPIN_AMOUNT_MISMATCH',
+          packageAmount: expectedPackageAmount,
+          epinCost,
+        });
+      }
+    }
+
+    let joiningAmount = epinCost;
 
     // Calculate physical level depth
     let levelDepth = 1;
@@ -247,7 +320,7 @@ exports.registerUser = async (req, res) => {
         aadharNo: 'Aadhaar number already used',
         panNo: 'PAN card already exists',
       };
-      
+
       return res.status(409).json({
         success: false,
         message: fieldMessages[field] || `${field} already exists`,
@@ -549,5 +622,134 @@ exports.getSponsorDetails = async (req, res) => {
       message: 'Error fetching sponsor details',
       error: error.message,
     });
+  }
+};
+
+/**
+ * GET /api/auth/joining-packages
+ * Fetch all available joining packages with prices for registration
+ */
+exports.getJoiningPackages = async (req, res) => {
+  try {
+    const list = [];
+    const seen = new Set();
+
+    // 1. EpinPackage
+    const epinPackages = await EpinPackage.find({ isActive: true }).sort({ price: 1 }).lean();
+    epinPackages.forEach((pkg) => {
+      const name = pkg.packageName.trim();
+      const price = Number(pkg.price || 0);
+      if (!seen.has(name.toLowerCase())) {
+        seen.add(name.toLowerCase());
+        list.push({ name, price, type: 'epinPackage' });
+      }
+    });
+
+    // 2. Joining Products (status: SHOWING)
+    const products = await Product.find({ type: 'joining', status: 'SHOWING' }).sort({ mrp: 1 }).lean();
+    products.forEach((prod) => {
+      const name = prod.productName.trim();
+      const price = Number(prod.mrp || prod.dpPrice || 350);
+      if (!seen.has(name.toLowerCase())) {
+        seen.add(name.toLowerCase());
+        list.push({ name, price, dpPrice: prod.dpPrice, mrp: prod.mrp, type: 'product' });
+      }
+    });
+
+    // Fallback if empty
+    if (list.length === 0) {
+      list.push({ name: 'Basic Package', price: 350 });
+      list.push({ name: 'Elcon Anion Sanitary Pads - 8', price: 350 });
+    }
+
+    res.status(200).json({ success: true, packages: list });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * POST /api/auth/verify-epin
+ * Verify E-Pin validity and match against selected Joining Package & amount
+ */
+exports.verifyEpin = async (req, res) => {
+  try {
+    const epinNo = String(req.body.epin || req.query.epin || '').trim();
+    const packageName = String(req.body.packageName || req.query.packageName || '').trim();
+
+    if (!epinNo) {
+      return res.status(400).json({ success: false, message: 'Please enter an E-Pin.' });
+    }
+
+    const foundEpin = await Epin.findOne({ epinNo });
+    if (!foundEpin) {
+      return res.status(404).json({
+        success: false,
+        valid: false,
+        message: 'Invalid E-Pin. E-Pin does not exist in system.',
+        code: 'EPIN_NOT_FOUND',
+      });
+    }
+
+    if (foundEpin.status !== 'Unused') {
+      return res.status(400).json({
+        success: false,
+        valid: false,
+        message: `E-Pin is already ${foundEpin.status.toLowerCase()}. Only unused E-Pins can be used.`,
+        code: 'EPIN_ALREADY_USED',
+      });
+    }
+
+    const epinCost = Number(foundEpin.cost || 0);
+    let packageAmount = null;
+    let matched = true;
+    let mismatchMessage = '';
+
+    if (packageName) {
+      const productDoc = await Product.findOne({
+        type: 'joining',
+        productName: new RegExp(`^${packageName}$`, 'i'),
+      }).lean();
+
+      if (productDoc) {
+        packageAmount = Number(productDoc.mrp || productDoc.dpPrice || 350);
+        if (epinCost !== Number(productDoc.mrp) && epinCost !== Number(productDoc.dpPrice)) {
+          matched = false;
+          mismatchMessage = `E-Pin amount (₹${epinCost}) does not match selected Package amount (₹${packageAmount}).`;
+        }
+      } else {
+        const epinPkgDoc = await EpinPackage.findOne({
+          packageName: new RegExp(`^${packageName}$`, 'i'),
+        }).lean();
+
+        if (epinPkgDoc) {
+          packageAmount = Number(epinPkgDoc.price || 0);
+        } else {
+          packageAmount = 350;
+        }
+
+        if (epinCost !== packageAmount) {
+          matched = false;
+          mismatchMessage = `E-Pin amount (₹${epinCost}) does not match selected Package amount (₹${packageAmount}).`;
+        }
+      }
+    }
+
+    res.status(200).json({
+      success: matched,
+      valid: true,
+      matched,
+      message: matched
+        ? (packageName ? `E-Pin verified (₹${epinCost} matches ${packageName})` : `E-Pin is valid (Amount: ₹${epinCost})`)
+        : mismatchMessage,
+      epinNo: foundEpin.epinNo,
+      epinName: foundEpin.epinName,
+      epinAmount: epinCost,
+      cost: epinCost,
+      packageAmount,
+      status: foundEpin.status,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

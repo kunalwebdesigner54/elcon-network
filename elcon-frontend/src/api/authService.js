@@ -30,6 +30,16 @@ export const getSponsorDetails = async (sponsorId) => {
 	return response.data;
 };
 
+export const getJoiningPackages = async () => {
+	const response = await apiClient.get('/auth/joining-packages');
+	return response.data;
+};
+
+export const verifyEpin = async (payload) => {
+	const response = await apiClient.post('/auth/verify-epin', payload);
+	return response.data;
+};
+
 // Profile Services
 export const getProfile = async () => {
 	const response = await apiClient.get('/profile/me');
