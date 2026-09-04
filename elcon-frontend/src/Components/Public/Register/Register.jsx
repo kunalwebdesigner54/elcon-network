@@ -1,14 +1,12 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { City, Country, State } from 'country-state-city';
-import { getDistricts } from 'india-state-district';
+
 import PublicPageHeader from '../Common/PublicPageHeader';
 import { registerUser, getSponsorDetails, getJoiningPackages, verifyEpin } from '../../../api/authService';
 import { getGlobalSettings } from '../../../api/managementService';
 import Swal from 'sweetalert2';
 import './Register.css';
 
-const INDIA_COUNTRY_CODE = 'IN';
 const joiningPackageOptions = [
   'Elcon Anion Sanitary Pads - 8',
   'Elcon Anion Sanitary Pads - 32',
@@ -28,15 +26,9 @@ function Register() {
   const [sponsorName, setSponsorName] = useState('');
   const [applicantName, setApplicantName] = useState('');
   const [contactNo, setContactNo] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
   const [aadharNo, setAadharNo] = useState('');
-  const [address, setAddress] = useState('');
-  const [country, setCountry] = useState(INDIA_COUNTRY_CODE);
-  const [state, setState] = useState('');
-  const [district, setDistrict] = useState('');
-  const [city, setCity] = useState('');
-  const [pincode, setPincode] = useState('');
   const [joiningPackage, setJoiningPackage] = useState('');
+  const [packageAmount, setPackageAmount] = useState('');
   const [epin, setEpin] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,7 +44,7 @@ function Register() {
   const [selectedPackageObj, setSelectedPackageObj] = useState(null);
   const [epinCheckStatus, setEpinCheckStatus] = useState(null);
 
-  const countryOptions = useMemo(() => Country.getAllCountries(), []);
+
 
   // Fetch joining packages dynamically with costs
   useEffect(() => {
@@ -103,6 +95,11 @@ function Register() {
     setJoiningPackage(val);
     const found = packageList.find((p) => p.name === val) || null;
     setSelectedPackageObj(found);
+    if (found) {
+      setPackageAmount(found.price || '');
+    } else {
+      setPackageAmount('');
+    }
     if (epin.trim()) {
       verifyEpinMatch(epin.trim(), val);
     }
@@ -174,44 +171,7 @@ function Register() {
     fetchSettings();
   }, []);
 
-  const stateOptions = useMemo(() => {
-    if (!country) return [];
-    return State.getStatesOfCountry(country);
-  }, [country]);
-
-  const districtOptions = useMemo(() => {
-    if (!country || !state) return [];
-
-    if (country === INDIA_COUNTRY_CODE) {
-      return getDistricts(state);
-    }
-
-    const cityNames = City.getCitiesOfState(country, state).map((item) => item.name);
-    return [...new Set(cityNames)];
-  }, [country, state]);
-
-  const cityOptions = useMemo(() => {
-    if (!country || !state) return [];
-    return City.getCitiesOfState(country, state);
-  }, [country, state]);
-
-  const handleCountryChange = (event) => {
-    setCountry(event.target.value);
-    setState('');
-    setDistrict('');
-    setCity('');
-  };
-
-  const handleStateChange = (event) => {
-    setState(event.target.value);
-    setDistrict('');
-    setCity('');
-  };
-
-  const handleDistrictChange = (event) => {
-    setDistrict(event.target.value);
-    setCity('');
-  };
+  // Location logic removed as per requirements
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -250,15 +210,8 @@ function Register() {
         sponsorName,
         name: applicantName,
         contactNo,
-        dateOfBirth,
         email,
         aadharNo,
-        address,
-        country,
-        state,
-        district,
-        city,
-        pincode,
         joiningPackage,
         epin,
         password,
@@ -387,16 +340,6 @@ function Register() {
                 </div>
 
                 <div className="register-field">
-                  <label htmlFor="dateOfBirth">Date of Birth</label>
-                  <input
-                    id="dateOfBirth"
-                    type="date"
-                    value={dateOfBirth}
-                    onChange={(event) => setDateOfBirth(event.target.value)}
-                  />
-                </div>
-
-                <div className="register-field">
                   <label htmlFor="email">
                     Email <span className="register-required">*</span>
                   </label>
@@ -422,93 +365,6 @@ function Register() {
                   />
                 </div>
 
-                <div className="register-field register-full-row">
-                  <label htmlFor="address">Address</label>
-                  <textarea
-                    id="address"
-                    rows="3"
-                    placeholder="Enter your address"
-                    value={address}
-                    onChange={(event) => setAddress(event.target.value)}
-                  />
-                </div>
-
-                <div className="register-field">
-                  <label htmlFor="country">Country</label>
-                  <select id="country" value={country} onChange={handleCountryChange} disabled style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', cursor: 'not-allowed', color: '#fff' }}>
-                    <option value="IN">India</option>
-                  </select>
-                </div>
-
-                <div className="register-field">
-                  <label htmlFor="state">State</label>
-                  <select
-                    id="state"
-                    value={state}
-                    onChange={handleStateChange}
-                    disabled={!country}
-                  >
-                    <option value="" disabled>
-                      Select state
-                    </option>
-                    {stateOptions.map((stateOption) => (
-                      <option key={stateOption.isoCode} value={stateOption.isoCode}>
-                        {stateOption.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="register-field">
-                  <label htmlFor="district">District</label>
-                  <select
-                    id="district"
-                    value={district}
-                    onChange={handleDistrictChange}
-                    disabled={!state}
-                  >
-                    <option value="" disabled>
-                      {!state ? 'Select state first' : 'Select district'}
-                    </option>
-                    {districtOptions.map((districtOption) => (
-                      <option key={districtOption} value={districtOption}>
-                        {districtOption}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="register-field">
-                  <label htmlFor="city">City</label>
-                  <select
-                    id="city"
-                    value={city}
-                    onChange={(event) => setCity(event.target.value)}
-                    disabled={!state}
-                  >
-                    <option value="" disabled>
-                      {!state ? 'Select state first' : 'Select city'}
-                    </option>
-                    {cityOptions.map((cityOption) => (
-                      <option
-                        key={`${cityOption.name}-${cityOption.latitude}-${cityOption.longitude}`}
-                        value={cityOption.name}
-                      >
-                        {cityOption.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="register-field">
-                  <label htmlFor="pincode">Pincode</label>
-                  <input
-                    id="pincode"
-                    type="text"
-                    placeholder="Enter your pincode"
-                    value={pincode}
-                    onChange={(event) => setPincode(event.target.value)}
-                  />
                 </div>
 
                 <div className="register-field">
@@ -521,15 +377,24 @@ function Register() {
                     </option>
                     {packageList.map((pkg) => (
                       <option key={pkg.name} value={pkg.name}>
-                        {pkg.name} (₹{pkg.price})
+                        {pkg.name}
                       </option>
                     ))}
                   </select>
-                  {selectedPackageObj && (
-                    <div style={{ fontSize: '13px', color: '#00e5ff', marginTop: '5px', fontWeight: '600' }}>
-                      Package Amount: ₹{selectedPackageObj.price}
-                    </div>
-                  )}
+                </div>
+
+                <div className="register-field">
+                  <label htmlFor="packageAmount">
+                    Package Amount
+                  </label>
+                  <input
+                    id="packageAmount"
+                    type="text"
+                    placeholder="Auto-populated"
+                    value={packageAmount}
+                    readOnly
+                    style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', cursor: 'not-allowed', color: '#fff' }}
+                  />
                 </div>
 
                 <div className="register-field register-lock-field">
