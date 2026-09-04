@@ -250,7 +250,10 @@ function Register() {
 
       navigate('/user/dashboard');
     } catch (requestError) {
-      const message = requestError?.response?.data?.message || 'Registration failed';
+      let message = requestError?.response?.data?.message || 'Registration failed';
+      if (requestError?.response?.data?.errors && Array.isArray(requestError.response.data.errors)) {
+        message = requestError.response.data.errors.map(e => e.msg).join(', ');
+      }
       setError(message);
     } finally {
       setLoading(false);

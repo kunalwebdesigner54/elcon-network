@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import "../Common/AdminLayout.css";
-import { manageDiscountCoupon } from "../../../api/managementService";
+import { manageDiscountCoupon, getGlobalSettings, updateGlobalSettings } from "../../../api/managementService";
 import { getMemberInfoByUserId } from "../../../api/membersService";
 
 function ManageDiscountCoupon() {
@@ -16,6 +16,57 @@ function ManageDiscountCoupon() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const fetchDebounceRef = useRef(null);
+
+  const [settingsFormData, setSettingsFormData] = useState({
+    defaultCouponAmount: '',
+    couponDistributionEnabled: 'false',
+    transactionPassword: ''
+  });
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [settingsMessage, setSettingsMessage] = useState(null);
+
+  useEffect(() => {
+    getGlobalSettings().then(res => {
+      if (res.success && res.globalSettings) {
+        setSettingsFormData(prev => ({
+          ...prev,
+          defaultCouponAmount: res.globalSettings.defaultCouponAmount || '',
+          couponDistributionEnabled: res.globalSettings.couponDistributionEnabled ? 'true' : 'false'
+        }));
+      }
+    });
+  }, []);
+
+  const handleSettingsChange = (e) => {
+    const { name, value } = e.target;
+    setSettingsFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSettingsSubmit = async (e) => {
+    e.preventDefault();
+    if (!settingsFormData.transactionPassword) {
+      setSettingsMessage({ type: 'error', text: 'Transaction password is required' });
+      return;
+    }
+    setSettingsLoading(true);
+    setSettingsMessage(null);
+    try {
+      const res = await updateGlobalSettings({
+        defaultCouponAmount: settingsFormData.defaultCouponAmount,
+        couponDistributionEnabled: settingsFormData.couponDistributionEnabled === 'true'
+      });
+      if (res.success) {
+        setSettingsMessage({ type: 'success', text: 'Settings updated successfully' });
+        setSettingsFormData(prev => ({ ...prev, transactionPassword: '' }));
+      } else {
+        setSettingsMessage({ type: 'error', text: res.message || 'Operation failed' });
+      }
+    } catch (err) {
+      setSettingsMessage({ type: 'error', text: err.response?.data?.message || 'Server error' });
+    } finally {
+      setSettingsLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -203,6 +254,68 @@ function ManageDiscountCoupon() {
           <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
             <button type="submit" className="btn-primary" disabled={loading}>
               {loading ? 'Processing...' : 'Submit'}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section className="panel admin-products-panel" style={{ marginTop: '20px' }}>
+        <h2 className="section-title admin-products-section-title">COUPON DISTRIBUTION SETTINGS</h2>
+
+        {settingsMessage && (
+          <div className={`alert ${settingsMessage.type === 'error' ? 'alert-error' : 'alert-success'}`}>
+            {settingsMessage.text}
+          </div>
+        )}
+
+        <form onSubmit={handleSettingsSubmit} className="admin-add-product-form">
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">Set By Default Discount Coupon Amount</label>
+            <div className="col-sm-9">
+              <input
+                type="number"
+                name="defaultCouponAmount"
+                className="text-input"
+                placeholder="Enter Default Coupon Amount"
+                value={settingsFormData.defaultCouponAmount}
+                onChange={handleSettingsChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">By Default Coupon Distribution</label>
+            <div className="col-sm-9">
+              <select
+                name="couponDistributionEnabled"
+                className="select-input"
+                value={settingsFormData.couponDistributionEnabled}
+                onChange={handleSettingsChange}
+              >
+                <option value="true">On</option>
+                <option value="false">Off</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">Transaction Password <span>*</span></label>
+            <div className="col-sm-9">
+              <input
+                type="password"
+                name="transactionPassword"
+                className="text-input"
+                placeholder="Enter Transaction Password"
+                value={settingsFormData.transactionPassword}
+                onChange={handleSettingsChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
+            <button type="submit" className="btn-primary" disabled={settingsLoading}>
+              {settingsLoading ? 'Processing...' : 'SAVE'}
             </button>
           </div>
         </form>

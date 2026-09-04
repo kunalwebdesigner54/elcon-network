@@ -104,6 +104,8 @@ exports.updateTermsAndConditions = async (req, res) => {
 
 const defaultGlobalSettings = {
   registrationEnabled: true,
+  defaultCouponAmount: 1000,
+  couponDistributionEnabled: false,
 };
 
 exports.getGlobalSettings = async (req, res) => {

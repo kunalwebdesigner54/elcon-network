@@ -240,7 +240,12 @@ exports.registerUser = async (req, res) => {
     }
 
     // Create new user with role='user'
+    let defaultCouponAmount = 0;
+    if (globalSettingsDoc && globalSettingsDoc.data && globalSettingsDoc.data.couponDistributionEnabled) {
+      defaultCouponAmount = Number(globalSettingsDoc.data.defaultCouponAmount) || 0;
+    }
     const user = await User.create({
+      couponWalletBalance: defaultCouponAmount,
       sponsorId,
       sponsorName,
       name,

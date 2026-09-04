@@ -169,3 +169,15 @@
 
 
 
+
+.register-error-message {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #ff4d4f;
+  border: 1px solid rgba(255, 77, 79, 0.4);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+}
