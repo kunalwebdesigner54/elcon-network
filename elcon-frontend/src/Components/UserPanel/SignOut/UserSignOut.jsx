@@ -14,8 +14,8 @@ function UserSignOut() {
       navigate('/user-login', { replace: true });
     } else {
       // Normal user logout
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
       navigate('/user-login', { replace: true });
     }
   };

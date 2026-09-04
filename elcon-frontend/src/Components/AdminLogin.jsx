@@ -22,18 +22,18 @@ function AdminLogin() {
 				return;
 			}
 
-			localStorage.setItem('token', data.token);
+			sessionStorage.setItem('token', data.token);
 			
 			// Fetch the full profile to get adminType and permissions
 			try {
 				const profileData = await getProfile();
 				if (profileData && profileData.data) {
-					localStorage.setItem('user', JSON.stringify(profileData.data));
+					sessionStorage.setItem('user', JSON.stringify(profileData.data));
 				} else {
-					localStorage.setItem('user', JSON.stringify(data.user));
+					sessionStorage.setItem('user', JSON.stringify(data.user));
 				}
 			} catch (err) {
-				localStorage.setItem('user', JSON.stringify(data.user));
+				sessionStorage.setItem('user', JSON.stringify(data.user));
 			}
 			
 			navigate('/dashboard');
