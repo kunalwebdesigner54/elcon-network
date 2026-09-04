@@ -23,7 +23,13 @@ function UserLogin() {
 			localStorage.setItem('token', data.token);
 			localStorage.setItem('user', JSON.stringify(data.user));
 
-			if (data?.user?.role === 'admin') {
+			const isAdminUser = data?.user?.role === 'admin'
+				|| data?.user?.role === 'SUPER_ADMIN'
+				|| data?.user?.role === 'SUB_ADMIN'
+				|| data?.user?.adminType === 'SUPER_ADMIN'
+				|| data?.user?.adminType === 'SUB_ADMIN';
+
+			if (isAdminUser) {
 				navigate('/dashboard');
 				return;
 			}
