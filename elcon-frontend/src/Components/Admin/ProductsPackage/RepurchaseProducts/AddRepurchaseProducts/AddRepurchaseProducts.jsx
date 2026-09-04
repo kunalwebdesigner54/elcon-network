@@ -62,7 +62,7 @@ function AddRepurchaseProducts() {
     const formData = new FormData(form);
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const images = await Promise.all(imageInputs.map((input) => readFileAsDataUrl(input.files[0])));
-    
+
     const pdfInput = form.querySelector('input[type="file"][accept="application/pdf"]');
     const brochurePdf = (pdfInput && pdfInput.files.length > 0) ? await readFileAsDataUrl(pdfInput.files[0]) : '';
 
@@ -72,6 +72,7 @@ function AddRepurchaseProducts() {
       productName: formData.get('productName'),
       productCode: formData.get('productCode'),
       hsnCode: formData.get('hsnCode'),
+      gst: formData.get('gst') || '18',
       status: Number(formData.get('quantity')) <= 0 ? 'HIDDEN' : 'SHOWING',
       mrp: formData.get('mrpPrice'),
       dpPrice: formData.get('dpPrice'),
@@ -161,6 +162,10 @@ function AddRepurchaseProducts() {
               <label className="admin-add-product-row">
                 <span>HSN Code</span>
                 <input name="hsnCode" type="text" defaultValue="4440" />
+              </label>
+              <label className="admin-add-product-row">
+                <span>GST %</span>
+                <input name="gst" type="number" defaultValue="18" />
               </label>
               <label className="admin-add-product-row">
                 <span>Stock</span>
