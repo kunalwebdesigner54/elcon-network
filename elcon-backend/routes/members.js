@@ -13,6 +13,7 @@ const {
   updateMemberProfile,
   getMyDatewiseIncome,
   getMyDailyPayout,
+  getDailyPayoutReport,
 } = require('../controllers/membersController');
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router.patch('/:memberId/block-status', authorize('admin'), updateBlockStatus);
 router.get('/all-members', authorize('admin'), getAllMembersList);
 router.get('/locations', authorize('admin'), getMembersLocation);
 router.get('/performance', authorize('admin'), getMemberPerformance);
+router.get('/daily-payout-report', authorize('admin'), getDailyPayoutReport);
 router.get('/my-datewise-income', getMyDatewiseIncome);
 router.get('/my-daily-payout', getMyDailyPayout);
 router.get('/team-tree', getTeamTree);

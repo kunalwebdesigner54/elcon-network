@@ -1,5 +1,8 @@
 const User = require('../models/User');
 const Donation = require('../models/Donation');
+const LevelIncome = require('../models/LevelIncome');
+const RepurchaseIncome = require('../models/RepurchaseIncome');
+const SiteSetting = require('../models/SiteSetting');
 const {
   buildReferralGraph,
   collectDescendants,
@@ -52,8 +55,8 @@ exports.getAdminKycRequests = async (req, res) => {
   try {
     const { status, search } = req.query;
 
-    const query = { 
-      role: 'user', 
+    const query = {
+      role: 'user',
       email: { $ne: 'admin@gmail.com' },
       kycSubmittedAt: { $exists: true },
       kycStatus: { $ne: 'NOT_SUBMITTED' }
@@ -232,7 +235,7 @@ exports.getAllMembersList = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const query = { role: 'user', email: { $ne: 'admin@gmail.com' } };
-    
+
     if (req.query.memberId) {
       query.memberId = new RegExp(req.query.memberId, 'i');
     }
@@ -251,7 +254,7 @@ exports.getAllMembersList = async (req, res) => {
     if (req.query.status) {
       query.accountStatus = req.query.status;
     }
-    
+
     // Fallback for generic search
     if (req.query.search) {
       const searchRegex = new RegExp(req.query.search, 'i');
@@ -356,7 +359,7 @@ exports.getMembersLocation = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const query = { role: 'user', email: { $ne: 'admin@gmail.com' } };
-    
+
     if (req.query.search) {
       const searchRegex = new RegExp(req.query.search, 'i');
       query.$or = [
@@ -624,7 +627,7 @@ exports.getTreeNode = async (req, res) => {
       };
     }
     const directs = await User.find(directsQuery).sort({ createdAt: 1 }).lean();
-    
+
     // Count their directs to determine if they can be expanded
     const childIds = directs.map(d => d.memberId);
     const grandChildrenCounts = await User.aggregate([
@@ -635,7 +638,7 @@ exports.getTreeNode = async (req, res) => {
     grandChildrenCounts.forEach(gc => { gcMap[gc._id] = gc; });
 
     const { statsMap } = await getAllUsersTeamStats();
-    
+
     // Fetch the maximum approved donation level for all users
     const allApprovedDonations = await Donation.aggregate([
       { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
@@ -700,7 +703,7 @@ exports.updateMemberProfile = async (req, res) => {
     if (!user) return res.status(404).json({ success: false, message: 'Member not found' });
 
     const { password, transPassword, ...otherFields } = req.body;
-    
+
     // Update general fields
     Object.assign(user, otherFields);
 
@@ -708,7 +711,7 @@ exports.updateMemberProfile = async (req, res) => {
     if (password && password.trim() !== '') {
       user.password = password;
     }
-    
+
     if (transPassword && transPassword.trim() !== '') {
       user.transactionPassword = transPassword;
     }
@@ -762,6 +765,135 @@ exports.getMyDatewiseIncome = async (req, res) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Helper to build real daily payout records from LevelIncome & RepurchaseIncome
+// ─────────────────────────────────────────────────────────────────────────────
+const buildDailyPayoutRecords = async ({ memberId, memberName, startDate, endDate } = {}) => {
+  const planSetting = await SiteSetting.findOne({ settingKey: 'plan-setting' }).lean();
+  const tdsRate = Number((planSetting?.data?.tdsCharge || '5 %').replace('%', '').trim()) / 100 || 0.05;
+  const adminChargeRate = Number((planSetting?.data?.adminCharges || '5 %').replace('%', '').trim()) / 100 || 0.05;
+
+  const query = { status: { $ne: 'REJECTED' } };
+  if (memberId && typeof memberId === 'string' && memberId.trim() !== '') {
+    query.recipientMemberId = new RegExp(memberId.trim(), 'i');
+  }
+
+  if (startDate || endDate) {
+    query.createdAt = {};
+    if (startDate) {
+      const sDate = new Date(startDate);
+      sDate.setHours(0, 0, 0, 0);
+      query.createdAt.$gte = sDate;
+    }
+    if (endDate) {
+      const eDate = new Date(endDate);
+      eDate.setHours(23, 59, 59, 999);
+      query.createdAt.$lte = eDate;
+    }
+  }
+
+  const [levelIncomes, repurchaseIncomes] = await Promise.all([
+    LevelIncome.find(query).lean(),
+    RepurchaseIncome.find(query).lean(),
+  ]);
+
+  const dailyMap = new Map();
+
+  const processRecord = (record, type) => {
+    const recMemberId = record.recipientMemberId;
+    if (!recMemberId) return;
+
+    const dateObj = new Date(record.createdAt);
+    if (Number.isNaN(dateObj.getTime())) return;
+
+    const dateKey = dateObj.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const mapKey = `${recMemberId}__${dateKey}`;
+
+    if (!dailyMap.has(mapKey)) {
+      dailyMap.set(mapKey, {
+        memberId: recMemberId,
+        dateKey,
+        rawDate: dateObj,
+        levelIncome: 0,
+        repurchaseIncome: 0,
+      });
+    }
+
+    const entry = dailyMap.get(mapKey);
+    if (type === 'level') {
+      entry.levelIncome += Number(record.amount || 0);
+    } else if (type === 'repurchase') {
+      entry.repurchaseIncome += Number(record.amount || 0);
+    }
+
+    if (dateObj > entry.rawDate) {
+      entry.rawDate = dateObj;
+    }
+  };
+
+  levelIncomes.forEach((rec) => processRecord(rec, 'level'));
+  repurchaseIncomes.forEach((rec) => processRecord(rec, 'repurchase'));
+
+  if (dailyMap.size === 0) {
+    return [];
+  }
+
+  const uniqueMemberIds = [...new Set(Array.from(dailyMap.values()).map((e) => e.memberId))];
+  const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId name accountStatus').lean();
+  const userMap = new Map(users.map((u) => [u.memberId, u]));
+
+  const rows = [];
+  dailyMap.forEach((entry) => {
+    const user = userMap.get(entry.memberId);
+    const mName = user?.name || '---';
+
+    if (memberName && typeof memberName === 'string' && memberName.trim() !== '') {
+      if (!mName.toLowerCase().includes(memberName.toLowerCase().trim())) {
+        return;
+      }
+    }
+
+    const grossIncome = entry.levelIncome + entry.repurchaseIncome;
+    const tds = Number((grossIncome * tdsRate).toFixed(2));
+    const adminCharge = Number((grossIncome * adminChargeRate).toFixed(2));
+    const netPayable = Number((grossIncome - tds - adminCharge).toFixed(2));
+    const status = user?.accountStatus === 'IN-ACTIVE' ? 'Pending' : 'Credited To E-wallet';
+
+    const incomeDate = entry.rawDate.toLocaleDateString('en-GB', {
+      timeZone: 'Asia/Kolkata',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).replace(/\//g, '-');
+
+    rows.push({
+      incomeDate,
+      date: incomeDate,
+      dateKey: entry.dateKey,
+      rawDate: entry.rawDate,
+      memberId: entry.memberId,
+      toMemberId: entry.memberId,
+      memberName: mName,
+      toName: mName,
+      levelIncome: Number(entry.levelIncome.toFixed(2)),
+      repurchaseIncome: Number(entry.repurchaseIncome.toFixed(2)),
+      grossIncome: Number(grossIncome.toFixed(2)),
+      amount: Number(grossIncome.toFixed(2)),
+      tds,
+      adminCharge,
+      netPayable,
+      status,
+    });
+  });
+
+  rows.sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
+  rows.forEach((r, idx) => {
+    r.sNo = idx + 1;
+  });
+
+  return rows;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/members/my-daily-payout — logged-in user's daily payout summary
 // ─────────────────────────────────────────────────────────────────────────────
 exports.getMyDailyPayout = async (req, res) => {
@@ -771,33 +903,29 @@ exports.getMyDailyPayout = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Member ID not found for current user' });
     }
 
-    const user = await User.findOne({ memberId }).lean();
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'Member not found' });
-    }
+    const rows = await buildDailyPayoutRecords({ memberId });
 
-    const levelIncome = Number(user.levelIncome || 0);
-    const repurchaseIncome = Number(user.repurchaseIncome || 0);
-    const grossIncome = levelIncome + repurchaseIncome;
-    const tds = grossIncome * 0.05;
-    const adminCharge = grossIncome * 0.05;
-    const netPayable = grossIncome - tds - adminCharge;
+    res.status(200).json({ success: true, data: rows });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
-    const row = {
-      sNo: 1,
-      incomeDate: formatDate(user.createdAt),
-      memberId: user.memberId,
-      memberName: user.name || '---',
-      levelIncome,
-      repurchaseIncome,
-      grossIncome,
-      tds,
-      adminCharge,
-      netPayable,
-      status: user.accountStatus === 'IN-ACTIVE' ? 'Pending' : 'Credited To E-wallet',
-    };
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/members/daily-payout-report — Admin Daily Payout Report
+// ─────────────────────────────────────────────────────────────────────────────
+exports.getDailyPayoutReport = async (req, res) => {
+  try {
+    const { memberId, memberName, startDate, endDate } = req.query;
+    const rows = await buildDailyPayoutRecords({ memberId, memberName, startDate, endDate });
+    const totalPayoutAmount = rows.reduce((sum, r) => sum + Number(r.netPayable || 0), 0);
 
-    res.status(200).json({ success: true, data: [row] });
+    res.status(200).json({
+      success: true,
+      data: rows,
+      totalEntries: rows.length,
+      totalPayoutAmount: Number(totalPayoutAmount.toFixed(2)),
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

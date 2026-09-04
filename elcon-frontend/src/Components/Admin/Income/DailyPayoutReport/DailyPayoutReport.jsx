@@ -1,6 +1,6 @@
 import './DailyPayoutReport.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getMemberPerformance } from '../../../../api/membersService';
+import { getDailyPayoutReport } from '../../../../api/membersService';
 
 function DailyPayoutReport() {
   const [rows, setRows] = useState([]);
@@ -24,7 +24,8 @@ function DailyPayoutReport() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    getMemberPerformance()
+    setLoading(true);
+    getDailyPayoutReport()
       .then((response) => setRows(Array.isArray(response.data) ? response.data : []))
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load daily payout report.'))
       .finally(() => setLoading(false));
@@ -32,68 +33,55 @@ function DailyPayoutReport() {
 
   const handleSearch = () => {
     setAppliedFilters({
-      memberId: filterMemberId,
-      memberName: filterMemberName,
+      memberId: filterMemberId.trim(),
+      memberName: filterMemberName.trim(),
       startDate: filterStartDate,
       endDate: filterEndDate
     });
     setCurrentPage(1);
   };
 
-  const parseDateString = (dateStr) => {
-    if (!dateStr) return null;
-    const datePart = dateStr.split(' ')[0]; // DD-MM-YYYY
-    const parts = datePart.split('-');
-    if (parts.length === 3) {
-      return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // YYYY-MM-DD
-    }
-    return new Date(dateStr);
-  };
-
   const adminDailyPayoutData = useMemo(() => {
     let filteredRows = rows;
 
     if (appliedFilters.memberId) {
-      filteredRows = filteredRows.filter(r => 
+      filteredRows = filteredRows.filter(r =>
         r.memberId?.toLowerCase().includes(appliedFilters.memberId.toLowerCase())
       );
     }
-    
+
     if (appliedFilters.memberName) {
-      filteredRows = filteredRows.filter(r => 
+      filteredRows = filteredRows.filter(r =>
         r.memberName?.toLowerCase().includes(appliedFilters.memberName.toLowerCase())
       );
     }
 
     if (appliedFilters.startDate) {
-      const start = new Date(appliedFilters.startDate);
-      start.setHours(0, 0, 0, 0);
       filteredRows = filteredRows.filter(r => {
-        const rowDate = parseDateString(r.joinDate);
-        return rowDate && rowDate >= start;
+        const rowDateKey = r.dateKey || (r.incomeDate ? r.incomeDate.split('-').reverse().join('-') : '');
+        return rowDateKey && rowDateKey >= appliedFilters.startDate;
       });
     }
 
     if (appliedFilters.endDate) {
-      const end = new Date(appliedFilters.endDate);
-      end.setHours(23, 59, 59, 999);
       filteredRows = filteredRows.filter(r => {
-        const rowDate = parseDateString(r.joinDate);
-        return rowDate && rowDate <= end;
+        const rowDateKey = r.dateKey || (r.incomeDate ? r.incomeDate.split('-').reverse().join('-') : '');
+        return rowDateKey && rowDateKey <= appliedFilters.endDate;
       });
     }
 
-    return filteredRows.map((row) => {
+    return filteredRows.map((row, index) => {
       const levelIncome = Number(row.levelIncome || 0);
       const repurchaseIncome = Number(row.repurchaseIncome || 0);
-      const grossIncome = levelIncome + repurchaseIncome;
-      const tds = grossIncome * 0.05;
-      const adminCharge = grossIncome * 0.05;
-      const netPayable = grossIncome - tds - adminCharge;
+      const grossIncome = Number(row.grossIncome !== undefined ? row.grossIncome : (levelIncome + repurchaseIncome));
+      const tds = Number(row.tds !== undefined ? row.tds : (grossIncome * 0.05));
+      const adminCharge = Number(row.adminCharge !== undefined ? row.adminCharge : (grossIncome * 0.05));
+      const netPayable = Number(row.netPayable !== undefined ? row.netPayable : (grossIncome - tds - adminCharge));
 
       return {
-        sNo: row.sNo,
-        incomeDate: row.joinDate,
+        sNo: index + 1,
+        incomeDate: row.incomeDate,
+        dateKey: row.dateKey,
         memberId: row.memberId,
         memberName: row.memberName,
         levelIncome,
@@ -102,7 +90,7 @@ function DailyPayoutReport() {
         tds,
         adminCharge,
         netPayable,
-        status: row.status === 'IN-ACTIVE' ? 'Pending' : 'Credited To E-wallet',
+        status: row.status || 'Credited To E-wallet',
       };
     });
   }, [rows, appliedFilters]);
@@ -118,40 +106,132 @@ function DailyPayoutReport() {
 
   const totalPayoutAmount = visibleRows.reduce((sum, row) => sum + Number(row.netPayable || 0), 0);
 
+  const exportColumns = [
+    'S.NO',
+    'INCOME DATE',
+    'MEMBER ID',
+    'MEMBER NAME',
+    'LEVEL INCOME',
+    'REPURCHASE INCOME',
+    'GROSS INCOME',
+    'TDS - 5%',
+    'ADMIN CHARGE - 5%',
+    'NET PAYABLE',
+    'STATUS',
+  ];
+
+  const formatRowsForExport = (dataRows) => dataRows.map((row) => [
+    row.sNo,
+    row.incomeDate,
+    row.memberId,
+    row.memberName,
+    row.levelIncome.toFixed(2),
+    row.repurchaseIncome.toFixed(2),
+    row.grossIncome.toFixed(2),
+    row.tds.toFixed(2),
+    row.adminCharge.toFixed(2),
+    row.netPayable.toFixed(2),
+    row.status,
+  ]);
+
+  const handleExportExcel = () => {
+    if (!adminDailyPayoutData || adminDailyPayoutData.length === 0) return;
+    const csvRows = [exportColumns, ...formatRowsForExport(adminDailyPayoutData)]
+      .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvRows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'daily-payout-report.csv');
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportPdf = () => {
+    if (!adminDailyPayoutData || adminDailyPayoutData.length === 0) return;
+    const tableRows = formatRowsForExport(adminDailyPayoutData)
+      .map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`)
+      .join('');
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Daily Payout Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 16px; color: #333; }
+            h2 { margin: 0 0 12px 0; color: #111; }
+            p { font-size: 13px; color: #666; margin: 0 0 12px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { border: 1px solid #d6d6d6; padding: 8px 6px; font-size: 13px; text-align: left; }
+            th { background: #f0f4f8; font-weight: bold; }
+            tr:nth-child(even) { background-color: #fafafa; }
+            .total-row { font-weight: bold; background: #e8f4f8; }
+          </style>
+        </head>
+        <body>
+          <h2>Daily Payout Report</h2>
+          <p>Total Entries: ${adminDailyPayoutData.length} | Generated on: ${new Date().toLocaleString('en-IN')}</p>
+          <table>
+            <thead>
+              <tr>${exportColumns.map((col) => `<th>${col}</th>`).join('')}</tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+              <tr class="total-row">
+                <td colspan="9" style="text-align: right;">TOTAL PAYOUT AMOUNT</td>
+                <td colspan="2">${adminDailyPayoutData.reduce((sum, r) => sum + r.netPayable, 0).toFixed(2)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 250);
+  };
+
   return (
     <div className="daily-payout-report-report-page">
       <h2 className="daily-payout-report-screen-title">Daily Payout Report</h2>
 
       <section className="panel daily-payout-report-panel">
         <div className="daily-payout-report-filter-row">
-          <input 
-            className="text-input daily-payout-report-filter-input" 
-            placeholder="MEMBER ID" 
+          <input
+            className="text-input daily-payout-report-filter-input"
+            placeholder="MEMBER ID"
             value={filterMemberId}
             onChange={(e) => setFilterMemberId(e.target.value)}
           />
-          <input 
-            className="text-input daily-payout-report-filter-input" 
-            placeholder="MEMBER NAME" 
+          <input
+            className="text-input daily-payout-report-filter-input"
+            placeholder="MEMBER NAME"
             value={filterMemberName}
             onChange={(e) => setFilterMemberName(e.target.value)}
           />
-          <input 
-            className="text-input daily-payout-report-filter-input" 
-            type="date" 
-            placeholder="START DATE" 
+          <input
+            className="text-input daily-payout-report-filter-input"
+            type="date"
+            placeholder="START DATE"
             value={filterStartDate}
             onChange={(e) => setFilterStartDate(e.target.value)}
           />
-          <input 
-            className="text-input daily-payout-report-filter-input" 
-            type="date" 
-            placeholder="END DATE" 
+          <input
+            className="text-input daily-payout-report-filter-input"
+            type="date"
+            placeholder="END DATE"
             value={filterEndDate}
             onChange={(e) => setFilterEndDate(e.target.value)}
           />
-          <select 
-            className="select-input daily-payout-report-filter-input daily-payout-report-size-select" 
+          <select
+            className="select-input daily-payout-report-filter-input daily-payout-report-size-select"
             value={pageSize}
             onChange={(e) => { setPageSize(e.target.value); setCurrentPage(1); }}
           >
@@ -163,8 +243,8 @@ function DailyPayoutReport() {
         </div>
 
         <div className="daily-payout-report-export-row">
-          <button type="button" className="btn-outline daily-payout-report-export-btn">XLS</button>
-          <button type="button" className="btn-outline daily-payout-report-export-btn">PDF</button>
+          <button type="button" className="btn-outline daily-payout-report-export-btn" onClick={handleExportExcel}>XLS</button>
+          <button type="button" className="btn-outline daily-payout-report-export-btn" onClick={handleExportPdf}>PDF</button>
         </div>
 
         <div className="table-wrap daily-payout-report-table-wrap">
@@ -235,8 +315,8 @@ function DailyPayoutReport() {
                 Math.abs(currentPage - pageNum) <= 1
               ) {
                 return (
-                  <button 
-                    key={pageNum} 
+                  <button
+                    key={pageNum}
                     className={`daily-payout-report-page-btn ${currentPage === pageNum ? 'daily-payout-report-active' : ''}`}
                     onClick={() => handlePageChange(pageNum)}
                   >

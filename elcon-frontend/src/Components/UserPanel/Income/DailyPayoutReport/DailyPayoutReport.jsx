@@ -18,23 +18,25 @@ function DailyPayoutReport() {
   }, []);
 
   const dailyPayoutData = useMemo(() => rows.map((row, index) => {
-    const grossIncome = Number(row.amount || 0);
-    const tds = grossIncome * 0.05;
-    const adminCharge = grossIncome * 0.05;
-    const netPayable = grossIncome - tds - adminCharge;
+    const levelIncome = Number(row.levelIncome || 0);
+    const repurchaseIncome = Number(row.repurchaseIncome || 0);
+    const grossIncome = Number(row.grossIncome !== undefined ? row.grossIncome : (row.amount || (levelIncome + repurchaseIncome)));
+    const tds = Number(row.tds !== undefined ? row.tds : (grossIncome * 0.05));
+    const adminCharge = Number(row.adminCharge !== undefined ? row.adminCharge : (grossIncome * 0.05));
+    const netPayable = Number(row.netPayable !== undefined ? row.netPayable : (grossIncome - tds - adminCharge));
 
     return {
       sNo: index + 1,
-      incomeDate: row.date,
-      memberId: row.toMemberId,
-      memberName: row.toName,
-      levelIncome: grossIncome * 0.5,
-      repurchaseIncome: grossIncome * 0.5,
+      incomeDate: row.incomeDate || row.date,
+      memberId: row.memberId || row.toMemberId,
+      memberName: row.memberName || row.toName,
+      levelIncome: row.levelIncome !== undefined ? levelIncome : (grossIncome * 0.5),
+      repurchaseIncome: row.repurchaseIncome !== undefined ? repurchaseIncome : (grossIncome * 0.5),
       grossIncome,
       tds,
       adminCharge,
       netPayable,
-      status: row.status === 'COMPLETED' ? 'Credited To E-wallet' : row.status,
+      status: row.status === 'COMPLETED' ? 'Credited To E-wallet' : (row.status || 'Credited To E-wallet'),
     };
   }), [rows]);
 
@@ -127,7 +129,7 @@ function DailyPayoutReport() {
                 <td  colSpan="02" className="report-total-value">
                   {totalPayoutAmount.toFixed(2)}
                 </td>
-              
+
               </tr>
             </tbody>
           </table>
@@ -150,8 +152,8 @@ function DailyPayoutReport() {
                 Math.abs(currentPage - pageNum) <= 1
               ) {
                 return (
-                  <button 
-                    key={pageNum} 
+                  <button
+                    key={pageNum}
                     className={`page-btn ${currentPage === pageNum ? 'active' : ''}`}
                     onClick={() => handlePageChange(pageNum)}
                   >

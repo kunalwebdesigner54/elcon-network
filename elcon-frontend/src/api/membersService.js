@@ -51,6 +51,11 @@ export const getMyDailyPayout = async () => {
   return response.data;
 };
 
+export const getDailyPayoutReport = async (params = {}) => {
+  const response = await apiClient.get('/members/daily-payout-report', { params });
+  return response.data;
+};
+
 export const getRepurchaseIncomeReports = async (params = {}) => {
   const response = await apiClient.get('/repurchase-income/reports', { params });
   return response.data;
