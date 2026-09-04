@@ -1,10 +1,13 @@
 import '../../../Common/AdminLayout.css';
 import './AddRepurchaseProducts.css';
-import { useNavigate } from 'react-router-dom';
-import { createAdminProduct } from '../../../../../api/productsService';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { createAdminProduct, updateAdminProduct } from '../../../../../api/productsService';
 
 function AddRepurchaseProducts() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const product = location.state?.product || null;
+  const isEditMode = location.state?.mode === 'edit';
 
   const readFileAsDataUrl = (file) => {
     return new Promise((resolve, reject) => {
@@ -33,14 +36,14 @@ function AddRepurchaseProducts() {
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const selectedImages = imageInputs.filter((input) => input.files && input.files.length > 0);
 
-    if (missingFields.length || selectedImages.length === 0) {
+    if (missingFields.length || (!isEditMode && selectedImages.length === 0)) {
       const alertParts = [];
 
       if (missingFields.length) {
         alertParts.push(`Please enter/select: ${missingFields.join(', ')}`);
       }
 
-      if (selectedImages.length === 0) {
+      if (!isEditMode && selectedImages.length === 0) {
         alertParts.push('Please select at least 1 product image.');
       }
 
@@ -61,7 +64,12 @@ function AddRepurchaseProducts() {
 
     const formData = new FormData(form);
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
-    const images = await Promise.all(imageInputs.map((input) => readFileAsDataUrl(input.files[0])));
+    const images = [];
+    for (const input of imageInputs) {
+      if (input.files && input.files.length > 0) {
+        images.push(await readFileAsDataUrl(input.files[0]));
+      }
+    }
 
     const pdfInput = form.querySelector('input[type="file"][accept="application/pdf"]');
     const brochurePdf = (pdfInput && pdfInput.files.length > 0) ? await readFileAsDataUrl(pdfInput.files[0]) : '';
@@ -89,16 +97,27 @@ function AddRepurchaseProducts() {
       specifications: formData.get('specifications'),
       features: formData.get('features'),
       quantity: formData.get('quantity') || '0',
-      imageKey: images[0] || '',
-      images,
-      brochurePdf,
     };
 
+    if (images.length > 0) {
+      payload.imageKey = images[0];
+      payload.images = images;
+    }
+
+    if (brochurePdf) {
+      payload.brochurePdf = brochurePdf;
+    }
+
     try {
-      await createAdminProduct(payload);
+      if (isEditMode) {
+        const id = product._id || product.id || product.productId || product.productCode;
+        await updateAdminProduct(id, payload);
+      } else {
+        await createAdminProduct(payload);
+      }
       navigate('/products-package/repurchase-products');
     } catch (error) {
-      window.alert(error?.response?.data?.message || 'Unable to add repurchase product');
+      window.alert(error?.response?.data?.message || `Unable to ${isEditMode ? 'update' : 'add'} repurchase product`);
     }
   };
 
@@ -136,7 +155,7 @@ function AddRepurchaseProducts() {
 
   return (
     <section className="panel admin-add-product-panel">
-      <h2 className="section-title admin-add-product-title">ADD REPURCHASE PRODUCTS</h2>
+      <h2 className="section-title admin-add-product-title">{isEditMode ? 'EDIT' : 'ADD'} REPURCHASE PRODUCTS</h2>
 
       <form className="admin-add-product-card" onSubmit={handleSubmit}>
         <div className="admin-add-product-grid">
@@ -144,7 +163,7 @@ function AddRepurchaseProducts() {
             <div className="admin-add-product-table" role="group" aria-label="basic-product-details">
               <label className="admin-add-product-row">
                 <span>Category</span>
-                <select name="category" defaultValue="Healthcare">
+                <select name="category" defaultValue={product?.category || "Healthcare"}>
                   <option value="Healthcare">Healthcare</option>
                   <option value="Electronics">Electronics</option>
                   <option value="Mens Fashion">Mens Fashion</option>
@@ -153,23 +172,23 @@ function AddRepurchaseProducts() {
               </label>
               <label className="admin-add-product-row">
                 <span>Product Name</span>
-                <input name="productName" type="text" defaultValue="Elcon Calcium - 60 Tab" />
+                <input name="productName" type="text" defaultValue={product?.productName || product?.name || ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>Product Code</span>
-                <input name="productCode" type="text" defaultValue="PDT-101" />
+                <input name="productCode" type="text" defaultValue={product?.productCode || ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>HSN Code</span>
-                <input name="hsnCode" type="text" defaultValue="4440" />
+                <input name="hsnCode" type="text" defaultValue={product?.hsnCode || ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>GST %</span>
-                <input name="gst" type="number" defaultValue="18" />
+                <input name="gst" type="number" defaultValue={product?.gst || "18"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Stock</span>
-                <input name="quantity" type="number" defaultValue="200" required />
+                <input name="quantity" type="number" defaultValue={product?.quantity || ""} required />
               </label>
               <div className="admin-add-product-row" style={{ alignItems: 'flex-start' }}>
                 <span>Product Images</span>
@@ -206,7 +225,7 @@ function AddRepurchaseProducts() {
                   <textarea
                     name="description"
                     rows="5"
-                    defaultValue="Elcon Calcium product details and description."
+                    defaultValue={product?.description || ""}
                     style={contentFieldStyle}
                   />
                 </label>
@@ -215,7 +234,7 @@ function AddRepurchaseProducts() {
                   <textarea
                     name="specifications"
                     rows="5"
-                    defaultValue="Type: Product Listing\nLayout: Image gallery with specification table\nTheme: User panel responsive card design\nInteraction: Card click, tabs, and carousel controls"
+                    defaultValue={product?.specifications || ""}
                     style={contentFieldStyle}
                   />
                 </label>
@@ -224,7 +243,7 @@ function AddRepurchaseProducts() {
                   <textarea
                     name="features"
                     rows="5"
-                    defaultValue="Responsive layout for desktop, tablet, and mobile screens.\nTabbed content area that updates without changing the page.\nImage carousel with arrow controls for fast product preview.\nClean CTA area that keeps the purchase flow simple."
+                    defaultValue={product?.features || ""}
                     style={contentFieldStyle}
                   />
                 </label>
@@ -236,58 +255,60 @@ function AddRepurchaseProducts() {
             <div className="admin-add-product-table" role="group" aria-label="pricing-product-details">
               <label className="admin-add-product-row">
                 <span>M.R.P Price</span>
-                <input name="mrpPrice" type="text" defaultValue="375" />
+                <input name="mrpPrice" type="text" defaultValue={product?.mrp || ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>DP Price</span>
-                <input name="dpPrice" type="number" defaultValue="350" />
+                <input name="dpPrice" type="number" defaultValue={product?.dpPrice || ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>Coupon Discount</span>
-                <input name="discount" type="number" defaultValue="0" />
+                <input name="discount" type="number" defaultValue={product?.discount || "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Delivery Charge</span>
-                <input name="deliveryCharge" type="text" defaultValue="free" />
+                <input name="deliveryCharge" type="text" defaultValue={product?.shipping || "free"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Level Point</span>
-                <input name="levelPoint" type="number" defaultValue="200" />
+                <input name="levelPoint" type="number" defaultValue={product?.levelPoint || "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>B.V Point</span>
-                <input name="bvPoint" type="number" defaultValue="0" />
+                <input name="bvPoint" type="number" defaultValue={product?.bvPoint || "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Reserve Amount</span>
-                <input name="reserveAmount" type="number" defaultValue="0" />
+                <input name="reserveAmount" type="number" defaultValue={product?.reserveAmount || "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Size</span>
-                <input name="size" type="text" placeholder="Optional (e.g. S,M,L)" />
+                <input name="size" type="text" placeholder="Optional (e.g. S,M,L)" defaultValue={product?.size || ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>Color</span>
-                <input name="color" type="text" placeholder="Optional (e.g. Red,Blue)" />
+                <input name="color" type="text" placeholder="Optional (e.g. Red,Blue)" defaultValue={product?.color || ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>Weight</span>
-                <input name="weight" type="text" placeholder="Optional" />
+                <input name="weight" type="text" placeholder="Optional" defaultValue={product?.weight || ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>Dimension</span>
-                <input name="dimension" type="text" placeholder="Optional" />
+                <input name="dimension" type="text" placeholder="Optional" defaultValue={product?.dimension || ""} />
               </label>
             </div>
           </div>
         </div>
 
         <div className="admin-add-product-actions">
-          <button type="reset" className="btn-danger admin-add-product-btn-reset">
-            Reset
-          </button>
+          {!isEditMode && (
+            <button type="reset" className="btn-danger admin-add-product-btn-reset">
+              Reset
+            </button>
+          )}
           <button type="submit" className="btn-primary admin-add-product-btn-submit">
-            Add
+            {isEditMode ? 'Update' : 'Add'}
           </button>
         </div>
       </form>
