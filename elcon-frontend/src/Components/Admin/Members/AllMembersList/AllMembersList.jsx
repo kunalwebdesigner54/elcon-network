@@ -27,6 +27,7 @@ const AllMembersList = () => {
 
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
+  const [totalWalletBalance, setTotalWalletBalance] = useState(0);
 
   const loadMembers = async (currentPage = page, currentLimit = pageSize) => {
     try {
@@ -39,6 +40,7 @@ const AllMembersList = () => {
       const response = await getAllMembersList(params);
       setMembersData(response.data || []);
       setPagination(response.pagination || { total: 0, page: 1, limit: currentLimit, pages: 1 });
+      setTotalWalletBalance(response.totalWalletBalance || 0);
     } catch (error) {
       setMembersData([]);
     } finally {
@@ -77,6 +79,7 @@ const AllMembersList = () => {
       .then(response => {
         setMembersData(response.data || []);
         setPagination(response.pagination || { total: 0, page: 1, limit: 10, pages: 1 });
+        setTotalWalletBalance(response.totalWalletBalance || 0);
       })
       .catch(() => setMembersData([]))
       .finally(() => setLoading(false));
@@ -229,6 +232,9 @@ const AllMembersList = () => {
         <div className="table-footer" style={{ justifyContent: 'space-between', marginTop: '12px', marginBottom: '40px' }}>
           <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
             Total: {pagination.total} members
+          </span>
+          <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '24px' }}>
+            Total Wallet Balance: ₹{Number(totalWalletBalance || 0).toFixed(2)}
           </span>
           <div className="pagination">
             <button className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>

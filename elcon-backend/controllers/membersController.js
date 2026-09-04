@@ -284,6 +284,13 @@ exports.getAllMembersList = async (req, res) => {
     }
 
     const total = await User.countDocuments(query);
+
+    const walletAggregation = await User.aggregate([
+      { $match: query },
+      { $group: { _id: null, totalWallet: { $sum: { $ifNull: ['$walletBalance', 0] } } } }
+    ]);
+    const totalWalletBalance = Number(walletAggregation[0]?.totalWallet || 0);
+
     const users = await User.find(query)
       .select('+plainPassword +plainTransactionPassword -kycDetails.aadharFrontImage -kycDetails.aadharBackImage -kycDetails.panImage')
       .sort({ createdAt: -1 })
@@ -341,7 +348,8 @@ exports.getAllMembersList = async (req, res) => {
         page,
         limit,
         pages: Math.ceil(total / limit)
-      }
+      },
+      totalWalletBalance: Number(totalWalletBalance.toFixed(2))
     });
   } catch (error) {
     res.status(500).json({
