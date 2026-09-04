@@ -368,8 +368,6 @@ function Register() {
                   />
                 </div>
 
-                </div>
-
                 <div className="register-field">
                   <label htmlFor="joiningPackage">
                     Joining Package <span className="register-required">*</span>

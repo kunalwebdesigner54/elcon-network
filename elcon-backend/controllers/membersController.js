@@ -558,6 +558,7 @@ exports.getMemberPerformance = async (req, res) => {
         memberId: user.memberId || '---',
         memberName: user.name || '---',
         mobile: user.contactNo || '---',
+        email: user.email || '---',
         joinDate: formatDate(user.createdAt),
         joinDateRaw: user.createdAt,
         status: user.accountStatus || 'ACTIVE',

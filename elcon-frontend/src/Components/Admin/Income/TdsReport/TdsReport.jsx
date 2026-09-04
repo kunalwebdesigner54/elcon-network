@@ -23,9 +23,11 @@ function TdsReport() {
             memberId: row.memberId,
             memberName: row.memberName,
             mobileNo: row.mobile || '---',
-            email: '---',
+            email: row.email || '---',
             panNo: row.panNo || '---',
+            grossIncome: Number(row.totalIncome || 0).toFixed(2),
             totalTds: (Number(row.totalIncome || 0) * 0.05).toFixed(2),
+            netPayable: (Number(row.totalIncome || 0) * 0.95).toFixed(2),
           };
         }));
       })
@@ -94,16 +96,18 @@ function TdsReport() {
                 <th>Mobile No</th>
                 <th>E-mail ID.</th>
                 <th>PAN NO</th>
+                <th>GROSS INCOME</th>
+                <th>NET PAYABLE</th>
                 <th>Total TDS</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7}>Loading...</td></tr>
+                <tr><td colSpan={9}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={7}>{error}</td></tr>
+                <tr><td colSpan={9}>{error}</td></tr>
               ) : tdsRows.length === 0 ? (
-                <tr><td colSpan={7}>No TDS records found.</td></tr>
+                <tr><td colSpan={9}>No TDS records found.</td></tr>
               ) : tdsRows.map((row) => (
                 <tr key={`${row.sno}-${row.memberId}`}>
                   <td>{row.sno}</td>
@@ -112,6 +116,8 @@ function TdsReport() {
                   <td>{row.mobileNo}</td>
                   <td>{row.email}</td>
                   <td>{row.panNo}</td>
+                  <td>{row.grossIncome}</td>
+                  <td>{row.netPayable}</td>
                   <td>{row.totalTds}</td>
                 </tr>
               ))}
