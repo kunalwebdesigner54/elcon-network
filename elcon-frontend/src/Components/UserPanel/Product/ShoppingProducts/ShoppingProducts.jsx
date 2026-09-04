@@ -13,7 +13,9 @@ function ShoppingProducts() {
     const loadProducts = async () => {
       try {
         const response = await getPublicProducts('shopping');
-        setShoppingProducts(response.products || []);
+        const rawProducts = response.products || [];
+        const visibleProducts = rawProducts.filter(p => (p.status || '').toUpperCase() === 'SHOWING');
+        setShoppingProducts(visibleProducts);
       } catch (error) {
         setShoppingProducts([]);
       }
@@ -42,8 +44,8 @@ function ShoppingProducts() {
 
         <div className="user-product-grid">
           {shoppingProducts.map((product) => {
-            const stockStatus = (product.quantity !== undefined && product.quantity !== null && product.quantity !== '') 
-                ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock') 
+            const stockStatus = (product.quantity !== undefined && product.quantity !== null && product.quantity !== '')
+                ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock')
                 : (product.stock === 'Out of Stock' ? 'Out of Stock' : 'In Stock');
 
             return (
@@ -85,9 +87,9 @@ function ShoppingProducts() {
                   </span>
                   <span className="user-product-price">₹ {product.price}</span>
                 </div>
-                <button 
-                  type="button" 
-                  className="user-product-btn" 
+                <button
+                  type="button"
+                  className="user-product-btn"
                   disabled={stockStatus === 'Out of Stock'}
                   style={{ opacity: stockStatus === 'Out of Stock' ? 0.5 : 1, cursor: stockStatus === 'Out of Stock' ? 'not-allowed' : 'pointer' }}
                   onClick={(event) => {

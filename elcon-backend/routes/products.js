@@ -24,7 +24,7 @@ const {
 
 const router = express.Router();
 
-router.get('/products', getProducts);
+router.get('/products', (req, res) => getProducts(req, res, false));
 
 router.use(protect);
 

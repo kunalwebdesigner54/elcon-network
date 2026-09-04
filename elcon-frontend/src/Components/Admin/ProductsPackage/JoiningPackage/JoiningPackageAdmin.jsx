@@ -42,15 +42,15 @@ function JoiningPackageAdmin() {
   const handleToggleVisibility = async (row) => {
     const currentStatus = row.status?.toUpperCase() || 'SHOWING';
     const newStatus = currentStatus === 'SHOWING' ? 'HIDDEN' : 'SHOWING';
-    const id = row.id || row.productId || row.productCode || row._id;
-    
+    const id = row._id || row.id || row.productId || row.productCode;
+
     if (!id) return;
 
     // Optimistic UI Update for instant feedback
-    setJoiningPackageRows(prevRows => 
-      prevRows.map(p => 
-        (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
-          ? { ...p, status: newStatus } 
+    setJoiningPackageRows(prevRows =>
+      prevRows.map(p =>
+        (p.id === id || p.productId === id || p.productCode === id || p._id === id)
+          ? { ...p, status: newStatus }
           : p
       )
     );
@@ -60,10 +60,10 @@ function JoiningPackageAdmin() {
     } catch (error) {
       console.error("Error toggling product status:", error);
       // Revert on failure
-      setJoiningPackageRows(prevRows => 
-        prevRows.map(p => 
-          (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
-            ? { ...p, status: currentStatus } 
+      setJoiningPackageRows(prevRows =>
+        prevRows.map(p =>
+          (p.id === id || p.productId === id || p.productCode === id || p._id === id)
+            ? { ...p, status: currentStatus }
             : p
         )
       );

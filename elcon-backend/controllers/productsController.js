@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Product = require('../models/Product');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
@@ -72,9 +73,13 @@ const findProduct = async (identifier) => {
     return null;
   }
 
-  return Product.findOne({
-    $or: [{ _id: identifier }, { productCode: identifier }],
-  });
+  const cleanId = String(identifier).trim();
+  if (mongoose.Types.ObjectId.isValid(cleanId)) {
+    const found = await Product.findById(cleanId);
+    if (found) return found;
+  }
+
+  return Product.findOne({ productCode: cleanId });
 };
 
 const toNumber = (value, fallback = 0) => {
@@ -101,12 +106,13 @@ const productsCache = new Map();
 
 exports.getProducts = async (req, res, isAdmin = false) => {
   try {
+    const isAdminRequest = isAdmin === true;
     const type = getQueryType(req);
-    const filter = isAdmin ? {} : { status: 'SHOWING' };
+    const filter = isAdminRequest ? {} : { status: 'SHOWING' };
     if (type) filter.type = type;
 
     const cacheKey = JSON.stringify(filter);
-    if (!isAdmin && productsCache.has(cacheKey)) {
+    if (!isAdminRequest && productsCache.has(cacheKey)) {
       const cachedData = productsCache.get(cacheKey);
       return res.status(200).json({
         success: true,
@@ -128,10 +134,10 @@ exports.getProducts = async (req, res, isAdmin = false) => {
       }
     ]);
 
-    if (!isAdmin) {
+    if (!isAdminRequest) {
       productsCache.set(cacheKey, products);
-      // clear cache after 5 minutes
-      setTimeout(() => productsCache.delete(cacheKey), 5 * 60 * 1000);
+      // clear cache after 1 minute
+      setTimeout(() => productsCache.delete(cacheKey), 60 * 1000);
     }
 
     res.status(200).json({
@@ -208,6 +214,7 @@ exports.createProduct = async (req, res) => {
       reserveAmount: toNumber(payload.reserveAmount),
     });
 
+    productsCache.clear();
     res.status(201).json({ success: true, product: productToApiShape(product) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -267,6 +274,7 @@ exports.updateProduct = async (req, res) => {
     if (updates.reserveAmount !== undefined) product.reserveAmount = toNumber(updates.reserveAmount);
 
     await product.save();
+    productsCache.clear();
 
     res.status(200).json({ success: true, product: productToApiShape(product) });
   } catch (error) {
@@ -283,6 +291,7 @@ exports.deleteProduct = async (req, res) => {
     }
 
     await product.deleteOne();
+    productsCache.clear();
 
     res.status(200).json({ success: true, message: 'Product deleted successfully' });
   } catch (error) {

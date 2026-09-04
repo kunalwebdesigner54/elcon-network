@@ -38,15 +38,15 @@ function ShoppingProductsAdmin() {
   const handleToggleVisibility = async (row) => {
     const currentStatus = row.status?.toUpperCase() || 'SHOWING';
     const newStatus = currentStatus === 'SHOWING' ? 'HIDDEN' : 'SHOWING';
-    const id = row.id || row.productId || row.productCode || row._id;
-    
+    const id = row._id || row.id || row.productId || row.productCode;
+
     if (!id) return;
 
     // Optimistic UI Update for instant feedback
-    setShoppingRows(prevRows => 
-      prevRows.map(p => 
-        (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
-          ? { ...p, status: newStatus } 
+    setShoppingRows(prevRows =>
+      prevRows.map(p =>
+        (p.id === id || p.productId === id || p.productCode === id || p._id === id)
+          ? { ...p, status: newStatus }
           : p
       )
     );
@@ -56,10 +56,10 @@ function ShoppingProductsAdmin() {
     } catch (error) {
       console.error("Error toggling product status:", error);
       // Revert on failure
-      setShoppingRows(prevRows => 
-        prevRows.map(p => 
-          (p.id === id || p.productId === id || p.productCode === id || p._id === id) 
-            ? { ...p, status: currentStatus } 
+      setShoppingRows(prevRows =>
+        prevRows.map(p =>
+          (p.id === id || p.productId === id || p.productCode === id || p._id === id)
+            ? { ...p, status: currentStatus }
             : p
         )
       );

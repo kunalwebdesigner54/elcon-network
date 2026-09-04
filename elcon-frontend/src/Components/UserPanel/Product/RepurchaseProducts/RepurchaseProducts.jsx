@@ -23,7 +23,9 @@ function RepurchaseProducts() {
     const loadProducts = async () => {
       try {
         const response = await getPublicProducts('repurchase');
-        setRepurchaseProducts(response.products || []);
+        const rawProducts = response.products || [];
+        const visibleProducts = rawProducts.filter(p => (p.status || '').toUpperCase() === 'SHOWING');
+        setRepurchaseProducts(visibleProducts);
       } catch (error) {
         setRepurchaseProducts([]);
       }
@@ -51,15 +53,15 @@ function RepurchaseProducts() {
       <div className="user-panel user-product-panel">
 
         <div className="product-filter-bar" style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
-          <input 
-            type="text" 
-            placeholder="Search products..." 
+          <input
+            type="text"
+            placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{ flex: 1, minWidth: '200px', padding: '10px 15px', borderRadius: '8px', background: 'var(--bg-dark)', color: 'var(--text-main)', border: '1px solid var(--glass-border-light)', outline: 'none' }}
           />
-          <select 
-            value={selectedCategory} 
+          <select
+            value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             style={{ padding: '10px 15px', borderRadius: '8px', background: 'var(--bg-dark)', color: 'var(--text-main)', border: '1px solid var(--glass-border-light)', outline: 'none', minWidth: '150px' }}
           >
@@ -71,8 +73,8 @@ function RepurchaseProducts() {
 
         <div className="user-product-grid">
           {filteredProducts.map((product) => {
-            const stockStatus = (product.quantity !== undefined && product.quantity !== null && product.quantity !== '') 
-                ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock') 
+            const stockStatus = (product.quantity !== undefined && product.quantity !== null && product.quantity !== '')
+                ? (Number(product.quantity) > 0 ? 'In Stock' : 'Out of Stock')
                 : (product.stock === 'Out of Stock' ? 'Out of Stock' : 'In Stock');
 
             return (
@@ -116,9 +118,9 @@ function RepurchaseProducts() {
                   <span className="user-product-price">₹ {product.price}</span>
                 </div>
 
-                <button 
-                  type="button" 
-                  className="user-product-btn" 
+                <button
+                  type="button"
+                  className="user-product-btn"
                   disabled={stockStatus === 'Out of Stock'}
                   style={{ opacity: stockStatus === 'Out of Stock' ? 0.5 : 1, cursor: stockStatus === 'Out of Stock' ? 'not-allowed' : 'pointer' }}
                   onClick={(event) => {

@@ -15,7 +15,9 @@ function JoiningPackage() {
       try {
         setLoading(true);
         const response = await getPublicProducts('joining');
-        setJoiningProducts(response.products || []);
+        const rawProducts = response.products || [];
+        const visibleProducts = rawProducts.filter(p => (p.status || '').toUpperCase() === 'SHOWING');
+        setJoiningProducts(visibleProducts);
       } catch (error) {
         setJoiningProducts([]);
       } finally {
