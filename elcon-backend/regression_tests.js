@@ -82,7 +82,8 @@ async function runTests() {
       
       let pass = true;
       if (expectedAmt > 0) {
-         if (actualAmt !== expectedAmt || actualLevel !== expectedLevel || user.walletBalance !== expectedAmt) pass = false;
+         const expectedWallet = Number((expectedAmt * 0.90).toFixed(2));
+         if (actualAmt !== expectedAmt || actualLevel !== expectedLevel || user.walletBalance !== expectedWallet) pass = false;
       } else {
          if (rec != null || user.walletBalance > 0) pass = false;
       }

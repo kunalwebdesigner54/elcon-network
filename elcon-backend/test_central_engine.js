@@ -115,7 +115,7 @@ const runTests = async () => {
     const countLvl2 = await LevelIncome.countDocuments({ joiningMemberId: 'TC_NEW2', level: 2 });
     const u5 = await User.findOne({ memberId: 'TC_U5' });
     console.log(`Duplicate Check: Lvl 2 records created: ${countLvl2} (Expected 1)`);
-    console.log(`U5 Wallet Balance: ${u5.walletBalance} (Expected 20)`);
+    console.log(`U5 Wallet Balance: ${u5.walletBalance} (Expected 18)`);
     
     console.log('\nALL TESTS EXECUTED.');
   } catch (error) {

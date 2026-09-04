@@ -748,9 +748,14 @@ exports.getMyDatewiseIncome = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Member not found' });
     }
 
-    const levelIncome = Number(user.levelIncome || 0);
-    const repurchaseIncome = Number(user.repurchaseIncome || 0);
-    const donationIncome = Number(user.donationIncome || 0);
+    const [levelIncomeRecords, repurchaseIncomeRecords] = await Promise.all([
+      LevelIncome.find({ recipientMemberId: memberId }).lean(),
+      RepurchaseIncome.find({ recipientMemberId: memberId }).lean(),
+    ]);
+
+    const levelIncome = levelIncomeRecords.reduce((sum, rec) => sum + Number(rec.amount || 0), 0);
+    const repurchaseIncome = repurchaseIncomeRecords.reduce((sum, rec) => sum + Number(rec.amount || 0), 0);
+    const donationIncome = 0;
     const totalIncome = levelIncome + repurchaseIncome + donationIncome;
     const totalTeamCount = Number(user.totalTeamCount || user.teamCount || 0);
     const directsCount = Number(user.directsCount || user.directMembers || 0);

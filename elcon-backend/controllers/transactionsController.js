@@ -63,6 +63,10 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
 
   const walletTransactions = await WalletTransaction.find().sort({ createdAt: -1 });
   walletTransactions.forEach((transaction) => {
+    const desc = String(transaction.description || '');
+    if (/^LEVEL INCOME - Level \d+$/.test(desc)) {
+      return;
+    }
     rows.push({
       dateTime: formatDateTime(transaction.createdAt),
       transactionId: transaction.transactionId,
@@ -76,6 +80,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
 
   const tdsSetting = await SiteSetting.findOne({ settingKey: 'plan-setting' }).lean();
   const tdsRate = Number((tdsSetting?.data?.tdsCharge || '5 %').replace('%', '').trim()) / 100 || 0.05;
+  const adminChargeRate = Number((tdsSetting?.data?.adminCharges || '5 %').replace('%', '').trim()) / 100 || 0.05;
 
   const levelIncomes = await LevelIncome.find().sort({ createdAt: -1 });
   const repurchaseIncomes = await RepurchaseIncome.find().sort({ createdAt: -1 });
@@ -86,7 +91,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     const memberId = record.recipientMemberId || record.purchasingMemberId;
     if (!memberId) return;
     const dateKey = new Date(record.createdAt).toISOString().split('T')[0];
-    const key = `${memberId}__${dateKey}`;
+    const key = `${memberId}__${dateKey}__${type}`;
     const current = incomeMap.get(key) || {
       memberId,
       date: new Date(dateKey),
@@ -104,33 +109,48 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   levelIncomes.forEach((record) => addIncomeRow(record, 'LEVEL INCOME'));
   repurchaseIncomes.forEach((record) => addIncomeRow(record, 'REPURCHASE INCOME'));
 
-  const incomeValues = Array.from(incomeMap.values()).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  const dailyCounters = {};
+  incomeMap.forEach((value) => {
+    const grossAmount = Number(value.amount);
+    const tdsDeduction = Number((grossAmount * tdsRate).toFixed(2));
+    const adminChargeDeduction = Number((grossAmount * adminChargeRate).toFixed(2));
+    const netAmount = Number((grossAmount - tdsDeduction - adminChargeDeduction).toFixed(2));
+    const incomeLabel = value.description.replace(' ', '-');
 
-  incomeValues.forEach((value) => {
-    const tdsDeduction = Number(value.amount) * tdsRate;
-    const netAmount = Number(value.amount) - tdsDeduction;
+    if (grossAmount > 0) {
+      rows.push({
+        dateTime: formatDateTime(value.createdAt),
+        transactionId: `DAILY-${value.memberId}-${incomeLabel}`,
+        memberId: value.memberId,
+        description: `${value.description} (TDS ${(tdsRate * 100).toFixed(0)}% + Admin ${(adminChargeRate * 100).toFixed(0)}%)`,
+        credit: grossAmount,
+        debit: 0,
+        createdAt: value.createdAt,
+      });
+    }
 
-    const d = new Date(value.createdAt);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    const dateStr = `${day}${month}${year}`;
+    if (tdsDeduction > 0) {
+      rows.push({
+        dateTime: formatDateTime(value.createdAt),
+        transactionId: `TDS-${value.memberId}-${incomeLabel}`,
+        memberId: value.memberId,
+        description: `TDS DEDUCTION (${(tdsRate * 100).toFixed(0)}%)`,
+        credit: 0,
+        debit: tdsDeduction,
+        createdAt: value.createdAt,
+      });
+    }
 
-    if (!dailyCounters[dateStr]) dailyCounters[dateStr] = 0;
-    dailyCounters[dateStr]++;
-    
-    const seq = String(dailyCounters[dateStr]).padStart(4, '0');
-
-    rows.push({
-      dateTime: formatDateTime(value.createdAt),
-      transactionId: `DINC-${dateStr}-${seq}`,
-      memberId: value.memberId,
-      description: `Daily_Income`,
-      credit: Number(netAmount.toFixed(2)),
-      debit: 0,
-      createdAt: value.createdAt,
-    });
+    if (adminChargeDeduction > 0) {
+      rows.push({
+        dateTime: formatDateTime(value.createdAt),
+        transactionId: `ADMIN-${value.memberId}-${incomeLabel}`,
+        memberId: value.memberId,
+        description: `ADMIN CHARGE (${(adminChargeRate * 100).toFixed(0)}%)`,
+        credit: 0,
+        debit: adminChargeDeduction,
+        createdAt: value.createdAt,
+      });
+    }
   });
 
   rows.sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));

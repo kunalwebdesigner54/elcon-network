@@ -1,31 +1,25 @@
 const User = require('../models/User');
 const LevelIncome = require('../models/LevelIncome');
+const SiteSetting = require('../models/SiteSetting');
+const { createWalletTransaction } = require('../utils/walletHelper');
 
-/**
- * Distribute Level Income for a newly joined member.
- * - Dynamic Compression: Distributes exactly 9 income slots (Level 2 to Level 10).
- * - Requires X Active Direct Joinings for Slot X.
- * - Searches up the physical tree infinitely until 9 slots are filled.
- * - Unpaid slots flush to the Admin account if the top of the tree is reached.
- * 
- * @param {String} joiningMemberId
- * @param {String} joiningMemberName
- * @param {String} sponsorId
- */
 const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsorId) => {
   if (!sponsorId) return;
 
-  const MAX_SLOTS = 9; // 9 slots of 20 Rs (Level 2 to 10)
+  const MAX_SLOTS = 9;
   const INCOME_AMOUNT = 20;
 
   try {
+    const planSetting = await SiteSetting.findOne({ settingKey: 'plan-setting' }).lean();
+    const tdsRate = Number((planSetting?.data?.tdsCharge || '5 %').replace('%', '').trim()) / 100 || 0.05;
+    const adminChargeRate = Number((planSetting?.data?.adminCharges || '5 %').replace('%', '').trim()) / 100 || 0.05;
+
     let currentMemberId = sponsorId;
     let physicalDepth = 1;
     let successfulSlots = 0;
     const visited = new Set();
-    const skippedMembersList = []; // Track skipped members
+    const skippedMembersList = [];
 
-    // Loop until we have distributed 9 slots or run out of physical uplines
     while (currentMemberId && successfulSlots < MAX_SLOTS) {
       if (visited.has(currentMemberId)) {
         console.warn(`Circular sponsor dependency detected at ${currentMemberId}`);
@@ -34,28 +28,24 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
       visited.add(currentMemberId);
 
       const candidate = await User.findOne({ memberId: currentMemberId }).lean();
-      if (!candidate) break; // Reached absolute top of tree
+      if (!candidate) break;
 
-      // Physical Depth 1 is the immediate sponsor. We skip paying them.
       if (physicalDepth > 1) {
         const isAdmin = candidate.role === 'admin';
         const isAccountValid = isAdmin || (candidate.accountStatus === 'ACTIVE' && candidate.isBlocked === false);
         
         let isEligible = false;
-        // Calculate which slot we are trying to fill (e.g. 1st successful payout = Level 2)
         const payoutSlotLevel = successfulSlots + 2; 
 
         if (isAccountValid) {
           if (isAdmin) {
             isEligible = true;
           } else {
-            // Check Active Directs for normal users
             const activeDirectsCount = await User.countDocuments({
               sponsorId: currentMemberId,
               accountStatus: 'ACTIVE'
             });
 
-            // Requirement is strictly based on the Income Slot number
             const requiredDirects = payoutSlotLevel; 
 
             if (activeDirectsCount >= requiredDirects) {
@@ -76,27 +66,48 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
 
           if (!existingIncome) {
             const transactionId = `LVL${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
+            const tdsDeduction = Number((INCOME_AMOUNT * tdsRate).toFixed(2));
+            const adminChargeDeduction = Number((INCOME_AMOUNT * adminChargeRate).toFixed(2));
+            const netAmount = Number((INCOME_AMOUNT - tdsDeduction - adminChargeDeduction).toFixed(2));
             
             try {
-              await LevelIncome.create({
-                recipientMemberId: currentMemberId,
-                joiningMemberId,
-                joiningMemberName: joiningMemberName || '---',
-                level: payoutSlotLevel, 
-                physicalDepth: physicalDepth, // Record actual physical depth for transparency
-                amount: INCOME_AMOUNT,
-                transactionId,
-                skippedMembers: [...skippedMembersList]
-              });
+               await LevelIncome.create({
+                  recipientMemberId: currentMemberId,
+                  joiningMemberId,
+                  joiningMemberName: joiningMemberName || '---',
+                  level: payoutSlotLevel, 
+                  physicalDepth: physicalDepth,
+                  amount: INCOME_AMOUNT,
+                  transactionId,
+                  skippedMembers: [...skippedMembersList]
+                });
 
-               await User.updateOne(
-                 { memberId: currentMemberId },
-                 { $inc: { walletBalance: INCOME_AMOUNT } }
-               );
-             } catch (error) {
-              if (error.code !== 11000) {
-                console.error(`Error distributing level income at slot ${payoutSlotLevel}:`, error);
-              }
+                await User.updateOne(
+                   { memberId: currentMemberId },
+                   { $inc: { walletBalance: netAmount } }
+                 );
+
+                await createWalletTransaction({
+                   memberId: currentMemberId,
+                   description: `LEVEL INCOME - Level ${payoutSlotLevel}`,
+                   credit: netAmount,
+                 });
+
+                await createWalletTransaction({
+                   memberId: currentMemberId,
+                   description: `TDS DEDUCTION (Level ${payoutSlotLevel})`,
+                   debit: tdsDeduction,
+                 });
+
+                await createWalletTransaction({
+                   memberId: currentMemberId,
+                   description: `ADMIN CHARGE (Level ${payoutSlotLevel})`,
+                   debit: adminChargeDeduction,
+                 });
+            } catch (error) {
+               if (error.code !== 11000) {
+                 console.error(`Error distributing level income at slot ${payoutSlotLevel}:`, error);
+               }
             }
           }
           successfulSlots++;
@@ -107,7 +118,6 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
       currentMemberId = candidate.sponsorId;
     }
 
-    // Admin Flush: If the tree was exhausted before 9 slots were paid out
     if (successfulSlots < MAX_SLOTS) {
       const admin = await User.findOne({ role: 'admin' }).lean();
       if (admin) {
@@ -121,26 +131,47 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
 
           if (!existingIncome) {
             const transactionId = `LVL${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
+            const tdsDeduction = Number((INCOME_AMOUNT * tdsRate).toFixed(2));
+            const adminChargeDeduction = Number((INCOME_AMOUNT * adminChargeRate).toFixed(2));
+            const netAmount = Number((INCOME_AMOUNT - tdsDeduction - adminChargeDeduction).toFixed(2));
             try {
-              await LevelIncome.create({
-                recipientMemberId: admin.memberId,
-                joiningMemberId,
-                joiningMemberName: joiningMemberName || '---',
-                level: payoutSlotLevel, 
-                physicalDepth: physicalDepth, // Admin catches whatever depth this fell off
-                amount: INCOME_AMOUNT,
-                transactionId,
-                skippedMembers: [...skippedMembersList]
-              });
+               await LevelIncome.create({
+                  recipientMemberId: admin.memberId,
+                  joiningMemberId,
+                  joiningMemberName: joiningMemberName || '---',
+                  level: payoutSlotLevel, 
+                  physicalDepth: physicalDepth,
+                  amount: INCOME_AMOUNT,
+                  transactionId,
+                  skippedMembers: [...skippedMembersList]
+                });
 
-               await User.updateOne(
-                 { memberId: admin.memberId },
-                 { $inc: { walletBalance: INCOME_AMOUNT } }
-               );
-             } catch (error) {
-              if (error.code !== 11000) {
-                console.error(`Error flushing level income to admin at slot ${payoutSlotLevel}:`, error);
-              }
+                await User.updateOne(
+                   { memberId: admin.memberId },
+                   { $inc: { walletBalance: netAmount } }
+                 );
+
+                await createWalletTransaction({
+                   memberId: admin.memberId,
+                   description: `LEVEL INCOME - Level ${payoutSlotLevel}`,
+                   credit: netAmount,
+                 });
+
+                await createWalletTransaction({
+                   memberId: admin.memberId,
+                   description: `TDS DEDUCTION (Level ${payoutSlotLevel})`,
+                   debit: tdsDeduction,
+                 });
+
+                await createWalletTransaction({
+                   memberId: admin.memberId,
+                   description: `ADMIN CHARGE (Level ${payoutSlotLevel})`,
+                   debit: adminChargeDeduction,
+                 });
+            } catch (error) {
+               if (error.code !== 11000) {
+                 console.error(`Error flushing level income to admin at slot ${payoutSlotLevel}:`, error);
+               }
             }
           }
           successfulSlots++;

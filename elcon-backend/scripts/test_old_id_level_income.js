@@ -74,10 +74,10 @@ async function run() {
   console.log('\nUpdated Wallet Balance: ₹' + updatedOldUser.walletBalance);
   console.log('Wallet Difference: ₹' + (updatedOldUser.walletBalance - initialWallet));
 
-  if (updatedOldUser.walletBalance - initialWallet === 20) {
-    console.log('SUCCESS! Old user received ₹20 wallet credit!');
+  if (updatedOldUser.walletBalance - initialWallet === 18) {
+    console.log('SUCCESS! Old user received ₹18 wallet credit (net of TDS + Admin Charge)!');
   } else {
-    console.log('FAILURE! Old user did NOT receive the wallet credit.');
+    console.log('FAILURE! Old user did NOT receive the expected wallet credit.');
   }
 
   const incomeRecords = await LevelIncome.find({ recipientMemberId: eligibleOldUser.memberId, joiningMemberId: newMemberId }).lean();

@@ -85,10 +85,10 @@ async function runTests() {
     console.log(`U2 Wallet Balance: ₹${u2.walletBalance} (Expected 0 - Skipped for Slot 2 due to 1 direct)`);
     
     const u3 = await User.findOne({ memberId: 'TEST_U3' });
-    console.log(`U3 Wallet Balance: ₹${u3.walletBalance} (Expected 20 - Got Slot 2 instead of U2)`);
+    console.log(`U3 Wallet Balance: ₹${u3.walletBalance} (Expected 18 - Got Slot 2 instead of U2)`);
 
     const u4 = await User.findOne({ memberId: 'TEST_U4' });
-    console.log(`U4 Wallet Balance: ₹${u4.walletBalance} (Expected 20 - Got Slot 3 instead of U3)`);
+    console.log(`U4 Wallet Balance: ₹${u4.walletBalance} (Expected 18 - Got Slot 3 instead of U3)`);
 
     console.log('\n--- RUNNING IDEMPOTENCY TEST ---');
     // Run exactly the same again
@@ -97,7 +97,7 @@ async function runTests() {
     console.log(`Total Payouts after retry: ${incomesRetry.length} (Expected same as before)`);
     
     const u3Retry = await User.findOne({ memberId: 'TEST_U3' });
-    console.log(`U3 Wallet Balance after retry: ₹${u3Retry.walletBalance} (Expected 20)`);
+    console.log(`U3 Wallet Balance after retry: ₹${u3Retry.walletBalance} (Expected 18)`);
 
   } catch (error) {
     console.error(error);

@@ -1,33 +1,27 @@
 const User = require('../models/User');
 const RepurchaseIncome = require('../models/RepurchaseIncome');
+const SiteSetting = require('../models/SiteSetting');
+const { createWalletTransaction } = require('../utils/walletHelper');
 
-/**
- * Distribute Repurchase Income for a product purchase order.
- * - Distributes to 10 uplines (Level 1 to Level 10).
- * - Does NOT skip the immediate sponsor (Physical Depth 1 is paid).
- * - Amount per slot = totalReserveAmount / 10.
- * - If an upline is not active, they are skipped and added to skippedMembers.
- * 
- * @param {Object} order
- * @param {String} sponsorId
- * @param {Number} totalReserveAmount
- */
 const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmount) => {
   if (!purchaserUser || !purchaserUser.sponsorId || !totalReserveAmount || totalReserveAmount <= 0) return;
 
-  const MAX_SLOTS = 10; // 10 slots (Level 1 to 10)
+  const MAX_SLOTS = 10;
   const INCOME_AMOUNT = Number((totalReserveAmount / MAX_SLOTS).toFixed(2));
 
   if (INCOME_AMOUNT <= 0) return;
 
   try {
+    const planSetting = await SiteSetting.findOne({ settingKey: 'plan-setting' }).lean();
+    const tdsRate = Number((planSetting?.data?.tdsCharge || '5 %').replace('%', '').trim()) / 100 || 0.05;
+    const adminChargeRate = Number((planSetting?.data?.adminCharges || '5 %').replace('%', '').trim()) / 100 || 0.05;
+
     let currentMemberId = purchaserUser.sponsorId;
     let physicalDepth = 1;
     let successfulSlots = 0;
     const visited = new Set();
-    const skippedMembersList = []; // Track skipped members
+    const skippedMembersList = [];
 
-    // Loop until we have distributed 10 slots or run out of physical uplines
     while (currentMemberId && successfulSlots < MAX_SLOTS) {
       if (visited.has(currentMemberId)) {
         console.warn(`Circular sponsor dependency detected at ${currentMemberId}`);
@@ -36,25 +30,23 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
       visited.add(currentMemberId);
 
       const candidate = await User.findOne({ memberId: currentMemberId }).lean();
-      if (!candidate) break; // Reached absolute top of tree
+      if (!candidate) break;
 
       const isAdmin = candidate.role === 'admin';
       const isAccountValid = isAdmin || (candidate.accountStatus === 'ACTIVE' && candidate.isBlocked === false);
       
       let isEligible = false;
-      const payoutSlotLevel = successfulSlots + 1; // Slot 1 to 10
+      const payoutSlotLevel = successfulSlots + 1;
 
       if (isAccountValid) {
         if (isAdmin) {
           isEligible = true;
         } else {
-          // Check Active Directs for normal users
           const activeDirectsCount = await User.countDocuments({
             sponsorId: currentMemberId,
             accountStatus: 'ACTIVE'
           });
 
-          // Requirement is strictly based on the Income Slot number
           const requiredDirects = payoutSlotLevel; 
 
           if (activeDirectsCount >= requiredDirects) {
@@ -73,24 +65,45 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
           level: payoutSlotLevel
         });
 
-        if (!existingIncome) {
-          try {
+         if (!existingIncome) {
+           const tdsDeduction = Number((INCOME_AMOUNT * tdsRate).toFixed(2));
+           const adminChargeDeduction = Number((INCOME_AMOUNT * adminChargeRate).toFixed(2));
+           const netAmount = Number((INCOME_AMOUNT - tdsDeduction - adminChargeDeduction).toFixed(2));
+           try {
             await RepurchaseIncome.create({
-              recipientMemberId: currentMemberId,
-              purchasingMemberId: purchaserUser.memberId, // We might need to ensure order passes memberId
-              purchasingMemberName: purchaserUser.name,
-              level: payoutSlotLevel, 
-              physicalDepth: physicalDepth, 
-              amount: INCOME_AMOUNT,
-              orderNo: order.orderNo,
-              skippedMembers: [...skippedMembersList]
-            });
+               recipientMemberId: currentMemberId,
+               purchasingMemberId: purchaserUser.memberId,
+               purchasingMemberName: purchaserUser.name,
+               level: payoutSlotLevel, 
+               physicalDepth: physicalDepth, 
+               amount: INCOME_AMOUNT,
+               orderNo: order.orderNo,
+               skippedMembers: [...skippedMembersList]
+             });
 
-             await User.updateOne(
-               { memberId: currentMemberId },
-               { $inc: { walletBalance: INCOME_AMOUNT } }
-             );
-           } catch (error) {
+              await User.updateOne(
+                 { memberId: currentMemberId },
+                 { $inc: { walletBalance: netAmount } }
+               );
+
+              await createWalletTransaction({
+                 memberId: currentMemberId,
+                 description: `REPURCHASE INCOME - Level ${payoutSlotLevel}`,
+                 credit: netAmount,
+               });
+
+              await createWalletTransaction({
+                 memberId: currentMemberId,
+                 description: `TDS DEDUCTION (Level ${payoutSlotLevel})`,
+                 debit: tdsDeduction,
+               });
+
+              await createWalletTransaction({
+                 memberId: currentMemberId,
+                 description: `ADMIN CHARGE (Level ${payoutSlotLevel})`,
+                 debit: adminChargeDeduction,
+               });
+          } catch (error) {
             if (error.code !== 11000) {
               console.error(`Error distributing repurchase income at slot ${payoutSlotLevel}:`, error);
             }
@@ -103,7 +116,6 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
       currentMemberId = candidate.sponsorId;
     }
 
-    // Admin Flush: If the tree was exhausted before 10 slots were paid out
     if (successfulSlots < MAX_SLOTS) {
       const admin = await User.findOne({ role: 'admin' }).lean();
       if (admin) {
@@ -115,24 +127,45 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
             level: payoutSlotLevel
           });
 
-          if (!existingIncome) {
-            try {
-              await RepurchaseIncome.create({
-                recipientMemberId: admin.memberId,
-                purchasingMemberId: purchaserUser.memberId,
-                purchasingMemberName: purchaserUser.name,
-                level: payoutSlotLevel, 
-                physicalDepth: physicalDepth,
-                amount: INCOME_AMOUNT,
-                orderNo: order.orderNo,
-                skippedMembers: [...skippedMembersList]
-              });
+           if (!existingIncome) {
+             const tdsDeduction = Number((INCOME_AMOUNT * tdsRate).toFixed(2));
+             const adminChargeDeduction = Number((INCOME_AMOUNT * adminChargeRate).toFixed(2));
+             const netAmount = Number((INCOME_AMOUNT - tdsDeduction - adminChargeDeduction).toFixed(2));
+             try {
+               await RepurchaseIncome.create({
+                  recipientMemberId: admin.memberId,
+                  purchasingMemberId: purchaserUser.memberId,
+                  purchasingMemberName: purchaserUser.name,
+                  level: payoutSlotLevel, 
+                  physicalDepth: physicalDepth,
+                  amount: INCOME_AMOUNT,
+                  orderNo: order.orderNo,
+                  skippedMembers: [...skippedMembersList]
+                });
 
-               await User.updateOne(
-                 { memberId: admin.memberId },
-                 { $inc: { walletBalance: INCOME_AMOUNT } }
-               );
-             } catch (error) {
+                await User.updateOne(
+                   { memberId: admin.memberId },
+                   { $inc: { walletBalance: netAmount } }
+                 );
+
+                await createWalletTransaction({
+                   memberId: admin.memberId,
+                   description: `REPURCHASE INCOME - Level ${payoutSlotLevel}`,
+                   credit: netAmount,
+                 });
+
+                await createWalletTransaction({
+                   memberId: admin.memberId,
+                   description: `TDS DEDUCTION (Level ${payoutSlotLevel})`,
+                   debit: tdsDeduction,
+                 });
+
+                await createWalletTransaction({
+                   memberId: admin.memberId,
+                   description: `ADMIN CHARGE (Level ${payoutSlotLevel})`,
+                   debit: adminChargeDeduction,
+                 });
+            } catch (error) {
               if (error.code !== 11000) {
                 console.error(`Error flushing repurchase income to admin at slot ${payoutSlotLevel}:`, error);
               }
@@ -150,4 +183,3 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
 };
 
 module.exports = { distributeRepurchaseIncome };
-
