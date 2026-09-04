@@ -111,9 +111,13 @@ function AddShoppingProducts() {
     try {
       if (isEditMode) {
         const id = product._id || product.id || product.productId || product.productCode;
+        console.log('Update Admin Product Payload:', payload);
         await updateAdminProduct(id, payload);
+        window.alert('Product updated successfully!');
       } else {
+        console.log('Create Admin Product Payload:', payload);
         await createAdminProduct(payload);
+        window.alert('Product created successfully!');
       }
       navigate('/products-package/shopping-products');
     } catch (error) {
@@ -188,7 +192,7 @@ function AddShoppingProducts() {
               </label>
               <label className="admin-add-product-row">
                 <span>Stock</span>
-                <input name="quantity" type="number" defaultValue={product?.quantity || ""} required />
+                <input name="quantity" type="number" defaultValue={product?.quantity ?? ""} required />
               </label>
               <div className="admin-add-product-row" style={{ alignItems: 'flex-start' }}>
                 <span>Product Images</span>
@@ -255,31 +259,31 @@ function AddShoppingProducts() {
             <div className="admin-add-product-table" role="group" aria-label="pricing-product-details">
               <label className="admin-add-product-row">
                 <span>M.R.P Price</span>
-                <input name="mrpPrice" type="text" defaultValue={product?.mrp || ""} />
+                <input name="mrpPrice" type="text" defaultValue={product?.mrp ?? ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>DP Price</span>
-                <input name="dpPrice" type="number" defaultValue={product?.dpPrice || ""} />
+                <input name="dpPrice" type="number" defaultValue={product?.dpPrice ?? ""} />
               </label>
               <label className="admin-add-product-row">
                 <span>Coupon Discount</span>
-                <input name="discount" type="number" defaultValue={product?.discount || "0"} />
+                <input name="discount" type="number" defaultValue={product?.discount ?? "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Delivery Charge</span>
-                <input name="deliveryCharge" type="text" defaultValue={product?.shipping || "free"} />
+                <input name="deliveryCharge" type="text" defaultValue={product?.shipping ?? "free"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Level Point</span>
-                <input name="levelPoint" type="number" defaultValue={product?.levelPoint || "0"} />
+                <input name="levelPoint" type="number" defaultValue={product?.levelPoint ?? "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>B.V Point</span>
-                <input name="bvPoint" type="number" defaultValue={product?.bvPoint || "0"} />
+                <input name="bvPoint" type="number" defaultValue={product?.bvPoint ?? "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Reserve Amount</span>
-                <input name="reserveAmount" type="number" defaultValue={product?.reserveAmount || "0"} />
+                <input name="reserveAmount" type="number" defaultValue={product?.reserveAmount ?? "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Size</span>

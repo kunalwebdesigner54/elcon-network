@@ -100,9 +100,13 @@ function AddJoiningPackage() {
 
     try {
       if (isEditMode) {
+        console.log('Update Admin Product Payload:', payload);
         await updateAdminProduct(editProduct._id || editProduct.id || editProduct.productId, payload);
+        window.alert('Product updated successfully!');
       } else {
+        console.log('Create Admin Product Payload:', payload);
         await createAdminProduct(payload);
+        window.alert('Product created successfully!');
       }
       navigate('/products-package/Joining-Package');
     } catch (error) {
