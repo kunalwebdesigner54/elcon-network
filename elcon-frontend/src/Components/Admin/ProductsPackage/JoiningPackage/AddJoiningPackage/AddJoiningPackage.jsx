@@ -65,7 +65,12 @@ function AddJoiningPackage() {
 
     const formData = new FormData(form);
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
-    const images = await Promise.all(imageInputs.map((input) => readFileAsDataUrl(input.files[0])));
+    const images = [];
+    for (const input of imageInputs) {
+      if (input.files && input.files.length > 0) {
+        images.push(await readFileAsDataUrl(input.files[0]));
+      }
+    }
 
     const pdfInput = form.querySelector('input[type="file"][accept="application/pdf"]');
     const brochurePdf = (pdfInput && pdfInput.files.length > 0) ? await readFileAsDataUrl(pdfInput.files[0]) : '';

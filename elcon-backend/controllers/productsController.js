@@ -230,6 +230,14 @@ exports.updateProduct = async (req, res) => {
     }
 
     const updates = req.body || {};
+
+    if (updates.productCode && updates.productCode !== product.productCode) {
+      const exists = await Product.findOne({ productCode: updates.productCode });
+      if (exists) {
+        return res.status(409).json({ success: false, message: 'Product code already exists' });
+      }
+    }
+
     const fields = [
       'type',
       'productCode',

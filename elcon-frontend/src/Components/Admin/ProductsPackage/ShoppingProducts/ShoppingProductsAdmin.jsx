@@ -3,6 +3,7 @@ import './ShoppingProductsAdmin.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from '../../../../api/productsService';
+import { resolveProductImage } from '../../../UserPanel/Product/productImages';
 
 function ShoppingProductsAdmin() {
   const navigate = useNavigate();
@@ -99,10 +100,10 @@ function ShoppingProductsAdmin() {
               </button>
           </div>
           <div className="admin-products-export-icons" aria-label="export-controls">
-            <button type="button" title="Export Excel">
+            <button type="button" title="Export Excel" className="btn-outline">
               XLS
             </button>
-            <button type="button" title="Export PDF">
+            <button type="button" title="Export PDF" className="btn-outline">
               PDF
             </button>
           </div>
@@ -120,11 +121,11 @@ function ShoppingProductsAdmin() {
                 <th>HSN/CODE</th>
                 <th>M.R.P</th>
                 <th>DP PRICE</th>
-                <th>DIS(%)</th>
+                <th>Coupon</th>
                 <th>GST(%)</th>
                 <th>SHIPPING</th>
                 <th>B.V POINT</th>
-                <th>QUANTITY</th>
+                <th>STOCK</th>
                 <th>ACTION</th>
                 <th>STATUS</th>
               </tr>
@@ -136,7 +137,7 @@ function ShoppingProductsAdmin() {
                   <td>{row.productCode && row.productCode.toUpperCase()}</td>
                   <td>{row.productName}</td>
                   <td>
-                    <span className="admin-products-image-placeholder">IMG</span>
+                    <img src={resolveProductImage(row)} alt={row.productName} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
                   </td>
                   <td>{row.category}</td>
                   <td>{row.hsnCode}</td>

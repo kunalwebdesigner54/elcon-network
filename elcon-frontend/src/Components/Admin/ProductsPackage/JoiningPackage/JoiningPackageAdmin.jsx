@@ -3,6 +3,7 @@ import './JoiningPackageAdmin.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from '../../../../api/productsService';
+import { resolveProductImage } from '../../../UserPanel/Product/productImages';
 
 function JoiningPackageAdmin() {
   const navigate = useNavigate();
@@ -103,10 +104,10 @@ function JoiningPackageAdmin() {
             </button>
           </div>
           <div className="admin-products-export-icons" aria-label="export-controls">
-            <button type="button" title="Export Excel">
+            <button type="button" title="Export Excel" className="btn-outline">
               XLS
             </button>
-            <button type="button" title="Export PDF">
+            <button type="button" title="Export PDF" className="btn-outline">
               PDF
             </button>
           </div>
@@ -151,7 +152,7 @@ function JoiningPackageAdmin() {
                     <td>{row.hsnCode ? `PKG${row.hsnCode}` : ''}</td>
                     <td>{row.productName}</td>
                     <td>
-                      <span className="admin-products-image-placeholder">IMG</span>
+                      <img src={resolveProductImage(row)} alt={row.productName} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
                     </td>
                     <td>{row.category}</td>
                     <td>{row.hsnCode}</td>
