@@ -36,7 +36,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     });
   });
 
-  const withdrawals = await WithdrawalRequest.find({ status: { $in: ['Approve', 'Succeed'] } }).sort({ createdAt: -1 });
+  const withdrawals = await WithdrawalRequest.find({ status: { $in: ['Pending', 'Approve', 'Succeed'] } }).sort({ createdAt: -1 });
   withdrawals.forEach((withdrawal) => {
     const status = String(withdrawal.status || '').trim().toUpperCase();
     if (['REJECTED', 'CANCELLED', 'CANCEL'].includes(status)) {
