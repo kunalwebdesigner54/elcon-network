@@ -234,7 +234,7 @@ exports.getAllMembersList = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const query = { role: 'user', email: { $ne: 'admin@gmail.com' } };
+    const query = {};
 
     if (req.query.memberId) {
       query.memberId = new RegExp(req.query.memberId, 'i');
@@ -317,13 +317,13 @@ exports.getAllMembersList = async (req, res) => {
 
     const rows = users.map((user, index) => ({
       sNo: skip + index + 1,
-      sponsorId: (user.sponsorId && user.sponsorId !== adminMemberId) ? user.sponsorId : '---',
+      sponsorId: user.role === 'admin' ? '---' : ((user.sponsorId && user.sponsorId !== adminMemberId) ? user.sponsorId : '---'),
       memberId: user.memberId || '---',
       name: user.name || '---',
       mobile: user.contactNo || '---',
       joinDate: formatDate(user.createdAt),
       joinDateRaw: user.createdAt,
-      levelDepth: (user.levelDepth !== undefined && user.levelDepth !== -1) ? user.levelDepth : 'INVALID',
+      levelDepth: user.role === 'admin' ? 0 : ((user.levelDepth !== undefined && user.levelDepth !== -1) ? user.levelDepth : 'INVALID'),
       directCount: directCountMap[user.memberId] || 0,
       upgradeLevel: upgradeLevelMap[user.memberId] || 0,
       city: user.city || '---',
