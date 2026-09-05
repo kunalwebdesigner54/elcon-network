@@ -177,7 +177,6 @@ const userSchema = new mongoose.Schema(
     adminType: {
       type: String,
       enum: ['SUPER_ADMIN', 'SUB_ADMIN'],
-      default: 'SUPER_ADMIN',
     },
     permissions: {
       type: [String],
