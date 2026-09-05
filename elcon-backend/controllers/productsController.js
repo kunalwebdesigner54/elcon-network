@@ -741,14 +741,11 @@ exports.updateOrderStatus = async (req, res) => {
 
     await order.save();
 
-    if (previousPaymentApproval !== 'Approved' && order.paymentApprovalStatus === 'Approved' && order.finalTotal > 0) {
-      const purchaserUser = await User.findById(order.userId);
-      if (purchaserUser) {
-        purchaserUser.walletBalance = Number(purchaserUser.walletBalance || 0) - Number(order.finalTotal || 0);
-        await purchaserUser.save();
-
+    if (previousPaymentApproval !== 'Approved' && order.paymentApprovalStatus === 'Approved' && order.finalTotal > 0 && order.paymentStatus !== 'Paid') {
+      const updatedUser = await User.findByIdAndUpdate(order.userId, { $inc: { walletBalance: -Number(order.finalTotal || 0) } }, { new: true }).select('memberId');
+      if (updatedUser) {
         await createWalletTransaction({
-          memberId: purchaserUser.memberId,
+          memberId: updatedUser.memberId,
           description: `PRODUCT PURCHASE - ${order.orderNo}`,
           debit: Number(order.finalTotal || 0),
           approvalStatus: 'Approved',
@@ -756,14 +753,11 @@ exports.updateOrderStatus = async (req, res) => {
       }
     }
 
-    if (previousPaymentApproval === 'Approved' && order.paymentApprovalStatus !== 'Approved' && order.finalTotal > 0) {
-      const purchaserUser = await User.findById(order.userId);
-      if (purchaserUser) {
-        purchaserUser.walletBalance = Number(purchaserUser.walletBalance || 0) + Number(order.finalTotal || 0);
-        await purchaserUser.save();
-
+    if (previousPaymentApproval === 'Approved' && order.paymentApprovalStatus !== 'Approved' && order.finalTotal > 0 && order.paymentStatus !== 'Paid') {
+      const updatedUser = await User.findByIdAndUpdate(order.userId, { $inc: { walletBalance: Number(order.finalTotal || 0) } }, { new: true }).select('memberId');
+      if (updatedUser) {
         await createWalletTransaction({
-          memberId: purchaserUser.memberId,
+          memberId: updatedUser.memberId,
           description: `PRODUCT PURCHASE REVERSED - ${order.orderNo}`,
           credit: Number(order.finalTotal || 0),
           approvalStatus: 'Approved',

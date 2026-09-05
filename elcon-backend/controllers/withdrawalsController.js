@@ -68,26 +68,36 @@ const adjustWalletOnStatusChange = async (request, nextStatus) => {
   const willBeApproved = ['Approve', 'Succeed'].includes(nextStatus);
 
   if (!wasApproved && willBeApproved) {
-    user.walletBalance = currentBalance - requestAmount;
-    await createWalletTransaction({
+    const existingDebit = await WalletTransaction.findOne({
       memberId: user.memberId,
       description: `WITHDRAWAL DEBIT - ${request.requestId}`,
-      debit: requestAmount,
-      approvalStatus: 'Approved',
+      debit: { $gt: 0 },
     });
+
+    if (!existingDebit) {
+      const updatedUser = await User.findByIdAndUpdate(request.userId, { $inc: { walletBalance: -requestAmount } }, { new: true }).select('memberId');
+      if (updatedUser) {
+        await createWalletTransaction({
+          memberId: updatedUser.memberId,
+          description: `WITHDRAWAL DEBIT - ${request.requestId}`,
+          debit: requestAmount,
+          approvalStatus: 'Approved',
+        });
+      }
+    }
   }
 
   if (wasApproved && !willBeApproved) {
-    user.walletBalance = currentBalance + requestAmount;
-    await createWalletTransaction({
-      memberId: user.memberId,
-      description: `WITHDRAWAL REVERSED - ${request.requestId}`,
-      credit: requestAmount,
-      approvalStatus: 'Approved',
-    });
+    const updatedUser = await User.findByIdAndUpdate(request.userId, { $inc: { walletBalance: requestAmount } }, { new: true }).select('memberId');
+    if (updatedUser) {
+      await createWalletTransaction({
+        memberId: updatedUser.memberId,
+        description: `WITHDRAWAL REVERSED - ${request.requestId}`,
+        credit: requestAmount,
+        approvalStatus: 'Approved',
+      });
+    }
   }
-
-  await user.save();
 };
 
 exports.createWithdrawalRequest = async (req, res) => {

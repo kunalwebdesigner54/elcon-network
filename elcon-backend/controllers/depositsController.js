@@ -74,16 +74,7 @@ const adjustWalletOnStatusChange = async (request, nextStatus) => {
   const requestAmount = Number(request.amount || 0);
 
   if (request.status === 'Succeed' && nextStatus !== 'Succeed') {
-    user.walletBalance = currentBalance - requestAmount;
-  }
-
-  if (request.status !== 'Succeed' && nextStatus === 'Succeed') {
-    user.walletBalance = currentBalance + requestAmount;
-  }
-
-  await user.save();
-
-  if (request.status === 'Succeed' && nextStatus !== 'Succeed') {
+    await User.findByIdAndUpdate(request.userId, { $inc: { walletBalance: -requestAmount } }, { new: true });
     await createWalletTransaction({
       memberId: user.memberId,
       description: `DEPOSIT REVERSED - ${request.depositId}`,
@@ -92,12 +83,15 @@ const adjustWalletOnStatusChange = async (request, nextStatus) => {
   }
 
   if (request.status !== 'Succeed' && nextStatus === 'Succeed') {
+    await User.findByIdAndUpdate(request.userId, { $inc: { walletBalance: requestAmount } }, { new: true });
     await createWalletTransaction({
       memberId: user.memberId,
       description: `DEPOSIT CREDIT - ${request.depositId}`,
       credit: requestAmount,
     });
   }
+
+  await request.save();
 };
 
 exports.createDepositRequest = async (req, res) => {

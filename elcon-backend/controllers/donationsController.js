@@ -136,29 +136,32 @@ exports.upgradeMember = async (req, res) => {
       attempt++;
     }
 
-    // Deduct from payer's wallet
-    user.walletBalance = (user.walletBalance || 0) - amount;
-    user.unlockLevel = targetLevel;
-    
+    // Deduct from payer's wallet atomically
+    const updatedUser = await User.findByIdAndUpdate(user._id, {
+      $inc: { walletBalance: -amount },
+      $set: { unlockLevel: targetLevel }
+    }, { new: true });
+
     if (targetLevel === 1 && !user.receivedWelcomeCoupon) {
-      user.couponWalletBalance = (user.couponWalletBalance || 0) + 1000;
-      user.receivedWelcomeCoupon = true;
+      await User.findByIdAndUpdate(user._id, {
+        $inc: { couponWalletBalance: 1000 },
+        $set: { receivedWelcomeCoupon: true }
+      });
     }
-    
-    await user.save();
 
     await createWalletTransaction({
-      memberId: user.memberId,
+      memberId: updatedUser.memberId,
       description: `DONATION DEBIT - Level ${targetLevel}`,
       debit: amount,
     });
 
-    // Credit upline's wallet
-    upline.walletBalance = (upline.walletBalance || 0) + amount;
-    await upline.save();
+    // Credit upline's wallet atomically
+    const updatedUpline = await User.findByIdAndUpdate(upline._id, {
+      $inc: { walletBalance: amount }
+    }, { new: true }).select('memberId name');
 
     await createWalletTransaction({
-      memberId: upline.memberId,
+      memberId: updatedUpline.memberId,
       description: `DONATION CREDIT - Level ${targetLevel}`,
       credit: amount,
     });
@@ -166,10 +169,10 @@ exports.upgradeMember = async (req, res) => {
     // Record the donation
     const donation = await Donation.create({
       donationId,
-      fromMemberId: user.memberId,
-      fromName: user.name,
-      toMemberId: upline.memberId,
-      toName: upline.name,
+      fromMemberId: updatedUser.memberId,
+      fromName: updatedUser.name,
+      toMemberId: updatedUpline.memberId,
+      toName: updatedUpline.name,
       amount,
       level: targetLevel,
       status: 'APPROVED',
@@ -178,16 +181,16 @@ exports.upgradeMember = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: `Successfully upgraded to Level ${targetLevel}. ₹${amount.toLocaleString('en-IN')} donated to ${upline.name} (${upline.memberId}).`,
+      message: `Successfully upgraded to Level ${targetLevel}. ₹${amount.toLocaleString('en-IN')} donated to ${updatedUpline.name} (${updatedUpline.memberId}).`,
       data: {
         donationId: donation.donationId,
         level: targetLevel,
         amount,
-        toMemberId: upline.memberId,
-        toName: upline.name,
+        toMemberId: updatedUpline.memberId,
+        toName: updatedUpline.name,
         skippedMembers: skipped,
-        newWalletBalance: user.walletBalance,
-        newUnlockLevel: user.unlockLevel,
+        newWalletBalance: updatedUser.walletBalance,
+        newUnlockLevel: updatedUser.unlockLevel,
       },
     });
   } catch (error) {
@@ -300,20 +303,16 @@ exports.updateDonationStatus = async (req, res) => {
     }
 
     if (status === 'APPROVED' || status === 'COMPLETED') {
-      const payer = await User.findOne({ memberId: donation.fromMemberId });
-      const receiver = await User.findOne({ memberId: donation.toMemberId });
-
       if (payer && payer.unlockLevel < donation.level) {
-        payer.unlockLevel = donation.level; // Still updating this as a cache/fallback
-        if (donation.level === 1 && !payer.receivedWelcomeCoupon) {
-          payer.couponWalletBalance = (payer.couponWalletBalance || 0) + 1000;
-          payer.receivedWelcomeCoupon = true;
-        }
-        await payer.save();
+        await User.findByIdAndUpdate(payer._id, {
+          $set: { unlockLevel: donation.level },
+          ...(donation.level === 1 && !payer.receivedWelcomeCoupon ? { $inc: { couponWalletBalance: 1000 }, $set: { receivedWelcomeCoupon: true } } : {})
+        });
       }
       if (receiver) {
-        receiver.walletBalance = (receiver.walletBalance || 0) + donation.amount;
-        await receiver.save();
+        await User.findByIdAndUpdate(receiver._id, {
+          $inc: { walletBalance: donation.amount }
+        }, { new: true });
 
         await createWalletTransaction({
           memberId: receiver.memberId,
