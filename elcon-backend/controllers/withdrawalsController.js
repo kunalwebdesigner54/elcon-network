@@ -64,31 +64,30 @@ const adjustWalletOnStatusChange = async (request, nextStatus) => {
   const currentBalance = Number(user.walletBalance || 0);
   const requestAmount = Number(request.netAmount || request.amount || 0);
 
-  if (request.status === 'Reject' && nextStatus !== 'Reject') {
+  const wasApproved = ['Approve', 'Succeed'].includes(request.status);
+  const willBeApproved = ['Approve', 'Succeed'].includes(nextStatus);
+
+  if (!wasApproved && willBeApproved) {
     user.walletBalance = currentBalance - requestAmount;
-  }
-
-  if (request.status !== 'Reject' && nextStatus === 'Reject') {
-    user.walletBalance = currentBalance + requestAmount;
-  }
-
-  await user.save();
-
-  if (request.status === 'Reject' && nextStatus !== 'Reject') {
     await createWalletTransaction({
       memberId: user.memberId,
       description: `WITHDRAWAL DEBIT - ${request.requestId}`,
       debit: requestAmount,
+      approvalStatus: 'Approved',
     });
   }
 
-  if (request.status !== 'Reject' && nextStatus === 'Reject') {
+  if (wasApproved && !willBeApproved) {
+    user.walletBalance = currentBalance + requestAmount;
     await createWalletTransaction({
       memberId: user.memberId,
       description: `WITHDRAWAL REVERSED - ${request.requestId}`,
       credit: requestAmount,
+      approvalStatus: 'Approved',
     });
   }
+
+  await user.save();
 };
 
 exports.createWithdrawalRequest = async (req, res) => {
@@ -159,9 +158,6 @@ exports.createWithdrawalRequest = async (req, res) => {
       status: 'Pending',
       remark: '-',
     });
-
-    user.walletBalance = availableBalance - amount;
-    await user.save();
 
     res.status(201).json({ success: true, request: toApiRow(request, 0) });
   } catch (error) {

@@ -25,6 +25,11 @@ const walletTransactionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    approvalStatus: {
+      type: String,
+      enum: ['Pending', 'Approved', 'Rejected'],
+      default: 'Approved',
+    },
   },
   { timestamps: true }
 );

@@ -14,7 +14,12 @@ const formatDateTime = (value) => new Date(value).toLocaleString('en-IN', {
 const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit = false) => {
   const rows = [];
 
-  const orders = await Order.find().sort({ createdAt: -1 });
+  const orders = await Order.find({ 
+    $or: [
+      { paymentApprovalStatus: 'Approved' },
+      { paymentStatus: 'Paid', paymentApprovalStatus: { $exists: false } }
+    ]
+  }).sort({ createdAt: -1 });
   const userIds = [...new Set(orders.map((order) => String(order.userId || '')).filter(Boolean))];
   const users = await User.find({ _id: { $in: userIds } }).select('_id memberId').lean();
   const userMap = new Map(users.map((user) => [String(user._id), user.memberId || '']));
@@ -31,7 +36,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     });
   });
 
-  const withdrawals = await WithdrawalRequest.find().sort({ createdAt: -1 });
+  const withdrawals = await WithdrawalRequest.find({ status: { $in: ['Approve', 'Succeed'] } }).sort({ createdAt: -1 });
   withdrawals.forEach((withdrawal) => {
     const status = String(withdrawal.status || '').trim().toUpperCase();
     if (['REJECTED', 'CANCELLED', 'CANCEL'].includes(status)) {
@@ -61,7 +66,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     });
   });
 
-  const walletTransactions = await WalletTransaction.find().sort({ createdAt: -1 });
+  const walletTransactions = await WalletTransaction.find({ approvalStatus: 'Approved' }).sort({ createdAt: -1 });
   walletTransactions.forEach((transaction) => {
     const desc = String(transaction.description || '');
     if (
@@ -95,7 +100,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   const addIncomeRow = (record, type) => {
     const memberId = record.recipientMemberId || record.purchasingMemberId;
     if (!memberId) return;
-    const dateKey = new Date(record.createdAt).toISOString().split('T')[0];
+    const dateKey = new Date(record.createdAt).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
     const key = `${memberId}__${dateKey}__${type}`;
     const current = incomeMap.get(key) || {
       memberId,

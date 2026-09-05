@@ -438,9 +438,6 @@ exports.clearCart = async (req, res) => {
 };
 
 exports.checkoutCart = async (req, res) => {
-  let walletDebitAmount = 0;
-  let walletDebitApplied = false;
-
   try {
     const user = await User.findById(req.user.id).select('+transactionPassword');
     const cart = await Cart.findOne({ userId: req.user.id });
@@ -556,34 +553,12 @@ exports.checkoutCart = async (req, res) => {
     }
 
     walletDebitAmount = paymentMode === 'E-Wallet' ? finalTotal : 0;
-    let updatedUser = user;
-    if (walletDebitAmount > 0 || appliedDiscount > 0) {
-      const balanceFilter = walletDebitAmount > 0
-        ? { _id: user._id, walletBalance: { $gte: walletDebitAmount } }
-        : { _id: user._id };
-      const balanceUpdate = {
-        ...(walletDebitAmount > 0 ? { $inc: { walletBalance: -walletDebitAmount } } : {}),
-        ...(appliedDiscount > 0 ? { $set: { couponWalletBalance: remainingCoupon, discountCouponBalance: 0 } } : {}),
-      };
-      updatedUser = await User.findOneAndUpdate(balanceFilter, balanceUpdate, { new: true });
-      if (walletDebitAmount > 0) {
-        await createWalletTransaction({
-          memberId: user.memberId,
-          description: `PRODUCT PURCHASE - ${orderNo}`,
-          debit: walletDebitAmount,
-        });
+    let balanceCheck = null;
+    if (walletDebitAmount > 0) {
+      balanceCheck = await User.findOne({ _id: user._id, walletBalance: { $gte: walletDebitAmount } }).select('walletBalance');
+      if (!balanceCheck) {
+        return res.status(400).json({ success: false, message: 'Insufficient E-Wallet balance' });
       }
-    }
-
-    if (!updatedUser) {
-      return res.status(400).json({ success: false, message: 'Insufficient E-Wallet balance' });
-    }
-
-    walletDebitApplied = walletDebitAmount > 0;
-    user.walletBalance = updatedUser.walletBalance;
-    if (appliedDiscount > 0) {
-      user.couponWalletBalance = updatedUser.couponWalletBalance;
-      user.discountCouponBalance = updatedUser.discountCouponBalance;
     }
 
     const order = await Order.create({
@@ -591,8 +566,9 @@ exports.checkoutCart = async (req, res) => {
       orderNo,
       orderDate,
       paymentMode,
-      paymentStatus: 'Paid',
+      paymentStatus: 'Pending Approval',
       orderStatus: 'Pending',
+      paymentApprovalStatus: 'Pending',
       orderItems: cart.items.length,
       totalPrice,
       lvPoint,
@@ -607,21 +583,17 @@ exports.checkoutCart = async (req, res) => {
       items: finalOrderItems,
     });
 
+    if (appliedDiscount > 0) {
+      await User.findByIdAndUpdate(req.user.id, {
+        $set: { couponWalletBalance: remainingCoupon, discountCouponBalance: 0 }
+      });
+    }
+
     cart.items = [];
     await cart.save();
 
-    // Repurchase Income Distribution is now handled in updateOrderStatus when marked as Delivered.
-
     res.status(201).json({ success: true, order });
   } catch (error) {
-    if (walletDebitApplied && walletDebitAmount > 0) {
-      await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: walletDebitAmount } });
-      await createWalletTransaction({
-        memberId: user.memberId,
-        description: `PRODUCT PURCHASE REFUND - ${orderNo}`,
-        credit: walletDebitAmount,
-      });
-    }
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -641,6 +613,7 @@ exports.getOrders = async (req, res) => {
         totalPaid: order.finalTotal,
         payMode: order.paymentMode,
         payStatus: order.paymentStatus,
+        paymentApprovalStatus: order.paymentApprovalStatus || 'Pending',
         orderStatus: order.orderStatus,
         lvPoint: Number(order.lvPoint || 0),
         bvPoint: Number(order.bvPoint || 0),
@@ -681,6 +654,7 @@ exports.getOrderByNo = async (req, res) => {
         orderItems: order.orderItems,
         orderStatus: order.orderStatus,
         paymentStatus: order.paymentStatus,
+        paymentApprovalStatus: order.paymentApprovalStatus || 'Pending',
         totalPrice: order.totalPrice,
         lvPoint: Number(order.lvPoint || 0),
         bvPoint: Number(order.bvPoint || 0),
@@ -727,6 +701,7 @@ exports.getAdminOrders = async (req, res) => {
           totalPaid: order.finalTotal,
           payMode: order.paymentMode,
           payStatus: order.paymentStatus,
+          paymentApprovalStatus: order.paymentApprovalStatus || 'Pending',
           orderStatus: order.orderStatus,
           lvPoint: Number(order.lvPoint || 0),
           bvPoint: Number(order.bvPoint || 0),
@@ -749,6 +724,8 @@ exports.updateOrderStatus = async (req, res) => {
     }
 
     const previousStatus = order.orderStatus;
+    const previousPaymentStatus = order.paymentStatus;
+    const previousPaymentApproval = order.paymentApprovalStatus;
 
     if (req.body.orderStatus) {
       order.orderStatus = req.body.orderStatus;
@@ -758,13 +735,45 @@ exports.updateOrderStatus = async (req, res) => {
       order.paymentStatus = req.body.paymentStatus;
     }
 
+    if (req.body.paymentApprovalStatus) {
+      order.paymentApprovalStatus = req.body.paymentApprovalStatus;
+    }
+
     await order.save();
 
-    // Trigger Repurchase Income distribution when marked as Delivered
-    if (previousStatus !== 'Delivered' && order.orderStatus === 'Delivered' && order.bvPoint > 0) {
+    if (previousPaymentApproval !== 'Approved' && order.paymentApprovalStatus === 'Approved' && order.finalTotal > 0) {
       const purchaserUser = await User.findById(order.userId);
       if (purchaserUser) {
-        // Fire and forget so we don't block the API response
+        purchaserUser.walletBalance = Number(purchaserUser.walletBalance || 0) - Number(order.finalTotal || 0);
+        await purchaserUser.save();
+
+        await createWalletTransaction({
+          memberId: purchaserUser.memberId,
+          description: `PRODUCT PURCHASE - ${order.orderNo}`,
+          debit: Number(order.finalTotal || 0),
+          approvalStatus: 'Approved',
+        });
+      }
+    }
+
+    if (previousPaymentApproval === 'Approved' && order.paymentApprovalStatus !== 'Approved' && order.finalTotal > 0) {
+      const purchaserUser = await User.findById(order.userId);
+      if (purchaserUser) {
+        purchaserUser.walletBalance = Number(purchaserUser.walletBalance || 0) + Number(order.finalTotal || 0);
+        await purchaserUser.save();
+
+        await createWalletTransaction({
+          memberId: purchaserUser.memberId,
+          description: `PRODUCT PURCHASE REVERSED - ${order.orderNo}`,
+          credit: Number(order.finalTotal || 0),
+          approvalStatus: 'Approved',
+        });
+      }
+    }
+
+    if (previousStatus !== 'Delivered' && order.orderStatus === 'Delivered' && order.bvPoint > 0 && order.paymentApprovalStatus === 'Approved') {
+      const purchaserUser = await User.findById(order.userId);
+      if (purchaserUser) {
         distributeRepurchaseIncome(order, purchaserUser, order.bvPoint).catch(err => {
           console.error(`Failed to distribute repurchase income for order ${order.orderNo}:`, err);
         });

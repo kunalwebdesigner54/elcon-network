@@ -753,26 +753,89 @@ exports.getMyDatewiseIncome = async (req, res) => {
       RepurchaseIncome.find({ recipientMemberId: memberId }).lean(),
     ]);
 
-    const levelIncome = levelIncomeRecords.reduce((sum, rec) => sum + Number(rec.amount || 0), 0);
-    const repurchaseIncome = repurchaseIncomeRecords.reduce((sum, rec) => sum + Number(rec.amount || 0), 0);
-    const donationIncome = 0;
-    const totalIncome = levelIncome + repurchaseIncome + donationIncome;
-    const totalTeamCount = Number(user.totalTeamCount || user.teamCount || 0);
-    const directsCount = Number(user.directsCount || user.directMembers || 0);
+    const dailyMap = new Map();
 
-    const row = {
-      sNo: 1,
-      incomeDate: formatDate(user.createdAt),
-      memberId: user.memberId,
-      memberName: user.name || '---',
-      totalIds: totalTeamCount,
-      levelIncome,
-      totalBvPoint: totalTeamCount * 100,
-      repurchaseIncome,
-      dailyIncome: totalIncome,
+    const processRecord = (record, type) => {
+      const dateObj = new Date(record.createdAt);
+      if (Number.isNaN(dateObj.getTime())) return;
+
+      const dateKey = dateObj.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      const mapKey = `${memberId}__${dateKey}`;
+
+      if (!dailyMap.has(mapKey)) {
+        dailyMap.set(mapKey, {
+          memberId,
+          dateKey,
+          rawDate: dateObj,
+          levelIncome: 0,
+          repurchaseIncome: 0,
+          totalBvPoint: 0,
+          count: 0,
+        });
+      }
+
+      const entry = dailyMap.get(mapKey);
+      if (type === 'level') {
+        entry.levelIncome += Number(record.amount || 0);
+      } else if (type === 'repurchase') {
+        entry.repurchaseIncome += Number(record.amount || 0);
+        entry.totalBvPoint += Number(record.amount || 0);
+      }
+      entry.count += 1;
+
+      if (dateObj > entry.rawDate) {
+        entry.rawDate = dateObj;
+      }
     };
 
-    res.status(200).json({ success: true, data: [row] });
+    levelIncomeRecords.forEach((rec) => processRecord(rec, 'level'));
+    repurchaseIncomeRecords.forEach((rec) => processRecord(rec, 'repurchase'));
+
+    if (dailyMap.size === 0) {
+      const row = {
+        sNo: 1,
+        incomeDate: formatDate(user.createdAt),
+        dateRaw: user.createdAt,
+        memberId: user.memberId,
+        memberName: user.name || '---',
+        totalIds: 0,
+        levelIncome: 0,
+        totalBvPoint: 0,
+        repurchaseIncome: 0,
+        dailyIncome: 0,
+      };
+      return res.status(200).json({ success: true, data: [row] });
+    }
+
+    const rows = [];
+    dailyMap.forEach((entry) => {
+      const dailyIncome = entry.levelIncome + entry.repurchaseIncome;
+      const incomeDate = entry.rawDate.toLocaleDateString('en-GB', {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).replace(/\//g, '-');
+
+      rows.push({
+        incomeDate,
+        dateRaw: entry.rawDate,
+        memberId: entry.memberId,
+        memberName: user.name || '---',
+        totalIds: entry.count,
+        levelIncome: Number(entry.levelIncome.toFixed(2)),
+        totalBvPoint: Number(entry.totalBvPoint.toFixed(2)),
+        repurchaseIncome: Number(entry.repurchaseIncome.toFixed(2)),
+        dailyIncome: Number(dailyIncome.toFixed(2)),
+      });
+    });
+
+    rows.sort((a, b) => new Date(b.dateRaw) - new Date(a.dateRaw));
+    rows.forEach((r, idx) => {
+      r.sNo = idx + 1;
+    });
+
+    res.status(200).json({ success: true, data: rows });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

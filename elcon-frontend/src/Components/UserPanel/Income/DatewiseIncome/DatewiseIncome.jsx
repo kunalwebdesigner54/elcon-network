@@ -23,7 +23,7 @@ function DatewiseIncome() {
     const grouped = new Map();
 
     rows.forEach((row) => {
-      const key = row.dateRaw ? new Date(row.dateRaw).toISOString().slice(0, 10) : (row.incomeDate || row.date);
+      const key = row.dateRaw ? new Date(row.dateRaw).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) : (row.incomeDate || row.date);
       const current = grouped.get(key) || { count: 0, levelIncome: 0, totalBvPoint: 0, repurchaseIncome: 0, dailyIncome: 0, latest: row };
       current.count += 1;
       current.levelIncome += Number(row.levelIncome || 0);
@@ -58,7 +58,10 @@ function DatewiseIncome() {
     setCurrentPage(pageNumber);
   };
 
-  const totalAmount = visibleRows.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
+  const grandTotalLevelIncome = datewiseIncomeData.reduce((sum, row) => sum + Number(row.levelIncome || 0), 0);
+  const grandTotalBvPoint = datewiseIncomeData.reduce((sum, row) => sum + Number(row.totalBvPoint || 0), 0);
+  const grandTotalRepurchaseIncome = datewiseIncomeData.reduce((sum, row) => sum + Number(row.repurchaseIncome || 0), 0);
+  const totalAmount = datewiseIncomeData.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
 
   return (
     <div>
@@ -116,9 +119,10 @@ function DatewiseIncome() {
                 </tr>
               ))}
               <tr className="report-total-row">
-                <td style={{
-                    textAlign: "end",
-                  }} colSpan="8">PAGE TOTAL AMOUNT</td>
+                <td colSpan={5} style={{ textAlign: 'right', fontWeight: 700 }}>GRAND TOTAL</td>
+                <td>{grandTotalLevelIncome.toFixed(2)}</td>
+                <td>{grandTotalBvPoint.toFixed(2)}</td>
+                <td>{grandTotalRepurchaseIncome.toFixed(2)}</td>
                 <td>{totalAmount.toFixed(2)}</td>
               </tr>
             </tbody>

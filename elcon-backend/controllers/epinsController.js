@@ -115,8 +115,50 @@ exports.updateEpinRequestStatus = async (req, res) => {
 
     const request = await EpinRequest.findById(requestId);
     if (!request) return res.status(404).json({ success: false, message: 'Request not found' });
+    const previousStatus = request.status;
     request.status = req.body.status || request.status;
     await request.save();
+
+    if (previousStatus !== 'Approved' && request.status === 'Approved') {
+      const user = await User.findOne({ memberId: request.clientId }).select('+password +transactionPassword walletBalance');
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found for epin request' });
+      }
+
+      const packageDoc = await EpinPackage.findOne({ packageName: request.packageCost, isActive: true });
+      const cost = packageDoc ? packageDoc.price : Number(req.body.cost || 10);
+      const totalCost = Number(request.qty || 1) * cost;
+
+      if ((user.walletBalance || 0) < totalCost) {
+        return res.status(400).json({ success: false, message: 'Insufficient wallet balance to approve ePin request' });
+      }
+
+      user.walletBalance -= totalCost;
+      await user.save();
+
+      await createWalletTransaction({
+        memberId: user.memberId,
+        description: `EPIN GENERATION - ${request._id}`,
+        debit: totalCost,
+        approvalStatus: 'Approved',
+      });
+
+      const generatedBy = req.body.generatedBy || req.user?.memberId || req.user?.epin || 'ADMIN';
+      const currentOwner = String(req.body.currentOwner || generatedBy).trim();
+      const remark = String(req.body.remark || '-').trim();
+      const qty = Number(request.qty || 1);
+
+      for (let index = 0; index < qty; index += 1) {
+        let epinNo = '';
+        let exists = true;
+        while (exists) {
+          epinNo = `EPR${Math.floor(1000000 + Math.random() * 9000000)}`;
+          exists = Boolean(await Epin.findOne({ epinNo }));
+        }
+        await Epin.create({ epinName: request.packageCost, epinNo, cost, generatedBy, currentOwner, remark, status: 'Unused', usedBy: '-', usedDate: '-', deletedBy: '-', deletedDate: '-', deletedReason: '-' });
+      }
+    }
+
     res.json({ success: true, request: mapRequest(request, 0) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -195,15 +237,24 @@ exports.generateEpins = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Insufficient wallet balance to generate ePins' });
       }
 
-      user.walletBalance -= totalCost;
-      await user.save();
+      const request = await EpinRequest.create({
+        clientId: identifiers[0],
+        name: user.name || 'Member',
+        packageCost: epinName,
+        qty,
+        paidAmount: totalCost,
+        mobile: user.contactNo || '-',
+        status: 'Pending',
+      });
+
+      return res.status(201).json({ success: true, request: mapRequest(request, 0) });
     }
+
     const generatedBy = isAdmin(req)
       ? String(req.body.generatedBy || req.user?.memberId || req.user?.epin || 'ADMIN').trim()
       : identifiers[0];
     const currentOwner = String((isAdmin(req) ? req.body.currentOwner : undefined) || generatedBy).trim();
 
-    // Fetch actual package price if available to prevent manipulation
     const packageDoc = await EpinPackage.findOne({ packageName: epinName, isActive: true });
     const cost = packageDoc ? packageDoc.price : Number(req.body.cost || 10);
     const remark = String(req.body.remark || '-').trim();
@@ -214,10 +265,8 @@ exports.generateEpins = async (req, res) => {
       let exists = true;
       while (exists) {
         epinNo = `EPR${Math.floor(1000000 + Math.random() * 9000000)}`;
-        // eslint-disable-next-line no-await-in-loop
         exists = Boolean(await Epin.findOne({ epinNo }));
       }
-      // eslint-disable-next-line no-await-in-loop
       const doc = await Epin.create({ epinName, epinNo, cost, generatedBy, currentOwner, remark, status: 'Unused', usedBy: '-', usedDate: '-', deletedBy: '-', deletedDate: '-', deletedReason: '-' });
       created.push(mapEpin(doc, created.length));
     }

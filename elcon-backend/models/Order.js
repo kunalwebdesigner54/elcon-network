@@ -93,6 +93,11 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: 'Paid',
     },
+    paymentApprovalStatus: {
+      type: String,
+      enum: ['Pending', 'Approved', 'Rejected'],
+      default: 'Pending',
+    },
     paymentScreenshot: {
       type: String,
       default: '',
