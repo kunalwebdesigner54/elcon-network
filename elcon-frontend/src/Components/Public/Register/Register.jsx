@@ -182,12 +182,7 @@ function Register() {
       return;
     }
 
-    if (!epin || epin.trim() === '') {
-      setError('Please enter a valid E-Pin');
-      return;
-    }
-
-    if (epinCheckStatus && epinCheckStatus.matched === false) {
+    if (epin && epinCheckStatus && epinCheckStatus.matched === false) {
       setError(epinCheckStatus.message || 'E-Pin amount and selected Package amount must match!');
       return;
     }
@@ -400,17 +395,17 @@ function Register() {
 
                 <div className="register-field register-lock-field">
                   <label htmlFor="epin">
-                    E Pin <span className="register-required">*</span>
+                    E Pin <span style={{ color: '#888', fontWeight: 'normal' }}>(Optional)</span>
                   </label>
                   <input
                     id="epin"
                     type="text"
-                    placeholder="Enter E pin"
+                    placeholder="Enter E pin (optional)"
                     value={epin}
                     onChange={handleEpinChange}
                   />
                   <span className="register-lock-icon" aria-hidden="true">
-                    🔒
+                    🔓
                   </span>
                   {epinCheckStatus && (
                     <div

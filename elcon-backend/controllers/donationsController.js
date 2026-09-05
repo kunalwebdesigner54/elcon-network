@@ -303,6 +303,9 @@ exports.updateDonationStatus = async (req, res) => {
     }
 
     if (status === 'APPROVED' || status === 'COMPLETED') {
+      const payer = await User.findOne({ memberId: donation.fromMemberId });
+      const receiver = await User.findOne({ memberId: donation.toMemberId });
+
       if (payer && payer.unlockLevel < donation.level) {
         await User.findByIdAndUpdate(payer._id, {
           $set: { unlockLevel: donation.level },

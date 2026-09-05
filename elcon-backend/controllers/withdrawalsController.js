@@ -179,6 +179,15 @@ exports.createWithdrawalRequest = async (req, res) => {
       remark: '-',
     });
 
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: -amount } }, { new: true }).select('memberId');
+    if (updatedUser) {
+      await createWalletTransaction({
+        memberId: updatedUser.memberId,
+        description: `WITHDRAWAL DEBIT - ${requestId}`,
+        debit: amount,
+      });
+    }
+
     res.status(201).json({ success: true, request: toApiRow(request, 0) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
