@@ -320,6 +320,21 @@ exports.updateDonationStatus = async (req, res) => {
           credit: donation.amount,
         });
       }
+
+      if (payer && !donation.walletDebited) {
+        const updatedPayer = await User.findByIdAndUpdate(payer._id, {
+          $inc: { walletBalance: -donation.amount }
+        }, { new: true }).select('memberId');
+
+        if (updatedPayer) {
+          await createWalletTransaction({
+            memberId: updatedPayer.memberId,
+            description: `DONATION DEBIT - ${donation.donationId}`,
+            debit: donation.amount,
+          });
+          donation.walletDebited = true;
+        }
+      }
     }
 
     donation.status = status;

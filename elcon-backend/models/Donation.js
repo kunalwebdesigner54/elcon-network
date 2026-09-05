@@ -85,6 +85,10 @@ const donationSchema = new mongoose.Schema(
     reviewedAt: {
       type: Date,
     },
+    walletDebited: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

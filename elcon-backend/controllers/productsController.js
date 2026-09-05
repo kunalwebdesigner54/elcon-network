@@ -566,9 +566,9 @@ exports.checkoutCart = async (req, res) => {
       orderNo,
       orderDate,
       paymentMode,
-      paymentStatus: 'Pending Approval',
+      paymentStatus: paymentMode === 'E-Wallet' ? 'Paid' : 'Pending Approval',
       orderStatus: 'Pending',
-      paymentApprovalStatus: 'Pending',
+      paymentApprovalStatus: paymentMode === 'E-Wallet' ? 'Approved' : 'Pending',
       orderItems: cart.items.length,
       totalPrice,
       lvPoint,
@@ -582,6 +582,18 @@ exports.checkoutCart = async (req, res) => {
       shippingInformation: buildShippingInformation(user),
       items: finalOrderItems,
     });
+
+    if (walletDebitAmount > 0 && paymentMode === 'E-Wallet') {
+      const updatedUser = await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: -walletDebitAmount } }, { new: true }).select('memberId');
+      if (updatedUser) {
+        await createWalletTransaction({
+          memberId: updatedUser.memberId,
+          description: `PRODUCT PURCHASE - ${orderNo}`,
+          debit: walletDebitAmount,
+          approvalStatus: 'Approved',
+        });
+      }
+    }
 
     if (appliedDiscount > 0) {
       await User.findByIdAndUpdate(req.user.id, {
