@@ -65,7 +65,7 @@ const adjustWalletOnStatusChange = async (request, nextStatus) => {
   const requestAmount = Number(request.amount || request.netAmount || 0);
 
   // Statuses that logically represent a deducted state
-  const willBeDeducted = ['Pending', 'Approve', 'Succeed'].includes(nextStatus);
+  const willBeDeducted = ['Approve', 'Succeed'].includes(nextStatus);
 
   // Check if wallet was actually deducted by looking for the transaction
   const existingDebit = await WalletTransaction.findOne({
@@ -178,16 +178,6 @@ exports.createWithdrawalRequest = async (req, res) => {
       status: 'Pending',
       remark: '-',
     });
-
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: -amount } }, { new: true }).select('memberId');
-    if (updatedUser) {
-      await createWalletTransaction({
-        memberId: updatedUser.memberId,
-        description: `WITHDRAWAL DEBIT - ${requestId}`,
-        debit: amount,
-        approvalStatus: 'Pending',
-      });
-    }
 
     res.status(201).json({ success: true, request: toApiRow(request, 0) });
   } catch (error) {
