@@ -170,42 +170,14 @@ exports.getTransactionHistory = async (req, res) => {
     
     const rows = await buildTransactionRows(scope, memberIdentifiers, includeAudit);
     
-    // Sort ASCENDING so we can calculate proper running balances
     rows.sort((first, second) => new Date(first.createdAt) - new Date(second.createdAt));
     
     const uniqueMemberIds = [...new Set(rows.map((row) => row.memberId).filter(Boolean))];
-    const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId name walletBalance').lean();
-    const userMap = new Map(users.map((u) => [String(u.memberId).trim(), { name: u.name, walletBalance: Number(u.walletBalance || 0) }]));
-    
-    const userSums = new Map();
-    rows.forEach(row => {
-      const currentSum = userSums.get(row.memberId) || 0;
-      userSums.set(row.memberId, currentSum + Number(row.credit || 0) - Number(row.debit || 0));
-    });
-    
-    let allRows = [];
-    userMap.forEach((userData, memberId) => {
-      const sum = userSums.get(memberId) || 0;
-      const diff = userData.walletBalance - sum;
-      if (Math.abs(diff) > 0.01) {
-        allRows.push({
-          dateTime: 'INITIAL',
-          transactionId: 'OPENING-BAL',
-          memberId: memberId,
-          memberName: userData.name || '',
-          description: 'Opening Balance',
-          credit: diff > 0 ? diff : 0,
-          debit: diff < 0 ? Math.abs(diff) : 0,
-          createdAt: new Date(0), // Oldest possible date
-        });
-      }
-    });
-    
-    allRows = [...allRows, ...rows];
-    allRows.sort((first, second) => new Date(first.createdAt) - new Date(second.createdAt));
+    const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId name').lean();
+    const userMap = new Map(users.map((u) => [String(u.memberId).trim(), u.name || '']));
     
     const userBalances = new Map();
-    const mappedRows = allRows.map((row) => {
+    const mappedRows = rows.map((row) => {
       const memberId = row.memberId;
       let runningBalance = userBalances.get(memberId) || 0;
       runningBalance += Number(row.credit || 0) - Number(row.debit || 0);
@@ -215,7 +187,7 @@ exports.getTransactionHistory = async (req, res) => {
         transactionId: row.transactionId,
         dateTime: row.dateTime,
         memberId: row.memberId,
-        memberName: row.memberName || userMap.get(memberId)?.name || '',
+        memberName: row.memberName || userMap.get(memberId) || '',
         description: row.description,
         credit: Number(row.credit || 0),
         debit: Number(row.debit || 0),
@@ -224,7 +196,6 @@ exports.getTransactionHistory = async (req, res) => {
       };
     });
     
-    // Sort DESCENDING for display
     mappedRows.sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
     
     mappedRows.forEach((row, index) => {
