@@ -1,5 +1,6 @@
 const WithdrawalRequest = require('../models/WithdrawalRequest');
 const User = require('../models/User');
+const WalletTransaction = require('../models/WalletTransaction');
 const { createWalletTransaction } = require('../utils/walletHelper');
 
 const buildRequestId = async () => {
@@ -61,41 +62,50 @@ const adjustWalletOnStatusChange = async (request, nextStatus) => {
     return;
   }
 
-  const currentBalance = Number(user.walletBalance || 0);
-  const requestAmount = Number(request.netAmount || request.amount || 0);
+  const requestAmount = Number(request.amount || request.netAmount || 0);
 
-  const wasApproved = ['Approve', 'Succeed'].includes(request.status);
-  const willBeApproved = ['Approve', 'Succeed'].includes(nextStatus);
+  // Statuses that logically represent a deducted state
+  const willBeDeducted = ['Pending', 'Approve', 'Succeed'].includes(nextStatus);
 
-  if (!wasApproved && willBeApproved) {
-    const existingDebit = await WalletTransaction.findOne({
-      memberId: user.memberId,
-      description: `WITHDRAWAL DEBIT - ${request.requestId}`,
-      debit: { $gt: 0 },
-    });
+  // Check if wallet was actually deducted by looking for the transaction
+  const existingDebit = await WalletTransaction.findOne({
+    memberId: user.memberId,
+    description: `WITHDRAWAL DEBIT - ${request.requestId}`
+  });
+  
+  const wasActuallyDeducted = !!existingDebit;
 
-    if (!existingDebit) {
-      const updatedUser = await User.findByIdAndUpdate(request.userId, { $inc: { walletBalance: -requestAmount } }, { new: true }).select('memberId');
-      if (updatedUser) {
-        await createWalletTransaction({
-          memberId: updatedUser.memberId,
-          description: `WITHDRAWAL DEBIT - ${request.requestId}`,
-          debit: requestAmount,
-          approvalStatus: 'Approved',
-        });
-      }
-    }
-  }
-
-  if (wasApproved && !willBeApproved) {
-    const updatedUser = await User.findByIdAndUpdate(request.userId, { $inc: { walletBalance: requestAmount } }, { new: true }).select('memberId');
+  if (willBeDeducted && !wasActuallyDeducted) {
+    // We need to deduct the wallet now (e.g. legacy request being approved, or transitioning from Rejected to Approved)
+    const updatedUser = await User.findByIdAndUpdate(request.userId, { $inc: { walletBalance: -requestAmount } }, { new: true }).select('memberId');
     if (updatedUser) {
       await createWalletTransaction({
         memberId: updatedUser.memberId,
-        description: `WITHDRAWAL REVERSED - ${request.requestId}`,
-        credit: requestAmount,
+        description: `WITHDRAWAL DEBIT - ${request.requestId}`,
+        debit: requestAmount,
         approvalStatus: 'Approved',
       });
+    }
+  }
+
+  if (!willBeDeducted && wasActuallyDeducted) {
+    // We need to refund the wallet (e.g. transitioning to Rejected/Cancelled)
+    // First, ensure we haven't already refunded it
+    const existingRefund = await WalletTransaction.findOne({
+      memberId: user.memberId,
+      description: `WITHDRAWAL REVERSED - ${request.requestId}`
+    });
+
+    if (!existingRefund) {
+      const updatedUser = await User.findByIdAndUpdate(request.userId, { $inc: { walletBalance: requestAmount } }, { new: true }).select('memberId');
+      if (updatedUser) {
+        await createWalletTransaction({
+          memberId: updatedUser.memberId,
+          description: `WITHDRAWAL REVERSED - ${request.requestId}`,
+          credit: requestAmount,
+          approvalStatus: 'Approved',
+        });
+      }
     }
   }
 };
@@ -168,6 +178,16 @@ exports.createWithdrawalRequest = async (req, res) => {
       status: 'Pending',
       remark: '-',
     });
+
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, { $inc: { walletBalance: -amount } }, { new: true }).select('memberId');
+    if (updatedUser) {
+      await createWalletTransaction({
+        memberId: updatedUser.memberId,
+        description: `WITHDRAWAL DEBIT - ${requestId}`,
+        debit: amount,
+        approvalStatus: 'Pending',
+      });
+    }
 
     res.status(201).json({ success: true, request: toApiRow(request, 0) });
   } catch (error) {
