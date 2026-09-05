@@ -174,15 +174,11 @@ function ShoppingProductsAdmin() {
 
         <div className="table-footer admin-products-table-footer">
           <div className="pagination">
-            <button className="page-btn">&laquo;</button>
             <button className="page-btn">&lsaquo;</button>
             <button className="page-btn active">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
-            <button className="page-btn">4</button>
-            <button className="page-btn">5</button>
             <button className="page-btn">&rsaquo;</button>
-            <button className="page-btn">&raquo;</button>
           </div>
         </div>
       </section>

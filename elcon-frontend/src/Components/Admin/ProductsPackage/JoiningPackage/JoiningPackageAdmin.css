@@ -42,13 +42,18 @@
   gap: 8px;
 }
 
-.admin-products-search-btn {
+.admin-products-search-btn,
+.admin-add-new-btn {
   width: 100%;
   min-height: 40px;
   border-radius: 10px;
   padding: 8px 10px;
   font-size: 14px;
   letter-spacing: 0.2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .admin-products-export-icons {
@@ -186,6 +191,7 @@
   }
 
   .admin-products-search-btn,
+  .admin-add-new-btn,
   .admin-products-export-icons button {
     min-height: 44px;
     font-size: 14px;

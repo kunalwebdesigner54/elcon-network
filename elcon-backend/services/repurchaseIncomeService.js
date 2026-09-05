@@ -91,18 +91,6 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
                  description: `REPURCHASE INCOME - Level ${payoutSlotLevel}`,
                  credit: netAmount,
                });
-
-              await createWalletTransaction({
-                 memberId: currentMemberId,
-                 description: `TDS DEDUCTION (Level ${payoutSlotLevel})`,
-                 debit: tdsDeduction,
-               });
-
-              await createWalletTransaction({
-                 memberId: currentMemberId,
-                 description: `ADMIN CHARGE (Level ${payoutSlotLevel})`,
-                 debit: adminChargeDeduction,
-               });
           } catch (error) {
             if (error.code !== 11000) {
               console.error(`Error distributing repurchase income at slot ${payoutSlotLevel}:`, error);
@@ -152,18 +140,6 @@ const distributeRepurchaseIncome = async (order, purchaserUser, totalReserveAmou
                    memberId: admin.memberId,
                    description: `REPURCHASE INCOME - Level ${payoutSlotLevel}`,
                    credit: netAmount,
-                 });
-
-                await createWalletTransaction({
-                   memberId: admin.memberId,
-                   description: `TDS DEDUCTION (Level ${payoutSlotLevel})`,
-                   debit: tdsDeduction,
-                 });
-
-                await createWalletTransaction({
-                   memberId: admin.memberId,
-                   description: `ADMIN CHARGE (Level ${payoutSlotLevel})`,
-                   debit: adminChargeDeduction,
                  });
             } catch (error) {
               if (error.code !== 11000) {

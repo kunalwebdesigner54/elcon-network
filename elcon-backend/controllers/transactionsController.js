@@ -64,7 +64,12 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   const walletTransactions = await WalletTransaction.find().sort({ createdAt: -1 });
   walletTransactions.forEach((transaction) => {
     const desc = String(transaction.description || '');
-    if (/^LEVEL INCOME - Level \d+$/.test(desc)) {
+    if (
+      /^LEVEL INCOME - Level \d+$/.test(desc) ||
+      /^REPURCHASE INCOME - Level \d+$/.test(desc) ||
+      /^TDS DEDUCTION \(Level \d+\)$/.test(desc) ||
+      /^ADMIN CHARGE \(Level \d+\)$/.test(desc)
+    ) {
       return;
     }
     rows.push({
@@ -116,38 +121,14 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     const netAmount = Number((grossAmount - tdsDeduction - adminChargeDeduction).toFixed(2));
     const incomeLabel = value.description.replace(' ', '-');
 
-    if (grossAmount > 0) {
+    if (netAmount > 0) {
       rows.push({
         dateTime: formatDateTime(value.createdAt),
         transactionId: `DAILY-${value.memberId}-${incomeLabel}`,
         memberId: value.memberId,
         description: `${value.description} (TDS ${(tdsRate * 100).toFixed(0)}% + Admin ${(adminChargeRate * 100).toFixed(0)}%)`,
-        credit: grossAmount,
+        credit: netAmount,
         debit: 0,
-        createdAt: value.createdAt,
-      });
-    }
-
-    if (tdsDeduction > 0) {
-      rows.push({
-        dateTime: formatDateTime(value.createdAt),
-        transactionId: `TDS-${value.memberId}-${incomeLabel}`,
-        memberId: value.memberId,
-        description: `TDS DEDUCTION (${(tdsRate * 100).toFixed(0)}%)`,
-        credit: 0,
-        debit: tdsDeduction,
-        createdAt: value.createdAt,
-      });
-    }
-
-    if (adminChargeDeduction > 0) {
-      rows.push({
-        dateTime: formatDateTime(value.createdAt),
-        transactionId: `ADMIN-${value.memberId}-${incomeLabel}`,
-        memberId: value.memberId,
-        description: `ADMIN CHARGE (${(adminChargeRate * 100).toFixed(0)}%)`,
-        credit: 0,
-        debit: adminChargeDeduction,
         createdAt: value.createdAt,
       });
     }

@@ -92,18 +92,6 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
                    description: `LEVEL INCOME - Level ${payoutSlotLevel}`,
                    credit: netAmount,
                  });
-
-                await createWalletTransaction({
-                   memberId: currentMemberId,
-                   description: `TDS DEDUCTION (Level ${payoutSlotLevel})`,
-                   debit: tdsDeduction,
-                 });
-
-                await createWalletTransaction({
-                   memberId: currentMemberId,
-                   description: `ADMIN CHARGE (Level ${payoutSlotLevel})`,
-                   debit: adminChargeDeduction,
-                 });
             } catch (error) {
                if (error.code !== 11000) {
                  console.error(`Error distributing level income at slot ${payoutSlotLevel}:`, error);
@@ -155,18 +143,6 @@ const distributeLevelIncome = async (joiningMemberId, joiningMemberName, sponsor
                    memberId: admin.memberId,
                    description: `LEVEL INCOME - Level ${payoutSlotLevel}`,
                    credit: netAmount,
-                 });
-
-                await createWalletTransaction({
-                   memberId: admin.memberId,
-                   description: `TDS DEDUCTION (Level ${payoutSlotLevel})`,
-                   debit: tdsDeduction,
-                 });
-
-                await createWalletTransaction({
-                   memberId: admin.memberId,
-                   description: `ADMIN CHARGE (Level ${payoutSlotLevel})`,
-                   debit: adminChargeDeduction,
                  });
             } catch (error) {
                if (error.code !== 11000) {
