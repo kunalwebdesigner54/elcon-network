@@ -109,19 +109,24 @@ exports.updateProfile = async (req, res) => {
 
     // ========== VALIDATION PASSED - UPDATE PROFILE ==========
 
+    const updateData = {
+      name,
+      contactNo,
+      dateOfBirth,
+      address,
+      city,
+      state,
+      country,
+      pincode,
+    };
+
+    if (aadharNo !== undefined) {
+      updateData.aadharNo = aadharNo;
+    }
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      {
-        name,
-        contactNo,
-        dateOfBirth,
-        address,
-        city,
-        state,
-        country,
-        pincode,
-        aadharNo,
-      },
+      updateData,
       { new: true, runValidators: true }
     );
 

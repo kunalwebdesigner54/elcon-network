@@ -105,7 +105,7 @@ function UpdateProfile() {
       setMessage('Profile updated successfully!');
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      setError(err.message || 'Failed to update profile');
+      setError(err.response?.data?.message || err.message || 'Failed to update profile');
       console.error('Error updating profile:', err);
     } finally {
       setSubmitting(false);
