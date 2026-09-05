@@ -53,7 +53,7 @@ function TransactionHistory() {
 
   const totalCredit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [filteredRows]);
   const totalDebit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [filteredRows]);
-  const totalBalance = filteredRows.length ? filteredRows[filteredRows.length - 1].balance : 0;
+  const totalBalance = filteredRows.length ? filteredRows[0].balance : 0;
   const totalTransactions = filteredRows.length;
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / Number(pageSize)));
   const indexOfLastItem = currentPage * Number(pageSize);
