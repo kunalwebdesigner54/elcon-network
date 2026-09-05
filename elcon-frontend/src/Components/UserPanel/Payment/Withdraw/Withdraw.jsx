@@ -99,6 +99,11 @@ const Withdraw = () => {
     })
       .then(() => {
         alert(`Withdrawal of ₹${withdrawalAmount} initiated successfully!`);
+        setWalletData(prev => ({
+          ...prev,
+          eWalletBalance: prev.eWalletBalance - amount,
+          totalWithdrawal: prev.totalWithdrawal + amount
+        }));
         setWithdrawalAmount('');
         setTransactionPassword('');
         setReenterPassword('');
