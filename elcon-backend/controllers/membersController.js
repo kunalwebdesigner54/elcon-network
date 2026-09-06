@@ -385,7 +385,7 @@ exports.getMembersLocation = async (req, res) => {
       memberId: user.memberId || '---',
       name: user.name || '---',
       mobile: user.contactNo || '---',
-      dob: formatDate(user.dateOfBirth),
+      dob: formatDateOnly(user.dateOfBirth),
       joinDate: formatDate(user.createdAt),
       joinDateRaw: user.createdAt,
       adharNo: user.aadharNo || '---',
@@ -772,6 +772,7 @@ exports.getMyDatewiseIncome = async (req, res) => {
           repurchaseIncome: 0,
           totalBvPoint: 0,
           count: 0,
+          mapKey,
         });
       }
 
@@ -833,7 +834,7 @@ exports.getMyDatewiseIncome = async (req, res) => {
         dateRaw: entry.rawDate,
         memberId: entry.memberId,
         memberName: user.name || '---',
-        totalIds: uniqueSourceIdsByDate.get(mapKey)?.size || 0,
+        totalIds: uniqueSourceIdsByDate.get(entry.mapKey)?.size || 0,
         levelIncome: Number(entry.levelIncome.toFixed(2)),
         totalBvPoint: Number(entry.totalBvPoint.toFixed(2)),
         repurchaseIncome: Number(entry.repurchaseIncome.toFixed(2)),
