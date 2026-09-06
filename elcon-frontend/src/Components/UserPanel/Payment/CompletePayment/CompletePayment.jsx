@@ -15,6 +15,7 @@ const CompletePayment = () => {
   const [orderAmount, setOrderAmount] = useState(Number(location.state?.orderAmount || 0));
   const [isLoadingCart, setIsLoadingCart] = useState(true);
   const [paymentBalances, setPaymentBalances] = useState({ eWallet: '' });
+  const [couponWalletBalance, setCouponWalletBalance] = useState(0);
 
   const bankDetails = {
     bankName: 'State Bank Of India',
@@ -34,7 +35,7 @@ const CompletePayment = () => {
 
 
 
-  useEffect(() => {
+   useEffect(() => {
     const loadCart = async () => {
       try {
         const response = await getCart();
@@ -42,8 +43,13 @@ const CompletePayment = () => {
         setCartItems(items);
 
         const subtotal = items.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0);
+        const totalItemDiscount = items.reduce((sum, item) => sum + (Number(item.discount || 0) * Number(item.quantity || 0)), 0);
+        const appliedDiscount = Math.min(totalItemDiscount, Number(response.couponWalletBalance || 0));
+        const payableAmount = Math.max(0, subtotal - appliedDiscount);
+
         if (items.length) {
-          setOrderAmount(subtotal);
+          setOrderAmount(payableAmount);
+          setCouponWalletBalance(Number(response.couponWalletBalance || 0));
         }
       } catch (error) {
         setCartItems([]);
@@ -193,7 +199,7 @@ const CompletePayment = () => {
         <div className="payment-right">
           <div className="order-summary-card">
             <h3 className="summary-title">
-              Order Amount
+              Payable Order Amount
             </h3>
             <div className="amount-display">₹ {isLoadingCart ? 'Loading...' : orderAmount.toFixed(2)}</div>
 
