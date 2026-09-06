@@ -76,7 +76,8 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
       /^ADMIN CHARGE \(Level \d+\)$/.test(desc) ||
       /^PRODUCT PURCHASE(?: REVERSED)? - /.test(desc) ||
       /^WITHDRAWAL (DEBIT|REVERSED) - /.test(desc) ||
-      /^EPIN GENERATION - /.test(desc)
+      /^EPIN GENERATION - /.test(desc) ||
+      /^DONATION (DEBIT|CREDIT) - /.test(desc)
     ) {
       return;
     }
