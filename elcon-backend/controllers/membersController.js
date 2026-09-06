@@ -754,6 +754,7 @@ exports.getMyDatewiseIncome = async (req, res) => {
     ]);
 
     const dailyMap = new Map();
+    const uniqueSourceIdsByDate = new Map();
 
     const processRecord = (record, type) => {
       const dateObj = new Date(record.createdAt);
@@ -777,9 +778,19 @@ exports.getMyDatewiseIncome = async (req, res) => {
       const entry = dailyMap.get(mapKey);
       if (type === 'level') {
         entry.levelIncome += Number(record.amount || 0);
+        if (record.joiningMemberId) {
+          const ids = uniqueSourceIdsByDate.get(mapKey) || new Set();
+          ids.add(record.joiningMemberId);
+          uniqueSourceIdsByDate.set(mapKey, ids);
+        }
       } else if (type === 'repurchase') {
         entry.repurchaseIncome += Number(record.amount || 0);
         entry.totalBvPoint += Number(record.amount || 0);
+        if (record.purchasingMemberId) {
+          const ids = uniqueSourceIdsByDate.get(mapKey) || new Set();
+          ids.add(record.purchasingMemberId);
+          uniqueSourceIdsByDate.set(mapKey, ids);
+        }
       }
       entry.count += 1;
 
@@ -822,7 +833,7 @@ exports.getMyDatewiseIncome = async (req, res) => {
         dateRaw: entry.rawDate,
         memberId: entry.memberId,
         memberName: user.name || '---',
-        totalIds: entry.count,
+        totalIds: uniqueSourceIdsByDate.get(mapKey)?.size || 0,
         levelIncome: Number(entry.levelIncome.toFixed(2)),
         totalBvPoint: Number(entry.totalBvPoint.toFixed(2)),
         repurchaseIncome: Number(entry.repurchaseIncome.toFixed(2)),

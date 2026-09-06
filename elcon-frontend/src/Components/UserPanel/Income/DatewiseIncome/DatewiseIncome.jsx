@@ -20,32 +20,19 @@ function DatewiseIncome() {
   }, []);
 
   const datewiseIncomeData = useMemo(() => {
-    const grouped = new Map();
-
-    rows.forEach((row) => {
-      const key = row.dateRaw ? new Date(row.dateRaw).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) : (row.incomeDate || row.date);
-      const current = grouped.get(key) || { count: 0, levelIncome: 0, totalBvPoint: 0, repurchaseIncome: 0, dailyIncome: 0, latest: row };
-      current.count += 1;
-      current.levelIncome += Number(row.levelIncome || 0);
-      current.totalBvPoint += Number(row.totalBvPoint || 0);
-      current.repurchaseIncome += Number(row.repurchaseIncome || 0);
-      current.dailyIncome += Number(row.dailyIncome || row.amount || 0);
-      current.latest = row;
-      grouped.set(key, current);
-    });
-
-    return Array.from(grouped.entries())
-      .sort((left, right) => new Date(right[0]).getTime() - new Date(left[0]).getTime())
-      .map(([date, group], index) => ({
+    return rows
+      .sort((left, right) => new Date(right.dateRaw || right.incomeDate).getTime() - new Date(left.dateRaw || left.incomeDate).getTime())
+      .map((row, index) => ({
         sNo: index + 1,
-        incomeDate: date,
-        memberId: group.latest.memberId || group.latest.toMemberId || currentUser.memberId,
-        memberName: group.latest.memberName || group.latest.toName || currentUser.name || '---',
-        totalIds: group.count,
-        levelIncome: group.levelIncome,
-        totalBvPoint: group.totalBvPoint,
-        repurchaseIncome: group.repurchaseIncome,
-        dailyIncome: group.dailyIncome,
+        incomeDate: row.incomeDate,
+        dateRaw: row.dateRaw,
+        memberId: row.memberId || currentUser.memberId,
+        memberName: row.memberName || currentUser.name || '---',
+        totalIds: Number(row.totalIds || 0),
+        levelIncome: Number(row.levelIncome || 0),
+        totalBvPoint: Number(row.totalBvPoint || 0),
+        repurchaseIncome: Number(row.repurchaseIncome || 0),
+        dailyIncome: Number(row.dailyIncome || 0),
       }));
   }, [rows, currentUser.memberId, currentUser.name]);
 
