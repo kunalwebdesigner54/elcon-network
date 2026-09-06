@@ -251,7 +251,7 @@ const ReceivedHelp = () => {
                       <td>{row.requestDate}</td>
                       <td>{row.transactionId}</td>
                       <td>{row.utrNumber}</td>
-                      <td style={{ maxWidth: '150px', wordWrap: 'break-word' }}>{row.skippedIds}</td>
+                      <td style={{ maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.skippedIds}</td>
                       <td>
                         {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
                           <div style={{ display: 'flex', gap: '4px' }}>
