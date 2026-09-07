@@ -7,21 +7,16 @@ const formatDateTime = (value) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '---';
   
-  const dd = String(date.getDate()).padStart(2, '0');
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const yyyy = date.getFullYear();
-  
-  let hours = date.getHours();
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-  
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // 0 becomes 12
-  
-  const hh = String(hours).padStart(2, '0');
-  
-  return `${dd}-${mm}-${yyyy} ${hh}:${minutes}:${seconds} ${ampm}`;
+  return date.toLocaleString('en-GB', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }).toUpperCase().replace(/\//g, '-').replace(',', '');
 };
 
 const formatDateOnly = (value) => {
@@ -29,11 +24,12 @@ const formatDateOnly = (value) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '---';
   
-  const dd = String(date.getDate()).padStart(2, '0');
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const yyyy = date.getFullYear();
-  
-  return `${dd}-${mm}-${yyyy}`;
+  return date.toLocaleString('en-GB', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).replace(/\//g, '-');
 };
 
 // Also export formatDate for backward compatibility while migrating
