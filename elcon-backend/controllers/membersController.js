@@ -748,9 +748,12 @@ exports.getMyDatewiseIncome = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Member not found' });
     }
 
+    const normalizedMemberId = String(user.memberId || '').trim();
+    const escapedMemberId = normalizedMemberId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s/g, '\\s*');
+
     const [levelIncomeRecords, repurchaseIncomeRecords] = await Promise.all([
-      LevelIncome.find({ recipientMemberId: new RegExp(`^${memberId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }).lean(),
-      RepurchaseIncome.find({ recipientMemberId: new RegExp(`^${memberId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }).lean(),
+      LevelIncome.find({ recipientMemberId: new RegExp(`^\\s*${escapedMemberId}\\s*$`, 'i') }).lean(),
+      RepurchaseIncome.find({ recipientMemberId: new RegExp(`^\\s*${escapedMemberId}\\s*$`, 'i') }).lean(),
     ]);
 
     const dailyMap = new Map();
@@ -761,11 +764,11 @@ exports.getMyDatewiseIncome = async (req, res) => {
       if (Number.isNaN(dateObj.getTime())) return;
 
       const dateKey = dateObj.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-      const mapKey = `${memberId}__${dateKey}`;
+      const mapKey = `${normalizedMemberId}__${dateKey}`;
 
       if (!dailyMap.has(mapKey)) {
         dailyMap.set(mapKey, {
-          memberId,
+          memberId: normalizedMemberId,
           dateKey,
           rawDate: dateObj,
           levelIncome: 0,
@@ -777,19 +780,21 @@ exports.getMyDatewiseIncome = async (req, res) => {
       }
 
       const entry = dailyMap.get(mapKey);
+      const amount = Number(record.amount || 0);
+
       if (type === 'level') {
-        entry.levelIncome += Number(record.amount || 0);
+        entry.levelIncome += amount;
         if (record.joiningMemberId) {
           const ids = uniqueSourceIdsByDate.get(mapKey) || new Set();
-          ids.add(record.joiningMemberId);
+          ids.add(String(record.joiningMemberId).trim());
           uniqueSourceIdsByDate.set(mapKey, ids);
         }
       } else if (type === 'repurchase') {
-        entry.repurchaseIncome += Number(record.amount || 0);
-        entry.totalBvPoint += Number(record.amount || 0);
+        entry.repurchaseIncome += amount;
+        entry.totalBvPoint += amount;
         if (record.purchasingMemberId) {
           const ids = uniqueSourceIdsByDate.get(mapKey) || new Set();
-          ids.add(record.purchasingMemberId);
+          ids.add(String(record.purchasingMemberId).trim());
           uniqueSourceIdsByDate.set(mapKey, ids);
         }
       }
@@ -821,7 +826,11 @@ exports.getMyDatewiseIncome = async (req, res) => {
 
     const rows = [];
     dailyMap.forEach((entry) => {
-      const dailyIncome = entry.levelIncome + entry.repurchaseIncome;
+      const roundedLevelIncome = Number(entry.levelIncome.toFixed(2));
+      const roundedRepurchaseIncome = Number(entry.repurchaseIncome.toFixed(2));
+      const roundedTotalBvPoint = Number(entry.totalBvPoint.toFixed(2));
+      const dailyIncome = Number((roundedLevelIncome + roundedRepurchaseIncome).toFixed(2));
+
       const incomeDate = entry.rawDate.toLocaleDateString('en-GB', {
         timeZone: 'Asia/Kolkata',
         day: '2-digit',
@@ -835,10 +844,10 @@ exports.getMyDatewiseIncome = async (req, res) => {
         memberId: entry.memberId,
         memberName: user.name || '---',
         totalIds: uniqueSourceIdsByDate.get(entry.mapKey)?.size || 0,
-        levelIncome: Number(entry.levelIncome.toFixed(2)),
-        totalBvPoint: Number(entry.totalBvPoint.toFixed(2)),
-        repurchaseIncome: Number(entry.repurchaseIncome.toFixed(2)),
-        dailyIncome: Number(dailyIncome.toFixed(2)),
+        levelIncome: roundedLevelIncome,
+        totalBvPoint: roundedTotalBvPoint,
+        repurchaseIncome: roundedRepurchaseIncome,
+        dailyIncome,
       });
     });
 
