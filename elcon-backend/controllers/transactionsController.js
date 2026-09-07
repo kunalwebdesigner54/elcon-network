@@ -110,11 +110,11 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
       memberId,
       date: new Date(dateKey),
       amount: 0,
-      description: type === 'LEVEL INCOME' ? 'DAILY INCOME' : type,
+      description: type === 'LEVEL INCOME' ? 'Daily_Income' : type,
       createdAt: record.createdAt,
     };
     current.amount += Number(record.amount || 0);
-    if (record.createdAt > current.createdAt) {
+    if (record.createdAt < current.createdAt) {
       current.createdAt = record.createdAt;
     }
     incomeMap.set(key, current);
@@ -123,19 +123,44 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   levelIncomes.forEach((record) => addIncomeRow(record, 'LEVEL INCOME'));
   repurchaseIncomes.forEach((record) => addIncomeRow(record, 'REPURCHASE INCOME'));
 
-  incomeMap.forEach((value) => {
+  const incomeRecords = Array.from(incomeMap.values());
+  incomeRecords.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const dateCounters = new Map();
+
+  incomeRecords.forEach((value) => {
     const grossAmount = Number(value.amount);
     const tdsDeduction = Number((grossAmount * tdsRate).toFixed(2));
     const adminChargeDeduction = Number((grossAmount * adminChargeRate).toFixed(2));
     const netAmount = Number((grossAmount - tdsDeduction - adminChargeDeduction).toFixed(2));
-    const incomeLabel = value.description.replace(' ', '-');
 
     if (netAmount > 0) {
+      let transactionId = '';
+      let description = '';
+
+      if (value.description === 'Daily_Income') {
+        const dateObj = new Date(value.createdAt);
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const year = dateObj.getFullYear();
+        const dateStr = `${day}${month}${year}`;
+
+        const count = (dateCounters.get(dateStr) || 0) + 1;
+        dateCounters.set(dateStr, count);
+        const seq = String(count).padStart(4, '0');
+        
+        transactionId = `DINC-${dateStr}-${seq}`;
+        description = 'Daily_Income';
+      } else {
+        const incomeLabel = value.description.replace(' ', '-');
+        transactionId = `DAILY-${value.memberId}-${incomeLabel}`;
+        description = `${value.description} (TDS ${(tdsRate * 100).toFixed(0)}% + Admin ${(adminChargeRate * 100).toFixed(0)}%)`;
+      }
+
       rows.push({
         dateTime: formatDateTime(value.createdAt),
-        transactionId: `DAILY-${value.memberId}-${incomeLabel}`,
+        transactionId,
         memberId: value.memberId,
-        description: `${value.description} (TDS ${(tdsRate * 100).toFixed(0)}% + Admin ${(adminChargeRate * 100).toFixed(0)}%)`,
+        description,
         credit: netAmount,
         debit: 0,
         createdAt: value.createdAt,
