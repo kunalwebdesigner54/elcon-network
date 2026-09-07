@@ -64,8 +64,8 @@ function RepurchaseIncome() {
           <button type="button" className="btn-outline repurchase-income-export-btn">PDF</button>
         </div>
 
-        <div className="table-wrap repurchase-income-table-wrap">
-          <table className="data-table repurchase-income-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -107,19 +107,19 @@ function RepurchaseIncome() {
           </table>
         </div>
 
-        <div className="repurchase-income-table-footer">
-          <div className="repurchase-income-pagination">
-            <button className="repurchase-income-page-btn">«</button>
-            <button className="repurchase-income-page-btn">‹</button>
-            <button className="repurchase-income-page-btn repurchase-income-active">1</button>
-            <button className="repurchase-income-page-btn">2</button>
-            <button className="repurchase-income-page-btn">3</button>
-            <button className="repurchase-income-page-btn">4</button>
-            <button className="repurchase-income-page-btn">5</button>
-            <button className="repurchase-income-page-btn">6</button>
-            <button className="repurchase-income-page-btn">7</button>
-            <button className="repurchase-income-page-btn">›</button>
-            <button className="repurchase-income-page-btn">»</button>
+        <div className="table-footer">
+          <div className="pagination">
+            <button className="page-btn">«</button>
+            <button className="page-btn">‹</button>
+            <button className="page-btn">1</button>
+            <button className="page-btn">2</button>
+            <button className="page-btn">3</button>
+            <button className="page-btn">4</button>
+            <button className="page-btn">5</button>
+            <button className="page-btn">6</button>
+            <button className="page-btn">7</button>
+            <button className="page-btn">›</button>
+            <button className="page-btn">»</button>
           </div>
         </div>
       </section>

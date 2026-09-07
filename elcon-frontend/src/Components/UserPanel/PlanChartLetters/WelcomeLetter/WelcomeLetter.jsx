@@ -84,8 +84,8 @@ function WelcomeLetter() {
             <strong>Elcon Network Team</strong>
           </p>
 
-          <div className="welcome-letter-table-wrap">
-            <table className="welcome-letter-table">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>Sponsor ID</th>

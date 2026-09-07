@@ -61,8 +61,8 @@ function MyOrders() {
     <div className="user-orders-page">
       <h1 className="page-heading">My Orders</h1><div className="user-orders-shell"><section className="user-orders-card">
 
-          <div className="table-wrap user-orders-table-wrap">
-            <table className="data-table user-orders-table">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>S. NO</th>

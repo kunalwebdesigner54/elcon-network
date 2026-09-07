@@ -113,8 +113,8 @@ function JoiningPackageAdmin() {
           </div>
         </div>
 
-        <div className="table-wrap admin-products-table-wrap">
-          <table className="data-table admin-products-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -188,10 +188,10 @@ function JoiningPackageAdmin() {
           </table>
         </div>
 
-        <div className="table-footer admin-products-table-footer">
+        <div className="table-footer">
           <div className="pagination">
             <button className="page-btn">&lsaquo;</button>
-            <button className="page-btn active">1</button>
+            <button className="page-btn">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
             <button className="page-btn">&rsaquo;</button>

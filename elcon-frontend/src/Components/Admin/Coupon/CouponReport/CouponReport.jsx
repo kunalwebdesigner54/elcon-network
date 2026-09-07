@@ -93,8 +93,8 @@ function CouponReport() {
               <button type="button" className="btn-outline tds-export-btn" aria-label="Export PDF">PDF</button>
             </div>
 
-            <div className="table-wrap coupon-table-wrap">
-              <table className="data-table coupon-table">
+            <div className="table-wrap">
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th>S.NO</th>
@@ -126,11 +126,11 @@ function CouponReport() {
               </table>
             </div>
 
-            <div className="table-footer coupon-pagination-wrap">
+            <div className="table-footer">
           <div className="pagination">
             <button type="button" className="page-btn">«</button>
             <button type="button" className="page-btn">‹</button>
-            <button type="button" className="page-btn active">1</button>
+            <button type="button" className="page-btn">1</button>
             <button type="button" className="page-btn">2</button>
             <button type="button" className="page-btn">3</button>
             <button type="button" className="page-btn">4</button>

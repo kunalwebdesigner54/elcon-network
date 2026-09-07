@@ -149,7 +149,7 @@ function EPinRequest() {
           <div className="pagination">
             <button className="page-btn">&lt;&lt;</button>
             <button className="page-btn">&lt;</button>
-            <button className="page-btn active">1</button>
+            <button className="page-btn">1</button>
             <button className="page-btn">&gt;</button>
             <button className="page-btn">&gt;&gt;</button>
           </div>

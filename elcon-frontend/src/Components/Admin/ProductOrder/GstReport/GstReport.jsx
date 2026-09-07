@@ -51,8 +51,8 @@ function GstReport() {
           <button type="button" className="btn-outline admin-product-order-export-btn" style={{ minWidth: '72px', padding: '6px 12px', fontSize: '13px', fontWeight: '600', border: '1px solid var(--primary)', color: 'var(--primary)', borderRadius: '6px', background: 'transparent', cursor: 'pointer' }}>PDF</button>
         </div>
 
-        <div className="admin-product-order-table-wrapper">
-          <table className="admin-product-order-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>Sr No</th>

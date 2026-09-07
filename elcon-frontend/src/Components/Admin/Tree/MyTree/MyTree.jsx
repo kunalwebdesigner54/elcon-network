@@ -65,7 +65,7 @@ function MyTree() {
           <span>Showing 1 to 10 of 366 entries</span>
           <div className="pagination">
             <button className="page-btn">Prev</button>
-            <button className="page-btn active">1</button>
+            <button className="page-btn">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
             <button className="page-btn">4</button>

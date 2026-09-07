@@ -68,8 +68,8 @@ function Invoice({ invoiceData, onClose }) {
         <div className="invoice-section">
           <div className="invoice-section-title">Order Items</div>
 
-          <div className="invoice-table-wrapper">
-            <table className="invoice-table">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>Product</th>

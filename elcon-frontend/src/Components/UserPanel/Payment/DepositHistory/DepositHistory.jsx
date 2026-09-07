@@ -131,8 +131,8 @@ function DepositHistory() {
           </button>
         </div>
 
-        <div className="table-wrap deposit-table-wrap">
-          <table className="data-table deposit-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>

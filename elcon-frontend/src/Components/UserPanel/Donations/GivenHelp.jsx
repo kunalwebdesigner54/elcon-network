@@ -378,8 +378,8 @@ const GivenHelp = () => {
           ) : donationHistory.length === 0 ? (
             <p style={{ textAlign: "center", padding: "20px", color: "#888" }}>No donation history found.</p>
           ) : (
-            <div className="user-table-wrapper">
-              <table className="user-table">
+            <div className="table-wrap">
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th>S.No</th>

@@ -90,7 +90,7 @@ function BuyEPin() {
                   <div className="buyepin-payment-table-card">
                     <h3 className="buyepin-table-heading">UPI Details</h3>
                     <div className="buyepin-responsive-table">
-                      <table className="buyepin-table">
+                      <table className="data-table">
                         <tbody>
                           {upiDetails.map((detail, idx) => (
                             <tr key={`upi-${idx}`}>
@@ -105,7 +105,7 @@ function BuyEPin() {
                   <div className="buyepin-payment-table-card">
                     <h3 className="buyepin-table-heading">Bank Account Details</h3>
                     <div className="buyepin-responsive-table">
-                      <table className="buyepin-table">
+                      <table className="data-table">
                         <tbody>
                           {bankDetails.map((detail, idx) => (
                             <tr key={`bank-${idx}`}>

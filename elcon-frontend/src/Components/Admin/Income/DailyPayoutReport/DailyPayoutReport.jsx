@@ -176,7 +176,7 @@ function DailyPayoutReport() {
         <body>
           <h2>Daily Payout Report</h2>
           <p>Total Entries: ${adminDailyPayoutData.length} | Generated on: ${new Date().toLocaleString('en-IN')}</p>
-          <table>
+          <table className="data-table">
             <thead>
               <tr>${exportColumns.map((col) => `<th>${col}</th>`).join('')}</tr>
             </thead>
@@ -247,8 +247,8 @@ function DailyPayoutReport() {
           <button type="button" className="btn-outline daily-payout-report-export-btn" onClick={handleExportPdf}>PDF</button>
         </div>
 
-        <div className="table-wrap daily-payout-report-table-wrap">
-          <table className="data-table daily-payout-report-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -298,14 +298,14 @@ function DailyPayoutReport() {
           </table>
         </div>
 
-        <div className="daily-payout-report-table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', gap: '15px', background: 'rgba(0, 229, 255, 0.05)', padding: '16px', border: '1px solid rgba(0, 229, 255, 0.2)', borderRadius: '12px' }}>
+        <div className="table-footer" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', gap: '15px', background: 'rgba(0, 229, 255, 0.05)', padding: '16px', border: '1px solid rgba(0, 229, 255, 0.2)', borderRadius: '12px' }}>
           <div style={{ fontWeight: '700', color: '#00e5ff', fontSize: '16px', letterSpacing: '0.5px' }}>
             <i className="fa-solid fa-chart-pie" style={{ marginRight: '8px' }}></i>
             Total Entries : {adminDailyPayoutData.length}
           </div>
-          <div className="daily-payout-report-pagination" style={{ margin: 0, display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-            <button className="daily-payout-report-page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
-            <button className="daily-payout-report-page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+          <div className="pagination" style={{ margin: 0, display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+            <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
+            <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
             {[...Array(totalPages)].map((_, i) => {
               const pageNum = i + 1;
               if (
@@ -317,7 +317,7 @@ function DailyPayoutReport() {
                 return (
                   <button
                     key={pageNum}
-                    className={`daily-payout-report-page-btn ${currentPage === pageNum ? 'daily-payout-report-active' : ''}`}
+                    className={`page-btn ${currentPage === pageNum ? 'daily-payout-report-active' : ''}`}
                     onClick={() => handlePageChange(pageNum)}
                   >
                     {pageNum}
@@ -331,8 +331,8 @@ function DailyPayoutReport() {
               }
               return null;
             })}
-            <button className="daily-payout-report-page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
-            <button className="daily-payout-report-page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
+            <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+            <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
           </div>
         </div>
       </section>

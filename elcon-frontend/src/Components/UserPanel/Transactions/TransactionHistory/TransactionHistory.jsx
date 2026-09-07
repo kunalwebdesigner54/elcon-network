@@ -156,10 +156,10 @@ function TransactionHistory() {
           <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
             Total Transactions : <span style={{ color: '#fff', fontWeight: 'bold' }}>{totalTransactions}</span>
           </div>
-          <div className="pagination-row" style={{ display: 'flex', gap: '5px' }}>
+          <div className="pagination" style={{ display: 'flex', gap: '5px' }}>
             <button className="page-btn">«</button>
             <button className="page-btn">‹</button>
-            <button className="page-btn active">1</button>
+            <button className="page-btn">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
             <button className="page-btn">4</button>

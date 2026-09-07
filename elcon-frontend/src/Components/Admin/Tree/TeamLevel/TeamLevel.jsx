@@ -65,7 +65,7 @@ function TeamLevel() {
           <span>Showing 1 to 1 of 1 entries</span>
           <div className="pagination">
             <button className="page-btn">Prev</button>
-            <button className="page-btn active">1</button>
+            <button className="page-btn">1</button>
             <button className="page-btn">Next</button>
           </div>
         </div>

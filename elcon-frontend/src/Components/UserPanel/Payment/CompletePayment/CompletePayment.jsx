@@ -152,7 +152,7 @@ const CompletePayment = () => {
               <h4 className="details-title">
                 {selectedPaymentMode === 'upi' ? 'UPI Details' : 'Bank Account Details'}
               </h4>
-              <table className="bank-details-table">
+              <table className="data-table">
                 <tbody>
                   {selectedPaymentMode === 'bank' && (
                     <>

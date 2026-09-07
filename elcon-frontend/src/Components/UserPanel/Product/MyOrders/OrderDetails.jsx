@@ -154,8 +154,8 @@ function OrderDetails() {
         </section>
 
         <section className="order-details-items-card">
-          <div className="order-details-table-wrap">
-            <table className="order-details-items-table">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>Item / Product Name</th>

@@ -239,7 +239,7 @@ function MemberDashboard() {
               </button>
             ))}
           </div>
-          <div className="user-dashboard1-member-dashboard-table-wrap">
+          <div className="table-wrap">
             <table className="data-table">
               <thead>
                 <tr>

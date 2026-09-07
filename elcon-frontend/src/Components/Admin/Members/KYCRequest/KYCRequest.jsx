@@ -183,7 +183,7 @@ function KYCRequest() {
         </head>
         <body>
           <h2>KYC List</h2>
-          <table>
+          <table className="data-table">
             <thead>
               <tr>${exportColumns.map((column) => `<th>${column}</th>`).join('')}</tr>
             </thead>

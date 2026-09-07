@@ -71,8 +71,8 @@ function AdminEpinFranchiseList() {
         </div>
       </div>
 
-      <div className="table-wrap admin-epin-franchise-table-wrap">
-        <table className="data-table admin-epin-franchise-table">
+      <div className="table-wrap">
+        <table className="data-table">
           <thead>
             <tr>
               <th>S.NO</th>

@@ -221,7 +221,7 @@ const ProductDetails = () => {
           </section>
 
           <section className="product-spec-card">
-            <table className="product-spec-table">
+            <table className="data-table">
               <tbody>
                 {details.map((detail) => (
                   <tr key={detail.label}>

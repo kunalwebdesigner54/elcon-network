@@ -5,7 +5,7 @@ import { getPlanSetting } from '../../../../api/managementService';
 const ColumnTable = ({title, rows}) => (
   <div className="ps-col">
     <div className="ps-col-head">{title}</div>
-    <table className="ps-table">
+    <table className="data-table">
       <thead><tr><th>LEVEL</th><th>AMOUNT</th></tr></thead>
       <tbody>
         {rows.map((r,i)=> <tr key={i}><td>{String(i+1).padStart(2,'0')}</td><td>{r}</td></tr>)}

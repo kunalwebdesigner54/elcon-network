@@ -207,8 +207,8 @@ function RejectedDeposits() {
           <button type="button" className="btn-outline tds-export-btn" aria-label="Export PDF">PDF</button>
         </div>
 
-        <div className="table-wrap tds-table-wrap">
-          <table className="data-table tds-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.no</th>

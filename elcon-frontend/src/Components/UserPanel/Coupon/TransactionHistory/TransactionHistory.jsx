@@ -34,7 +34,7 @@ function TransactionHistory() {
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         
         <div className="history-table-container">
-          <table className="history-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.No</th>

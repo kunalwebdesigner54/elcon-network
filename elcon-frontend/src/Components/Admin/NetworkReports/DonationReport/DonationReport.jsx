@@ -185,7 +185,7 @@ function DonationReport() {
         </head>
         <body>
           <h2>Donations Report</h2>
-          <table>
+          <table className="data-table">
             <thead>
               <tr>${exportColumns.map((column) => `<th>${column}</th>`).join('')}</tr>
             </thead>

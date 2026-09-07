@@ -94,7 +94,7 @@ function PaymentRequest() {
           <span>Showing 1 to {filteredRows.length} of {filteredRows.length} entries</span>
           <div className="pagination">
             <button className="page-btn">Prev</button>
-            <button className="page-btn active">1</button>
+            <button className="page-btn">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
             <button className="page-btn">4</button>

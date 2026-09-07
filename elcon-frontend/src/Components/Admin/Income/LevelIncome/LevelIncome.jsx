@@ -84,8 +84,8 @@ function LevelIncome() {
           <button type="button" className="btn-outline tds-export-btn">PDF</button>
         </div>
 
-        <div className="table-wrap tds-table-wrap">
-          <table className="data-table tds-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -135,7 +135,7 @@ function LevelIncome() {
           <div className="pagination">
             <button className="page-btn">&laquo;</button>
             <button className="page-btn">&lsaquo;</button>
-            <button className="page-btn active">1</button>
+            <button className="page-btn">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
             <button className="page-btn">4</button>

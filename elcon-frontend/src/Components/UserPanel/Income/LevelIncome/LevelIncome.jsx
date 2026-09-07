@@ -93,8 +93,8 @@ function LevelIncome() {
     let endPage = Math.min(totalPages, currentPage + 2);
     
     if (startPage > 1) {
-      pages.push(<button key="1" type="button" onClick={() => setCurrentPage(1)} className="level-income-page-btn">1</button>);
-      if (startPage > 2) pages.push(<span key="dots1" className="level-income-page-btn">...</span>);
+      pages.push(<button key="1" type="button" onClick={() => setCurrentPage(1)} className="page-btn">1</button>);
+      if (startPage > 2) pages.push(<span key="dots1" className="page-btn">...</span>);
     }
     
     for (let i = startPage; i <= endPage; i++) {
@@ -103,7 +103,7 @@ function LevelIncome() {
           key={i} 
           type="button"
           onClick={() => setCurrentPage(i)} 
-          className={`level-income-page-btn ${currentPage === i ? 'level-income-page-btn-active' : ''}`}
+          className={`page-btn-active' : ''}`}
         >
           {i}
         </button>
@@ -111,8 +111,8 @@ function LevelIncome() {
     }
     
     if (endPage < totalPages) {
-      if (endPage < totalPages - 1) pages.push(<span key="dots2" className="level-income-page-btn">...</span>);
-      pages.push(<button key={totalPages} type="button" onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">{totalPages}</button>);
+      if (endPage < totalPages - 1) pages.push(<span key="dots2" className="page-btn">...</span>);
+      pages.push(<button key={totalPages} type="button" onClick={() => setCurrentPage(totalPages)} className="page-btn">{totalPages}</button>);
     }
     
     return pages;
@@ -195,12 +195,12 @@ function LevelIncome() {
           </table>
         </div>
 
-        <div className="level-income-pagination" aria-label="Pagination">
-          <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage(1)} className="level-income-page-btn">«</button>
-          <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="level-income-page-btn">‹</button>
+        <div className="pagination" aria-label="Pagination">
+          <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage(1)} className="page-btn">«</button>
+          <button type="button" disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="page-btn">‹</button>
           {renderPagination()}
-          <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="level-income-page-btn">›</button>
-          <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">»</button>
+          <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="page-btn">›</button>
+          <button type="button" disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)} className="page-btn">»</button>
         </div>
       </div>
     </div>

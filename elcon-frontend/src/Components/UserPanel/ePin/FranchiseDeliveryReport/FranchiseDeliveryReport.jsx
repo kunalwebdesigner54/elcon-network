@@ -96,7 +96,7 @@ function FranchiseDeliveryReport() {
         </div>
 
         <div className="history-table-container">
-          <table className="history-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.No</th>

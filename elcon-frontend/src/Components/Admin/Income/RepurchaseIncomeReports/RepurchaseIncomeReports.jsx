@@ -105,8 +105,8 @@ function RepurchaseIncomeReports() {
     let endPage = Math.min(totalPages, currentPage + 2);
 
     if (startPage > 1) {
-      pages.push(<button key="1" onClick={() => setCurrentPage(1)} className="level-income-page-btn">1</button>);
-      if (startPage > 2) pages.push(<span key="dots1" className="level-income-page-btn">...</span>);
+      pages.push(<button key="1" onClick={() => setCurrentPage(1)} className="page-btn">1</button>);
+      if (startPage > 2) pages.push(<span key="dots1" className="page-btn">...</span>);
     }
 
     for (let i = startPage; i <= endPage; i++) {
@@ -114,7 +114,7 @@ function RepurchaseIncomeReports() {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`level-income-page-btn ${currentPage === i ? 'level-income-active' : ''}`}
+          className={`page-btn ${currentPage === i ? 'level-income-active' : ''}`}
         >
           {i}
         </button>
@@ -122,8 +122,8 @@ function RepurchaseIncomeReports() {
     }
 
     if (endPage < totalPages) {
-      if (endPage < totalPages - 1) pages.push(<span key="dots2" className="level-income-page-btn">...</span>);
-      pages.push(<button key={totalPages} onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">{totalPages}</button>);
+      if (endPage < totalPages - 1) pages.push(<span key="dots2" className="page-btn">...</span>);
+      pages.push(<button key={totalPages} onClick={() => setCurrentPage(totalPages)} className="page-btn">{totalPages}</button>);
     }
 
     return pages;
@@ -158,8 +158,8 @@ function RepurchaseIncomeReports() {
           <button type="button" className="btn-outline level-income-export-btn">PDF</button>
         </div>
 
-        <div className="table-wrap level-income-table-wrap">
-          <table className="data-table level-income-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -211,13 +211,13 @@ function RepurchaseIncomeReports() {
           </table>
         </div>
 
-        <div className="level-income-table-footer">
-          <div className="level-income-pagination">
-            <button disabled={currentPage === 1} onClick={() => setCurrentPage(1)} className="level-income-page-btn">«</button>
-            <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="level-income-page-btn">‹</button>
+        <div className="table-footer">
+          <div className="pagination">
+            <button disabled={currentPage === 1} onClick={() => setCurrentPage(1)} className="page-btn">«</button>
+            <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="page-btn">‹</button>
             {renderPagination()}
-            <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="level-income-page-btn">›</button>
-            <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)} className="level-income-page-btn">»</button>
+            <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="page-btn">›</button>
+            <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)} className="page-btn">»</button>
           </div>
         </div>
       </section>

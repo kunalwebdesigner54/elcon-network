@@ -134,7 +134,7 @@ function AllMemberPerformance() {
         </head>
         <body>
           <h2>All Member Performance</h2>
-          <table>
+          <table className="data-table">
             <thead>
               <tr>${exportColumns.map((column) => `<th>${column}</th>`).join('')}</tr>
             </thead>
@@ -257,7 +257,7 @@ function AllMemberPerformance() {
           <div className="pagination">
             <button className="page-btn">&laquo;</button>
             <button className="page-btn">&lsaquo;</button>
-            <button className="page-btn active">1</button>
+            <button className="page-btn">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
             <button className="page-btn">4</button>

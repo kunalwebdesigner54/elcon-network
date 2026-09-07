@@ -165,9 +165,9 @@ function UserMyRank() {
           </button>
         </div>
 
-        <div className="user-rank-table-wrap">
+        <div className="table-wrap">
           
-          <table className="user-rank-data-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -205,14 +205,14 @@ function UserMyRank() {
           </table>
         </div>
 
-        <div className="user-rank-table-footer">
+        <div className="table-footer">
           <span>Showing Page 1 of 1 From {filteredData.length} Rows</span>
-          <div className="user-rank-pagination">
-            <button className="user-rank-page-btn">&lt;&lt;</button>
-            <button className="user-rank-page-btn">&lt;</button>
-            <button className="user-rank-page-btn active">1</button>
-            <button className="user-rank-page-btn">&gt;</button>
-            <button className="user-rank-page-btn">&gt;&gt;</button>
+          <div className="pagination">
+            <button className="page-btn">&lt;&lt;</button>
+            <button className="page-btn">&lt;</button>
+            <button className="page-btn">1</button>
+            <button className="page-btn">&gt;</button>
+            <button className="page-btn">&gt;&gt;</button>
           </div>
         </div>
         

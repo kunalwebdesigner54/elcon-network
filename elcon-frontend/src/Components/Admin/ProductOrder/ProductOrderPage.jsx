@@ -113,8 +113,8 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
           <button type="button" className="btn-outline admin-product-order-export-btn" style={{ minWidth: '72px', padding: '6px 12px', fontSize: '13px', fontWeight: '600', border: '1px solid var(--primary)', color: 'var(--primary)', borderRadius: '6px', background: 'transparent', cursor: 'pointer' }}>PDF</button>
         </div>
 
-        <div className="admin-product-order-table-wrapper">
-          <table className="admin-product-order-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S. No</th>
@@ -167,17 +167,17 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
           </table>
         </div>
 
-        <div className="admin-product-order-table-footer">
+        <div className="table-footer">
           <div>Showing {paginatedOrders.length > 0 ? startIndex + 1 : 0} to {Math.min(startIndex + limit, filteredOrders.length)} of {filteredOrders.length} entries</div>
-          <div className="admin-product-order-pagination">
-            <button type="button" className="admin-product-order-page-btn" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={safePage === 1}>❮</button>
-            <button type="button" className="admin-product-order-page-btn" onClick={() => setCurrentPage(1)} disabled={safePage === 1}>⟨⟨</button>
+          <div className="pagination">
+            <button type="button" className="page-btn" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={safePage === 1}>❮</button>
+            <button type="button" className="page-btn" onClick={() => setCurrentPage(1)} disabled={safePage === 1}>⟨⟨</button>
             {Array.from({ length: Math.min(7, totalFilteredPages) }, (_, index) => {
               const page = index + 1;
-              return <button key={page} type="button" className={`admin-product-order-page-btn ${safePage === page ? 'active' : ''}`} onClick={() => setCurrentPage(page)}>{page}</button>;
+              return <button key={page} type="button" className={`page-btn ${safePage === page ? 'active' : ''}`} onClick={() => setCurrentPage(page)}>{page}</button>;
             })}
-            <button type="button" className="admin-product-order-page-btn" onClick={() => setCurrentPage(totalFilteredPages)} disabled={safePage === totalFilteredPages}>⟩⟩</button>
-            <button type="button" className="admin-product-order-page-btn" onClick={() => setCurrentPage((page) => Math.min(totalFilteredPages, page + 1))} disabled={safePage === totalFilteredPages}>❯</button>
+            <button type="button" className="page-btn" onClick={() => setCurrentPage(totalFilteredPages)} disabled={safePage === totalFilteredPages}>⟩⟩</button>
+            <button type="button" className="page-btn" onClick={() => setCurrentPage((page) => Math.min(totalFilteredPages, page + 1))} disabled={safePage === totalFilteredPages}>❯</button>
           </div>
         </div>
       </section>

@@ -105,7 +105,7 @@ function AdminProductFranchise() {
           <p>Loading stocks...</p>
         ) : (
           <div className="table-responsive">
-            <table className="admin-product-franchise-table">
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>Franchise ID</th>

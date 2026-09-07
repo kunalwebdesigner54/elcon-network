@@ -16,7 +16,7 @@ function HelpingProcess() {
 
             <div className="helping-board">
               <h3>Give Help By You</h3>
-              <table className="beautiful-table">
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th>Help Amount</th>
@@ -37,7 +37,7 @@ function HelpingProcess() {
 
             <div className="helping-board">
               <h3>Help For You By System</h3>
-              <table className="beautiful-table">
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th>Total Member</th>

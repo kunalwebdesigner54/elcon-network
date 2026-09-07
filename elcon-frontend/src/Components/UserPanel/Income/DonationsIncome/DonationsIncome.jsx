@@ -143,8 +143,8 @@ function DonationsIncome() {
               Total: {filteredRows.length} requests
             </span>
             <div className="pagination" style={{ display: 'flex', gap: '6px' }}>
-              <button type="button" className="user-page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
-              <button type="button" className="user-page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
+              <button type="button" className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
+              <button type="button" className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
               
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let start = Math.max(1, page - 2);
@@ -156,7 +156,7 @@ function DonationsIncome() {
                   <button 
                     key={pageNum} 
                     type="button"
-                    className={`user-page-btn ${page === pageNum ? 'active' : ''}`}
+                    className={`page-btn ${page === pageNum ? 'active' : ''}`}
                     onClick={() => setPage(pageNum)}
                   >
                     {pageNum}
@@ -164,8 +164,8 @@ function DonationsIncome() {
                 );
               })}
               
-              <button type="button" className="user-page-btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0}>&rsaquo;</button>
-              <button type="button" className="user-page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages || totalPages === 0}>&raquo;</button>
+              <button type="button" className="page-btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0}>&rsaquo;</button>
+              <button type="button" className="page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages || totalPages === 0}>&raquo;</button>
             </div>
           </div>
           </>

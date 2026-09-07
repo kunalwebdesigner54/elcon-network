@@ -117,8 +117,8 @@ function TransactionHistory() {
           <button type="button" className="btn-outline admintransactionhistory-export-btn">PDF</button>
         </div>
 
-        <div className="table-wrap admintransactionhistory-table-wrap">
-          <table className="data-table admintransactionhistory-table">
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -162,9 +162,9 @@ function TransactionHistory() {
           <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
             Total Transactions : <span style={{ color: '#fff', fontWeight: 'bold' }}>{totalTransactions}</span>
           </div>
-          <div className="admintransactionhistory-pagination" style={{ display: 'flex', gap: '5px' }}>
-            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
-            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+          <div className="pagination" style={{ display: 'flex', gap: '5px' }}>
+            <button type="button" className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
+            <button type="button" className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
             {[...Array(totalPages)].map((_, i) => {
               const pageNum = i + 1;
               if (
@@ -177,7 +177,7 @@ function TransactionHistory() {
                   <button 
                     key={pageNum} 
                     type="button"
-                    className={`admintransactionhistory-page-btn ${currentPage === pageNum ? 'admintransactionhistory-active' : ''}`}
+                    className={`page-btn ${currentPage === pageNum ? 'admintransactionhistory-active' : ''}`}
                     onClick={() => handlePageChange(pageNum)}
                   >
                     {pageNum}
@@ -191,8 +191,8 @@ function TransactionHistory() {
               }
               return null;
             })}
-            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
-            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
+            <button type="button" className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+            <button type="button" className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
           </div>
         </div>
       </section>
