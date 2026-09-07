@@ -207,14 +207,17 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                     <td>{row.usedDate || row.transferDate || '-'}</td>
                     {showActions && (
                       <td>
-                        <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                           {row.status === 'Unused' && (
-                            <button type="button" style={{ background: '#e74c3c', color: 'white', padding: '4px 8px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }} onClick={() => handleAction(row.epin, 'block')}>Block</button>
+                            <button className="action-btn reject-btn" type="button" title="Block" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleAction(row.epin, 'block')}>
+                              Block
+                            </button>
                           )}
                           {row.status === 'Blocked' && (
-                            <button type="button" style={{ background: '#27ae60', color: 'white', padding: '4px 8px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }} onClick={() => handleAction(row.epin, 'unblock')}>Unblock</button>
+                            <button className="action-btn accept-btn" type="button" title="Unblock" style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleAction(row.epin, 'unblock')}>
+                              Unblock
+                            </button>
                           )}
-                          {/* <button type="button" className="epin-delete-btn" onClick={() => handleAction(row.epin, 'delete')}>x</button> */}
                         </div>
                       </td>
                     )}
