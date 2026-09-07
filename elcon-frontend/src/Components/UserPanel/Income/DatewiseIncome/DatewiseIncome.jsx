@@ -22,18 +22,25 @@ function DatewiseIncome() {
   const datewiseIncomeData = useMemo(() => {
     return rows
       .sort((left, right) => new Date(right.dateRaw || right.incomeDate).getTime() - new Date(left.dateRaw || left.incomeDate).getTime())
-      .map((row, index) => ({
-        sNo: index + 1,
-        incomeDate: row.incomeDate,
-        dateRaw: row.dateRaw,
-        memberId: row.memberId || currentUser.memberId,
-        memberName: row.memberName || currentUser.name || '---',
-        totalIds: Number(row.totalIds || 0),
-        levelIncome: Number(row.levelIncome || 0),
-        totalBvPoint: Number(row.totalBvPoint || 0),
-        repurchaseIncome: Number(row.repurchaseIncome || 0),
-        dailyIncome: Number(row.dailyIncome || 0),
-      }));
+      .map((row, index) => {
+        const totalIds = Number(row.totalIds || 0);
+        const levelIncome = totalIds * 20;
+        const repurchaseIncome = Number(row.repurchaseIncome || 0);
+        const dailyIncome = levelIncome + repurchaseIncome;
+
+        return {
+          sNo: index + 1,
+          incomeDate: row.incomeDate,
+          dateRaw: row.dateRaw,
+          memberId: row.memberId || currentUser.memberId,
+          memberName: row.memberName || currentUser.name || '---',
+          totalIds,
+          levelIncome,
+          totalBvPoint: Number(row.totalBvPoint || 0),
+          repurchaseIncome,
+          dailyIncome,
+        };
+      });
   }, [rows, currentUser.memberId, currentUser.name]);
 
   const indexOfLastItem = currentPage * Number(pageSize);

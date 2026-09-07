@@ -102,18 +102,25 @@ function DatewiseIncome() {
       });
     }
 
-    return filteredRows.map((row) => ({
-      sNo: row.sNo,
-      incomeDate: row.joinDate,
-      memberId: row.memberId,
-      memberName: row.memberName,
-      directs: row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
-      totalIds: row.totalTeamCount,
-      levelIncome: Number(row.levelIncome || 0),
-      totalBvPoint: Number(row.totalTeamCount || 0) * 100,
-      repurchaseIncome: Number(row.repurchaseIncome || 0),
-      dailyIncome: Number(row.totalIncome || 0),
-    }));
+    return filteredRows.map((row) => {
+      const totalIds = row.totalTeamCount || 0;
+      const levelIncome = totalIds * 20;
+      const repurchaseIncome = Number(row.repurchaseIncome || 0);
+      const dailyIncome = levelIncome + repurchaseIncome;
+
+      return {
+        sNo: row.sNo,
+        incomeDate: row.joinDate,
+        memberId: row.memberId,
+        memberName: row.memberName,
+        directs: row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
+        totalIds,
+        levelIncome,
+        totalBvPoint: totalIds * 100,
+        repurchaseIncome,
+        dailyIncome,
+      };
+    });
   }, [rows, appliedFilters]);
 
   const indexOfLastItem = currentPage * Number(pageSize);
