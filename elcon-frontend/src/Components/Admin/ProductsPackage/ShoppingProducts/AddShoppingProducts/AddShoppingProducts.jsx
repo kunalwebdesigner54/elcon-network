@@ -167,12 +167,19 @@ function AddShoppingProducts() {
             <div className="admin-add-product-table" role="group" aria-label="basic-product-details">
               <label className="admin-add-product-row">
                 <span>Category</span>
-                <select name="category" defaultValue={product?.category || "Electronics"}>
-                  <option value="Healthcare">Healthcare</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Mens Fashion">Mens Fashion</option>
-                  <option value="Electronics Appliances">Electronics Appliances</option>
-                </select>
+                <input 
+                  name="category" 
+                  list="category-options" 
+                  defaultValue={product?.category || ""} 
+                  placeholder="Select or type new category"
+                  required
+                />
+                <datalist id="category-options">
+                  <option value="Healthcare" />
+                  <option value="Electronics" />
+                  <option value="Mens Fashion" />
+                  <option value="Electronics Appliances" />
+                </datalist>
               </label>
               <label className="admin-add-product-row">
                 <span>Product Name</span>

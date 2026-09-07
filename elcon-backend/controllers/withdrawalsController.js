@@ -42,50 +42,7 @@ const toApiRow = (request, index) => ({
   upiId: request.upiId,
   bankAccountNo: request.bankAccountNo,
   bankName: request.bankName,
-const WithdrawalRequest = require('../models/WithdrawalRequest');
-const User = require('../models/User');
-const WalletTransaction = require('../models/WalletTransaction');
-const { createWalletTransaction } = require('../utils/walletHelper');
 
-const buildRequestId = async () => {
-  let requestId = '';
-  let isUnique = false;
-
-  while (!isUnique) {
-    const suffix = Math.floor(100000 + Math.random() * 900000);
-    requestId = `WDR${suffix}`;
-    const existing = await WithdrawalRequest.findOne({ requestId });
-    if (!existing) {
-      isUnique = true;
-    }
-  }
-
-  return requestId;
-};
-
-const formatDateTime = (value) => {
-  const date = value || new Date();
-
-  return new Date(date).toLocaleString('en-IN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  });
-};
-
-const toApiRow = (request, index) => ({
-  sNo: index + 1,
-  requestDate: request.requestDate,
-  requestId: request.requestId,
-  memberId: request.memberId,
-  memberName: request.memberName,
-  mobileNo: request.mobileNo,
-  upiId: request.upiId,
-  bankAccountNo: request.bankAccountNo,
-  bankName: request.bankName,
   branch: request.branch,
   ifscCode: request.ifscCode,
   amount: Number(request.amount || 0),
@@ -234,4 +191,121 @@ exports.createWithdrawalRequest = async (req, res) => {
     }
 
     res.status(201).json({ success: true, request: toApiRow(request, 0) });
+  } catch (error) {
+    console.error('Create withdrawal error:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+exports.getWithdrawalRequests = async (req, res) => {
+  try {
+    const status = String(req.query.status || '').trim();
+    const filter = {};
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (req.user.role !== 'admin') {
+      filter.userId = req.user.id;
+    }
+
+    const requests = await WithdrawalRequest.find(filter).sort({ createdAt: -1 });
+    const rows = requests.map((request, index) => toApiRow(request, index));
+
+    res.status(200).json({ success: true, data: rows });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getWithdrawalSummary = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const requests = await WithdrawalRequest.find({ userId: req.user.id }).sort({ createdAt: -1 });
+
+    const totalWithdrawal = requests.reduce((sum, request) => sum + (request.status === 'Reject' ? 0 : Number(request.netAmount || 0)), 0);
+    const walletBalance = Number(user?.walletBalance || 0);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        eWalletBalance: walletBalance,
+        rWalletBalance: 0,
+        totalEarning: walletBalance + totalWithdrawal,
+        totalWithdrawal,
+        requests: requests.map((request, index) => toApiRow(request, index)),
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.updateWithdrawalStatus = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const { status, remark, transactionPassword, adminTransactionId } = req.body;
+
+    if (!['Pending', 'Approve', 'Reject', 'Succeed'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid withdrawal status' });
+    }
+
+    const request = await WithdrawalRequest.findOne({ requestId });
+    if (!request) {
+      return res.status(404).json({ success: false, message: 'Withdrawal request not found' });
+    }
+
+    if (status === 'Succeed') {
+      if (request.status !== 'Approve') {
+        return res.status(400).json({ success: false, message: 'Only approved withdrawals can be completed' });
+      }
+
+      const confirmedTransactionId = String(adminTransactionId || '').trim().toUpperCase();
+      if (!confirmedTransactionId) {
+        return res.status(400).json({ success: false, message: 'Admin transaction ID is required to complete a withdrawal' });
+      }
+
+      const password = String(transactionPassword || '').trim();
+      if (!password) {
+        return res.status(400).json({ success: false, message: 'Admin transaction password is required to succeed a withdrawal' });
+      }
+
+      const adminUser = await User.findById(req.user.id).select('+password +transactionPassword');
+      if (!adminUser) {
+        return res.status(401).json({ success: false, message: 'Admin account not found' });
+      }
+
+      let isPasswordValid = false;
+      if (adminUser.transactionPassword) {
+        isPasswordValid = await adminUser.matchTransactionPassword(password);
+      }
+      if (!isPasswordValid) {
+        isPasswordValid = await adminUser.matchPassword(password);
+      }
+
+      if (!isPasswordValid) {
+        return res.status(401).json({ success: false, message: 'Admin transaction password is incorrect' });
+      }
+
+      const existingTransaction = await WithdrawalRequest.findOne({ adminTransactionId: confirmedTransactionId, _id: { $ne: request._id } }).select('_id');
+      if (existingTransaction) {
+        return res.status(409).json({ success: false, message: 'This transaction ID has already been used' });
+      }
+
+      request.adminTransactionId = confirmedTransactionId;
+    }
+
+    await adjustWalletOnStatusChange(request, status);
+
+    request.status = status;
+    request.remark = remark || request.remark || '-';
+    request.approvedAt = new Date();
+    request.reviewedBy = req.user.id;
+    await request.save();
+
+    res.status(200).json({ success: true, data: toApiRow(request, 0) });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };

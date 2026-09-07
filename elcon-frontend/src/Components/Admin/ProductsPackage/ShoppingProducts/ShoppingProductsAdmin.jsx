@@ -1,6 +1,6 @@
 import '../../Common/AdminLayout.css';
 import './ShoppingProductsAdmin.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from '../../../../api/productsService';
 import { resolveProductImage } from '../../../UserPanel/Product/productImages';
@@ -8,6 +8,21 @@ import { resolveProductImage } from '../../../UserPanel/Product/productImages';
 function ShoppingProductsAdmin() {
   const navigate = useNavigate();
   const [shoppingRows, setShoppingRows] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState({
+    name: '',
+    category: '',
+    hsnCode: '',
+    status: '',
+    limit: '100'
+  });
+  const [appliedFilters, setAppliedFilters] = useState({
+    name: '',
+    category: '',
+    hsnCode: '',
+    status: '',
+    limit: '100'
+  });
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -68,27 +83,57 @@ function ShoppingProductsAdmin() {
     }
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearch = () => {
+    setAppliedFilters(filters);
+    setCurrentPage(1);
+  };
+
+  const filteredRows = useMemo(() => {
+    return shoppingRows.filter(row => {
+      const matchName = !appliedFilters.name || row.productName?.toLowerCase().includes(appliedFilters.name.toLowerCase());
+      const matchCategory = !appliedFilters.category || row.category?.toLowerCase().includes(appliedFilters.category.toLowerCase());
+      const matchHsn = !appliedFilters.hsnCode || row.hsnCode?.toLowerCase().includes(appliedFilters.hsnCode.toLowerCase());
+      const matchStatus = !appliedFilters.status || appliedFilters.status === 'status' || (row.status || 'SHOWING').toUpperCase() === appliedFilters.status.toUpperCase();
+      return matchName && matchCategory && matchHsn && matchStatus;
+    });
+  }, [shoppingRows, appliedFilters]);
+
+  const limit = Number(appliedFilters.limit) || 100;
+  const totalPages = Math.ceil(filteredRows.length / limit) || 1;
+  const visibleRows = filteredRows.slice((currentPage - 1) * limit, currentPage * limit);
+
+  const goToPage = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <div>
       <section className="panel admin-products-panel">
         <h2 className="section-title admin-products-section-title">SHOPPING PRODUCTS</h2>
 
         <div className="admin-products-filter-row">
-          <input className="text-input admin-products-input admin-products-input-name" placeholder="PRODUCT NAME" />
-          <input className="text-input admin-products-input admin-products-input-category" placeholder="CATEGORY" />
-          <input className="text-input admin-products-input admin-products-input-hsn" placeholder="HSN/CODE" />
-          <select className="select-input admin-products-input admin-products-input-status" defaultValue="status">
+          <input name="name" value={filters.name} onChange={handleFilterChange} className="text-input admin-products-input admin-products-input-name" placeholder="PRODUCT NAME" />
+          <input name="category" value={filters.category} onChange={handleFilterChange} className="text-input admin-products-input admin-products-input-category" placeholder="CATEGORY" />
+          <input name="hsnCode" value={filters.hsnCode} onChange={handleFilterChange} className="text-input admin-products-input admin-products-input-hsn" placeholder="HSN/CODE" />
+          <select name="status" value={filters.status} onChange={handleFilterChange} className="select-input admin-products-input admin-products-input-status">
             <option value="status">STATUS</option>
             <option value="showing">SHOWING</option>
-            <option value="hiden">HIDEN</option>
+            <option value="hidden">HIDDEN</option>
           </select>
-          <select className="select-input admin-products-input admin-products-input-limit" defaultValue="100">
+          <select name="limit" value={filters.limit} onChange={handleFilterChange} className="select-input admin-products-input admin-products-input-limit">
             <option value="100">100</option>
             <option value="50">50</option>
             <option value="10">10</option>
           </select>
           <div className="admin-products-filter-actions">
-            <button type="button" className="btn-primary admin-products-search-btn">
+            <button type="button" className="btn-primary admin-products-search-btn" onClick={handleSearch}>
               Search
             </button>
               <button
@@ -131,9 +176,9 @@ function ShoppingProductsAdmin() {
               </tr>
             </thead>
             <tbody>
-              {shoppingRows.map((row, index) => (
-                <tr key={row.id || row.productCode}>
-                  <td>{index + 1}</td>
+              {visibleRows.length > 0 ? visibleRows.map((row, index) => (
+                <tr key={row.id || row.productCode || index}>
+                  <td>{(currentPage - 1) * limit + index + 1}</td>
                   <td>{row.productCode && row.productCode.toUpperCase()}</td>
                   <td>{row.productName}</td>
                   <td>
@@ -146,7 +191,7 @@ function ShoppingProductsAdmin() {
                   <td>{row.discount}</td>
                   <td>{row.gst}</td>
                   <td>{row.shipping}</td>
-                  <td>{row.levelPlan}</td>
+                  <td>{row.levelPlan || row.levelPoint}</td>
                   <td>{row.quantity}</td>
                   <td>
                       <div className="kyc-action-group" style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
@@ -167,18 +212,29 @@ function ShoppingProductsAdmin() {
                   </td>
                   <td>{row.status}</td>
                 </tr>
-              ))}
+              )) : (
+                <tr>
+                  <td colSpan="15" style={{ textAlign: 'center' }}>No products found</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         <div className="table-footer">
           <div className="pagination">
-            <button className="page-btn">&lsaquo;</button>
-            <button className="page-btn">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">&rsaquo;</button>
+            <button className="page-btn" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>&lsaquo;</button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button 
+                key={page} 
+                className={`page-btn ${currentPage === page ? 'active' : ''}`} 
+                onClick={() => goToPage(page)}
+                style={currentPage === page ? { background: 'var(--accent-primary)', color: 'white' } : {}}
+              >
+                {page}
+              </button>
+            ))}
+            <button className="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>&rsaquo;</button>
           </div>
         </div>
       </section>
