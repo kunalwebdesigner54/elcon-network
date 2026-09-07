@@ -284,7 +284,7 @@ exports.submitDonation = async (req, res) => {
 exports.updateDonationStatus = async (req, res) => {
   try {
     const { donationId } = req.params;
-    const { status, remark } = req.body;
+    const { status, remark, utrNumber } = req.body;
 
     if (!['APPROVED', 'COMPLETED', 'REJECTED'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Status must be APPROVED or REJECTED' });
@@ -342,6 +342,9 @@ exports.updateDonationStatus = async (req, res) => {
 
     donation.status = status;
     donation.remark = remark || donation.remark;
+    if (utrNumber) {
+      donation.utrNumber = utrNumber;
+    }
     donation.reviewedBy = req.user.id;
     donation.reviewedAt = new Date();
     await donation.save();

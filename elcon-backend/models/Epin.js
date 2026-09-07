@@ -7,7 +7,7 @@ const epinSchema = new mongoose.Schema(
     cost: { type: Number, required: true, default: 0 },
     generatedBy: { type: String, required: true, trim: true },
     currentOwner: { type: String, required: true, trim: true },
-    status: { type: String, enum: ['Unused', 'Used', 'Deleted'], default: 'Unused' },
+    status: { type: String, enum: ['Unused', 'Used', 'Deleted', 'Blocked'], default: 'Unused' },
     usedBy: { type: String, default: '-', trim: true },
     usedDate: { type: String, default: '-', trim: true },
     deletedBy: { type: String, default: '-', trim: true },

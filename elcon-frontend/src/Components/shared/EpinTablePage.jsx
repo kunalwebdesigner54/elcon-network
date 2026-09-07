@@ -5,6 +5,7 @@ import { getEpinList, updateEpinStatus, transferEpin, getEpinTransferHistory } f
 const statusClass = (status) => {
   if (status === 'Used') return 'epin-chip-used';
   if (status === 'Deleted') return 'epin-chip-deleted';
+  if (status === 'Blocked') return 'epin-chip-deleted'; // Reuse deleted class or add a new one if available. Let's reuse deleted (usually red).
   return 'epin-chip-unused';
 };
 
@@ -113,6 +114,12 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
     if (action === 'delete') {
       await updateEpinStatus(epinNo, { status: 'Deleted' });
     }
+    if (action === 'block') {
+      await updateEpinStatus(epinNo, { status: 'Blocked' });
+    }
+    if (action === 'unblock') {
+      await updateEpinStatus(epinNo, { status: 'Unused' });
+    }
     if (action === 'use') {
       await updateEpinStatus(epinNo, { status: 'Used', usedBy: 'MEMBER', usedDate: new Date().toLocaleString('en-IN') });
     }
@@ -200,7 +207,15 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                     <td>{row.usedDate || row.transferDate || '-'}</td>
                     {showActions && (
                       <td>
-                        <button type="button" className="epin-delete-btn" onClick={() => handleAction(row.epin, 'delete')}>x</button>
+                        <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+                          {row.status === 'Unused' && (
+                            <button type="button" style={{ background: '#e74c3c', color: 'white', padding: '4px 8px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }} onClick={() => handleAction(row.epin, 'block')}>Block</button>
+                          )}
+                          {row.status === 'Blocked' && (
+                            <button type="button" style={{ background: '#27ae60', color: 'white', padding: '4px 8px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }} onClick={() => handleAction(row.epin, 'unblock')}>Unblock</button>
+                          )}
+                          {/* <button type="button" className="epin-delete-btn" onClick={() => handleAction(row.epin, 'delete')}>x</button> */}
+                        </div>
                       </td>
                     )}
                   </tr>

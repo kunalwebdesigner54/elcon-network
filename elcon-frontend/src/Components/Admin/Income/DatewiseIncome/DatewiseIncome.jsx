@@ -139,6 +139,13 @@ function DatewiseIncome() {
   const totalIdsSum = visibleRows.reduce((sum, row) => sum + Number(row.totalIds || 0), 0);
   const totalDirectsSum = visibleRows.reduce((sum, row) => sum + Number(row.directs || 0), 0);
 
+  const allTotalLevelIncome = adminDatewiseIncomeData.reduce((sum, row) => sum + Number(row.levelIncome || 0), 0);
+  const allTotalBvPoint = adminDatewiseIncomeData.reduce((sum, row) => sum + Number(row.totalBvPoint || 0), 0);
+  const allTotalRepurchaseIncome = adminDatewiseIncomeData.reduce((sum, row) => sum + Number(row.repurchaseIncome || 0), 0);
+  const allTotalAmount = adminDatewiseIncomeData.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
+  const allTotalIdsSum = adminDatewiseIncomeData.reduce((sum, row) => sum + Number(row.totalIds || 0), 0);
+  const allTotalDirectsSum = adminDatewiseIncomeData.reduce((sum, row) => sum + Number(row.directs || 0), 0);
+
   return (
     <div className="datewise-income-report-page">
       <h2 className="datewise-income-screen-title">Datewise Income</h2>
@@ -247,6 +254,15 @@ function DatewiseIncome() {
                     <td style={{ fontWeight: 700 }}>{totalBvPoint}</td>
                     <td style={{ fontWeight: 700 }}>{totalRepurchaseIncome.toFixed(2)}</td>
                     <td style={{ fontWeight: 700 }}>{totalAmount.toFixed(2)}</td>
+                  </tr>
+                  <tr className="datewise-income-summary-row" style={{ color: '#a0aec0' }}>
+                    <td colSpan="4" style={{ textAlign: 'right', fontWeight: 700 }}>ALL TOTAL</td>
+                    <td style={{ fontWeight: 700 }}>{allTotalDirectsSum}</td>
+                    <td style={{ fontWeight: 700 }}>{allTotalIdsSum}</td>
+                    <td style={{ fontWeight: 700 }}>{allTotalLevelIncome.toFixed(2)}</td>
+                    <td style={{ fontWeight: 700 }}>{allTotalBvPoint}</td>
+                    <td style={{ fontWeight: 700 }}>{allTotalRepurchaseIncome.toFixed(2)}</td>
+                    <td style={{ fontWeight: 700 }}>{allTotalAmount.toFixed(2)}</td>
                   </tr>
                 </>
               )}

@@ -31,9 +31,9 @@ export const getAllDonations = (params = {}) =>
   apiClient.get('/donations', { params }).then((r) => r.data);
 
 // Admin: approve or reject a pending donation
-export const updateDonationStatus = (donationId, status, remark = '') =>
+export const updateDonationStatus = (donationId, status, remark = '', utrNumber = '') =>
   apiClient
-    .patch(`/donations/${donationId}/status`, { status, remark })
+    .patch(`/donations/${donationId}/status`, { status, remark, utrNumber })
     .then((r) => r.data);
 
 // Team tree for logged-in user (or any member for admin via ?memberId=)

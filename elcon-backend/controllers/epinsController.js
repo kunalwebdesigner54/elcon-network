@@ -5,6 +5,7 @@ const EpinRequest = require('../models/EpinRequest');
 const EpinTransfer = require('../models/EpinTransfer');
 const EpinFranchise = require('../models/EpinFranchise');
 const EpinPackage = require('../models/EpinPackage');
+const crypto = require('crypto');
 
 const getUserIdentifiers = (req) => [req.user?.memberId, req.user?.epin, req.user?.id]
   .map((value) => String(value || '').trim())
@@ -152,7 +153,8 @@ exports.updateEpinRequestStatus = async (req, res) => {
         let epinNo = '';
         let exists = true;
         while (exists) {
-          epinNo = `EPR${Math.floor(1000000 + Math.random() * 9000000)}`;
+          const randomStr = crypto.randomBytes(5).toString('hex').toUpperCase(); // 10 chars
+          epinNo = `EPR-${randomStr}`;
           exists = Boolean(await Epin.findOne({ epinNo }));
         }
         await Epin.create({ epinName: request.packageCost, epinNo, cost, generatedBy, currentOwner, remark, status: 'Unused', usedBy: '-', usedDate: '-', deletedBy: '-', deletedDate: '-', deletedReason: '-' });
@@ -267,7 +269,8 @@ exports.generateEpins = async (req, res) => {
       let epinNo = '';
       let exists = true;
       while (exists) {
-        epinNo = `EPR${Math.floor(1000000 + Math.random() * 9000000)}`;
+        const randomStr = crypto.randomBytes(5).toString('hex').toUpperCase(); // 10 chars
+        epinNo = `EPR-${randomStr}`;
         exists = Boolean(await Epin.findOne({ epinNo }));
       }
       const doc = await Epin.create({ epinName, epinNo, cost, generatedBy, currentOwner, remark, status: 'Unused', usedBy: '-', usedDate: '-', deletedBy: '-', deletedDate: '-', deletedReason: '-' });

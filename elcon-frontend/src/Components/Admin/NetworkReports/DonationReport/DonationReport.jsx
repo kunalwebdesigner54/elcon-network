@@ -89,10 +89,21 @@ function DonationReport() {
   };
 
   const handleUpdateStatus = async (donationId, status) => {
-    if (!window.confirm(`Are you sure you want to mark this donation as ${status}?`)) return;
+    let utrNumber = '';
+    if (status === 'APPROVED') {
+      utrNumber = window.prompt(`Are you sure you want to mark this donation as APPROVED?\nPlease enter the Transaction ID:`);
+      if (utrNumber === null) return; // User cancelled
+      if (utrNumber.trim() === '') {
+        alert('Transaction ID is required to approve.');
+        return;
+      }
+    } else {
+      if (!window.confirm(`Are you sure you want to mark this donation as ${status}?`)) return;
+    }
+    
     try {
       setLoading(true);
-      await updateDonationStatus(donationId, status);
+      await updateDonationStatus(donationId, status, '', utrNumber);
       await fetchDonations();
     } catch (err) {
       setError(err?.response?.data?.message || 'Failed to update status');
