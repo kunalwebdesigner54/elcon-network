@@ -168,7 +168,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                 </tr>
               ) : (
                 <tr>
-                  <th>#</th><th>ePinName</th><th>ePin</th><th>Cost</th><th>Gen. Date</th><th>Gen. By</th><th>Cur.Owner</th><th>Status</th><th>Used By</th><th>Used Date</th><th>Action</th>
+                  <th>#</th><th>ePinName</th><th>ePin</th><th>Cost</th><th>Gen. Date</th><th>Gen. By</th><th>Cur.Owner</th><th>Status</th><th>Used By</th><th>Used Date</th>{showActions && <th>Action</th>}
                 </tr>
               )}
             </thead>
@@ -198,13 +198,11 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                     <td><span className={`epin-chip ${statusClass(row.status)}`}>{row.status}</span></td>
                     <td>{row.usedBy || row.fromMember || '-'}</td>
                     <td>{row.usedDate || row.transferDate || '-'}</td>
-                    <td>
-                      {showActions ? (
-                        <>
-                          <button type="button" className="epin-delete-btn" onClick={() => handleAction(row.epin, 'delete')}>x</button>
-                        </>
-                      ) : '-'}
-                    </td>
+                    {showActions && (
+                      <td>
+                        <button type="button" className="epin-delete-btn" onClick={() => handleAction(row.epin, 'delete')}>x</button>
+                      </td>
+                    )}
                   </tr>
                 )
               )) : (

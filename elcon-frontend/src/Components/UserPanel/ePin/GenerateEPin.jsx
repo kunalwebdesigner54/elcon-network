@@ -254,7 +254,7 @@ const GenerateEPin = () => {
 
           <div className="buyepin-input-group">
             <label>Generated For ID</label>
-            <input type="text" name="generatedForId" value={form.generatedForId} onChange={handleChange} />
+            <input type="text" name="generatedForId" value={form.generatedForId} disabled style={{ backgroundColor: 'var(--bg-card, #1e2730)', cursor: 'not-allowed', opacity: 0.7 }} />
             <div style={{ marginTop: '5px', fontSize: '13px', fontWeight: 'bold' }}>
               {memberNameLoading && <span style={{ color: '#888' }}>Fetching name...</span>}
               {!memberNameLoading && memberNameError && <span style={{ color: '#ef4444' }}>{memberNameError}</span>}
