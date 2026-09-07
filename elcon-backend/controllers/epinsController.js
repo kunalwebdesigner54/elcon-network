@@ -206,27 +206,30 @@ exports.generateEpins = async (req, res) => {
     const qty = Math.max(1, Number(req.body.qty || req.body.numberOfEpins || 1));
     const epinName = String(req.body.epinName || 'Activation').trim();
     const identifiers = getUserIdentifiers(req);
+    const transactionPassword = req.body.transactionPassword;
+    if (transactionPassword) {
+      const userCheck = await User.findById(req.user.id).select('+password +transactionPassword');
+      if (userCheck) {
+        const isPasswordValid = userCheck.transactionPassword
+          ? await userCheck.matchTransactionPassword(transactionPassword)
+          : await userCheck.matchPassword(transactionPassword);
+
+        if (!isPasswordValid) {
+          return res.status(401).json({ success: false, message: 'Transaction password is incorrect' });
+        }
+      }
+    } else if (!isAdmin(req)) {
+      return res.status(400).json({ success: false, message: 'Transaction password is required' });
+    }
+
     if (!isAdmin(req)) {
       if (!identifiers.length) {
         return res.status(403).json({ success: false, message: 'Not authorized to generate ePins' });
       }
 
-      const transactionPassword = req.body.transactionPassword;
-      if (!transactionPassword) {
-        return res.status(400).json({ success: false, message: 'Transaction password is required' });
-      }
-
-      const user = await User.findById(req.user.id).select('+password +transactionPassword walletBalance');
+      const user = await User.findById(req.user.id).select('walletBalance name contactNo');
       if (!user) {
         return res.status(404).json({ success: false, message: 'User not found' });
-      }
-
-      const isPasswordValid = user.transactionPassword
-        ? await user.matchTransactionPassword(transactionPassword)
-        : await user.matchPassword(transactionPassword);
-
-      if (!isPasswordValid) {
-        return res.status(401).json({ success: false, message: 'Transaction password is incorrect' });
       }
 
       const packageDocForCheck = await EpinPackage.findOne({ packageName: epinName, isActive: true });

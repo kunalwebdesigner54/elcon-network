@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import "./GenerateEPin.css";
 import { generateEpins, getEpinPackages } from '../../../api/managementService';
 import { getUser } from '../../../utils/auth';
+import Swal from 'sweetalert2';
 
 import { getProfile, getSponsorDetails } from '../../../api/authService';
 import { useNavigate } from "react-router-dom";
@@ -128,7 +129,16 @@ const GenerateEPin = () => {
         remark: form.remark
       });
       if (res.success) {
-        showFlash('success', `${res.epins?.length || Number(form.qty)} ePin(s) Generated Successfully!`);
+        const qtyGenerated = res.epins?.length || Number(form.qty);
+        showFlash('success', `${qtyGenerated} ePin(s) Generated Successfully!`);
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: `${qtyGenerated} ePin(s) Generated Successfully!`,
+          confirmButtonColor: '#10b981'
+        });
+
         setGeneratedEpins(res.epins || []);
         // Refresh wallet balance
         getProfile().then(profileRes => {
