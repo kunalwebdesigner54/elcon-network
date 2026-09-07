@@ -218,6 +218,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                               Unblock
                             </button>
                           )}
+                          {!['Unused', 'Blocked'].includes(row.status) && '-'}
                         </div>
                       </td>
                     )}

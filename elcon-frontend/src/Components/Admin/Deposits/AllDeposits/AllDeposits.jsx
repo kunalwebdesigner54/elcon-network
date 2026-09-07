@@ -2,51 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import './AllDeposits.css';
 import { getAdminDepositRequests, updateDepositRequestStatus } from '../../../../api/paymentService';
 
-const actionButtons = [
-  { className: 'withdrawal-action-btn withdrawal-action-btn--approve', label: 'Approve', icon: '⏳' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--reject', label: 'Reject', icon: '✕' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--reset', label: 'Change Status', icon: '↻' }
-];
-
-function DepositActionButtons({ depositId, reloadRows }) {
-  const [processing, setProcessing] = useState(false);
-
-  const updateStatus = async (nextStatus, confirmation = {}) => {
-    setProcessing(true);
-    try {
-      await updateDepositRequestStatus(depositId, {
-        status: nextStatus,
-        ...confirmation,
-      });
-      await reloadRows();
-    } catch (error) {
-      window.alert(error?.response?.data?.message || 'Unable to update deposit status');
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  return (
-      <div className="withdrawal-action-group" aria-label="Deposit actions">
-        {actionButtons.map((button) => (
-          <button
-            key={button.label}
-            type="button"
-            className={button.className}
-            aria-label={button.label}
-            title={button.label}
-            disabled={processing}
-            onClick={() => {
-              const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
-              updateStatus(nextStatus);
-            }}
-          >
-            {button.icon}
-          </button>
-        ))}
-      </div>
-  );
-}
+import DepositActionButtons from '../DepositActionButtons';
 
 function AllDeposits() {
   const [depositRows, setDepositRows] = useState([]);
@@ -180,7 +136,7 @@ function AllDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} reloadRows={loadRows} /></td>
+                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (

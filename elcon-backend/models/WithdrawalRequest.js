@@ -59,6 +59,11 @@ const withdrawalRequestSchema = new mongoose.Schema(
       trim: true,
       default: '-',
     },
+    adminTransactionId: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     amount: {
       type: Number,
       required: true,

@@ -24,7 +24,11 @@ import NewsAdd from './Components/Admin/NewsPopup/AddNew/AddNew';
 import GenerateEPin from './Components/UserPanel/ePin/GenerateEPin';
 import UsedEPin from './Components/UserPanel/ePin/UsedEPin';
 import UnusedEPin from './Components/UserPanel/ePin/UnusedEPin';
+import AdminUnusedEPin from './Components/Admin/ePin/UnusedEPin';
+import AdminUsedEPin from './Components/Admin/ePin/UsedEPin';
+import AdminDeletedEPin from './Components/Admin/ePin/DeleteEPin';
 import ListAllEPin from './Components/UserPanel/ePin/ListAllEPin';
+import AllEPinAdmin from './Components/Admin/ePin/AllEPin';
 import TransferEPin from './Components/UserPanel/ePin/TransferEPin';
 import TransferHistory from './Components/Admin/ePin/TransferHistory';
 import EPinTransferHistory from './Components/UserPanel/ePin/EPinTransferHistory';
@@ -302,10 +306,10 @@ function App() {
 
           <Route path="epin/epin-request" element={<EPinRequest />} />
           <Route path="epin/generate-epin" element={<GenerateEPin />} />
-          <Route path="epin/unused-epin" element={<UnusedEPin />} />
-          <Route path="epin/used-epin" element={<UsedEPin />} />
-          <Route path="epin/all-epin" element={<ListAllEPin />} />
-          <Route path="epin/delete-epin" element={<DeletedEPin />} />
+          <Route path="epin/unused-epin" element={<AdminUnusedEPin />} />
+          <Route path="epin/used-epin" element={<AdminUsedEPin />} />
+          <Route path="epin/all-epin" element={<AllEPinAdmin />} />
+          <Route path="epin/delete-epin" element={<AdminDeletedEPin />} />
           <Route path="epin/transfer-history" element={<TransferHistory />} />
           <Route path="epin/epin-franchise" element={<AdminEpinFranchiseList />} />
           <Route path="epin/epin-franchise/add-epin-franchise" element={<AddEpinFranchise />} />

@@ -2,30 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import './SuccessfulDeposits.css';
 import { getAdminDepositRequests, updateDepositRequestStatus } from '../../../../api/paymentService';
 
-const actionButtons = [
-  { className: 'withdrawal-action-btn withdrawal-action-btn--approve', label: 'Approve', icon: '◌' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--succeed', label: 'Succeed', icon: '✓' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--reject', label: 'Reject', icon: '✕' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--reset', label: 'Change Status', icon: '↻' }
-];
-
-function renderActionButtons(orderNo, reloadRows) {
-  return (
-    <div className="withdrawal-action-group" aria-label="Deposit actions">
-      {actionButtons.map((button) => (
-        <button key={button.label} type="button" className={button.className} aria-label={button.label} onClick={async () => {         const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label;
-        const adminTransactionId = nextStatus === 'Succeed' ? window.prompt('Enter the confirmed bank transaction ID:') : '';
-        if (nextStatus === 'Succeed' && !adminTransactionId?.trim()) return;
-        const transactionPassword = nextStatus === 'Succeed' ? window.prompt('Enter admin transaction password to credit the E-Wallet:') : '';
-        if (nextStatus === 'Succeed' && !transactionPassword) return;
-        await updateDepositRequestStatus(orderNo, { status: nextStatus, adminTransactionId: adminTransactionId.trim(), transactionPassword });
-        reloadRows(); }}>
-          {button.icon}
-        </button>
-      ))}
-    </div>
-  );
-}
+import DepositActionButtons from '../DepositActionButtons';
 
 function SuccessfulDeposits() {
   const [depositRows, setDepositRows] = useState([]);
@@ -157,7 +134,7 @@ function SuccessfulDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell">{renderActionButtons(row.depositId, loadRows)}</td>
+                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (<tr><td colSpan="13">No successful deposits found</td></tr>)}

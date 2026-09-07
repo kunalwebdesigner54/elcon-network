@@ -2,34 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import './PendingWithdrawalRequest.css';
 import { getAdminWithdrawalRequests, updateWithdrawalRequestStatus } from '../../../../api/paymentService';
 
-const actionButtons = [
-  { className: 'withdrawal-action-btn withdrawal-action-btn--approve', label: 'Approve', icon: '◌' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--succeed', label: 'Succeed', icon: '✓' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--reject', label: 'Reject', icon: '✕' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--reset', label: 'Change Status', icon: '↻' }
-];
-
-function renderActionButtons(requestId, reloadRows) {
-  return (
-    <div className="withdrawal-action-group" aria-label="Withdrawal actions">
-      {actionButtons.map((button) => (
-        <button
-          key={button.label}
-          type="button"
-          className={button.className}
-          aria-label={button.label}
-          onClick={async () => {
-            const nextStatus = button.label === 'Change Status' ? 'Pending' : button.label;
-            await updateWithdrawalRequestStatus(requestId, { status: nextStatus });
-            reloadRows();
-          }}
-        >
-          {button.icon}
-        </button>
-      ))}
-    </div>
-  );
-}
+import WithdrawalActionButtons from '../WithdrawalActionButtons';
 
 function PendingWithdrawalRequest() {
   const [withdrawalRows, setWithdrawalRows] = useState([]);
@@ -166,7 +139,7 @@ function PendingWithdrawalRequest() {
                   <td>{Number(row.netAmount || 0).toFixed(2)}</td>
                   <td>{row.paymentMethod}</td>
                   <td>{row.status}</td>
-                  <td className="action-cell">{renderActionButtons(row.requestId, loadRows)}</td>
+                  <td className="action-cell"><WithdrawalActionButtons requestId={row.requestId} reloadRows={loadRows} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (

@@ -2,118 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import './RejectedDeposits.css';
 import { getAdminDepositRequests, updateDepositRequestStatus } from '../../../../api/paymentService';
 
-const rejectedRows = [
-  {
-    sno: 1,
-    depositDate: '09-03-2029',
-    memberId: 'EL20110380',
-    memberName: 'Nishikant Shirke',
-    mobileNo: '7020110380',
-    transactionId: '42545555555535',
-    paymentMode: 'Bank Transfer',
-    amount: '500',
-    utrNumber: '42545555555535',
-    status: 'Rejected',
-    remark: 'wrong slip'
-  },
-  {
-    sno: 2,
-    depositDate: '08-03-2029',
-    memberId: 'EL75615112',
-    memberName: 'Sonali Shirke',
-    mobileNo: '9175615112',
-    transactionId: '0424422424222',
-    paymentMode: 'Phone Pe',
-    amount: '200',
-    utrNumber: '0424422424222',
-    status: 'Rejected',
-    remark: 'wrong slip'
-  },
-  {
-    sno: 3,
-    depositDate: '07-03-2029',
-    memberId: 'EL22757474',
-    memberName: 'Amruta Salunke',
-    mobileNo: '9922757474',
-    transactionId: '0445458555555',
-    paymentMode: 'Google Pay',
-    amount: '250',
-    utrNumber: '0445458555555',
-    status: 'Rejected',
-    remark: 'wrong slip'
-  },
-  {
-    sno: 4,
-    depositDate: '06-03-2029',
-    memberId: 'EL20114787',
-    memberName: 'Megha Shirke',
-    mobileNo: '7020114787',
-    transactionId: '2575757575777',
-    paymentMode: 'Upi Id',
-    amount: '1000',
-    utrNumber: '2575757575777',
-    status: 'Rejected',
-    remark: 'wrong slip'
-  },
-  {
-    sno: 5,
-    depositDate: '05-03-2029',
-    memberId: 'EL22585845',
-    memberName: 'Snehal Marne',
-    mobileNo: '9822585845',
-    transactionId: '4257577555778',
-    paymentMode: 'Upi Id',
-    amount: '500',
-    utrNumber: '4257577555778',
-    status: 'Rejected',
-    remark: 'wrong slip'
-  },
-  {
-    sno: 6,
-    depositDate: '04-03-2029',
-    memberId: 'EL22834083',
-    memberName: 'Guddi Katale',
-    mobileNo: '9822834083',
-    transactionId: '5424242444544',
-    paymentMode: 'Upi Id',
-    amount: '1500',
-    utrNumber: '5424242444544',
-    status: 'Rejected',
-    remark: 'wrong slip'
-  },
-  {
-    sno: 7,
-    depositDate: '03-03-2029',
-    memberId: 'EL22834083',
-    memberName: 'Guddi Katale',
-    mobileNo: '9822834083',
-    transactionId: '0455788887553',
-    paymentMode: 'Upi Id',
-    amount: '1000',
-    utrNumber: '0455788887553',
-    status: 'Rejected',
-    remark: 'wrong slip'
-  }
-];
-
-const actionButtons = [
-  { className: 'withdrawal-action-btn withdrawal-action-btn--approve', label: 'Approve', icon: '◌' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--succeed', label: 'Succeed', icon: '✓' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--reject', label: 'Reject', icon: '✕' },
-  { className: 'withdrawal-action-btn withdrawal-action-btn--reset', label: 'Change Status', icon: '↻' }
-];
-
-function renderActionButtons(orderNo, reloadRows) {
-  return (
-    <div className="withdrawal-action-group" aria-label="Deposit actions">
-      {actionButtons.map((button) => (
-        <button key={button.label} type="button" className={button.className} aria-label={button.label} onClick={async () => { const nextStatus = button.label === 'Reject' ? 'Rejected' : button.label === 'Change Status' ? 'Pending' : button.label; await updateDepositRequestStatus(orderNo, { status: nextStatus }); reloadRows(); }}>
-          {button.icon}
-        </button>
-      ))}
-    </div>
-  );
-}
+import DepositActionButtons from '../DepositActionButtons';
 
 function RejectedDeposits() {
   const [depositRows, setDepositRows] = useState([]);
@@ -246,7 +135,7 @@ function RejectedDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell">{renderActionButtons(row.depositId, loadRows)}</td>
+                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (<tr><td colSpan="13">No rejected deposits found</td></tr>)}
