@@ -749,8 +749,8 @@ exports.getMyDatewiseIncome = async (req, res) => {
     }
 
     const [levelIncomeRecords, repurchaseIncomeRecords] = await Promise.all([
-      LevelIncome.find({ recipientMemberId: memberId }).lean(),
-      RepurchaseIncome.find({ recipientMemberId: memberId }).lean(),
+      LevelIncome.find({ recipientMemberId: new RegExp(`^${memberId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }).lean(),
+      RepurchaseIncome.find({ recipientMemberId: new RegExp(`^${memberId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }).lean(),
     ]);
 
     const dailyMap = new Map();
