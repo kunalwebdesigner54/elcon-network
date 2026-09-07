@@ -499,6 +499,13 @@ exports.checkoutCart = async (req, res) => {
       hour12: true,
     });
 
+    const endDateTime = new Date();
+    endDateTime.setFullYear(endDateTime.getFullYear() + 1);
+    const day = String(endDateTime.getDate()).padStart(2, '0');
+    const month = String(endDateTime.getMonth() + 1).padStart(2, '0');
+    const year = endDateTime.getFullYear();
+    const endDateStr = `${day}/${month}/${year}, 11:59 pm`;
+
     let bvPoint = 0;
     let lvPoint = 0;
     let totalReserveAmount = 0;
@@ -574,7 +581,7 @@ exports.checkoutCart = async (req, res) => {
       lvPoint,
       bvPoint,
       startDate: orderDate,
-      endDate: orderDate,
+      endDate: endDateStr,
       shippingCharge,
       discountCoupon: appliedDiscount,
       finalTotal,
