@@ -259,6 +259,9 @@ exports.updateDepositStatus = async (req, res) => {
       if (!confirmedTransactionId) {
         return res.status(400).json({ success: false, message: 'Admin transaction ID is required to complete a deposit' });
       }
+      if (confirmedTransactionId !== String(request.utrNumber || '').trim().toUpperCase()) {
+        return res.status(400).json({ success: false, message: 'Confirmed UTR Number does not match the requested UTR Number' });
+      }
       const existingTransaction = await DepositRequest.findOne({
         ...transactionReferenceQuery(confirmedTransactionId),
         _id: { $ne: request._id },

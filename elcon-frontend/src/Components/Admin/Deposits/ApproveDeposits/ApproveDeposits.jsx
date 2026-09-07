@@ -9,7 +9,7 @@ const actionButtons = [
   { className: 'withdrawal-action-btn withdrawal-action-btn--reset', label: 'Change Status', icon: '↻' }
 ];
 
-function DepositActionButtons({ depositId, reloadRows }) {
+function DepositActionButtons({ depositId, utrNumber, reloadRows }) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [adminTransactionId, setAdminTransactionId] = useState('');
   const [transactionPassword, setTransactionPassword] = useState('');
@@ -57,7 +57,13 @@ function DepositActionButtons({ depositId, reloadRows }) {
             <input id={`transaction-password-${depositId}`} type="password" value={transactionPassword} onChange={(event) => setTransactionPassword(event.target.value)} placeholder="Enter transaction password" disabled={processing} />
             <div className="deposit-confirm-actions">
               <button type="button" className="deposit-confirm-cancel" onClick={() => setShowConfirmModal(false)} disabled={processing}>Cancel</button>
-              <button type="button" className="deposit-confirm-submit" disabled={processing || !adminTransactionId.trim() || !transactionPassword} onClick={() => updateStatus('Succeed', { adminTransactionId: adminTransactionId.trim(), transactionPassword })}>
+              <button type="button" className="deposit-confirm-submit" disabled={processing || !adminTransactionId.trim() || !transactionPassword} onClick={() => {
+                if (adminTransactionId.trim().toUpperCase() !== String(utrNumber || '').trim().toUpperCase()) {
+                  window.alert('Entered UTR number does not match the actual UTR number.');
+                  return;
+                }
+                updateStatus('Succeed', { adminTransactionId: adminTransactionId.trim(), transactionPassword });
+              }}>
                 {processing ? 'Confirming...' : 'Confirm Deposit'}
               </button>
             </div>
@@ -198,7 +204,7 @@ function ApproveDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} reloadRows={loadRows} /></td>
+                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (<tr><td colSpan="13">No approved deposits found</td></tr>)}
