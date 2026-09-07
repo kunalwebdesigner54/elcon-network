@@ -110,7 +110,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
       memberId,
       date: new Date(dateKey),
       amount: 0,
-      description: type === 'LEVEL INCOME' ? 'Daily_Income' : type,
+      description: (type === 'LEVEL INCOME' || type === 'REPURCHASE INCOME') ? 'Daily_Income' : type,
       createdAt: record.createdAt,
     };
     current.amount += Number(record.amount || 0);

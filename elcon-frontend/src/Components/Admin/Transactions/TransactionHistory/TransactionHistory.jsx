@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from 'react';
 import './TransactionHistory.css';
 import { getAdminTransactionHistory } from '../../../../api/managementService';
@@ -36,17 +37,17 @@ function TransactionHistory() {
     return rows.filter(row => {
       const matchMemberId = !appliedFilters.memberId || String(row.memberId || '').toLowerCase().includes(appliedFilters.memberId.toLowerCase());
       const matchTxId = !appliedFilters.transactionId || String(row.transactionId || '').toLowerCase().includes(appliedFilters.transactionId.toLowerCase());
-      
+
       let matchStartDate = true;
       let matchEndDate = true;
-      
+
       if (appliedFilters.startDate && row.dateTime) {
-         matchStartDate = new Date(row.dateTime) >= new Date(appliedFilters.startDate);
+        matchStartDate = new Date(row.dateTime) >= new Date(appliedFilters.startDate);
       }
       if (appliedFilters.endDate && row.dateTime) {
-         matchEndDate = new Date(row.dateTime) <= new Date(appliedFilters.endDate);
+        matchEndDate = new Date(row.dateTime) <= new Date(appliedFilters.endDate);
       }
-      
+
       return matchMemberId && matchTxId && matchStartDate && matchEndDate;
     });
   }, [rows, appliedFilters]);
@@ -94,15 +95,15 @@ function TransactionHistory() {
           </div>
           <div className="admintransactionhistory-header-right">
             <div className="view-toggle">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`view-toggle-btn ${viewMode === 'statement' ? 'active' : ''}`}
                 onClick={() => handleViewModeChange('statement')}
               >
                 Statement
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`view-toggle-btn ${viewMode === 'audit' ? 'active' : ''}`}
                 onClick={() => handleViewModeChange('audit')}
               >
@@ -117,8 +118,8 @@ function TransactionHistory() {
           <button type="button" className="btn-outline admintransactionhistory-export-btn">PDF</button>
         </div>
 
-        <div className="table-wrap">
-          <table className="data-table">
+        <div className="table-wrap admintransactionhistory-table-wrap">
+          <table className="data-table admintransactionhistory-table">
             <thead>
               <tr>
                 <th>S.NO</th>
@@ -162,9 +163,9 @@ function TransactionHistory() {
           <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
             Total Transactions : <span style={{ color: '#fff', fontWeight: 'bold' }}>{totalTransactions}</span>
           </div>
-          <div className="pagination" style={{ display: 'flex', gap: '5px' }}>
-            <button type="button" className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
-            <button type="button" className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+          <div className="admintransactionhistory-pagination" style={{ display: 'flex', gap: '5px' }}>
+            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
+            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
             {[...Array(totalPages)].map((_, i) => {
               const pageNum = i + 1;
               if (
@@ -174,10 +175,10 @@ function TransactionHistory() {
                 Math.abs(currentPage - pageNum) <= 1
               ) {
                 return (
-                  <button 
-                    key={pageNum} 
+                  <button
+                    key={pageNum}
                     type="button"
-                    className={`page-btn ${currentPage === pageNum ? 'admintransactionhistory-active' : ''}`}
+                    className={`admintransactionhistory-page-btn ${currentPage === pageNum ? 'admintransactionhistory-active' : ''}`}
                     onClick={() => handlePageChange(pageNum)}
                   >
                     {pageNum}
@@ -191,8 +192,8 @@ function TransactionHistory() {
               }
               return null;
             })}
-            <button type="button" className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
-            <button type="button" className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
+            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+            <button type="button" className="admintransactionhistory-page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
           </div>
         </div>
       </section>
