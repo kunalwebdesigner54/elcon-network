@@ -136,6 +136,8 @@ function DatewiseIncome() {
   const totalBvPoint = visibleRows.reduce((sum, row) => sum + Number(row.totalBvPoint || 0), 0);
   const totalRepurchaseIncome = visibleRows.reduce((sum, row) => sum + Number(row.repurchaseIncome || 0), 0);
   const totalAmount = visibleRows.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
+  const totalIdsSum = visibleRows.reduce((sum, row) => sum + Number(row.totalIds || 0), 0);
+  const totalDirectsSum = visibleRows.reduce((sum, row) => sum + Number(row.directs || 0), 0);
 
   return (
     <div className="datewise-income-report-page">
@@ -238,7 +240,9 @@ function DatewiseIncome() {
                     </tr>
                   ))}
                   <tr className="datewise-income-summary-row">
-                    <td colSpan="6" style={{ textAlign: 'right', fontWeight: 700 }}>PAGE TOTAL</td>
+                    <td colSpan="4" style={{ textAlign: 'right', fontWeight: 700 }}>PAGE TOTAL</td>
+                    <td style={{ fontWeight: 700 }}>{totalDirectsSum}</td>
+                    <td style={{ fontWeight: 700 }}>{totalIdsSum}</td>
                     <td style={{ fontWeight: 700 }}>{totalLevelIncome.toFixed(2)}</td>
                     <td style={{ fontWeight: 700 }}>{totalBvPoint}</td>
                     <td style={{ fontWeight: 700 }}>{totalRepurchaseIncome.toFixed(2)}</td>

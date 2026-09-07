@@ -56,6 +56,7 @@ function DatewiseIncome() {
   const grandTotalBvPoint = datewiseIncomeData.reduce((sum, row) => sum + Number(row.totalBvPoint || 0), 0);
   const grandTotalRepurchaseIncome = datewiseIncomeData.reduce((sum, row) => sum + Number(row.repurchaseIncome || 0), 0);
   const totalAmount = datewiseIncomeData.reduce((sum, row) => sum + Number(row.dailyIncome || 0), 0);
+  const grandTotalIds = datewiseIncomeData.reduce((sum, row) => sum + Number(row.totalIds || 0), 0);
 
   return (
     <div>
@@ -113,7 +114,8 @@ function DatewiseIncome() {
                 </tr>
               ))}
               <tr className="report-total-row">
-                <td colSpan={5} style={{ textAlign: 'right', fontWeight: 700 }}>GRAND TOTAL</td>
+                <td colSpan={4} style={{ textAlign: 'right', fontWeight: 700 }}>GRAND TOTAL</td>
+                <td style={{ fontWeight: 700 }}>{grandTotalIds}</td>
                 <td>{grandTotalLevelIncome.toFixed(2)}</td>
                 <td>{grandTotalBvPoint.toFixed(2)}</td>
                 <td>{grandTotalRepurchaseIncome.toFixed(2)}</td>
