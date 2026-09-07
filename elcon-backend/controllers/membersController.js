@@ -792,11 +792,7 @@ exports.getMyDatewiseIncome = async (req, res) => {
       } else if (type === 'repurchase') {
         entry.repurchaseIncome += amount;
         entry.totalBvPoint += amount;
-        if (record.purchasingMemberId) {
-          const ids = uniqueSourceIdsByDate.get(mapKey) || new Set();
-          ids.add(String(record.purchasingMemberId).trim());
-          uniqueSourceIdsByDate.set(mapKey, ids);
-        }
+        // Repurchase IDs are not added to totalIds because totalIds is used for Level Incomes
       }
       entry.count += 1;
 

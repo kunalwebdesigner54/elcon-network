@@ -24,7 +24,7 @@ function DatewiseIncome() {
       .sort((left, right) => new Date(right.dateRaw || right.incomeDate).getTime() - new Date(left.dateRaw || left.incomeDate).getTime())
       .map((row, index) => {
         const totalIds = Number(row.totalIds || 0);
-        const levelIncome = totalIds * 20;
+        const levelIncome = Number(row.levelIncome || 0);
         const repurchaseIncome = Number(row.repurchaseIncome || 0);
         const dailyIncome = levelIncome + repurchaseIncome;
 
