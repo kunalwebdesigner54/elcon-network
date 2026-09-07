@@ -738,7 +738,7 @@ exports.updateMemberProfile = async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 exports.getMyDatewiseIncome = async (req, res) => {
   try {
-    const memberId = req.user.memberId;
+    const memberId = String(req.user.memberId || '').trim();
     if (!memberId) {
       return res.status(400).json({ success: false, message: 'Member ID not found for current user' });
     }
@@ -806,7 +806,7 @@ exports.getMyDatewiseIncome = async (req, res) => {
     if (dailyMap.size === 0) {
       const row = {
         sNo: 1,
-        incomeDate: formatDate(user.createdAt),
+        incomeDate: formatDateOnly(user.createdAt),
         dateRaw: user.createdAt,
         memberId: user.memberId,
         memberName: user.name || '---',

@@ -87,9 +87,9 @@ function DatewiseIncome() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8}>Loading...</td></tr>
+                <tr><td colSpan={9}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={8}>{error}</td></tr>
+                <tr><td colSpan={9}>{error}</td></tr>
               ) : datewiseIncomeData.length === 0 ? (
                 <tr><td colSpan={9}>No datewise income records found.</td></tr>
               ) : visibleRows.map((row) => (
