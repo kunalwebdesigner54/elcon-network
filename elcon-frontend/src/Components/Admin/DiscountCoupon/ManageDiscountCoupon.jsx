@@ -1,37 +1,44 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import "../Common/AdminLayout.css";
-import { manageDiscountCoupon, getGlobalSettings, updateGlobalSettings } from "../../../api/managementService";
+import {
+  manageDiscountCoupon,
+  getGlobalSettings,
+  updateGlobalSettings,
+} from "../../../api/managementService";
 import { getMemberInfoByUserId } from "../../../api/membersService";
 
 function ManageDiscountCoupon() {
   const [formData, setFormData] = useState({
-    action: 'add',
-    target: 'single',
-    memberId: '',
-    amount: '',
-    transactionPassword: ''
+    action: "add",
+    target: "single",
+    memberId: "",
+    amount: "",
+    transactionPassword: "",
   });
-  const [memberName, setMemberName] = useState('');
+  const [memberName, setMemberName] = useState("");
   const [memberFetchStatus, setMemberFetchStatus] = useState(null); // null | 'loading' | 'found' | 'not_found'
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const fetchDebounceRef = useRef(null);
 
   const [settingsFormData, setSettingsFormData] = useState({
-    defaultCouponAmount: '',
-    couponDistributionEnabled: 'false',
-    transactionPassword: ''
+    defaultCouponAmount: "",
+    couponDistributionEnabled: "false",
+    transactionPassword: "",
   });
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [settingsMessage, setSettingsMessage] = useState(null);
 
   useEffect(() => {
-    getGlobalSettings().then(res => {
+    getGlobalSettings().then((res) => {
       if (res.success && res.globalSettings) {
-        setSettingsFormData(prev => ({
+        setSettingsFormData((prev) => ({
           ...prev,
-          defaultCouponAmount: res.globalSettings.defaultCouponAmount || '',
-          couponDistributionEnabled: res.globalSettings.couponDistributionEnabled ? 'true' : 'false'
+          defaultCouponAmount: res.globalSettings.defaultCouponAmount || "",
+          couponDistributionEnabled: res.globalSettings
+            .couponDistributionEnabled
+            ? "true"
+            : "false",
         }));
       }
     });
@@ -39,13 +46,16 @@ function ManageDiscountCoupon() {
 
   const handleSettingsChange = (e) => {
     const { name, value } = e.target;
-    setSettingsFormData(prev => ({ ...prev, [name]: value }));
+    setSettingsFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSettingsSubmit = async (e) => {
     e.preventDefault();
     if (!settingsFormData.transactionPassword) {
-      setSettingsMessage({ type: 'error', text: 'Transaction password is required' });
+      setSettingsMessage({
+        type: "error",
+        text: "Transaction password is required",
+      });
       return;
     }
     setSettingsLoading(true);
@@ -53,16 +63,26 @@ function ManageDiscountCoupon() {
     try {
       const res = await updateGlobalSettings({
         defaultCouponAmount: settingsFormData.defaultCouponAmount,
-        couponDistributionEnabled: settingsFormData.couponDistributionEnabled === 'true'
+        couponDistributionEnabled:
+          settingsFormData.couponDistributionEnabled === "true",
       });
       if (res.success) {
-        setSettingsMessage({ type: 'success', text: 'Settings updated successfully' });
-        setSettingsFormData(prev => ({ ...prev, transactionPassword: '' }));
+        setSettingsMessage({
+          type: "success",
+          text: "Settings updated successfully",
+        });
+        setSettingsFormData((prev) => ({ ...prev, transactionPassword: "" }));
       } else {
-        setSettingsMessage({ type: 'error', text: res.message || 'Operation failed' });
+        setSettingsMessage({
+          type: "error",
+          text: res.message || "Operation failed",
+        });
       }
     } catch (err) {
-      setSettingsMessage({ type: 'error', text: err.response?.data?.message || 'Server error' });
+      setSettingsMessage({
+        type: "error",
+        text: err.response?.data?.message || "Server error",
+      });
     } finally {
       setSettingsLoading(false);
     }
@@ -70,56 +90,64 @@ function ManageDiscountCoupon() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
     // Reset member name if memberId changes
-    if (name === 'memberId') {
-      setMemberName('');
+    if (name === "memberId") {
+      setMemberName("");
       setMemberFetchStatus(null);
     }
   };
 
   const handleMemberIdBlur = async () => {
     const id = formData.memberId.trim();
-    if (!id || formData.target !== 'single') return;
+    if (!id || formData.target !== "single") return;
 
-    setMemberFetchStatus('loading');
-    setMemberName('');
+    setMemberFetchStatus("loading");
+    setMemberName("");
 
     try {
       const res = await getMemberInfoByUserId(id);
       if (res?.success && res?.data?.name) {
         setMemberName(res.data.name);
-        setMemberFetchStatus('found');
+        setMemberFetchStatus("found");
       } else {
-        setMemberName('');
-        setMemberFetchStatus('not_found');
+        setMemberName("");
+        setMemberFetchStatus("not_found");
       }
     } catch {
-      setMemberName('');
-      setMemberFetchStatus('not_found');
+      setMemberName("");
+      setMemberFetchStatus("not_found");
     }
   };
 
   const handleTargetChange = (e) => {
     const { value } = e.target;
-    setFormData(prev => ({ ...prev, target: value, memberId: '', transactionPassword: '' }));
-    setMemberName('');
+    setFormData((prev) => ({
+      ...prev,
+      target: value,
+      memberId: "",
+      transactionPassword: "",
+    }));
+    setMemberName("");
     setMemberFetchStatus(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.amount || formData.amount <= 0) {
-      setMessage({ type: 'error', text: 'Please enter a valid amount' });
+      setMessage({ type: "error", text: "Please enter a valid amount" });
       return;
     }
-    if (formData.target === 'single' && !formData.memberId) {
-      setMessage({ type: 'error', text: 'Member ID is required for single user' });
+    if (formData.target === "single" && !formData.memberId) {
+      setMessage({
+        type: "error",
+        text: "Member ID is required for single user",
+      });
       return;
     }
     if (!formData.transactionPassword) {
-      setMessage({ type: 'error', text: 'Transaction password is required' });
+      setMessage({ type: "error", text: "Transaction password is required" });
       return;
     }
 
@@ -128,15 +156,23 @@ function ManageDiscountCoupon() {
     try {
       const res = await manageDiscountCoupon(formData);
       if (res.success) {
-        setMessage({ type: 'success', text: res.message });
-        setFormData(prev => ({ ...prev, memberId: '', amount: '', transactionPassword: '' }));
-        setMemberName('');
+        setMessage({ type: "success", text: res.message });
+        setFormData((prev) => ({
+          ...prev,
+          memberId: "",
+          amount: "",
+          transactionPassword: "",
+        }));
+        setMemberName("");
         setMemberFetchStatus(null);
       } else {
-        setMessage({ type: 'error', text: res.message || 'Operation failed' });
+        setMessage({ type: "error", text: res.message || "Operation failed" });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: err.response?.data?.message || 'Server error' });
+      setMessage({
+        type: "error",
+        text: err.response?.data?.message || "Server error",
+      });
     } finally {
       setLoading(false);
     }
@@ -145,40 +181,61 @@ function ManageDiscountCoupon() {
   return (
     <div>
       <section className="panel admin-products-panel">
-        <h2 className="section-title admin-products-section-title">MANAGE DISCOUNT COUPON</h2>
+        <h2 className="section-title admin-products-section-title">
+          MANAGE DISCOUNT COUPON
+        </h2>
 
         {message && (
-          <div className={`alert ${message.type === 'error' ? 'alert-error' : 'alert-success'}`}>
+          <div
+            className={`alert ${message.type === "error" ? "alert-error" : "alert-success"}`}
+          >
             {message.text}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="admin-add-product-form">
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">Action <span>*</span></label>
-            <div className="col-sm-9">
-              <select name="action" className="select-input" value={formData.action} onChange={handleChange} required>
+          <div
+            className="form-grid"
+            style={{ maxWidth: "700px", margin: "0 auto" }}
+          >
+            <label className="field-label">
+              Action <span>*</span>
+            </label>
+            <div>
+              <select
+                name="action"
+                className="select-input"
+                value={formData.action}
+                onChange={handleChange}
+                required
+              >
                 <option value="add">Add Coupon Balance</option>
                 <option value="debit">Debit Coupon Balance</option>
               </select>
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">Target <span>*</span></label>
-            <div className="col-sm-9">
-              <select name="target" className="select-input" value={formData.target} onChange={handleTargetChange} required>
+            <label className="field-label">
+              Target <span>*</span>
+            </label>
+            <div>
+              <select
+                name="target"
+                className="select-input"
+                value={formData.target}
+                onChange={handleTargetChange}
+                required
+              >
                 <option value="single">Single User</option>
                 <option value="bulk">Bulk (All Active Users)</option>
               </select>
             </div>
-          </div>
 
-          {formData.target === 'single' && (
-            <>
-              <div className="form-group row">
-                <label className="col-sm-3 col-form-label">Member ID <span>*</span></label>
-                <div className="col-sm-9">
+            {formData.target === "single" && (
+              <>
+                <label className="field-label">
+                  Member ID <span>*</span>
+                </label>
+                <div>
                   <input
                     type="text"
                     name="memberId"
@@ -187,41 +244,44 @@ function ManageDiscountCoupon() {
                     value={formData.memberId}
                     onChange={handleChange}
                     onBlur={handleMemberIdBlur}
-                    required={formData.target === 'single'}
+                    required={formData.target === "single"}
                     autoComplete="off"
                   />
                 </div>
-              </div>
 
-              <div className="form-group row">
-                <label className="col-sm-3 col-form-label">Member Name</label>
-                <div className="col-sm-9">
+                <label className="field-label">Member Name</label>
+                <div>
                   <input
                     type="text"
                     className="text-input"
                     readOnly
                     placeholder={
-                      memberFetchStatus === 'loading'
-                        ? 'Fetching...'
-                        : memberFetchStatus === 'not_found'
-                        ? 'Member not found'
-                        : 'Auto-fetched from Member ID'
+                      memberFetchStatus === "loading"
+                        ? "Fetching..."
+                        : memberFetchStatus === "not_found"
+                          ? "Member not found"
+                          : "Auto-fetched from Member ID"
                     }
                     value={memberName}
                     style={{
-                      background: 'var(--input-bg, #1e2535)',
-                      color: memberFetchStatus === 'not_found' ? '#e74c3c' : memberFetchStatus === 'found' ? '#27ae60' : undefined,
-                      cursor: 'default'
+                      background: "var(--input-bg, #1e2535)",
+                      color:
+                        memberFetchStatus === "not_found"
+                          ? "#e74c3c"
+                          : memberFetchStatus === "found"
+                            ? "#27ae60"
+                            : undefined,
+                      cursor: "default",
                     }}
                   />
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
 
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">Amount (₹) <span>*</span></label>
-            <div className="col-sm-9">
+            <label className="field-label">
+              Amount (₹) <span>*</span>
+            </label>
+            <div>
               <input
                 type="number"
                 name="amount"
@@ -233,11 +293,11 @@ function ManageDiscountCoupon() {
                 required
               />
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">Transaction Password <span>*</span></label>
-            <div className="col-sm-9">
+            <label className="field-label">
+              Transaction Password <span>*</span>
+            </label>
+            <div>
               <input
                 type="password"
                 name="transactionPassword"
@@ -250,28 +310,45 @@ function ManageDiscountCoupon() {
               />
             </div>
           </div>
-
-          <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
+          <div
+            className="form-actions"
+            style={{ marginTop: "20px", textAlign: "center" }}
+          >
             <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? 'Processing...' : 'Submit'}
+              {loading ? "Processing..." : "Submit"}
             </button>
           </div>
         </form>
       </section>
 
-      <section className="panel admin-products-panel" style={{ marginTop: '20px' }}>
-        <h2 className="section-title admin-products-section-title">COUPON DISTRIBUTION SETTINGS</h2>
+      <section
+        className="panel admin-products-panel"
+        style={{ marginTop: "20px" }}
+      >
+        <h2 className="section-title admin-products-section-title">
+          COUPON DISTRIBUTION SETTINGS
+        </h2>
 
         {settingsMessage && (
-          <div className={`alert ${settingsMessage.type === 'error' ? 'alert-error' : 'alert-success'}`}>
+          <div
+            className={`alert ${settingsMessage.type === "error" ? "alert-error" : "alert-success"}`}
+          >
             {settingsMessage.text}
           </div>
         )}
 
-        <form onSubmit={handleSettingsSubmit} className="admin-add-product-form">
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">Set By Default Discount Coupon Amount</label>
-            <div className="col-sm-9">
+        <form
+          onSubmit={handleSettingsSubmit}
+          className="admin-add-product-form"
+        >
+          <div
+            className="form-grid"
+            style={{ maxWidth: "700px", margin: "0 auto" }}
+          >
+            <label className="field-label">
+              Set By Default Discount Coupon Amount
+            </label>
+            <div>
               <input
                 type="number"
                 name="defaultCouponAmount"
@@ -281,11 +358,11 @@ function ManageDiscountCoupon() {
                 onChange={handleSettingsChange}
               />
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">By Default Coupon Distribution</label>
-            <div className="col-sm-9">
+            <label className="field-label">
+              By Default Coupon Distribution
+            </label>
+            <div>
               <select
                 name="couponDistributionEnabled"
                 className="select-input"
@@ -296,11 +373,11 @@ function ManageDiscountCoupon() {
                 <option value="false">Off</option>
               </select>
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">Transaction Password <span>*</span></label>
-            <div className="col-sm-9">
+            <label className="field-label">
+              Transaction Password <span>*</span>
+            </label>
+            <div>
               <input
                 type="password"
                 name="transactionPassword"
@@ -312,10 +389,16 @@ function ManageDiscountCoupon() {
               />
             </div>
           </div>
-
-          <div className="form-actions" style={{ marginTop: '20px', textAlign: 'center' }}>
-            <button type="submit" className="btn-primary" disabled={settingsLoading}>
-              {settingsLoading ? 'Processing...' : 'SAVE'}
+          <div
+            className="form-actions"
+            style={{ marginTop: "20px", textAlign: "center" }}
+          >
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={settingsLoading}
+            >
+              {settingsLoading ? "Processing..." : "SAVE"}
             </button>
           </div>
         </form>
