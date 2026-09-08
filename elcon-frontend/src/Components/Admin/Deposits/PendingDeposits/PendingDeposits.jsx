@@ -134,7 +134,7 @@ function PendingDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} /></td>
+                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} allowedActions={['Approve', 'Reject']} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (<tr><td colSpan="13">No pending deposits found</td></tr>)}

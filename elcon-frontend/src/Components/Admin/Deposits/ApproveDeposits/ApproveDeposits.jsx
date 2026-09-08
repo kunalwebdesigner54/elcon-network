@@ -134,7 +134,7 @@ function ApproveDeposits() {
                     </button>
                   </td>
                   <td>{row.status}</td>
-                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} /></td>
+                  <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} allowedActions={['Succeed', 'Reject']} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
               )) : (<tr><td colSpan="13">No approved deposits found</td></tr>)}

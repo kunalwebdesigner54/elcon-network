@@ -307,12 +307,10 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
 
-          <Route path="epin/epin-request" element={<EPinRequest />} />
           <Route path="epin/generate-epin" element={<GenerateEPin />} />
           <Route path="epin/unused-epin" element={<AdminUnusedEPin />} />
           <Route path="epin/used-epin" element={<AdminUsedEPin />} />
           <Route path="epin/all-epin" element={<AllEPinAdmin />} />
-          <Route path="epin/delete-epin" element={<AdminDeletedEPin />} />
           <Route path="epin/transfer-history" element={<TransferHistory />} />
           <Route path="epin/epin-franchise" element={<AdminEpinFranchiseList />} />
           <Route path="epin/epin-franchise/add-epin-franchise" element={<AddEpinFranchise />} />

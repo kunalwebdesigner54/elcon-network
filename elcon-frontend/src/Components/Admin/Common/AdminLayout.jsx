@@ -8,12 +8,10 @@ const menuItems = [
     key: 'epin',
     label: 'ePin',
     children: [
-      { label: 'ePin Request', to: '/epin/epin-request' },
       { label: 'Generate ePin', to: '/epin/generate-epin' },
       { label: 'Unused ePin', to: '/epin/unused-epin' },
       { label: 'Used ePin', to: '/epin/used-epin' },
       { label: 'All ePin', to: '/epin/all-epin' },
-      { label: 'Delete ePin', to: '/epin/delete-epin' },
       { label: 'Transfer History', to: '/epin/transfer-history' }
     ]
   },
