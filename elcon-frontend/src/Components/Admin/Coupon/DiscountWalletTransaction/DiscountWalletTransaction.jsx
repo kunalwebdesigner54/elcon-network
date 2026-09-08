@@ -82,19 +82,19 @@ function DiscountWalletTransaction() {
         <h2 className="discount-wallet-heading">DISCOUNT WALLET TRANSACTION</h2>
 
         <div className="stats-row">
-          <div className="stat-card">
+          <div className="stat-card card-green">
             <div className="stat-title">Total<br />Members</div>
             <div className="stat-value">500</div>
           </div>
-          <div className="stat-card">
+          <div className="stat-card card-blue">
             <div className="stat-title">Total Discount<br />Issued</div>
             <div className="stat-value">500000</div>
           </div>
-          <div className="stat-card">
+          <div className="stat-card card-pink">
             <div className="stat-title">Total used<br />Discount</div>
             <div className="stat-value">225000</div>
           </div>
-          <div className="stat-card">
+          <div className="stat-card card-orange">
             <div className="stat-title">Total un-used<br />Discount</div>
             <div className="stat-value">275000</div>
           </div>

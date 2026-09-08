@@ -61,23 +61,25 @@
 
 .withdrawal-action-group {
   display: inline-flex;
-  gap: 4px;
+  gap: 8px;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .withdrawal-action-btn {
-  height: 22px;
-  height: 22px;
-  border: 0;
-  border-radius: 2px;
-  font-size: 14px;
-  line-height: 1;
-  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 6px 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: #fff;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 
 .withdrawal-action-btn--approve {
