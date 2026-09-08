@@ -49,8 +49,8 @@ function ShoppingProducts() {
 
   return (
     <div className="user-product-page">
+      <h2 className="page-heading">Shopping Products</h2>
       <div className="user-panel user-product-panel">
-        <h2 className="page-heading">Shopping Products</h2>
 
         <div className="product-filter-wrapper" style={{ background: 'var(--panel-bg, #0B132B)', padding: '15px', borderRadius: '12px', marginBottom: '20px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
           <div className="product-filter-bar" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
