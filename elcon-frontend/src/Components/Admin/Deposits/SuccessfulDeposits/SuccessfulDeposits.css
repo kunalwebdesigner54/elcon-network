@@ -68,12 +68,11 @@
 }
 
 .withdrawal-action-btn {
+  width: 28px;
+  height: 28px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.2;
-  padding: 6px 12px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
