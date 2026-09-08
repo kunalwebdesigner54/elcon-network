@@ -90,6 +90,7 @@ import ProductDetails from './Components/UserPanel/Product/ProductDetails/Produc
 import MyOrders from './Components/UserPanel/Product/MyOrders/MyOrders';
 import OrderDetails from './Components/UserPanel/Product/MyOrders/OrderDetails';
 import CouponReport from './Components/Admin/Coupon/CouponReport/CouponReport';
+import DiscountWalletTransaction from './Components/Admin/Coupon/DiscountWalletTransaction/DiscountWalletTransaction';
 import DiscountCoupon from './Components/UserPanel/Coupon/DiscountCoupon/DiscountCoupon';
 import CouponTransactionHistory from './Components/UserPanel/Coupon/TransactionHistory/TransactionHistory';
 import JoiningPackageAdmin from './Components/Admin/ProductsPackage/JoiningPackage/JoiningPackageAdmin';
@@ -348,6 +349,7 @@ function App() {
 
           <Route path="coupon/coupon-report" element={<CouponReport />} />
           <Route path="admin/coupon/coupon-report" element={<CouponReport />} />
+          <Route path="coupon/discount-wallet-transaction" element={<DiscountWalletTransaction />} />
 
           <Route path="products-package/Joining-Package" element={<JoiningPackageAdmin />} />
           <Route path="products-package/Joining-Package/add-new" element={<AddJoiningPackage />} />

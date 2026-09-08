@@ -137,11 +137,11 @@ function UpdateProfile() {
               {/* Personal Details */}
               <div className="register-field">
                 <label htmlFor="fullName">Full Name</label>
-                <input id="fullName" name="fullName" value={form.fullName} onChange={handleChange} type="text" placeholder="Full Name" />
+                <input id="fullName" name="fullName" value={form.fullName} readOnly style={{ backgroundColor: 'var(--bg-card, #1e2730)', cursor: 'not-allowed', opacity: 0.7 }} type="text" placeholder="Full Name" />
               </div>
               <div className="register-field">
                 <label htmlFor="mobile">Mobile</label>
-                <input id="mobile" name="mobile" value={form.mobile} onChange={handleChange} type="tel" placeholder="Mobile" />
+                <input id="mobile" name="mobile" value={form.mobile} readOnly style={{ backgroundColor: 'var(--bg-card, #1e2730)', cursor: 'not-allowed', opacity: 0.7 }} type="tel" placeholder="Mobile" />
               </div>
               <div className="register-field">
                 <label htmlFor="email">Email</label>

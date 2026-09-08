@@ -21,6 +21,7 @@ function KYCRequest() {
   const [formData, setFormData] = useState(initialFormData);
   const [aadharFrontImage, setAadharFrontImage] = useState('');
   const [aadharBackImage, setAadharBackImage] = useState('');
+  const [kycStatus, setKycStatus] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -28,6 +29,7 @@ function KYCRequest() {
       try {
         const response = await getProfile();
         const data = response.data || {};
+        setKycStatus(data.kycStatus || 'NOT_SUBMITTED');
 
         setFormData({
           bankName: data.bankDetails?.bankName || '',
@@ -69,6 +71,13 @@ function KYCRequest() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!formData.aadharCardNumber || !formData.aadharCardNumber.trim()) {
+      return alert('Aadhar Card Number is required');
+    }
+    if (!formData.panNo || !formData.panNo.trim()) {
+      return alert('PAN No is required');
+    }
 
     setIsSubmitting(true);
     try {
@@ -188,18 +197,20 @@ function KYCRequest() {
 
             <div className="kyc-row-two-col">
               <div className="kyc-col">
-                <label className="kyc-label" htmlFor="aadharCardNumber">Aadhar Card Number</label>
+                <label className="kyc-label" htmlFor="aadharCardNumber">Aadhar Card Number *</label>
                 <input
                   id="aadharCardNumber"
                   className="text-input"
                   placeholder="Enter Aadhar Card Number"
                   value={formData.aadharCardNumber}
                   onChange={handleChange('aadharCardNumber')}
+                  disabled={kycStatus === 'APPROVED' || kycStatus === 'PENDING'}
+                  style={kycStatus === 'APPROVED' || kycStatus === 'PENDING' ? { backgroundColor: 'var(--bg-card, #1e2730)', cursor: 'not-allowed', opacity: 0.7 } : {}}
                 />
               </div>
 
               <div className="kyc-col">
-                <label className="kyc-label" htmlFor="panNo">PAN No</label>
+                <label className="kyc-label" htmlFor="panNo">PAN No *</label>
                 <input
                   id="panNo"
                   className="text-input"
@@ -207,6 +218,8 @@ function KYCRequest() {
                   placeholder="Enter PAN number"
                   value={formData.panNo}
                   onChange={handleChange('panNo')}
+                  disabled={kycStatus === 'APPROVED' || kycStatus === 'PENDING'}
+                  style={kycStatus === 'APPROVED' || kycStatus === 'PENDING' ? { backgroundColor: 'var(--bg-card, #1e2730)', cursor: 'not-allowed', opacity: 0.7 } : {}}
                 />
               </div>
             </div>

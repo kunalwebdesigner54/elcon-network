@@ -8,6 +8,16 @@ import { getProfile, getSponsorDetails } from '../../../api/authService';
 import { useNavigate } from "react-router-dom";
 
 const GenerateEPin = () => {
+  const isAdmin = useMemo(() => {
+    try {
+      const storedUser = getUser() || {};
+      return ['admin', 'SUPER_ADMIN', 'SUB_ADMIN'].includes(storedUser.role) || 
+             ['SUPER_ADMIN', 'SUB_ADMIN'].includes(storedUser.adminType);
+    } catch (error) {
+      return false;
+    }
+  }, []);
+
   const navigate = useNavigate();
   const [walletBalance, setWalletBalance] = useState(0);
   const [packages, setPackages] = useState([]);
@@ -254,7 +264,18 @@ const GenerateEPin = () => {
 
           <div className="buyepin-input-group">
             <label>Generated For ID</label>
-            <input type="text" name="generatedForId" value={form.generatedForId} disabled style={{ backgroundColor: 'var(--bg-card, #1e2730)', cursor: 'not-allowed', opacity: 0.7 }} />
+            <input 
+              type="text" 
+              name="generatedForId" 
+              value={form.generatedForId} 
+              onChange={isAdmin ? handleChange : undefined}
+              disabled={!isAdmin} 
+              style={{ 
+                backgroundColor: isAdmin ? 'transparent' : 'var(--bg-card, #1e2730)', 
+                cursor: isAdmin ? 'text' : 'not-allowed', 
+                opacity: isAdmin ? 1 : 0.7 
+              }} 
+            />
             <div style={{ marginTop: '5px', fontSize: '13px', fontWeight: 'bold' }}>
               {memberNameLoading && <span style={{ color: '#888' }}>Fetching name...</span>}
               {!memberNameLoading && memberNameError && <span style={{ color: '#ef4444' }}>{memberNameError}</span>}
