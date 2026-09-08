@@ -4,16 +4,16 @@ import { getMemberPerformance } from '../../../api/membersService';
 import { getUserDashboard } from '../../../api/dashboardService';
 
 const rankProgressionData = [
-  { earning: 300, name: 'STARTER', targetEarning: 3000, upgradeAmount: 300 },
-  { earning: 1000, name: 'ACHIEVER', targetEarning: 25000, upgradeAmount: 1000 },
-  { earning: 2000, name: 'STAR', targetEarning: 50000, upgradeAmount: 2000 },
-  { earning: 4000, name: 'BRONZE', targetEarning: 100000, upgradeAmount: 4000 },
-  { earning: 8000, name: 'SILVER', targetEarning: 500000, upgradeAmount: 8000 },
-  { earning: 16000, name: 'GOLD', targetEarning: 1000000, upgradeAmount: 16000 },
-  { earning: 32000, name: 'PLATINUM', targetEarning: 2500000, upgradeAmount: 32000 },
-  { earning: 64000, name: 'EMERALD', targetEarning: 5000000, upgradeAmount: 64000 },
-  { earning: 128000, name: 'DIAMOND', targetEarning: 10000000, upgradeAmount: 128000 },
-  { earning: 256000, name: 'CROWN DIAMOND', targetEarning: 50000000, upgradeAmount: 256000 },
+  { earning: 300, name: 'STARTER', targetEarning: 3000, upgradeAmount: 300, directs: 10 },
+  { earning: 1000, name: 'ACHIEVER', targetEarning: 25000, upgradeAmount: 1000, directs: 10 },
+  { earning: 2000, name: 'STAR', targetEarning: 50000, upgradeAmount: 2000, directs: 10 },
+  { earning: 4000, name: 'BRONZE', targetEarning: 100000, upgradeAmount: 4000, directs: 10 },
+  { earning: 8000, name: 'SILVER', targetEarning: 500000, upgradeAmount: 8000, directs: 10 },
+  { earning: 16000, name: 'GOLD', targetEarning: 1000000, upgradeAmount: 16000, directs: 10 },
+  { earning: 32000, name: 'PLATINUM', targetEarning: 2500000, upgradeAmount: 32000, directs: 10 },
+  { earning: 64000, name: 'EMERALD', targetEarning: 5000000, upgradeAmount: 64000, directs: 10 },
+  { earning: 128000, name: 'DIAMOND', targetEarning: 10000000, upgradeAmount: 128000, directs: 10 },
+  { earning: 256000, name: 'CROWN DIAMOND', targetEarning: 50000000, upgradeAmount: 256000, directs: 10 },
 ];
 
 const rankOptions = rankProgressionData.map((rank) => rank.name);
@@ -78,17 +78,51 @@ function UserMyRank() {
             {rankProgressionData.map((rank, index) => (
               <div
                 key={index}
-                className="user-rank-item"
+                className={`user-rank-item ${expandedRank === index ? 'expanded' : ''}`}
+                style={{
+                  border: expandedRank === index ? '1px solid #00f2fe' : '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px',
+                  marginBottom: '10px',
+                  background: expandedRank === index ? 'rgba(0, 242, 254, 0.05)' : 'transparent',
+                  overflow: 'hidden'
+                }}
               >
-                <div className="user-rank-item-header">
-                  <div className="user-rank-circle">
-                    {index + 1}
+                <div 
+                  className="user-rank-item-header" 
+                  onClick={() => toggleRank(index)}
+                  style={{ 
+                    cursor: 'pointer', 
+                    padding: '12px 15px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className="user-rank-circle" style={{
+                      width: '32px', height: '32px', borderRadius: '50%', background: 'var(--gradient-primary)', 
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', marginRight: '15px'
+                    }}>
+                      {index + 1}
+                    </div>
+                    <div className="user-rank-info" style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="user-rank-item-earning" style={{ fontSize: '12px', color: '#00f2fe' }}>{rank.earning}</span>
+                      <span className="user-rank-item-name" style={{ fontWeight: 'bold', fontSize: '14px' }}>{rank.name}</span>
+                    </div>
                   </div>
-                  <div className="user-rank-info">
-                    <span className="user-rank-item-name">{rank.name}</span>
-                    <span className="user-rank-item-earning">{formatCurrency(rank.earning)}</span>
+                  <div style={{ color: '#00f2fe', fontSize: '12px' }}>
+                    {expandedRank === index ? '▼' : '▶'}
                   </div>
                 </div>
+
+                {expandedRank === index && (
+                  <div className="user-rank-item-body" style={{ padding: '0 15px 15px 62px', color: '#a0aec0', fontSize: '13px', lineHeight: '1.5' }}>
+                    <p style={{ margin: '0 0 5px 0' }}>Target Earning: {formatCurrency(rank.targetEarning)}</p>
+                    <p style={{ margin: 0 }}>
+                      Achieve this prestigious rank with {rank.directs} Active Directs and {formatCurrency(rank.upgradeAmount)} id upgrade donation contribution.
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
