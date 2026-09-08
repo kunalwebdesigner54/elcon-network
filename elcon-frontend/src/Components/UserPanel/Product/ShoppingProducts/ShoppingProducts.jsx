@@ -52,23 +52,25 @@ function ShoppingProducts() {
       <div className="user-panel user-product-panel">
         <h2 className="page-heading">Shopping Products</h2>
 
-        <div className="product-filter-bar" style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ flex: 1, minWidth: '200px', padding: '10px 15px', borderRadius: '8px', background: 'var(--bg-dark)', color: 'var(--text-main)', border: '1px solid var(--glass-border-light)', outline: 'none' }}
-          />
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{ padding: '10px 15px', borderRadius: '8px', background: 'var(--bg-dark)', color: 'var(--text-main)', border: '1px solid var(--glass-border-light)', outline: 'none', minWidth: '150px' }}
-          >
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat === 'All' ? 'All Categories' : cat}</option>
-            ))}
-          </select>
+        <div className="product-filter-wrapper" style={{ background: 'var(--panel-bg, #0B132B)', padding: '15px', borderRadius: '12px', marginBottom: '20px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <div className="product-filter-bar" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              style={{ flex: '0 0 auto', minWidth: '160px', padding: '12px 15px', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', outline: 'none', cursor: 'pointer' }}
+            >
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat === 'All' ? 'All Categories' : cat}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ flex: 1, minWidth: '200px', padding: '12px 15px', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', outline: 'none' }}
+            />
+          </div>
         </div>
 
         <div className="user-product-grid">
