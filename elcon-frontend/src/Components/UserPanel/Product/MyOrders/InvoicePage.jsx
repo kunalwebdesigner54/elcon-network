@@ -49,23 +49,6 @@ function InvoicePage() {
     alert('Download functionality can be integrated with jsPDF library');
   };
 
-  // Extract shipping info
-  const getShippingInfo = () => {
-    if (invoiceData?.shippingInformation) {
-      const info = {};
-      invoiceData.shippingInformation.forEach((field) => {
-        if (field.label === 'Name') info.name = field.value;
-        if (field.label === 'Contact No') info.contact = field.value;
-        if (field.label === 'Address') info.address = field.value;
-        if (field.label === 'Area') info.area = field.value;
-        if (field.label === 'State,City') info.city = field.value;
-        if (field.label === 'Pin Code') info.pincode = field.value;
-      });
-      return info;
-    }
-    return {};
-  };
-
   if (loading || !invoiceData) {
     return (
       <div className="invoice-container">
@@ -77,8 +60,6 @@ function InvoicePage() {
       </div>
     );
   }
-
-  const shippingInfo = getShippingInfo();
 
   // Calculate subtotal and other values
   const items = Array.isArray(invoiceData.items) ? invoiceData.items : [];
@@ -169,42 +150,12 @@ function InvoicePage() {
           <div className="invoice-shipping-section">
             <div className="invoice-section-title">Shipping Information</div>
             <div className="invoice-shipping-grid">
-              {shippingInfo.name && (
-                <div className="invoice-info-row">
-                  <span className="invoice-info-label">Name :</span>
-                  <span className="invoice-info-value">{shippingInfo.name}</span>
+              {invoiceData?.shippingInformation?.map((field, index) => (
+                <div className="invoice-info-row" key={index}>
+                  <span className="invoice-info-label">{field.label} :</span>
+                  <span className="invoice-info-value">{field.value}</span>
                 </div>
-              )}
-              {shippingInfo.address && (
-                <div className="invoice-info-row">
-                  <span className="invoice-info-label">Address :</span>
-                  <span className="invoice-info-value">{shippingInfo.address}</span>
-                </div>
-              )}
-              {shippingInfo.area && (
-                <div className="invoice-info-row">
-                  <span className="invoice-info-label">Area :</span>
-                  <span className="invoice-info-value">{shippingInfo.area}</span>
-                </div>
-              )}
-              {shippingInfo.city && (
-                <div className="invoice-info-row">
-                  <span className="invoice-info-label">City :</span>
-                  <span className="invoice-info-value">{shippingInfo.city}</span>
-                </div>
-              )}
-              {shippingInfo.pincode && (
-                <div className="invoice-info-row">
-                  <span className="invoice-info-label">Pincode No :</span>
-                  <span className="invoice-info-value">{shippingInfo.pincode}</span>
-                </div>
-              )}
-              {shippingInfo.contact && (
-                <div className="invoice-info-row">
-                  <span className="invoice-info-label">Contact No :</span>
-                  <span className="invoice-info-value">{shippingInfo.contact}</span>
-                </div>
-              )}
+              ))}
             </div>
           </div>
 
