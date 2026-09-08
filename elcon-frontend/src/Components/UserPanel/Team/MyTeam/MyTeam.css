@@ -3,49 +3,40 @@
 .downline-filters {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px;
-	margin: 12px 0;
+	gap: 10px;
+	margin-bottom: 20px;
+	background: var(--panel-bg, #0B132B);
+	padding: 15px;
+	border-radius: 12px;
+	border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .downline-filters input,
 .downline-filters select {
-	border: 1px solid var(--glass-border);
-	border-radius: var(--border-radius-sm);
-	padding: 8px 10px;
-	min-height: 38px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 8px;
+	padding: 12px 15px;
 	font-size: 14px;
-	background: var(--bg-input);
-	color: var(--text-main);
-}
-
-.downline-pagination {
-	margin-top: 14px;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
-	justify-content: center;
-}
-
-.downline-page-btn {
-	min-width: 34px;
-	height: 34px;
-	border: 1px solid var(--glass-border);
-	border-radius: var(--border-radius-sm);
-	background: rgba(255, 255, 255, 0.05);
-	color: var(--text-muted);
-	cursor: pointer;
-	font-weight: 600;
-}
-
-.downline-page-btn:disabled {
-	opacity: 0.45;
-	cursor: not-allowed;
-}
-
-.downline-page-btn-active {
-	background: var(--gradient-primary);
+	background: rgba(0, 0, 0, 0.2);
 	color: #fff;
-	border-color: transparent;
+	flex: 1 1 160px;
+	outline: none;
+	min-height: auto;
+}
+
+.downline-filters input::placeholder {
+	color: #a0aec0;
+	text-transform: uppercase;
+}
+
+.downline-filters select option {
+	background: #0B132B;
+	color: #fff;
+}
+
+.downline-filters input:focus,
+.downline-filters select:focus {
+	border-color: #0096ff;
 }
 
 @media (max-width: 768px) {

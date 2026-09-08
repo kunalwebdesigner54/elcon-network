@@ -174,22 +174,22 @@ function MyTeam() {
               </span>
               
               <div className="pagination" style={{ margin: 0 }}>
-                <button className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>«</button>
-              <button className="page-btn" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>‹</button>
+                <button className="user-page-btn" onClick={() => setPage(1)} disabled={page === 1}>«</button>
+              <button className="user-page-btn" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>‹</button>
               {[...Array(Math.min(totalPages, 7))].map((_, i) => {
                 const p = i + 1;
                 return (
                   <button
                     key={p}
-                    className={`page-btn-active' : ''}`}
+                    className={`user-page-btn ${page === p ? 'active' : ''}`}
                     onClick={() => setPage(p)}
                   >
                     {p}
                   </button>
                 );
               })}
-                <button className="page-btn" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>›</button>
-                <button className="page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages}>»</button>
+                <button className="user-page-btn" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>›</button>
+                <button className="user-page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages}>»</button>
               </div>
             </div>
           </>
