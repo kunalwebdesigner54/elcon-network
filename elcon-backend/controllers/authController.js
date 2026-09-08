@@ -7,6 +7,7 @@ const Epin = require('../models/Epin');
 const SiteSetting = require('../models/SiteSetting');
 const Product = require('../models/Product');
 const EpinPackage = require('../models/EpinPackage');
+const Order = require('../models/Order');
 const crypto = require('crypto');
 
 const sendPasswordResetEmail = async (email, token) => {
@@ -272,6 +273,62 @@ exports.registerUser = async (req, res) => {
         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,
       });
       await foundEpin.save();
+    }
+
+    // Automatically create an Order for the joining package
+    try {
+      let orderProductDoc = await Product.findOne({
+        type: 'joining',
+        productName: new RegExp(`^${joiningPackage.trim()}$`, 'i'),
+      }).lean();
+
+      let orderItem = null;
+
+      if (orderProductDoc) {
+        orderItem = {
+          productId: orderProductDoc._id,
+          productCode: orderProductDoc.productCode || 'JOINING',
+          name: orderProductDoc.productName,
+          price: joiningAmount || orderProductDoc.dpPrice || orderProductDoc.mrp || 350,
+          quantity: 1,
+          totalPrice: joiningAmount || orderProductDoc.dpPrice || orderProductDoc.mrp || 350,
+          imageKey: orderProductDoc.imageKey || ''
+        };
+      } else {
+        // Fallback for EpinPackage which might not exist in Products collection
+        const mongoose = require('mongoose');
+        orderItem = {
+          productId: new mongoose.Types.ObjectId(), // Dummy ID to satisfy schema
+          productCode: 'EPIN-PKG',
+          name: joiningPackage,
+          price: joiningAmount || 350,
+          quantity: 1,
+          totalPrice: joiningAmount || 350,
+          imageKey: ''
+        };
+      }
+
+      const orderNo = `ORD${Math.floor(100000 + Math.random() * 900000)}`;
+      const orderDate = new Date().toLocaleString('en-IN', {
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,
+      });
+
+      await Order.create({
+        userId: user._id,
+        orderNo: orderNo,
+        orderDate: orderDate,
+        paymentMode: epin ? 'E-Pin' : 'E-wallet',
+        paymentStatus: 'Paid',
+        orderStatus: 'Pending',
+        remark: 'Joining Package Order',
+        orderItems: 1,
+        totalPrice: orderItem.totalPrice,
+        finalTotal: orderItem.totalPrice,
+        items: [orderItem],
+      });
+    } catch (orderErr) {
+      console.error('Failed to create order on joining:', orderErr);
+      // We don't fail the registration if order creation fails, just log it.
     }
 
     // Generate JWT token
