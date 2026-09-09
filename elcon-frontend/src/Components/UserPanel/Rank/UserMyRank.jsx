@@ -31,10 +31,10 @@ function UserMyRank() {
   useEffect(() => {
     Promise.all([getUserDashboard(), getRankHolders()])
       .then(([dashboardResponse, rankHoldersResponse]) => {
-        setRankRows(Array.isArray(rankHoldersResponse.data) ? rankHoldersResponse.data : []);
-        setCurrentRankName(dashboardResponse.data?.rank || '---');
-        setIsRankVisible(dashboardResponse.data?.isRankVisible !== false);
-        const totalEarning = String(dashboardResponse.data?.totalEarning || '0').replace(/[^0-9.]/g, '');
+        setRankRows(Array.isArray(rankHoldersResponse?.data?.data) ? rankHoldersResponse.data.data : []);
+        setCurrentRankName(dashboardResponse?.data?.data?.rank || '---');
+        setIsRankVisible(dashboardResponse?.data?.data?.isRankVisible !== false);
+        const totalEarning = String(dashboardResponse?.data?.data?.totalEarning || '0').replace(/[^0-9.]/g, '');
         setCurrentEarning(Number(totalEarning) || 0);
       })
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load rank data.'))
@@ -54,6 +54,11 @@ function UserMyRank() {
   const nextRank = rankProgressionData[Math.min(currentRankIndex + 1, rankProgressionData.length - 1)] || currentRank;
 
   const formatCurrency = (value) => `₹${value.toLocaleString('en-IN')}`;
+
+  const getTargetForRank = (rankName) => {
+    const found = rankProgressionData.find((r) => r.name === rankName);
+    return found ? found.targetEarning : rankProgressionData[0].targetEarning;
+  };
 
   const toggleRank = (rankIndex) => {
     setExpandedRank(expandedRank === rankIndex ? null : rankIndex);
@@ -105,10 +110,10 @@ function UserMyRank() {
                     }}>
                       {index + 1}
                     </div>
-                    <div className="user-rank-info" style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="user-rank-item-earning" style={{ fontSize: '12px', color: '#00f2fe' }}>{rank.earning}</span>
-                      <span className="user-rank-item-name" style={{ fontWeight: 'bold', fontSize: '14px' }}>{rank.name}</span>
-                    </div>
+                     <div className="user-rank-info" style={{ display: 'flex', flexDirection: 'column' }}>
+                       <span className="user-rank-item-earning" style={{ fontSize: '12px', color: '#00f2fe' }}>Target: {formatCurrency(rank.targetEarning)}</span>
+                       <span className="user-rank-item-name" style={{ fontWeight: 'bold', fontSize: '14px' }}>{rank.name}</span>
+                     </div>
                   </div>
                   <div style={{ color: '#00f2fe', fontSize: '12px' }}>
                     {expandedRank === index ? '▼' : '▶'}
@@ -212,16 +217,17 @@ function UserMyRank() {
                 <th>DIRECTS</th>
                 <th>UPGRADE</th>
                 <th>EARNING</th>
+                <th>TARGET</th>
                 <th>RANK</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9}>Loading...</td></tr>
+                <tr><td colSpan={10}>Loading...</td></tr>
               ) : error ? (
-                <tr><td colSpan={9}>{error}</td></tr>
+                <tr><td colSpan={10}>{error}</td></tr>
               ) : filteredData.length === 0 ? (
-                <tr><td colSpan={9}>No rank holders found.</td></tr>
+                <tr><td colSpan={10}>No rank holders found.</td></tr>
               ) : filteredData.map((row, index) => (
                 <tr key={row.memberId || index}>
                   <td>{row.sNo || index + 1}</td>
@@ -229,9 +235,10 @@ function UserMyRank() {
                   <td>{row.memberId}</td>
                   <td>{row.memberName}</td>
                   <td>{row.city || '---'}</td>
-                  <td>{row.totalTeamCount ?? row.directs ?? 0}</td>
+                  <td>{row.directsCount ?? row.totalTeamCount ?? 0}</td>
                   <td>{row.unlockLevel || row.joiningLevel || '---'}</td>
                   <td>{typeof row.totalIncome === 'number' ? row.totalIncome : row.earning || '---'}</td>
+                  <td>{formatCurrency(getTargetForRank(row.rank))}</td>
                   <td>{row.rank}</td>
                 </tr>
               ))}

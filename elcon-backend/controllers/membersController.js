@@ -669,19 +669,18 @@ exports.getRankHolders = async (req, res) => {
         User.updateOne({ memberId: user.memberId }, { $set: { rank } }).exec();
       }
 
-      if (rank !== '---') {
-        rankHolders.push({
-          sNo: sNo++,
-          memberId: user.memberId || '---',
-          memberName: user.name || '---',
-          joinDate: formatDate(user.createdAt),
-          city: user.city || '---',
-          totalTeamCount: stats.totalTeamCount,
-          unlockLevel,
-          totalIncome,
-          rank,
-        });
-      }
+      rankHolders.push({
+        sNo: sNo++,
+        memberId: user.memberId || '---',
+        memberName: user.name || '---',
+        joinDate: formatDate(user.createdAt),
+        city: user.city || '---',
+        directsCount,
+        totalTeamCount: stats.totalTeamCount,
+        unlockLevel,
+        totalIncome,
+        rank,
+      });
     });
 
     res.status(200).json({
