@@ -326,6 +326,7 @@ exports.getAllMembersList = async (req, res) => {
       levelDepth: user.role === 'admin' ? 0 : ((user.levelDepth !== undefined && user.levelDepth !== -1) ? user.levelDepth : 'INVALID'),
       directCount: directCountMap[user.memberId] || 0,
       upgradeLevel: upgradeLevelMap[user.memberId] || 0,
+      rank: user.rank || '---',
       city: user.city || '---',
       status: user.accountStatus || 'ACTIVE',
       password: user.plainPassword || '********',
@@ -539,6 +540,23 @@ exports.getMemberPerformance = async (req, res) => {
     ]);
     const upgradeLevelMap = new Map(completedDonations.map((donation) => [donation._id, donation.maxLevel]));
 
+    const [levelIncomeAgg, repurchaseIncomeAgg, donationReceivedAgg] = await Promise.all([
+      LevelIncome.aggregate([
+        { $group: { _id: '$recipientMemberId', total: { $sum: '$amount' } } }
+      ]),
+      RepurchaseIncome.aggregate([
+        { $group: { _id: '$recipientMemberId', total: { $sum: '$amount' } } }
+      ]),
+      Donation.aggregate([
+        { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
+        { $group: { _id: '$toMemberId', total: { $sum: '$amount' } } }
+      ])
+    ]);
+
+    const levelIncomeMap = new Map(levelIncomeAgg.map((item) => [item._id, item.total]));
+    const repurchaseIncomeMap = new Map(repurchaseIncomeAgg.map((item) => [item._id, item.total]));
+    const donationReceivedMap = new Map(donationReceivedAgg.map((item) => [item._id, item.total]));
+
     const rows = users.map((user, index) => {
       const stats = statsMap.get(user.memberId);
       const descendants = stats.descendants;
@@ -547,9 +565,9 @@ exports.getMemberPerformance = async (req, res) => {
       const totalTeamCount = stats.totalTeamCount;
       const activeTeamCount = activeDescendants.length;
       const inactiveTeamCount = inactiveDescendants.length;
-      const levelIncome = totalTeamCount * 100;
-      const repurchaseIncome = totalTeamCount * 100;
-      const donationIncome = totalTeamCount * 50;
+      const levelIncome = levelIncomeMap.get(user.memberId) || 0;
+      const repurchaseIncome = repurchaseIncomeMap.get(user.memberId) || 0;
+      const donationIncome = donationReceivedMap.get(user.memberId) || 0;
       const totalIncome = levelIncome + repurchaseIncome + donationIncome;
 
       const directsCount = descendants.filter((d) => d.sponsorId === user.memberId).length;
@@ -696,9 +714,7 @@ exports.getTreeNode = async (req, res) => {
 
 exports.getMemberProfile = async (req, res) => {
   try {
-    const user = await User.findOne({ memberId: req.params.memberId })
-      .select('+plainPassword +plainTransactionPassword')
-      .lean();
+    const user = await User.findOne({ memberId: req.params.memberId }).lean();
     if (!user) return res.status(404).json({ success: false, message: 'Member not found' });
     res.status(200).json({ success: true, data: user });
   } catch (error) {
