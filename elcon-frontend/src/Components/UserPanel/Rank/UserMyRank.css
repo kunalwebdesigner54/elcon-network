@@ -21,9 +21,10 @@
 
 .user-rank-panel {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 32px;
+  align-items: start;
 }
 
 /* Rank Progression Section */
@@ -34,6 +35,8 @@
   border-radius: var(--border-radius);
   padding: 24px;
   box-shadow: var(--glass-shadow);
+  max-height: 700px;
+  overflow-y: auto;
 }
 
 .user-rank-section-title {
@@ -181,7 +184,6 @@
   letter-spacing: 1px;
 }
 
-.user-rank-earning-display,
 .user-rank-next-earning-display {
   font-size: 36px;
   font-weight: 800;
@@ -190,6 +192,26 @@
   border-bottom: 1px dashed var(--glass-border-light);
   padding-bottom: 20px;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.user-rank-target-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-rank-target-amount {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--user-primary);
+  white-space: nowrap;
 }
 
 .user-rank-progress-bar {
@@ -458,6 +480,14 @@
     font-size: 28px;
   }
 
+  .user-rank-target-label {
+    font-size: 12px;
+  }
+
+  .user-rank-target-amount {
+    font-size: 20px;
+  }
+
   .user-rank-data-table th,
   .user-rank-data-table td {
     padding: 8px;
@@ -542,6 +572,14 @@
   .user-rank-next-earning-display {
     font-size: 24px;
     margin: 8px 0;
+  }
+
+  .user-rank-target-label {
+    font-size: 11px;
+  }
+
+  .user-rank-target-amount {
+    font-size: 18px;
   }
 
   .user-rank-card-title {

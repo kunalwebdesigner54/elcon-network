@@ -157,7 +157,8 @@ function UserMyRank() {
               </p>
             )}
             <div className="user-rank-earning-display">
-              ₹{currentEarning.toLocaleString('en-IN')}
+              <span className="user-rank-target-label">Current Earning</span>
+              <span className="user-rank-target-amount">₹{currentEarning.toLocaleString('en-IN')}</span>
             </div>
             <div className="user-rank-progress-bar">
               <div
@@ -176,7 +177,8 @@ function UserMyRank() {
               {nextRank.name}
             </div>
             <div className="user-rank-next-earning-display">
-              ₹{nextRank.targetEarning.toLocaleString('en-IN')}
+              <span className="user-rank-target-label">Target Income</span>
+              <span className="user-rank-target-amount">₹{nextRank.targetEarning.toLocaleString('en-IN')}</span>
             </div>
             <div className="user-rank-progress-bar">
               <div
