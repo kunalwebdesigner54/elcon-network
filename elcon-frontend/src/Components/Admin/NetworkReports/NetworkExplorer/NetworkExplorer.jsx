@@ -12,6 +12,8 @@ function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
   const isLoading = node.isLoading || false;
   const avatar = String(node.gender || '').toLowerCase() === 'female' ? femaleAvatar : maleAvatar;
   
+  const expandBtnClass = `node-expand-btn${isLoading ? ' loading' : ''}`;
+
   return (
     <li className="org-tree-li">
       <div className="node-card">
@@ -23,33 +25,35 @@ function NetworkTreeNode({ node, onToggleExpand, computedDepth = 0 }) {
         <div className="node-stats-list">
           <div className="stat-row">
             <span className="stat-label">DIRECT</span>
-            <span className="stat-colon">:</span>
+            <span className="stat-separator">:</span>
             <span className="stat-value">{node.totalDirect || 0}</span>
           </div>
           <div className="stat-row">
             <span className="stat-label">UPGRADE</span>
-            <span className="stat-colon">:</span>
+            <span className="stat-separator">:</span>
             <span className="stat-value">{node.upgradeLevel || 0}</span>
           </div>
           <div className="stat-row">
             <span className="stat-label">DEPTH</span>
-            <span className="stat-colon">:</span>
+            <span className="stat-separator">:</span>
             <span className="stat-value">{computedDepth}</span>
           </div>
           <div className="stat-row">
             <span className="stat-label">TEAM</span>
-            <span className="stat-colon">:</span>
+            <span className="stat-separator">:</span>
             <span className="stat-value">{node.teamSize || 0}</span>
           </div>
         </div>
 
         {hasChildren && (
           <div 
-            className="node-expand-btn"
+            className={expandBtnClass}
             onClick={() => onToggleExpand(node)}
             title={isExpanded ? "Collapse" : "Expand"}
+            aria-label={isExpanded ? "Collapse node" : "Expand node"}
+            aria-expanded={isExpanded}
           >
-            {isLoading ? '...' : (isExpanded ? '-' : '+')}
+            {isLoading ? '' : (isExpanded ? '−' : '+')}
           </div>
         )}
       </div>
@@ -165,7 +169,7 @@ function NetworkExplorer() {
       </h1>
 
       <div className="panel" style={{ borderRadius: '28px', padding: '24px' }}>
-        {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
+        {error && <div className="error-text">{error}</div>}
         
         {/* Filter Row */}
         <div className="network-search-wrapper">
@@ -194,7 +198,7 @@ function NetworkExplorer() {
         {/* Tree Container */}
         <div className="network-tree-container tree-root">
           {loading && !rootNode ? (
-            <div style={{ color: '#666', padding: '20px', textAlign: 'center' }}>Loading network data...</div>
+            <div className="loading-text">Loading network data...</div>
           ) : rootNode ? (
             <div className="org-tree">
               <ul className="org-tree-ul">
@@ -206,7 +210,7 @@ function NetworkExplorer() {
               </ul>
             </div>
           ) : (
-            <div style={{ color: '#999', padding: '20px', textAlign: 'center' }}>No network data available</div>
+            <div className="empty-state">No network data available</div>
           )}
         </div>
       </div>
