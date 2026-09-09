@@ -1,6 +1,6 @@
 import './UserMyRank.css';
 import { useEffect, useMemo, useState } from 'react';
-import { getMemberPerformance } from '../../../api/membersService';
+import { getRankHolders } from '../../../api/membersService';
 import { getUserDashboard } from '../../../api/dashboardService';
 
 const rankProgressionData = [
@@ -29,9 +29,9 @@ function UserMyRank() {
   const [currentEarning, setCurrentEarning] = useState(0);
 
   useEffect(() => {
-    Promise.all([getUserDashboard(), getMemberPerformance()])
-      .then(([dashboardResponse, performanceResponse]) => {
-        setRankRows(Array.isArray(performanceResponse.data) ? performanceResponse.data : []);
+    Promise.all([getUserDashboard(), getRankHolders()])
+      .then(([dashboardResponse, rankHoldersResponse]) => {
+        setRankRows(Array.isArray(rankHoldersResponse.data) ? rankHoldersResponse.data : []);
         setCurrentRankName(dashboardResponse.data?.rank || '---');
         setIsRankVisible(dashboardResponse.data?.isRankVisible !== false);
         const totalEarning = String(dashboardResponse.data?.totalEarning || '0').replace(/[^0-9.]/g, '');

@@ -516,17 +516,18 @@ exports.getTeamTree = async (req, res) => {
   }
 };
 
-const calculateRank = (directsCount, upgradeLevel, totalIncome) => {
-  if (totalIncome >= 256000 && upgradeLevel >= 10 && directsCount >= 10) return 'CROWN DIAMOND';
-  if (totalIncome >= 128000 && upgradeLevel >= 9 && directsCount >= 9) return 'DIAMOND';
-  if (totalIncome >= 64000 && upgradeLevel >= 8 && directsCount >= 8) return 'EMERALD';
-  if (totalIncome >= 32000 && upgradeLevel >= 7 && directsCount >= 7) return 'PLATINUM';
-  if (totalIncome >= 16000 && upgradeLevel >= 6 && directsCount >= 6) return 'GOLD';
-  if (totalIncome >= 8000 && upgradeLevel >= 5 && directsCount >= 5) return 'SILVER';
-  if (totalIncome >= 4000 && upgradeLevel >= 4 && directsCount >= 4) return 'BRONZE';
-  if (totalIncome >= 2000 && upgradeLevel >= 3 && directsCount >= 3) return 'STAR';
-  if (totalIncome >= 1000 && upgradeLevel >= 2 && directsCount >= 2) return 'ACHIEVER';
-  if (totalIncome >= 300 && upgradeLevel >= 1 && directsCount >= 1) return 'STARTER';
+const calculateRank = (activeDirectsCount, upgradeLevel, totalIncome) => {
+  // All 3 conditions must be met: targetEarning, 10 active directs, and self-upgrade level
+  if (totalIncome >= 50000000 && upgradeLevel >= 10 && activeDirectsCount >= 10) return 'CROWN DIAMOND';
+  if (totalIncome >= 10000000 && upgradeLevel >= 9 && activeDirectsCount >= 10) return 'DIAMOND';
+  if (totalIncome >= 5000000 && upgradeLevel >= 8 && activeDirectsCount >= 10) return 'EMERALD';
+  if (totalIncome >= 2500000 && upgradeLevel >= 7 && activeDirectsCount >= 10) return 'PLATINUM';
+  if (totalIncome >= 1000000 && upgradeLevel >= 6 && activeDirectsCount >= 10) return 'GOLD';
+  if (totalIncome >= 500000 && upgradeLevel >= 5 && activeDirectsCount >= 10) return 'SILVER';
+  if (totalIncome >= 100000 && upgradeLevel >= 4 && activeDirectsCount >= 10) return 'BRONZE';
+  if (totalIncome >= 50000 && upgradeLevel >= 3 && activeDirectsCount >= 10) return 'STAR';
+  if (totalIncome >= 25000 && upgradeLevel >= 2 && activeDirectsCount >= 10) return 'ACHIEVER';
+  if (totalIncome >= 3000 && upgradeLevel >= 1 && activeDirectsCount >= 10) return 'STARTER';
   return '---';
 };
 
@@ -570,7 +571,7 @@ exports.getMemberPerformance = async (req, res) => {
       const donationIncome = donationReceivedMap.get(user.memberId) || 0;
       const totalIncome = levelIncome + repurchaseIncome + donationIncome;
 
-      const directsCount = descendants.filter((d) => d.sponsorId === user.memberId).length;
+      const directsCount = descendants.filter((d) => d.sponsorId === user.memberId && d.accountStatus === 'ACTIVE').length;
       const unlockLevel = upgradeLevelMap.get(user.memberId) ?? 0;
       const calculatedRank = calculateRank(directsCount, unlockLevel, totalIncome);
 
@@ -612,6 +613,85 @@ exports.getMemberPerformance = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching member performance',
+      error: error.message,
+    });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/members/rank-holders  — user-facing rank holders list (no sensitive data)
+// ─────────────────────────────────────────────────────────────────────────────
+exports.getRankHolders = async (req, res) => {
+  try {
+    const { users, statsMap } = await getAllUsersTeamStats();
+    const completedDonations = await Donation.aggregate([
+      { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
+      { $group: { _id: '$fromMemberId', maxLevel: { $max: '$level' } } }
+    ]);
+    const upgradeLevelMap = new Map(completedDonations.map((donation) => [donation._id, donation.maxLevel]));
+
+    const [levelIncomeAgg, repurchaseIncomeAgg, donationReceivedAgg] = await Promise.all([
+      LevelIncome.aggregate([
+        { $group: { _id: '$recipientMemberId', total: { $sum: '$amount' } } }
+      ]),
+      RepurchaseIncome.aggregate([
+        { $group: { _id: '$recipientMemberId', total: { $sum: '$amount' } } }
+      ]),
+      Donation.aggregate([
+        { $match: { status: { $in: ['APPROVED', 'COMPLETED'] } } },
+        { $group: { _id: '$toMemberId', total: { $sum: '$amount' } } }
+      ])
+    ]);
+
+    const levelIncomeMap = new Map(levelIncomeAgg.map((item) => [item._id, item.total]));
+    const repurchaseIncomeMap = new Map(repurchaseIncomeAgg.map((item) => [item._id, item.total]));
+    const donationReceivedMap = new Map(donationReceivedAgg.map((item) => [item._id, item.total]));
+
+    const rankHolders = [];
+    let sNo = 1;
+
+    users.forEach((user) => {
+      const stats = statsMap.get(user.memberId);
+      if (!stats) return;
+
+      const descendants = stats.descendants;
+      const directsCount = descendants.filter((d) => d.sponsorId === user.memberId && d.accountStatus === 'ACTIVE').length;
+      const unlockLevel = upgradeLevelMap.get(user.memberId) ?? 0;
+      const levelIncome = levelIncomeMap.get(user.memberId) || 0;
+      const repurchaseIncome = repurchaseIncomeMap.get(user.memberId) || 0;
+      const donationIncome = donationReceivedMap.get(user.memberId) || 0;
+      const totalIncome = levelIncome + repurchaseIncome + donationIncome;
+
+      const rank = calculateRank(directsCount, unlockLevel, totalIncome);
+
+      // Also update rank in DB if changed
+      if (user.rank !== rank) {
+        User.updateOne({ memberId: user.memberId }, { $set: { rank } }).exec();
+      }
+
+      if (rank !== '---') {
+        rankHolders.push({
+          sNo: sNo++,
+          memberId: user.memberId || '---',
+          memberName: user.name || '---',
+          joinDate: formatDate(user.createdAt),
+          city: user.city || '---',
+          totalTeamCount: stats.totalTeamCount,
+          unlockLevel,
+          totalIncome,
+          rank,
+        });
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: rankHolders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching rank holders',
       error: error.message,
     });
   }

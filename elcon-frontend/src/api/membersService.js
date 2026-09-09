@@ -41,6 +41,11 @@ export const getMemberPerformance = async () => {
   return response.data;
 };
 
+export const getRankHolders = async () => {
+  const response = await apiClient.get('/members/rank-holders');
+  return response.data;
+};
+
 export const getMyDatewiseIncome = async () => {
   const response = await apiClient.get('/members/my-datewise-income');
   return response.data;

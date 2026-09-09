@@ -7,6 +7,7 @@ const {
   getAllMembersList,
   getMembersLocation,
   getMemberPerformance,
+  getRankHolders,
   getTeamTree,
   getTreeNode,
   getMemberProfile,
@@ -26,6 +27,7 @@ router.patch('/:memberId/block-status', authorize('admin'), updateBlockStatus);
 router.get('/all-members', authorize('admin'), getAllMembersList);
 router.get('/locations', authorize('admin'), getMembersLocation);
 router.get('/performance', authorize('admin'), getMemberPerformance);
+router.get('/rank-holders', getRankHolders);
 router.get('/daily-payout-report', authorize('admin'), getDailyPayoutReport);
 router.get('/my-datewise-income', getMyDatewiseIncome);
 router.get('/my-daily-payout', getMyDailyPayout);
