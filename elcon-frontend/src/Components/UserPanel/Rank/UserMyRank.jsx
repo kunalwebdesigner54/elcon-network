@@ -63,8 +63,8 @@ function UserMyRank() {
     setSelectedRankFilter((prev) => prev);
   };
 
-  const progressPercentage = currentRank.earning > 0 ? (currentEarning / currentRank.earning) * 100 : 0;
-  const nextProgressPercentage = nextRank.earning > 0 ? (currentEarning / nextRank.earning) * 100 : 0;
+  const progressPercentage = currentRank.targetEarning > 0 ? (currentEarning / currentRank.targetEarning) * 100 : 0;
+  const nextProgressPercentage = nextRank.targetEarning > 0 ? (currentEarning / nextRank.targetEarning) * 100 : 0;
 
   return (
     <div className="user-rank-container">
@@ -150,7 +150,7 @@ function UserMyRank() {
               ></div>
             </div>
             <div className="user-rank-progress-text">
-              {currentEarning} / {currentRank.earning}
+              {currentEarning} / {currentRank.targetEarning}
             </div>
           </div>
 
@@ -160,7 +160,7 @@ function UserMyRank() {
               {nextRank.name}
             </div>
             <div className="user-rank-next-earning-display">
-              ₹{nextRank.earning.toLocaleString('en-IN')}
+              ₹{nextRank.targetEarning.toLocaleString('en-IN')}
             </div>
             <div className="user-rank-progress-bar">
               <div
@@ -169,7 +169,7 @@ function UserMyRank() {
               ></div>
             </div>
             <div className="user-rank-progress-text">
-              {currentEarning} / {nextRank.earning}
+              {currentEarning} / {nextRank.targetEarning}
             </div>
           </div>
         </div>
