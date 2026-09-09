@@ -5,7 +5,7 @@ import { deleteEpinFranchise, getEpinFranchises, updateEpinFranchise } from '../
 
 function AdminEpinFranchiseList() {
   const navigate = useNavigate();
-  const [filters, setFilters] = useState({ franchiseId: '', franchiseName: '', upi: '', whatsapp: '' });
+  const [filters, setFilters] = useState({ franchiseId: '', franchiseName: '', upi: '', whatsapp: '', pincode: '' });
   const [franchiseRows, setFranchiseRows] = useState([]);
 
   const loadRows = async () => {
@@ -27,7 +27,8 @@ function AdminEpinFranchiseList() {
         (!filters.franchiseId || row.franchiseId.toLowerCase().includes(filters.franchiseId.toLowerCase())) &&
         (!filters.franchiseName || row.name.toLowerCase().includes(filters.franchiseName.toLowerCase())) &&
         (!filters.upi || row.upi.toLowerCase().includes(filters.upi.toLowerCase())) &&
-        (!filters.whatsapp || row.whatsapp.toLowerCase().includes(filters.whatsapp.toLowerCase()))
+        (!filters.whatsapp || row.whatsapp.toLowerCase().includes(filters.whatsapp.toLowerCase())) &&
+        (!filters.pincode || (row.pincode && row.pincode.toLowerCase().includes(filters.pincode.toLowerCase())))
       );
     });
   }, [filters, franchiseRows]);
@@ -60,9 +61,10 @@ function AdminEpinFranchiseList() {
           <input className="text-input admin-epin-input" placeholder="FRANCHISE NAME" value={filters.franchiseName} onChange={handleFilterChange('franchiseName')} />
           <input className="text-input admin-epin-input" placeholder="UPI ID" value={filters.upi} onChange={handleFilterChange('upi')} />
           <input className="text-input admin-epin-input" placeholder="WATSAPP NO" value={filters.whatsapp} onChange={handleFilterChange('whatsapp')} />
+          <input className="text-input admin-epin-input" placeholder="PIN CODE" value={filters.pincode} onChange={handleFilterChange('pincode')} />
         </div>
         <div className="admin-epin-franchise-actions">
-          <button type="button" className="btn-primary admin-epin-franchise-btn" onClick={() => { setFilters({ franchiseId: '', franchiseName: '', upi: '', whatsapp: '' }); }}>
+          <button type="button" className="btn-primary admin-epin-franchise-btn" onClick={() => { setFilters({ franchiseId: '', franchiseName: '', upi: '', whatsapp: '', pincode: '' }); }}>
             SEARCH
           </button>
           <button type="button" className="btn-primary admin-epin-franchise-btn" onClick={() => navigate('/epin-franchise/create', { state: null })}>
@@ -82,6 +84,7 @@ function AdminEpinFranchiseList() {
               <th>UPI ID</th>
               <th>WATSAPP NO</th>
               <th>CITY</th>
+              <th>PIN CODE</th>
               <th>EPIN STOCK</th>
               <th>ACTION</th>
               <th>STATUS</th>
@@ -99,6 +102,7 @@ function AdminEpinFranchiseList() {
                 <td>{row.upi}</td>
                 <td>{row.whatsapp}</td>
                 <td>{row.city}</td>
+                <td>{row.pincode || '-'}</td>
                 <td>{row.stock}</td>
                 <td>
                   <div className="kyc-action-group" style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
