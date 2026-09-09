@@ -669,6 +669,9 @@ exports.getRankHolders = async (req, res) => {
         User.updateOne({ memberId: user.memberId }, { $set: { rank } }).exec();
       }
 
+      // Only include users who have actually earned a rank
+      if (rank === '---') return;
+
       rankHolders.push({
         sNo: sNo++,
         memberId: user.memberId || '---',

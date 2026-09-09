@@ -29,17 +29,26 @@ function UserMyRank() {
   const [currentEarning, setCurrentEarning] = useState(0);
 
   useEffect(() => {
-    Promise.all([getUserDashboard(), getRankHolders()])
-      .then(([dashboardResponse, rankHoldersResponse]) => {
-        const rankList = rankHoldersResponse?.data || [];
-        setRankRows(Array.isArray(rankList) ? rankList : []);
-        const dash = dashboardResponse?.data || {};
-        setCurrentRankName(dash.rank || '---');
-        setIsRankVisible(dash.isRankVisible !== false);
-        const totalEarning = String(dash.totalEarning || '0').replace(/[^0-9.]/g, '');
-        setCurrentEarning(Number(totalEarning) || 0);
+    // Use allSettled so a rank-holders failure doesn't wipe out dashboard data
+    Promise.allSettled([getUserDashboard(), getRankHolders()])
+      .then(([dashboardResult, rankHoldersResult]) => {
+        if (dashboardResult.status === 'fulfilled') {
+          const dash = dashboardResult.value?.data || {};
+          setCurrentRankName(dash.rank || '---');
+          setIsRankVisible(dash.isRankVisible !== false);
+          const totalEarning = String(dash.totalEarning || '0').replace(/[^0-9.]/g, '');
+          setCurrentEarning(Number(totalEarning) || 0);
+        }
+
+        if (rankHoldersResult.status === 'fulfilled') {
+          const rankList = rankHoldersResult.value?.data || [];
+          setRankRows(Array.isArray(rankList) ? rankList : []);
+        } else {
+          setError(
+            rankHoldersResult.reason?.response?.data?.message || 'Failed to load rank holders.'
+          );
+        }
       })
-      .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load rank data.'))
       .finally(() => setLoading(false));
   }, []);
 
