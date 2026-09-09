@@ -1,13 +1,29 @@
 import '../../../Common/AdminLayout.css';
 import './AddRepurchaseProducts.css';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createAdminProduct, updateAdminProduct } from '../../../../../api/productsService';
+import { getCategories } from '../../../../../api/categoryService';
 
 function AddRepurchaseProducts() {
   const navigate = useNavigate();
   const location = useLocation();
   const product = location.state?.product || null;
   const isEditMode = location.state?.mode === 'edit';
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await getCategories();
+        setCategories(res || []);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const readFileAsDataUrl = (file) => {
     return new Promise((resolve, reject) => {
@@ -167,12 +183,22 @@ function AddRepurchaseProducts() {
             <div className="admin-add-product-table" role="group" aria-label="basic-product-details">
               <label className="admin-add-product-row">
                 <span>Category</span>
-                <select name="category" defaultValue={product?.category || "Healthcare"}>
-                  <option value="Healthcare">Healthcare</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Mens Fashion">Mens Fashion</option>
-                  <option value="Electronics Appliances">Electronics Appliances</option>
-                </select>
+                <input 
+                  name="category" 
+                  list="category-options" 
+                  defaultValue={product?.category || ""} 
+                  placeholder="Select or type new category"
+                  required
+                />
+                <datalist id="category-options">
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat.name} />
+                  ))}
+                  <option value="Healthcare" />
+                  <option value="Electronics" />
+                  <option value="Mens Fashion" />
+                  <option value="Electronics Appliances" />
+                </datalist>
               </label>
               <label className="admin-add-product-row">
                 <span>Product Name</span>
