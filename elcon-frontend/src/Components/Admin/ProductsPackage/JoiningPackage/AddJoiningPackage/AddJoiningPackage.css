@@ -248,6 +248,216 @@
   }
 }
 
+/* Add Category Button */
+.admin-add-category-btn {
+  background: linear-gradient(135deg, #34d399 0%, #14b8a6 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 212, 170, 0.3);
+}
+
+.admin-add-category-btn:hover {
+  background: linear-gradient(135deg, #2dd48a 0%, #0d9f8d 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 212, 170, 0.4);
+}
+
+.admin-add-category-btn:active {
+  transform: translateY(0);
+}
+
+/* Modal Styles */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.admin-modal {
+  background: var(--card-bg, #fff);
+  border-radius: var(--border-radius, 12px);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  border: 1px solid var(--glass-border, #e2e8f0);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--glass-border, #e2e8f0);
+}
+
+.admin-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main, #1e293b);
+}
+
+.admin-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-muted, #64748b);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.admin-modal-close:hover {
+  background: var(--glass-border, #e2e8f0);
+  color: var(--text-main, #1e293b);
+}
+
+.admin-modal-form {
+  padding: 20px;
+}
+
+.admin-form-group {
+  margin-bottom: 16px;
+}
+
+.admin-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main, #1e293b);
+  margin-bottom: 6px;
+}
+
+.admin-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--glass-border, #e2e8f0);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-main, #1e293b);
+  background: var(--bg-card, #fff);
+  transition: all 0.2s ease;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: #00d4aa;
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.15);
+}
+
+.admin-input::placeholder {
+  color: var(--text-muted, #94a3b8);
+}
+
+.admin-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--glass-border, #e2e8f0);
+}
+
+.admin-btn-primary {
+  background: linear-gradient(135deg, #34d399 0%, #14b8a6 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.4);
+}
+
+.admin-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-btn-outline {
+  background: transparent;
+  color: var(--text-main, #1e293b);
+  border: 1px solid var(--glass-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-btn-outline:hover {
+  background: var(--glass-border, #e2e8f0);
+}
+
+/* Responsive for modal */
+@media (max-width: 550px) {
+  .admin-modal {
+    margin: 10px;
+    max-height: calc(100vh - 20px);
+  }
+  
+  .admin-modal-form {
+    padding: 16px;
+  }
+  
+  .admin-btn-row {
+    flex-direction: column-reverse;
+  }
+  
+  .admin-btn-row button {
+    width: 100%;
+  }
+}
+
 
 
 
