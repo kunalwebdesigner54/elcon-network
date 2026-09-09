@@ -31,10 +31,10 @@ function UserMyRank() {
   useEffect(() => {
     Promise.all([getUserDashboard(), getRankHolders()])
       .then(([dashboardResponse, rankHoldersResponse]) => {
-        setRankRows(Array.isArray(rankHoldersResponse?.data?.data) ? rankHoldersResponse.data.data : []);
-        setCurrentRankName(dashboardResponse?.data?.data?.rank || '---');
-        setIsRankVisible(dashboardResponse?.data?.data?.isRankVisible !== false);
-        const totalEarning = String(dashboardResponse?.data?.data?.totalEarning || '0').replace(/[^0-9.]/g, '');
+        setRankRows(Array.isArray(rankHoldersResponse.data) ? rankHoldersResponse.data : []);
+        setCurrentRankName(dashboardResponse.data?.rank || '---');
+        setIsRankVisible(dashboardResponse.data?.isRankVisible !== false);
+        const totalEarning = String(dashboardResponse.data?.totalEarning || '0').replace(/[^0-9.]/g, '');
         setCurrentEarning(Number(totalEarning) || 0);
       })
       .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load rank data.'))
