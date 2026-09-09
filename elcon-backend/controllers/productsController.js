@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Product = require('../models/Product');
+const Category = require('../models/Category');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 const User = require('../models/User');
@@ -187,6 +188,13 @@ exports.createProduct = async (req, res) => {
       });
     }
 
+    if (payload.category) {
+      const categoryExists = await Category.findOne({ name: payload.category });
+      if (!categoryExists) {
+        await Category.create({ name: payload.category, status: 'ACTIVE' });
+      }
+    }
+
     const product = await Product.create({
       type: payload.type,
       productCode: payload.productCode,
@@ -235,6 +243,13 @@ exports.updateProduct = async (req, res) => {
       const exists = await Product.findOne({ productCode: updates.productCode });
       if (exists) {
         return res.status(409).json({ success: false, message: 'Product code already exists' });
+      }
+    }
+
+    if (updates.category) {
+      const categoryExists = await Category.findOne({ name: updates.category });
+      if (!categoryExists) {
+        await Category.create({ name: updates.category, status: 'ACTIVE' });
       }
     }
 
