@@ -47,10 +47,10 @@
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
 
-.card-green { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
-.card-blue { background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%); }
-.card-pink { background: linear-gradient(135deg, #db2777 0%, #ec4899 100%); }
-.card-orange { background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); }
+.card-green { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; }
+.card-blue { background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important; }
+.card-pink { background: linear-gradient(135deg, #db2777 0%, #ec4899 100%) !important; }
+.card-orange { background: linear-gradient(135deg, #ea580c 0%, #f97316 100%) !important; }
 
 .stat-title {
   font-size: 14px;
