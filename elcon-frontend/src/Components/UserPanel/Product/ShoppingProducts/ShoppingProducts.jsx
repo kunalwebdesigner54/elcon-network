@@ -5,24 +5,23 @@ import './ShoppingProducts.css';
 import { addCartItem, getPublicProducts } from '../../../../api/productsService';
 import { resolveProductImage } from '../productImages';
 
+const normalizeOptionalValue = (value) => {
+  const normalizedValue = String(value ?? '').trim();
+  return normalizedValue && normalizedValue !== '-' ? normalizedValue : '';
+};
+
+const getOptions = (value) => normalizeOptionalValue(value)
+  .split(',')
+  .map((option) => option.trim())
+  .filter(Boolean);
+
 function ShoppingProducts() {
   const navigate = useNavigate();
   const [shoppingProducts, setShoppingProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [pendingProduct, setPendingProduct] = useState(null);
-  const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
-
-  const normalizeOptionalValue = (value) => {
-    const normalizedValue = String(value ?? '').trim();
-    return normalizedValue && normalizedValue !== '-' ? normalizedValue : '';
-  };
-
-  const getOptions = (value) => normalizeOptionalValue(value)
-    .split(',')
-    .map((option) => option.trim())
-    .filter(Boolean);
+  const [selectedSizes, setSelectedSizes] = useState({});
+  const [selectedColors, setSelectedColors] = useState({});
 
   const categories = ['All', ...new Set(shoppingProducts.map(p => p.category).filter(Boolean))];
 
@@ -51,9 +50,29 @@ function ShoppingProducts() {
     navigate('/user/product/product_details', { state: { product } });
   };
 
+  const handleSizeChange = (productId, size) => {
+    setSelectedSizes(prev => ({ ...prev, [productId]: size }));
+  };
+
+  const handleColorChange = (productId, color) => {
+    setSelectedColors(prev => ({ ...prev, [productId]: color }));
+  };
+
   const handleAddToCart = async (product) => {
+    const productId = product._id || product.id || product.productCode;
+    const size = selectedSizes[productId] || '';
+    const color = selectedColors[productId] || '';
+    const sizeOptions = getOptions(product.size);
+    const colorOptions = getOptions(product.color);
+
+    // Check if product has variants that require selection
+    if ((sizeOptions.length > 1 && !size) || (colorOptions.length > 1 && !color)) {
+      window.alert('Please select the available size and color before adding this product to cart.');
+      return;
+    }
+
     try {
-      await addCartItem(product._id || product.id || product.productCode, 1);
+      await addCartItem(productId, 1, { selectedSize: size, selectedColor: color });
       navigate('/user/product/my_cart');
     } catch (error) {
       navigate('/user/product/my_cart');
@@ -131,6 +150,36 @@ function ShoppingProducts() {
                   </span>
                   <span className="user-product-price">₹ {product.price}</span>
                 </div>
+                {(getOptions(product.size).length > 1 || getOptions(product.color).length > 1) && (
+                  <div className="user-product-variants" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px', marginBottom: '8px' }}>
+                    {getOptions(product.size).length > 1 && (
+                      <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: '#fff' }}>
+                        Size
+                        <select
+                          value={selectedSizes[product.id || product.productCode] || ''}
+                          onChange={(e) => handleSizeChange(product.id || product.productCode, e.target.value)}
+                          style={{ padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.2)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', outline: 'none', cursor: 'pointer' }}
+                        >
+                          <option value="">Select size</option>
+                          {getOptions(product.size).map((size) => <option key={size} value={size}>{size}</option>)}
+                        </select>
+                      </label>
+                    )}
+                    {getOptions(product.color).length > 1 && (
+                      <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: '#fff' }}>
+                        Color
+                        <select
+                          value={selectedColors[product.id || product.productCode] || ''}
+                          onChange={(e) => handleColorChange(product.id || product.productCode, e.target.value)}
+                          style={{ padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.2)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', outline: 'none', cursor: 'pointer' }}
+                        >
+                          <option value="">Select color</option>
+                          {getOptions(product.color).map((color) => <option key={color} value={color}>{color}</option>)}
+                        </select>
+                      </label>
+                    )}
+                  </div>
+                )}
                 <button
                   type="button"
                   className="user-product-btn"
