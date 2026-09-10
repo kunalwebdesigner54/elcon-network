@@ -47,7 +47,7 @@ function AddCategory() {
         await addCategory(formData);
         alert("Category added successfully.");
       }
-      navigate('/admin/products/categories');
+      navigate('/products-package/manage-categories');
     } catch (error) {
       console.error("Error saving category:", error);
       alert(error.message || "Failed to save category.");

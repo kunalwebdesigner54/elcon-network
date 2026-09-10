@@ -6,32 +6,42 @@ import { getCategories, deleteCategory, updateCategory } from '../../../../api/c
 function ManageCategories() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({ name: '', status: '', limit: '100' });
   const [appliedFilters, setAppliedFilters] = useState({ name: '', status: '', limit: '100' });
 
   useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const response = await getCategories();
-        setCategories(response || []);
-      } catch (error) {
-        setCategories([]);
-      }
-    };
     loadCategories();
   }, []);
+
+  const loadCategories = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await getCategories();
+      setCategories(Array.isArray(response) ? response : []);
+    } catch (err) {
+      console.error('Error loading categories:', err);
+      const msg = err?.response?.data?.message || err?.message || 'Failed to load categories. Please try again.';
+      setError(msg);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (id) => {
     if (!id) return;
     if (window.confirm("Are you sure you want to delete this category?")) {
       try {
         await deleteCategory(id);
-        const response = await getCategories();
-        setCategories(response || []);
-      } catch (error) {
-        console.error("Error deleting category:", error);
-        alert(error.message || "Failed to delete category.");
+        await loadCategories();
+      } catch (err) {
+        console.error("Error deleting category:", err);
+        const msg = err?.response?.data?.message || err?.message || "Failed to delete category.";
+        alert(msg);
       }
     }
   };
@@ -82,11 +92,25 @@ function ManageCategories() {
     <div className="admin-layout">
       <div className="admin-breadcrumb-row">
         <h2 className="admin-page-heading">Manage Categories</h2>
-        <button className="admin-btn-primary" onClick={() => navigate('/admin/products/add-category')}>
+        <button className="admin-btn-primary" onClick={() => navigate('/products-package/add-category')}>
           + Add Category
         </button>
       </div>
 
+      {error && (
+        <div style={{ background: '#fee2e2', color: '#991b1b', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>⚠️ {error}</span>
+          <button onClick={loadCategories} style={{ background: '#dc2626', color: '#fff', border: 'none', borderRadius: '6px', padding: '6px 14px', cursor: 'pointer', fontSize: '13px' }}>Retry</button>
+        </div>
+      )}
+
+      {loading && (
+        <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280', fontSize: '16px' }}>
+          ⏳ Loading categories...
+        </div>
+      )}
+
+      {!loading && (
       <div className="admin-panel">
         <div className="admin-filter-bar">
           <input
@@ -146,7 +170,7 @@ function ManageCategories() {
                         <button
                           className="admin-icon-btn admin-icon-edit"
                           title="Edit"
-                          onClick={() => navigate('/admin/products/add-category', { state: { category: cat } })}
+                          onClick={() => navigate('/products-package/add-category', { state: { category: cat } })}
                         >
                           ✏️
                         </button>
@@ -196,6 +220,7 @@ function ManageCategories() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
