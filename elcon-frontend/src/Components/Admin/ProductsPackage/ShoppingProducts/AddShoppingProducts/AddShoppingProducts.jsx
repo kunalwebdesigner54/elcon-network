@@ -296,6 +296,26 @@ function AddShoppingProducts() {
                     <span>Image 5</span>
                     <input type="file" accept="image/*" style={imageUploadFieldStyle} />
                   </label>
+                  <label className="admin-add-product-row">
+                    <span>Image 6</span>
+                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
+                  </label>
+                  <label className="admin-add-product-row">
+                    <span>Image 7</span>
+                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
+                  </label>
+                  <label className="admin-add-product-row">
+                    <span>Image 8</span>
+                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
+                  </label>
+                  <label className="admin-add-product-row">
+                    <span>Image 9</span>
+                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
+                  </label>
+                  <label className="admin-add-product-row">
+                    <span>Image 10</span>
+                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
+                  </label>
                 </div>
               </div>
               <div className="admin-add-product-row" style={{ alignItems: 'flex-start', marginTop: '14px' }}>
