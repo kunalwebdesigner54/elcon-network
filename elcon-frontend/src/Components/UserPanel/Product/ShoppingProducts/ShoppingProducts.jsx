@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../Common/UserLayout.css';
 import './ShoppingProducts.css';
@@ -10,6 +10,19 @@ function ShoppingProducts() {
   const [shoppingProducts, setShoppingProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [pendingProduct, setPendingProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
+
+  const normalizeOptionalValue = (value) => {
+    const normalizedValue = String(value ?? '').trim();
+    return normalizedValue && normalizedValue !== '-' ? normalizedValue : '';
+  };
+
+  const getOptions = (value) => normalizeOptionalValue(value)
+    .split(',')
+    .map((option) => option.trim())
+    .filter(Boolean);
 
   const categories = ['All', ...new Set(shoppingProducts.map(p => p.category).filter(Boolean))];
 

@@ -2,6 +2,7 @@ import './ManageCategories.css';
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCategories, deleteCategory, updateCategory } from '../../../../api/categoryService';
+import { eventEmitter, CATEGORY_EVENTS } from '../../../../utils/eventEmitter';
 
 function ManageCategories() {
   const navigate = useNavigate();
@@ -11,10 +12,6 @@ function ManageCategories() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({ name: '', status: '', limit: '100' });
   const [appliedFilters, setAppliedFilters] = useState({ name: '', status: '', limit: '100' });
-
-  useEffect(() => {
-    loadCategories();
-  }, []);
 
   const loadCategories = async () => {
     setLoading(true);
@@ -32,11 +29,28 @@ function ManageCategories() {
     }
   };
 
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  // Listen for category changes from other pages
+  useEffect(() => {
+    const unsubscribeAdded = eventEmitter.on(CATEGORY_EVENTS.CATEGORY_ADDED, loadCategories);
+    const unsubscribeUpdated = eventEmitter.on(CATEGORY_EVENTS.CATEGORY_UPDATED, loadCategories);
+    const unsubscribeDeleted = eventEmitter.on(CATEGORY_EVENTS.CATEGORY_DELETED, loadCategories);
+    return () => {
+      unsubscribeAdded();
+      unsubscribeUpdated();
+      unsubscribeDeleted();
+    };
+  }, []);
+
   const handleDelete = async (id) => {
     if (!id) return;
     if (window.confirm("Are you sure you want to delete this category?")) {
       try {
         await deleteCategory(id);
+        eventEmitter.emit(CATEGORY_EVENTS.CATEGORY_DELETED, { id });
         await loadCategories();
       } catch (err) {
         console.error("Error deleting category:", err);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { addCategory, updateCategory } from '../../../../api/categoryService';
+import { eventEmitter, CATEGORY_EVENTS } from '../../../../utils/eventEmitter';
 import '../../Common/AdminLayout.css';
 
 function AddCategory() {
@@ -43,9 +44,11 @@ function AddCategory() {
       if (isEditMode) {
         await updateCategory(location.state.category._id, formData);
         alert("Category updated successfully.");
+        eventEmitter.emit(CATEGORY_EVENTS.CATEGORY_UPDATED, formData);
       } else {
         await addCategory(formData);
         alert("Category added successfully.");
+        eventEmitter.emit(CATEGORY_EVENTS.CATEGORY_ADDED, formData);
       }
       navigate('/products-package/manage-categories');
     } catch (error) {

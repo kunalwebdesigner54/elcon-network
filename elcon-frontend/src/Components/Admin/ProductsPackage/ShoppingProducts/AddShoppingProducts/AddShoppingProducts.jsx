@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createAdminProduct, updateAdminProduct } from '../../../../../api/productsService';
 import { getCategories, addCategory } from '../../../../../api/categoryService';
+import { eventEmitter, CATEGORY_EVENTS } from '../../../../../utils/eventEmitter';
 
 function AddShoppingProducts() {
   const navigate = useNavigate();
@@ -16,16 +17,27 @@ function AddShoppingProducts() {
   const [newCategory, setNewCategory] = useState({ name: '', description: '', status: 'ACTIVE' });
   const [isAddingCategory, setIsAddingCategory] = useState(false);
 
+  const fetchCategories = async () => {
+    try {
+      const res = await getCategories();
+      setCategories(res || []);
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await getCategories();
-        setCategories(res || []);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      }
-    };
     fetchCategories();
+  }, []);
+
+  // Listen for category changes from other pages
+  useEffect(() => {
+    const unsubscribeAdded = eventEmitter.on(CATEGORY_EVENTS.CATEGORY_ADDED, fetchCategories);
+    const unsubscribeUpdated = eventEmitter.on(CATEGORY_EVENTS.CATEGORY_UPDATED, fetchCategories);
+    return () => {
+      unsubscribeAdded();
+      unsubscribeUpdated();
+    };
   }, []);
 
   const handleAddCategory = async (e) => {
@@ -41,6 +53,8 @@ function AddShoppingProducts() {
       window.alert('Category added successfully!');
       setShowAddCategoryModal(false);
       setNewCategory({ name: '', description: '', status: 'ACTIVE' });
+      // Emit event for other pages to refresh
+      eventEmitter.emit(CATEGORY_EVENTS.CATEGORY_ADDED, newCategory);
       // Refresh categories list
       const res = await getCategories();
       setCategories(res || []);
