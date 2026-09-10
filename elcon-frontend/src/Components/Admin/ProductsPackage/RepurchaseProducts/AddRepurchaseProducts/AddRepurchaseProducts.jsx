@@ -3,7 +3,7 @@ import './AddRepurchaseProducts.css';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createAdminProduct, updateAdminProduct } from '../../../../../api/productsService';
-import { getCategories } from '../../../../../api/categoryService';
+import { getCategories, addCategory } from '../../../../../api/categoryService';
 
 function AddRepurchaseProducts() {
   const navigate = useNavigate();
@@ -12,6 +12,9 @@ function AddRepurchaseProducts() {
   const isEditMode = location.state?.mode === 'edit';
 
   const [categories, setCategories] = useState([]);
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [newCategory, setNewCategory] = useState({ name: '', description: '', status: 'ACTIVE' });
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,6 +27,35 @@ function AddRepurchaseProducts() {
     };
     fetchCategories();
   }, []);
+
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    if (!newCategory.name.trim()) {
+      window.alert('Category name is required.');
+      return;
+    }
+
+    setIsAddingCategory(true);
+    try {
+      await addCategory(newCategory);
+      window.alert('Category added successfully!');
+      setShowAddCategoryModal(false);
+      setNewCategory({ name: '', description: '', status: 'ACTIVE' });
+      // Refresh categories list
+      const res = await getCategories();
+      setCategories(res || []);
+    } catch (error) {
+      console.error("Error adding category:", error);
+      window.alert(error?.response?.data?.message || 'Failed to add category.');
+    } finally {
+      setIsAddingCategory(false);
+    }
+  };
+
+  const handleCategoryInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewCategory(prev => ({ ...prev, [name]: value }));
+  };
 
   const readFileAsDataUrl = (file) => {
     return new Promise((resolve, reject) => {
@@ -183,13 +215,24 @@ function AddRepurchaseProducts() {
             <div className="admin-add-product-table" role="group" aria-label="basic-product-details">
               <label className="admin-add-product-row">
                 <span>Category</span>
-                <input 
-                  name="category" 
-                  list="category-options" 
-                  defaultValue={product?.category || ""} 
-                  placeholder="Select or type new category"
-                  required
-                />
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '100%' }}>
+                  <input 
+                    name="category" 
+                    list="category-options" 
+                    defaultValue={product?.category || ""} 
+                    placeholder="Select or type new category"
+                    required
+                    style={{ flex: 1 }}
+                  />
+                  <button 
+                    type="button" 
+                    className="admin-add-category-btn"
+                    onClick={() => setShowAddCategoryModal(true)}
+                    title="Add New Category"
+                  >
+                    + Add Category
+                  </button>
+                </div>
                 <datalist id="category-options">
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat.name} />
@@ -342,6 +385,75 @@ function AddRepurchaseProducts() {
           </button>
         </div>
       </form>
+
+      {showAddCategoryModal && (
+        <div className="admin-modal-overlay" onClick={() => setShowAddCategoryModal(false)}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-modal-header">
+              <h3>Add New Category</h3>
+              <button type="button" className="admin-modal-close" onClick={() => setShowAddCategoryModal(false)}>&times;</button>
+            </div>
+            <form onSubmit={handleAddCategory} className="admin-modal-form">
+              <div className="admin-form-group">
+                <label className="admin-label">Category Name *</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="admin-input"
+                  value={newCategory.name}
+                  onChange={handleCategoryInputChange}
+                  placeholder="e.g. Electronics"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-label">Description</label>
+                <textarea
+                  name="description"
+                  className="admin-input"
+                  value={newCategory.description}
+                  onChange={handleCategoryInputChange}
+                  placeholder="Enter category description..."
+                  rows="3"
+                  style={{ resize: 'vertical' }}
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-label">Status</label>
+                <select
+                  name="status"
+                  className="admin-input"
+                  value={newCategory.status}
+                  onChange={handleCategoryInputChange}
+                >
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="INACTIVE">INACTIVE</option>
+                </select>
+              </div>
+
+              <div className="admin-btn-row">
+                <button
+                  type="button"
+                  className="admin-btn-outline"
+                  onClick={() => setShowAddCategoryModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="admin-btn-primary"
+                  disabled={isAddingCategory}
+                >
+                  {isAddingCategory ? 'Adding...' : 'Add Category'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
