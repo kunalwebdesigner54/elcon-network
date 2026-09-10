@@ -231,10 +231,6 @@ function AddJoiningPackage() {
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat.name} />
                   ))}
-                  <option value="Healthcare" />
-                  <option value="Electronics" />
-                  <option value="Mens Fashion" />
-                  <option value="Electronics Appliances" />
                 </datalist>
               </label>
               <label className="admin-add-product-row">
