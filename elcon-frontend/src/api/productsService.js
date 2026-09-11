@@ -76,8 +76,8 @@ export const getOrderByNo = async (orderNo) => {
   return response.data;
 };
 
-export const getAdminOrders = async () => {
-  const response = await apiClient.get('/admin/orders');
+export const getAdminOrders = async (params = {}) => {
+  const response = await apiClient.get('/admin/orders', { params });
   return response.data;
 };
 

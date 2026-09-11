@@ -27,6 +27,7 @@ const statusToClass = {
 
 function ProductOrderPage({ title, statusFilter, renderActions }) {
   const [orders, setOrders] = useState([]);
+  const [totalOrders, setTotalOrders] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState(defaultFilters);
   const [loading, setLoading] = useState(true);
@@ -34,11 +35,18 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
   const [detailsLoading, setDetailsLoading] = useState(false);
 
   const loadOrders = async () => {
+    setLoading(true);
     try {
-      const response = await getAdminOrders();
+      const response = await getAdminOrders({
+        ...filters,
+        page: currentPage,
+        status: statusFilter || filters.status
+      });
       setOrders(response.orders || []);
+      setTotalOrders(response.total || 0);
     } catch (error) {
       setOrders([]);
+      setTotalOrders(0);
     } finally {
       setLoading(false);
     }
@@ -46,7 +54,15 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
 
   useEffect(() => {
     loadOrders();
-  }, []);
+  }, [currentPage, statusFilter, filters.limit]);
+
+  const handleSearch = () => {
+    if (currentPage === 1) {
+      loadOrders();
+    } else {
+      setCurrentPage(1);
+    }
+  };
 
   const handleViewDetails = async (orderNo) => {
     setDetailsLoading(true);
@@ -64,70 +80,68 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
     setSelectedOrder(null);
   };
 
-  const handleExportXLS = () => {
-    // Export filtered orders to XLS
-    const exportData = filteredOrders.map((order, index) => ({
-      'S. No': startIndex + index + 1,
-      'Order No': order.orderNo,
-      'Member Id': order.memberId,
-      'Order Date': order.orderDate,
-      'Items': order.items,
-      'Total Paid': Number(order.totalPaid || 0).toFixed(2),
-      'Pay Mode': order.payMode,
-      'Pay Status': order.payStatus,
-      'LV Point': order.lvPoint,
-      'BV Point': order.bvPoint,
-      'Order Status': order.orderStatus,
-      'Start Date': order.startDate,
-      'End Date': order.endDate,
-    }));
+  const handleExportXLS = async () => {
+    try {
+      const response = await getAdminOrders({
+        ...filters,
+        status: statusFilter || filters.status,
+        exportData: 'true'
+      });
+      const exportOrders = response.orders || [];
 
-    // Add item details for each order if we want detailed export
-    const detailedExportData = [];
-    filteredOrders.forEach((order) => {
-      // Basic order row
-      detailedExportData.push({
+      const exportData = exportOrders.map((order, index) => ({
+        'S. No': index + 1,
         'Order No': order.orderNo,
         'Member Id': order.memberId,
         'Order Date': order.orderDate,
+        'Items': order.items,
         'Total Paid': Number(order.totalPaid || 0).toFixed(2),
         'Pay Mode': order.payMode,
         'Pay Status': order.payStatus,
-        'Order Status': order.orderStatus,
         'LV Point': order.lvPoint,
         'BV Point': order.bvPoint,
-        'Product Name': '',
-        'Quantity': '',
-        'Price': '',
-        'Total Price': '',
-        'Size': '',
-        'Color': '',
-      });
-    });
+        'Order Status': order.orderStatus,
+        'Start Date': order.startDate,
+        'End Date': order.endDate,
+      }));
 
-    // Create CSV content
-    const headers = Object.keys(detailedExportData[0] || {});
-    const csvContent = [
-      headers.join(','),
-      ...detailedExportData.map(row => headers.map(h => `"${row[h] || ''}"`).join(','))
-    ].join('\n');
+      if (exportData.length === 0) {
+        window.alert('No data to export');
+        return;
+      }
 
-    // Download
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `orders-export-${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
-    URL.revokeObjectURL(link.href);
+      // Create CSV content
+      const headers = Object.keys(exportData[0] || {});
+      const csvContent = [
+        headers.join(','),
+        ...exportData.map(row => headers.map(h => `"${row[h] || ''}"`).join(','))
+      ].join('\n');
+
+      // Download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `orders-export-${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch(err) {
+      window.alert('Export failed');
+    }
   };
 
   const handleExportDetailedXLS = async () => {
-    // Export with full item details (size, color) - fetch each order's details
+    // Export with full item details (size, color)
     setDetailsLoading(true);
     try {
+      const resp = await getAdminOrders({
+        ...filters,
+        status: statusFilter || filters.status,
+        exportData: 'true'
+      });
+      const exportOrders = resp.orders || [];
       const allOrderDetails = [];
       
-      for (const order of filteredOrders) {
+      for (const order of exportOrders) {
         try {
           const response = await getOrderByNo(order.orderNo);
           const orderDetail = response.order;
@@ -199,29 +213,15 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
     }
   };
 
-  const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      const matchesPageStatus = !statusFilter || order.orderStatus === statusFilter;
-      const matchesOrderNo = !filters.orderNo || String(order.orderNo || '').toLowerCase().includes(filters.orderNo.toLowerCase());
-      const matchesMemberId = !filters.memberId || String(order.memberId || '').toLowerCase().includes(filters.memberId.toLowerCase());
-      const matchesTotalPaid = !filters.totalPaid || String(order.totalPaid || '').includes(filters.totalPaid);
-      const matchesLvPoint = !filters.lvPoint || String(order.lvPoint || '').includes(filters.lvPoint);
-      const matchesBvPoint = !filters.bvPoint || String(order.bvPoint || '').includes(filters.bvPoint);
-      const matchesStatus = !filters.status || order.orderStatus === filters.status;
-      return matchesPageStatus && matchesOrderNo && matchesMemberId && matchesTotalPaid && matchesLvPoint && matchesBvPoint && matchesStatus;
-    });
-  }, [filters, orders, statusFilter]);
-
   const limit = Number(filters.limit) || 10;
-  const totalFilteredPages = Math.max(1, Math.ceil(filteredOrders.length / limit));
+  const totalFilteredPages = Math.max(1, Math.ceil(totalOrders / limit));
   const safePage = Math.min(currentPage, totalFilteredPages);
   const startIndex = (safePage - 1) * limit;
-  const paginatedOrders = filteredOrders.slice(startIndex, startIndex + limit);
+  const paginatedOrders = orders;
 
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
-    setCurrentPage(1);
   };
 
   const handleStatusUpdate = async (orderNo, nextStatus) => {
@@ -259,7 +259,7 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
-            <button type="button" className="admin-product-order-search-btn">SEARCH</button>
+            <button type="button" className="admin-product-order-search-btn" onClick={handleSearch}>SEARCH</button>
           </div>
 
           <div className="btn-row admin-product-order-export-row" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '14px' }}>
@@ -323,16 +323,22 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
           </div>
 
           <div className="table-footer">
-            <div>Showing {paginatedOrders.length > 0 ? startIndex + 1 : 0} to {Math.min(startIndex + limit, filteredOrders.length)} of {filteredOrders.length} entries</div>
+            <div>Showing {paginatedOrders.length > 0 ? startIndex + 1 : 0} to {Math.min(startIndex + limit, totalOrders)} of {totalOrders} entries</div>
             <div className="pagination">
-              <button type="button" className="page-btn" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={safePage === 1}>❮</button>
-              <button type="button" className="page-btn" onClick={() => setCurrentPage(1)} disabled={safePage === 1}>⟨⟨</button>
+              <button type="button" className="page-btn" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={safePage <= 1}>❮</button>
+              <button type="button" className="page-btn" onClick={() => setCurrentPage(1)} disabled={safePage <= 1}>⟨⟨</button>
               {Array.from({ length: Math.min(7, totalFilteredPages) }, (_, index) => {
-                const page = index + 1;
+                // simple pagination view centered around current page
+                let startPage = Math.max(1, safePage - 3);
+                if (startPage + 6 > totalFilteredPages) {
+                  startPage = Math.max(1, totalFilteredPages - 6);
+                }
+                const page = startPage + index;
+                if (page > totalFilteredPages) return null;
                 return <button key={page} type="button" className={`page-btn ${safePage === page ? 'active' : ''}`} onClick={() => setCurrentPage(page)}>{page}</button>;
               })}
-              <button type="button" className="page-btn" onClick={() => setCurrentPage(totalFilteredPages)} disabled={safePage === totalFilteredPages}>⟩⟩</button>
-              <button type="button" className="page-btn" onClick={() => setCurrentPage((page) => Math.min(totalFilteredPages, page + 1))} disabled={safePage === totalFilteredPages}>❯</button>
+              <button type="button" className="page-btn" onClick={() => setCurrentPage(totalFilteredPages)} disabled={safePage >= totalFilteredPages || totalFilteredPages === 0}>⟩⟩</button>
+              <button type="button" className="page-btn" onClick={() => setCurrentPage((page) => Math.min(totalFilteredPages, page + 1))} disabled={safePage >= totalFilteredPages || totalFilteredPages === 0}>❯</button>
             </div>
           </div>
         </section>

@@ -3,6 +3,8 @@ const Donation = require('../models/Donation');
 const LevelIncome = require('../models/LevelIncome');
 const RepurchaseIncome = require('../models/RepurchaseIncome');
 const SiteSetting = require('../models/SiteSetting');
+const Order = require('../models/Order');
+const Product = require('../models/Product');
 const {
   buildReferralGraph,
   collectDescendants,
@@ -167,8 +169,74 @@ exports.updateKycStatus = async (req, res) => {
       });
     }
 
-    if (normalizedStatus === 'APPROVED' && !user.receivedWelcomeCoupon) {
-      // Logic for welcome coupon moved to donationsController (after 300 donation)
+    if (normalizedStatus === 'APPROVED') {
+      if (!user.receivedWelcomeCoupon) {
+        // Logic for welcome coupon moved to donationsController (after 300 donation)
+      }
+
+      // Automatically create an Order for the joining package if one doesn't exist
+      if (user.joiningPackage) {
+        try {
+          const existingOrder = await Order.findOne({
+            userId: user._id,
+            remark: 'Joining Package Order'
+          });
+
+          if (!existingOrder) {
+            let orderProductDoc = await Product.findOne({
+              type: 'joining',
+              productName: new RegExp(`^${user.joiningPackage.trim()}$`, 'i'),
+            }).lean();
+
+            let orderItem = null;
+            const joiningAmount = user.joiningAmount || 350;
+
+            if (orderProductDoc) {
+              orderItem = {
+                productId: orderProductDoc._id,
+                productCode: orderProductDoc.productCode || 'JOINING',
+                name: orderProductDoc.productName,
+                price: joiningAmount || orderProductDoc.dpPrice || orderProductDoc.mrp || 350,
+                quantity: 1,
+                totalPrice: joiningAmount || orderProductDoc.dpPrice || orderProductDoc.mrp || 350,
+                imageKey: orderProductDoc.imageKey || ''
+              };
+            } else {
+              const mongoose = require('mongoose');
+              orderItem = {
+                productId: new mongoose.Types.ObjectId(), // Dummy ID to satisfy schema
+                productCode: 'EPIN-PKG',
+                name: user.joiningPackage,
+                price: joiningAmount,
+                quantity: 1,
+                totalPrice: joiningAmount,
+                imageKey: ''
+              };
+            }
+
+            const orderNo = `ORD${Math.floor(100000 + Math.random() * 900000)}`;
+            const orderDate = new Date().toLocaleString('en-IN', {
+              day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,
+            });
+
+            await Order.create({
+              userId: user._id,
+              orderNo: orderNo,
+              orderDate: orderDate,
+              paymentMode: user.epin ? 'E-Pin' : 'E-wallet',
+              paymentStatus: 'Paid',
+              orderStatus: 'Pending',
+              remark: 'Joining Package Order',
+              orderItems: 1,
+              totalPrice: orderItem.totalPrice,
+              finalTotal: orderItem.totalPrice,
+              items: [orderItem],
+            });
+          }
+        } catch (orderErr) {
+          console.error('Failed to create order on KYC approval:', orderErr);
+        }
+      }
     }
 
     res.status(200).json({

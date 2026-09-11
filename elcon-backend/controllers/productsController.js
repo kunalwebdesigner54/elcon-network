@@ -716,17 +716,68 @@ exports.getOrderByNo = async (req, res) => {
 
 exports.getAdminOrders = async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 }).lean();
-    const userIds = [...new Set(orders.map((order) => String(order.userId || '')).filter(Boolean))];
-    const users = await User.find({ _id: { $in: userIds } }).select('_id memberId name contactNo').lean();
+    const { 
+      page = 1, 
+      limit = 10, 
+      orderNo, 
+      memberId, 
+      totalPaid, 
+      lvPoint, 
+      bvPoint, 
+      status, 
+      startDate, 
+      endDate,
+      exportData
+    } = req.query;
+
+    let matchQuery = {};
+
+    if (orderNo) matchQuery.orderNo = new RegExp(orderNo, 'i');
+    if (status) matchQuery.orderStatus = status;
+    if (totalPaid) matchQuery.finalTotal = Number(totalPaid);
+    if (lvPoint) matchQuery.lvPoint = Number(lvPoint);
+    if (bvPoint) matchQuery.bvPoint = Number(bvPoint);
+    
+    if (startDate || endDate) {
+      matchQuery.createdAt = {};
+      if (startDate) matchQuery.createdAt.$gte = new Date(startDate);
+      if (endDate) matchQuery.createdAt.$lte = new Date(new Date(endDate).setHours(23, 59, 59, 999));
+    }
+
+    if (memberId) {
+      const users = await User.find({ memberId: new RegExp(memberId, 'i') }).select('_id');
+      const userIds = users.map(u => u._id);
+      matchQuery.userId = { $in: userIds };
+    }
+
+    const parsedLimit = Number(limit) || 10;
+    const skip = (Number(page) - 1) * parsedLimit;
+
+    // For exporting, we might want all matching records instead of just one page.
+    const isExport = exportData === 'true';
+
+    let ordersQuery = Order.find(matchQuery).sort({ createdAt: -1 });
+    
+    if (!isExport) {
+      ordersQuery = ordersQuery.skip(skip).limit(parsedLimit);
+    }
+
+    const [orders, totalOrders] = await Promise.all([
+      ordersQuery.lean(),
+      Order.countDocuments(matchQuery)
+    ]);
+
+    const orderUserIds = [...new Set(orders.map((order) => String(order.userId || '')).filter(Boolean))];
+    const users = await User.find({ _id: { $in: orderUserIds } }).select('_id memberId name contactNo').lean();
     const userMap = new Map(users.map((user) => [String(user._id), user]));
 
     res.status(200).json({
       success: true,
+      total: totalOrders,
       orders: orders.map((order, index) => {
         const owner = userMap.get(String(order.userId)) || {};
         return {
-          sNo: index + 1,
+          sNo: isExport ? (index + 1) : (skip + index + 1),
           id: order._id,
           orderNo: order.orderNo,
           memberId: owner.memberId || String(order.userId || ''),
