@@ -448,7 +448,7 @@ function KYCRequest() {
                 <div className="kyc-image-card">
                   <span style={{ fontWeight: '600', color: '#333', fontSize: '13px' }}>Aadhaar Front</span>
                   {selectedKyc.aadharFrontImage ? (
-                    <img src={selectedKyc.aadharFrontImage.startsWith('http') ? selectedKyc.aadharFrontImage : `http://localhost:5000/uploads/${selectedKyc.aadharFrontImage}`} alt="Aadhaar Front" className="kyc-image-preview" />
+                    <img src={selectedKyc.aadharFrontImage.startsWith('data:image') || selectedKyc.aadharFrontImage.startsWith('http') ? selectedKyc.aadharFrontImage : `http://localhost:5000/uploads/${selectedKyc.aadharFrontImage}`} alt="Aadhaar Front" className="kyc-image-preview" />
                   ) : (
                     <div className="kyc-no-image">No Image Uploaded</div>
                   )}
@@ -456,7 +456,7 @@ function KYCRequest() {
                 <div className="kyc-image-card">
                   <span style={{ fontWeight: '600', color: '#333', fontSize: '13px' }}>Aadhaar Back</span>
                   {selectedKyc.aadharBackImage ? (
-                    <img src={selectedKyc.aadharBackImage.startsWith('http') ? selectedKyc.aadharBackImage : `http://localhost:5000/uploads/${selectedKyc.aadharBackImage}`} alt="Aadhaar Back" className="kyc-image-preview" />
+                    <img src={selectedKyc.aadharBackImage.startsWith('data:image') || selectedKyc.aadharBackImage.startsWith('http') ? selectedKyc.aadharBackImage : `http://localhost:5000/uploads/${selectedKyc.aadharBackImage}`} alt="Aadhaar Back" className="kyc-image-preview" />
                   ) : (
                     <div className="kyc-no-image">No Image Uploaded</div>
                   )}

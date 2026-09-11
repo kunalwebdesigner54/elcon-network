@@ -85,7 +85,6 @@ exports.getAdminKycRequests = async (req, res) => {
 
     const total = await User.countDocuments(query);
     const users = await User.find(query)
-      .select('-kycDetails.aadharFrontImage -kycDetails.aadharBackImage -kycDetails.panImage')
       .lean()
       .hint(status && status !== 'ALL' ? { kycStatus: 1, kycSubmittedAt: -1, createdAt: -1 } : { kycSubmittedAt: -1 })
       .sort({ kycSubmittedAt: -1 })
