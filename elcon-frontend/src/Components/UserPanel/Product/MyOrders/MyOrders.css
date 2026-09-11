@@ -145,7 +145,7 @@
 }
 
 .user-orders-card .data-table {
-  /* Removed min-width to allow shrinking */
+  min-width: 1000px;
   width: 100%;
 }
 
