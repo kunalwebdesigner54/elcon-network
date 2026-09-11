@@ -40,7 +40,9 @@ function Register() {
   const [sponsorError, setSponsorError] = useState('');
   const [registrationEnabled, setRegistrationEnabled] = useState(true);
   const [checkingSettings, setCheckingSettings] = useState(true);
-  const [packageList, setPackageList] = useState([]);
+  const [packageList, setPackageList] = useState(
+    joiningPackageOptions.map(name => ({ name, price: 350 }))
+  );
   const [selectedPackageObj, setSelectedPackageObj] = useState(null);
   const [epinCheckStatus, setEpinCheckStatus] = useState(null);
 
