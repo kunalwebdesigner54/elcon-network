@@ -10,53 +10,51 @@ function formatAmount(value) {
 function TransactionHistory() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [pageSize, setPageSize] = useState('10');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [viewMode, setViewMode] = useState('statement');
 
   const [filters, setFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
   const [appliedFilters, setAppliedFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
 
+  const fetchTransactions = async () => {
+    setLoading(true);
+    try {
+      const includeAudit = viewMode === 'audit';
+      const response = await getUserTransactionHistory({
+        audit: includeAudit,
+        page,
+        limit: pageSize,
+        startDate: appliedFilters.startDate || undefined,
+        endDate: appliedFilters.endDate || undefined,
+      });
+      setRows(response.transactions || []);
+      setTotal(response.total || 0);
+      setTotalPages(response.totalPages || 1);
+    } catch (error) {
+      setRows([]);
+      setTotal(0);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const includeAudit = viewMode === 'audit';
-        const response = await getUserTransactionHistory(includeAudit);
-        setRows(response.transactions || []);
-      } catch (error) {
-        setRows([]);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [viewMode]);
+    fetchTransactions();
+  }, [viewMode, page, pageSize, appliedFilters]);
 
   const handleSearch = () => {
     setAppliedFilters(filters);
+    setPage(1);
   };
 
-  const filteredRows = useMemo(() => {
-    return rows.filter(row => {
-      const matchTxId = !appliedFilters.transactionId || String(row.transactionId || '').toLowerCase().includes(appliedFilters.transactionId.toLowerCase());
-      
-      let matchStartDate = true;
-      let matchEndDate = true;
-      
-      if (appliedFilters.startDate && row.dateTime) {
-         matchStartDate = new Date(row.dateTime) >= new Date(appliedFilters.startDate);
-      }
-      if (appliedFilters.endDate && row.dateTime) {
-         matchEndDate = new Date(row.dateTime) <= new Date(appliedFilters.endDate);
-      }
-      
-      return matchTxId && matchStartDate && matchEndDate;
-    });
-  }, [rows, appliedFilters]);
-
-  const totalCredit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [filteredRows]);
-  const totalDebit = useMemo(() => filteredRows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [filteredRows]);
-  const totalBalance = filteredRows.length ? filteredRows[0].balance : 0;
-  const totalTransactions = filteredRows.length;
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
+  const totalCredit = useMemo(() => rows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [rows]);
+  const totalDebit = useMemo(() => rows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [rows]);
+  const totalBalance = rows.length ? rows[0].balance : 0;
+  const totalTransactions = total;
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -65,7 +63,13 @@ function TransactionHistory() {
 
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
-    setLoading(true);
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
   };
 
   return (
@@ -129,7 +133,7 @@ function TransactionHistory() {
             <tbody>
               {loading ? (
                 <tr><td colSpan="9">Loading...</td></tr>
-              ) : visibleRows.length ? visibleRows.map((row) => (
+              ) : rows.length ? rows.map((row) => (
                 <tr key={row.sNo}>
                   <td>{row.sNo}</td>
                   <td>{row.dateTime}</td>
@@ -157,17 +161,21 @@ function TransactionHistory() {
             Total Transactions : <span style={{ color: '#fff', fontWeight: 'bold' }}>{totalTransactions}</span>
           </div>
           <div className="pagination" style={{ display: 'flex', gap: '5px' }}>
-            <button className="page-btn">«</button>
-            <button className="page-btn">‹</button>
-            <button className="page-btn">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">4</button>
-            <button className="page-btn">5</button>
-            <button className="page-btn">6</button>
-            <button className="page-btn">7</button>
-            <button className="page-btn">›</button>
-            <button className="page-btn">»</button>
+            <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>«</button>
+            <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>‹</button>
+            {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+              const pageNum = i + 1;
+              let show = true;
+              if (totalPages > 7) {
+                if (pageNum > 3 && pageNum < totalPages - 1 && pageNum < page - 1 && pageNum > page + 1) show = false;
+              }
+              if (show) {
+                return <button key={pageNum} className={`page-btn ${page === pageNum ? 'active' : ''}`} onClick={() => handlePageChange(pageNum)}>{pageNum}</button>;
+              }
+              return null;
+            })}
+            <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>›</button>
+            <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>»</button>
           </div>
         </div>
       </div>

@@ -5,8 +5,11 @@ export const getAdminTransactionHistory = async (audit = false) => {
   return response.data;
 };
 
-export const getUserTransactionHistory = async (audit = false) => {
-  const response = await apiClient.get('/transactions', { params: { scope: 'user', audit } });
+export const getUserTransactionHistory = async ({ audit = false, page = 1, limit = 50, startDate, endDate } = {}) => {
+  const params = { scope: 'user', audit, page, limit };
+  if (startDate) params.startDate = startDate;
+  if (endDate) params.endDate = endDate;
+  const response = await apiClient.get('/transactions', { params });
   return response.data;
 };
 

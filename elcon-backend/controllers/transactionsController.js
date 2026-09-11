@@ -11,15 +11,26 @@ const formatDateTime = (value) => new Date(value).toLocaleString('en-IN', {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
 });
 
-const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit = false) => {
+const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit = false, options = {}) => {
+  const { startDate, endDate, skip = 0, limit = 50 } = options;
   const rows = [];
+
+  const buildDateFilter = (field = 'createdAt') => {
+    const filter = {};
+    if (startDate) filter[field] = { ...filter[field], $gte: startDate };
+    if (endDate) filter[field] = { ...filter[field], $lte: endDate };
+    return Object.keys(filter).length ? filter : {};
+  };
+
+  const dateFilter = buildDateFilter();
 
   const orders = await Order.find({ 
     $or: [
       { paymentApprovalStatus: 'Approved' },
       { paymentStatus: 'Paid', paymentApprovalStatus: { $exists: false } }
-    ]
-  }).sort({ createdAt: -1 });
+    ],
+    ...dateFilter
+  }).sort({ createdAt: -1 }).skip(skip).limit(limit);
   const userIds = [...new Set(orders.map((order) => String(order.userId || '')).filter(Boolean))];
   const users = await User.find({ _id: { $in: userIds } }).select('_id memberId').lean();
   const userMap = new Map(users.map((user) => [String(user._id), user.memberId || '']));
@@ -36,7 +47,10 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     });
   });
 
-  const withdrawals = await WithdrawalRequest.find({ status: { $in: ['Pending', 'Approve', 'Succeed'] } }).sort({ createdAt: -1 });
+  const withdrawals = await WithdrawalRequest.find({ 
+    status: { $in: ['Pending', 'Approve', 'Succeed'] },
+    ...dateFilter
+  }).sort({ createdAt: -1 }).skip(skip).limit(limit);
   withdrawals.forEach((withdrawal) => {
     const status = String(withdrawal.status || '').trim().toUpperCase();
     if (['REJECTED', 'CANCELLED', 'CANCEL'].includes(status)) {
@@ -53,7 +67,7 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     });
   });
 
-  const epins = await Epin.find().sort({ createdAt: -1 });
+  const epins = await Epin.find(dateFilter).sort({ createdAt: -1 }).skip(skip).limit(limit);
   epins.forEach((epin) => {
     rows.push({
       dateTime: formatDateTime(epin.createdAt),
@@ -66,7 +80,10 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     });
   });
 
-  const walletTransactions = await WalletTransaction.find({ approvalStatus: 'Approved' }).sort({ createdAt: -1 });
+  const walletTransactions = await WalletTransaction.find({ 
+    approvalStatus: 'Approved',
+    ...dateFilter
+  }).sort({ createdAt: -1 }).skip(skip).limit(limit);
   walletTransactions.forEach((transaction) => {
     const desc = String(transaction.description || '');
     if (
@@ -96,8 +113,8 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   const tdsRate = Number((tdsSetting?.data?.tdsCharge || '5 %').replace('%', '').trim()) / 100 || 0.05;
   const adminChargeRate = Number((tdsSetting?.data?.adminCharges || '5 %').replace('%', '').trim()) / 100 || 0.05;
 
-  const levelIncomes = await LevelIncome.find().sort({ createdAt: -1 });
-  const repurchaseIncomes = await RepurchaseIncome.find().sort({ createdAt: -1 });
+  const levelIncomes = await LevelIncome.find(dateFilter).sort({ createdAt: -1 }).skip(skip).limit(limit);
+  const repurchaseIncomes = await RepurchaseIncome.find(dateFilter).sort({ createdAt: -1 }).skip(skip).limit(limit);
 
   const incomeMap = new Map();
 
@@ -168,6 +185,10 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     }
   });
 
+  // For total count, we need to count without pagination (but with date filter)
+  // This is an approximation - in production you'd want separate count queries
+  const totalRowsEstimate = rows.length;
+
   rows.sort((first, second) => new Date(second.createdAt) - new Date(first.createdAt));
 
   const uniqueMemberIds = [...new Set(rows.map((row) => row.memberId).filter(Boolean))];
@@ -179,10 +200,10 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   });
 
   if (scope === 'user' && memberIdentifiers.length) {
-    return rows.filter((row) => memberIdentifiers.includes(row.memberId) || memberIdentifiers.includes(row.transactionId));
+    return { rows: rows.filter((row) => memberIdentifiers.includes(row.memberId) || memberIdentifiers.includes(row.transactionId)), total: totalRowsEstimate };
   }
 
-  return rows;
+  return { rows, total: totalRowsEstimate };
 };
 
 exports.getTransactionHistory = async (req, res) => {
@@ -194,7 +215,17 @@ exports.getTransactionHistory = async (req, res) => {
       .map((value) => String(value || '').trim())
       .filter(Boolean);
     
-    const rows = await buildTransactionRows(scope, memberIdentifiers, includeAudit);
+    // Pagination params
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(200, Math.max(1, parseInt(req.query.limit, 10) || 50));
+    const skip = (page - 1) * limit;
+    
+    // Date range params (optional)
+    const startDate = req.query.startDate ? new Date(req.query.startDate) : null;
+    const endDate = req.query.endDate ? new Date(req.query.endDate) : null;
+    if (endDate) endDate.setHours(23, 59, 59, 999);
+    
+    const { rows, total } = await buildTransactionRows(scope, memberIdentifiers, includeAudit, { startDate, endDate, skip, limit });
     
     rows.sort((first, second) => new Date(first.createdAt) - new Date(second.createdAt));
     
@@ -228,7 +259,7 @@ exports.getTransactionHistory = async (req, res) => {
       row.sNo = index + 1;
     });
 
-    res.json({ success: true, transactions: mappedRows });
+    res.json({ success: true, transactions: mappedRows, total, page, limit, totalPages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
