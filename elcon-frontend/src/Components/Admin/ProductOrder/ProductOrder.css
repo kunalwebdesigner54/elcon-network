@@ -81,7 +81,7 @@
 
 /* All Orders table wrapper: allow vertical scroll so more rows are accessible */
 .admin-product-order-panel .table-wrap {
-  max-height: 500px;
+  max-height: unset;
   overflow-y: auto;
 }
 
