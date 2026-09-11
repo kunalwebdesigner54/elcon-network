@@ -756,7 +756,9 @@ exports.getAdminOrders = async (req, res) => {
     // For exporting, we might want all matching records instead of just one page.
     const isExport = exportData === 'true';
 
-    let ordersQuery = Order.find(matchQuery).sort({ createdAt: -1 });
+    let ordersQuery = Order.find(matchQuery)
+      .sort({ createdAt: -1 })
+      .select('orderNo userId orderDate orderItems finalTotal paymentMode paymentStatus lvPoint bvPoint orderStatus startDate endDate createdAt');
     
     if (!isExport) {
       ordersQuery = ordersQuery.skip(skip).limit(parsedLimit);
