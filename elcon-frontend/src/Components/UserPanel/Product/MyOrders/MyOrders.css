@@ -7,6 +7,7 @@
 .user-orders-shell {
   max-width: 1180px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .user-orders-route {
