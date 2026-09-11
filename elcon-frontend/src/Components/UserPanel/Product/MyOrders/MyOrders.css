@@ -145,8 +145,10 @@
 }
 
 .user-orders-card .data-table {
-  min-width: 1000px;
-  width: 100%;
+  min-width: 1000px !important;
+  width: auto !important;
+  max-width: none !important;
+  table-layout: auto !important;
 }
 
 .user-orders-card .data-table th,
