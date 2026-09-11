@@ -40,7 +40,8 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
       const response = await getAdminOrders({
         ...filters,
         page: currentPage,
-        status: statusFilter || filters.status
+        status: statusFilter || filters.status,
+        limit: Math.max(Number(filters.limit) || 10, 10)
       });
       setOrders(response.orders || []);
       setTotalOrders(response.total || 0);

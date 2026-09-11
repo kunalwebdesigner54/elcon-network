@@ -750,8 +750,9 @@ exports.getAdminOrders = async (req, res) => {
       matchQuery.userId = { $in: userIds };
     }
 
-    const parsedLimit = Number(limit) || 10;
-    const skip = (Number(page) - 1) * parsedLimit;
+    const parsedLimit = Math.max(Number(limit) || 10, 10);
+    const parsedPage = Number(page) || 1;
+    const skip = (parsedPage - 1) * parsedLimit;
 
     // For exporting, we might want all matching records instead of just one page.
     const isExport = exportData === 'true';
