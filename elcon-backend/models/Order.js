@@ -105,6 +105,7 @@ const orderSchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       default: 'Pending',
+      index: true,
     },
     remark: {
       type: String,
@@ -122,10 +123,12 @@ const orderSchema = new mongoose.Schema(
     lvPoint: {
       type: Number,
       default: 0,
+      index: true,
     },
     bvPoint: {
       type: Number,
       default: 0,
+      index: true,
     },
     reserveAmount: {
       type: Number,
@@ -150,6 +153,7 @@ const orderSchema = new mongoose.Schema(
     finalTotal: {
       type: Number,
       default: 0,
+      index: true,
     },
     shippingInformation: {
       type: [shippingFieldSchema],
