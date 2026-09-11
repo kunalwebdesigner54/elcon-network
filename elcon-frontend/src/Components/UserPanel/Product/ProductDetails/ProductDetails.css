@@ -118,39 +118,55 @@
   overflow: hidden;
 }
 
+.product-spec-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* data-table is the class used in JSX; product-spec-table kept as alias */
+.data-table,
 .product-spec-table {
   width: 100%;
+  min-width: 320px;
   border-collapse: collapse;
 }
 
+.data-table tr:nth-child(odd) td,
 .product-spec-table tr:nth-child(odd) td {
   background: rgba(255, 255, 255, 0.05) !important;
 }
 
+.data-table th,
+.data-table td,
 .product-spec-table th,
 .product-spec-table td {
-  padding: 7px 10px;
+  padding: 12px 14px;
   font-size: 14px;
   text-align: left;
   border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
 }
 
+.data-table th,
 .product-spec-table th {
-  width: 40%;
+  width: 42%;
+  min-width: 130px;
   color: var(--primary-light) !important;
   font-weight: 600 !important;
-  background: rgba(11, 18, 33, 0.8) !important; /* Dark blue matching theme --bg-dark */
+  background: rgba(11, 18, 33, 0.8) !important;
   border-radius: 0 !important;
   border-bottom: 1px solid var(--glass-border) !important;
-  padding: 12px 14px !important;
 }
 
+.data-table td,
 .product-spec-table td {
   color: var(--text-main) !important;
   background: rgba(255, 255, 255, 0.02) !important;
   border-bottom: 1px solid var(--glass-border) !important;
-  padding: 12px 14px !important;
   border-radius: 0 !important;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .product-tabs-card {

@@ -221,16 +221,18 @@ const ProductDetails = () => {
           </section>
 
           <section className="product-spec-card">
-            <table className="data-table">
-              <tbody>
-                {details.map((detail) => (
-                  <tr key={detail.label}>
-                    <th>{detail.label}</th>
-                    <td>{detail.value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="product-spec-table-wrap">
+              <table className="data-table">
+                <tbody>
+                  {details.map((detail) => (
+                    <tr key={detail.label}>
+                      <th>{detail.label}</th>
+                      <td>{detail.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
         </div>
 
