@@ -138,3 +138,26 @@
 }
 
 
+.user-orders-card .table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 10px;
+}
+
+.user-orders-card .data-table {
+  min-width: 1000px; /* Ensure table doesn't get squished or clipped */
+}
+
+.user-orders-card .data-table th,
+.user-orders-card .data-table td {
+  padding: 12px 14px !important;
+  font-size: 13.5px !important;
+}
+
+@media (max-width: 768px) {
+  .user-orders-card .data-table th,
+  .user-orders-card .data-table td {
+    padding: 10px 10px !important;
+    font-size: 13px !important;
+  }
+}
