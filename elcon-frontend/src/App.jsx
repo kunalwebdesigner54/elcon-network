@@ -91,8 +91,10 @@ import MyOrders from './Components/UserPanel/Product/MyOrders/MyOrders';
 import OrderDetails from './Components/UserPanel/Product/MyOrders/OrderDetails';
 import CouponReport from './Components/Admin/Coupon/CouponReport/CouponReport';
 import DiscountWalletTransaction from './Components/Admin/Coupon/DiscountWalletTransaction/DiscountWalletTransaction';
+import DiscountWalletOverview from './Components/Admin/Coupon/DiscountWalletOverview/DiscountWalletOverview';
 import DiscountCoupon from './Components/UserPanel/Coupon/DiscountCoupon/DiscountCoupon';
 import CouponTransactionHistory from './Components/UserPanel/Coupon/TransactionHistory/TransactionHistory';
+import DiscountWalletStatement from './Components/UserPanel/DiscountWalletStatement/DiscountWalletStatement';
 import JoiningPackageAdmin from './Components/Admin/ProductsPackage/JoiningPackage/JoiningPackageAdmin';
 import ShoppingProductsAdmin from './Components/Admin/ProductsPackage/ShoppingProducts/ShoppingProductsAdmin';
 import EpinPackagesAdmin from './Components/Admin/ProductsPackage/EpinPackages/EpinPackagesAdmin';
@@ -255,6 +257,7 @@ function App() {
           <Route path="product/my-orders/details/:orderNo" element={<OrderDetails />} />
           <Route path="coupon/discount-coupon" element={<DiscountCoupon />} />
           <Route path="coupon/transaction-history" element={<CouponTransactionHistory />} />
+          <Route path="discount-wallet-statement" element={<DiscountWalletStatement />} />
           <Route path="product/product-list" element={<JoiningPackage />} />
           <Route path="product/product-order" element={<ShoppingProducts />} />
           <Route path="product/delivery-status" element={<UserBlankPage />} />
@@ -349,6 +352,7 @@ function App() {
 
           <Route path="coupon/coupon-report" element={<CouponReport />} />
           <Route path="admin/coupon/coupon-report" element={<CouponReport />} />
+          <Route path="coupon/discount-wallet-overview" element={<DiscountWalletOverview />} />
           <Route path="coupon/discount-wallet-transaction" element={<DiscountWalletTransaction />} />
 
           <Route path="products-package/Joining-Package" element={<JoiningPackageAdmin />} />

@@ -114,6 +114,7 @@ const menuItems = [
         { label: 'Transaction History', to: '/user/coupon/transaction-history' }
       ]
     },
+    { key: 'discountWalletStatement', label: 'Discount Wallet Statement', to: '/user/discount-wallet-statement' },
   { key: 'ticketSupport', label: 'Ticket Support', to: '/user/ticket-support' },
   { key: 'newsEvents', label: 'News & Events', to: '/user/news-events' },
   { key: 'rank', label: 'My Rank', to: '/user/rank/my-rank' },
