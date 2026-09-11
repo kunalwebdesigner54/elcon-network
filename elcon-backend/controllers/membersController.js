@@ -175,7 +175,7 @@ exports.updateKycStatus = async (req, res) => {
       }
 
       // Automatically create an Order for the joining package if one doesn't exist
-      if (user.joiningPackage) {
+      if (user.joiningPackage && String(user.joiningPackage).trim()) {
         try {
           const existingOrder = await Order.findOne({
             userId: user._id,
@@ -183,9 +183,10 @@ exports.updateKycStatus = async (req, res) => {
           });
 
           if (!existingOrder) {
+            const trimmedPackage = String(user.joiningPackage).trim();
             let orderProductDoc = await Product.findOne({
               type: 'joining',
-              productName: new RegExp(`^${user.joiningPackage.trim()}$`, 'i'),
+              productName: new RegExp(`^${trimmedPackage}$`, 'i'),
             }).lean();
 
             let orderItem = null;
