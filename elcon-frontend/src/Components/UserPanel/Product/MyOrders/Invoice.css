@@ -17,6 +17,12 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  
+  /* Force light theme variables for the invoice to override global dark theme */
+  --text-main: #1a1a1a;
+  --text-muted: #666666;
+  --darker: #f8f9fa;
+  --border-color: #e2e8f0;
 }
 
 /* ========== Paper/Invoice Styling ========== */
