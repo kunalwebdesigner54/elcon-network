@@ -191,7 +191,7 @@ const GivenHelp = () => {
                     <div className="section-title21">Sender Details (Help Provider)</div>
                     <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{currentUser?.name || "---"}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{currentUser?.memberId || "---"}</span></div>
-                    <div className="help-info-row21"><span className="help-info-label">Mobile No :</span> <span className="help-info-value">{currentUser?.contactNo ? "**********" : "---"}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Mobile No :</span> <span className="help-info-value">{currentUser?.contactNo ? "***" : "---"}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">E-mail ID :</span> <span className="help-info-value">{currentUser?.email || "---"}</span></div>
                   </div>
 
