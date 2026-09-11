@@ -79,12 +79,10 @@
 
 .admin-product-order-search-btn:hover { transform: translateY(-2px); }
 
-.admin-product-order-table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-sm);
-  margin-bottom: 18px;
+/* All Orders table wrapper: allow vertical scroll so more rows are accessible */
+.admin-product-order-panel .table-wrap {
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 .admin-product-order-table {
