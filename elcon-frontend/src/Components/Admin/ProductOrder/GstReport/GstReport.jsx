@@ -57,7 +57,6 @@ function GstReport() {
               <tr>
                 <th>Sr No</th>
                 <th>Member ID</th>
-                <th>Member Name</th>
                 <th>Customer Name</th>
                 <th>Customer Mobile</th>
                 <th>Order ID</th>
@@ -81,14 +80,13 @@ function GstReport() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="21" className="text-center">Loading...</td>
+                  <td colSpan="20" className="text-center">Loading...</td>
                 </tr>
               ) : reportData.length > 0 ? (
                 reportData.map((row, index) => (
                   <tr key={index}>
                     <td className="text-center">{index + 1}</td>
                     <td>{row.memberId || '-'}</td>
-                    <td>{row.memberName || '-'}</td>
                     <td>{row.customerName || '-'}</td>
                     <td>{row.customerMobile || '-'}</td>
                     <td>{row.orderNo || '-'}</td>
@@ -111,7 +109,7 @@ function GstReport() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="21" className="text-center">No GST records found</td>
+                  <td colSpan="20" className="text-center">No GST records found</td>
                 </tr>
               )}
             </tbody>
