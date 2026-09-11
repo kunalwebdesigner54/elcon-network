@@ -722,7 +722,7 @@ exports.getAdminOrders = async (req, res) => {
       orderNo, 
       memberId, 
       totalPaid, 
-      lvPoint, 
+      memberName, 
       bvPoint, 
       status, 
       startDate, 
@@ -735,7 +735,6 @@ exports.getAdminOrders = async (req, res) => {
     if (orderNo) matchQuery.orderNo = new RegExp(orderNo, 'i');
     if (status) matchQuery.orderStatus = status;
     if (totalPaid) matchQuery.finalTotal = Number(totalPaid);
-    if (lvPoint) matchQuery.lvPoint = Number(lvPoint);
     if (bvPoint) matchQuery.bvPoint = Number(bvPoint);
     
     if (startDate || endDate) {
@@ -748,6 +747,16 @@ exports.getAdminOrders = async (req, res) => {
       const users = await User.find({ memberId: new RegExp(memberId, 'i') }).select('_id');
       const userIds = users.map(u => u._id);
       matchQuery.userId = { $in: userIds };
+    }
+
+    if (memberName) {
+      const users = await User.find({ name: new RegExp(memberName, 'i') }).select('_id');
+      const userIds = users.map(u => u._id);
+      if (matchQuery.userId) {
+        matchQuery.userId.$in = matchQuery.userId.$in.filter(id => userIds.some(uId => uId.equals(id)));
+      } else {
+        matchQuery.userId = { $in: userIds };
+      }
     }
 
     const parsedLimit = Math.max(Number(limit) || 10, 10);
@@ -791,7 +800,7 @@ exports.getAdminOrders = async (req, res) => {
           payStatus: order.paymentStatus,
           paymentApprovalStatus: order.paymentApprovalStatus || 'Pending',
           orderStatus: order.orderStatus,
-          lvPoint: Number(order.lvPoint || 0),
+          memberName: owner.name || '---',
           bvPoint: Number(order.bvPoint || 0),
           startDate: order.startDate || order.orderDate,
           endDate: order.endDate || order.orderDate,

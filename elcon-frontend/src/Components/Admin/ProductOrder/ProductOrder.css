@@ -55,7 +55,7 @@
 .admin-product-order-input-order-no { flex: 0 1 120px; }
 .admin-product-order-input-member-id { flex: 0 1 130px; }
 .admin-product-order-input-total-paid { flex: 0 1 120px; }
-.admin-product-order-input-lv-point { flex: 0 1 110px; }
+.admin-product-order-input-member-name { flex: 0 1 150px; }
 .admin-product-order-input-bv-point { flex: 0 1 110px; }
 .admin-product-order-input-date { flex: 0 1 130px; }
 .admin-product-order-input-status { flex: 0 1 140px; }

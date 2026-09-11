@@ -6,8 +6,8 @@ import { getAdminOrders, updateOrderStatus, getOrderByNo } from '../../../api/pr
 const defaultFilters = {
   orderNo: '',
   memberId: '',
+  memberName: '',
   totalPaid: '',
-  lvPoint: '',
   bvPoint: '',
   status: '',
   startDate: '',
@@ -94,12 +94,11 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
         'S. No': index + 1,
         'Order No': order.orderNo,
         'Member Id': order.memberId,
-        'Order Date': order.orderDate,
+        'Member Name': order.memberName,
         'Items': order.items,
         'Total Paid': Number(order.totalPaid || 0).toFixed(2),
         'Pay Mode': order.payMode,
         'Pay Status': order.payStatus,
-        'LV Point': order.lvPoint,
         'BV Point': order.bvPoint,
         'Order Status': order.orderStatus,
         'Start Date': order.startDate,
@@ -151,8 +150,8 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
             orderDetail.items.forEach((item) => {
               allOrderDetails.push({
                 'Order No': orderDetail.orderNo,
-                'Order Date': orderDetail.orderDate,
                 'Member Id': orderDetail.memberId,
+                'Member Name': orderDetail.memberName || order.memberName || '---',
                 'Order Status': orderDetail.orderStatus,
                 'Payment Mode': orderDetail.paymentMode,
                 'Payment Status': orderDetail.paymentStatus,
@@ -169,8 +168,8 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
             // Order without items
             allOrderDetails.push({
               'Order No': orderDetail.orderNo,
-              'Order Date': orderDetail.orderDate,
               'Member Id': orderDetail.memberId,
+              'Member Name': orderDetail.memberName || order.memberName || '---',
               'Order Status': orderDetail.orderStatus,
               'Payment Mode': orderDetail.paymentMode,
               'Payment Status': orderDetail.paymentStatus,
@@ -240,8 +239,8 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
           <div className="admin-product-order-filter-row">
             <input className="admin-product-order-input admin-product-order-input-order-no" name="orderNo" placeholder="ORDER NO" value={filters.orderNo} onChange={handleFilterChange} />
             <input className="admin-product-order-input admin-product-order-input-member-id" name="memberId" placeholder="MEMBER ID" value={filters.memberId} onChange={handleFilterChange} />
+            <input className="admin-product-order-input admin-product-order-input-member-name" name="memberName" placeholder="MEMBER NAME" value={filters.memberName} onChange={handleFilterChange} />
             <input className="admin-product-order-input admin-product-order-input-total-paid" name="totalPaid" placeholder="TOTAL PAID" value={filters.totalPaid} onChange={handleFilterChange} />
-            <input className="admin-product-order-input admin-product-order-input-lv-point" name="lvPoint" placeholder="LV POINT" value={filters.lvPoint} onChange={handleFilterChange} />
             <input className="admin-product-order-input admin-product-order-input-bv-point" name="bvPoint" placeholder="BV POINT" value={filters.bvPoint} onChange={handleFilterChange} />
             <select className="admin-product-order-input admin-product-order-input-status" name="status" value={filters.status} onChange={handleFilterChange}>
               <option value="">STATUS</option>
@@ -276,12 +275,11 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
                   <th>S. No</th>
                   <th>Order No</th>
                   <th>Member Id</th>
-                  <th>Order Date</th>
+                  <th>Member Name</th>
                   <th>Items</th>
                   <th>Total Paid</th>
                   <th>Pay Mode</th>
                   <th>Pay Status</th>
-                  <th>LV Point</th>
                   <th>BV Point</th>
                   <th>Order Status</th>
                   <th>Start Date</th>
@@ -299,12 +297,11 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
                     <td className="text-center">{startIndex + index + 1}</td>
                     <td>{order.orderNo}</td>
                     <td>{order.memberId}</td>
-                    <td>{order.orderDate}</td>
+                    <td>{order.memberName}</td>
                     <td className="text-center">{order.items}</td>
                     <td className="text-center">₹{Number(order.totalPaid || 0).toFixed(2)}</td>
                     <td>{order.payMode}</td>
                     <td className="text-center">{order.payStatus}</td>
-                    <td className="text-center">{order.lvPoint}</td>
                     <td className="text-center">{order.bvPoint}</td>
                     <td><span className={`admin-product-order-status-badge ${badgeClass}`}>{statusFilter || order.orderStatus}</span></td>
                     <td>{order.startDate}</td>
