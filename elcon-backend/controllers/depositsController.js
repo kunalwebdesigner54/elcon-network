@@ -299,6 +299,12 @@ exports.updateDepositStatus = async (req, res) => {
     request.remark = remark || request.remark || '-';
     request.approvedAt = new Date();
     request.reviewedBy = req.user.id;
+    
+    // Clear the payment slip after review to free up database storage space
+    if (normalizedStatus !== 'Pending') {
+      request.slip = '';
+    }
+
     await request.save();
 
     res.status(200).json({ success: true, data: toApiRow(request, 0) });
