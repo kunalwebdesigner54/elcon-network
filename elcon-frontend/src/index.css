@@ -447,7 +447,7 @@ select option {
 }
 
 /* MyOrders-specific table override to prevent right-side cutoff */
-.user-orders-card .data-table {
+.user-orders-shell .user-orders-card .data-table {
   min-width: 1000px !important;
   width: auto !important;
   max-width: none !important;
