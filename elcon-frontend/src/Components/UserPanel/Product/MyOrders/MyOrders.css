@@ -156,10 +156,19 @@
   white-space: normal !important; /* Allow text wrapping so it fits */
 }
 
+@media (max-width: 992px) {
+  .hide-on-tablet {
+    display: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .user-orders-card .data-table th,
   .user-orders-card .data-table td {
     padding: 8px !important;
     font-size: 12px !important;
+  }
+  .hide-on-mobile {
+    display: none !important;
   }
 }

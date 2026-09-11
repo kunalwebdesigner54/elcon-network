@@ -65,14 +65,14 @@ function MyOrders() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>S. NO</th>
+                  <th className="hide-on-mobile">S. NO</th>
                   <th>ORDER NO</th>
                   <th>ORDER DATE</th>
-                  <th>ITEMS</th>
+                  <th className="hide-on-mobile">ITEMS</th>
                   <th>TOTAL PAID</th>
-                  <th>TOTAL BV POINT</th>
-                  <th>PAY MODE</th>
-                  <th>PAY STATUS</th>
+                  <th className="hide-on-tablet">TOTAL BV POINT</th>
+                  <th className="hide-on-tablet">PAY MODE</th>
+                  <th className="hide-on-mobile">PAY STATUS</th>
                   <th>ORDER STATUS</th>
                   <th>DETAILS</th>
                 </tr>
@@ -80,14 +80,14 @@ function MyOrders() {
               <tbody>
                 {orders.length ? orders.map((order, index) => (
                   <tr key={order.orderNo}>
-                    <td data-label="S. NO">{index + 1}</td>
+                    <td data-label="S. NO" className="hide-on-mobile">{index + 1}</td>
                     <td data-label="ORDER NO">{order.orderNo}</td>
                     <td data-label="ORDER DATE">{order.orderDate}</td>
-                    <td data-label="ITEMS">{order.items}</td>
+                    <td data-label="ITEMS" className="hide-on-mobile">{order.items}</td>
                     <td data-label="TOTAL PAID">{Number(order.totalPaid ?? order.finalTotal ?? order.totalPrice ?? 0).toFixed(2)}</td>
-                    <td data-label="TOTAL BV POINT">{Number(order.bvPoint ?? 0).toFixed(2)}</td>
-                    <td data-label="PAY MODE">{order.payMode ?? order.paymentMode}</td>
-                    <td data-label="PAY STATUS">{order.payStatus ?? order.paymentStatus}</td>
+                    <td data-label="TOTAL BV POINT" className="hide-on-tablet">{Number(order.bvPoint ?? 0).toFixed(2)}</td>
+                    <td data-label="PAY MODE" className="hide-on-tablet">{order.payMode ?? order.paymentMode}</td>
+                    <td data-label="PAY STATUS" className="hide-on-mobile">{order.payStatus ?? order.paymentStatus}</td>
                     <td data-label="ORDER STATUS" className={getStatusClass(order.orderStatus)}>
                       {order.orderStatus}
                     </td>
