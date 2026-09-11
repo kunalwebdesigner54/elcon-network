@@ -268,7 +268,7 @@ exports.registerUser = async (req, res) => {
 
     if (foundEpin) {
       foundEpin.status = 'Used';
-      foundEpin.usedBy = user.memberId;
+      foundEpin.usedBy = user.sponsorId || user.memberId;
       foundEpin.usedDate = new Date().toLocaleString('en-IN', {
         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,
       });
