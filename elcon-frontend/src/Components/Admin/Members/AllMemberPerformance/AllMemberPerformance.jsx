@@ -29,8 +29,8 @@ function AllMemberPerformance() {
     memberName: '',
     status: '',
     levelDepth: '',
-    unlockLevel: '',
-    rank: '',
+    directs: '',
+    upgrade: '',
     startDate: '',
     endDate: '',
   });
@@ -64,13 +64,17 @@ function AllMemberPerformance() {
       const byName = !filters.memberName || row.memberName.toLowerCase().includes(filters.memberName.toLowerCase());
       const byStatus = !filters.status || row.status === filters.status;
       const byLevelDepth = !filters.levelDepth || String(row.levelDepth) === filters.levelDepth;
-      const rowDirects = String(row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0);
-      const byUnlockLevel = !filters.unlockLevel || rowDirects === filters.unlockLevel;
-      const byRank = !filters.rank || String(row.rank).toLowerCase().includes(filters.rank.toLowerCase());
+      
+      const rowDirects = String(row.directsCount ?? 0);
+      const byDirects = !filters.directs || rowDirects === filters.directs;
+      
+      const rowUpgrade = String(row.unlockLevel ?? 0);
+      const byUpgrade = !filters.upgrade || rowUpgrade === filters.upgrade;
+
       const byStartDate = !filters.startDate || joinDateValue >= filters.startDate;
       const byEndDate = !filters.endDate || joinDateValue <= filters.endDate;
 
-      return byMemberId && byName && byStatus && byLevelDepth && byUnlockLevel && byRank && byStartDate && byEndDate;
+      return byMemberId && byName && byStatus && byLevelDepth && byDirects && byUpgrade && byStartDate && byEndDate;
     });
   }, [filters, memberPerformanceRows]);
 
@@ -83,7 +87,7 @@ function AllMemberPerformance() {
     row.mobile,
     row.joinDate,
     row.status,
-    row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0,
+    row.directsCount ?? 0,
     row.unlockLevel,
     row.levelDepth,
     row.activeTeamCount,
@@ -161,13 +165,13 @@ function AllMemberPerformance() {
             <option value="ACTIVE">ACTIVE</option>
             <option value="IN-ACTIVE">IN-ACTIVE</option>
           </select>
-          <select className="select-input" style={{ maxWidth: '110px' }} value={filters.unlockLevel} onChange={handleFilterChange('unlockLevel')}>
+          <select className="select-input" style={{ maxWidth: '110px' }} value={filters.directs} onChange={handleFilterChange('directs')}>
             <option value="">DIRECTS</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="4">4</option>
           </select>
-          <input className="text-input" style={{ maxWidth: '90px' }} placeholder="UPGRADE" value={filters.rank} onChange={handleFilterChange('rank')} />
+          <input className="text-input" style={{ maxWidth: '90px' }} placeholder="UPGRADE" value={filters.upgrade} onChange={handleFilterChange('upgrade')} />
           <select className="select-input" style={{ maxWidth: '110px' }} value={filters.levelDepth} onChange={handleFilterChange('levelDepth')}>
             <option value="">LEVEL DEPTH</option>
             <option value="0">0</option>
@@ -232,7 +236,7 @@ function AllMemberPerformance() {
                   <td>{row.mobile}</td>
                   <td>{row.joinDate}</td>
                   <td className={row.status === 'IN-ACTIVE' ? 'member-performance-status-inactive' : ''}>{row.status}</td>
-                  <td>{row.directsCount ?? row.totalTeamCount ?? row.directs ?? row.unlockLevel ?? 0}</td>
+                  <td>{row.directsCount ?? 0}</td>
                   <td>{row.unlockLevel}</td>
                   <td>{row.levelDepth}</td>
                   <td>{row.activeTeamCount}</td>
