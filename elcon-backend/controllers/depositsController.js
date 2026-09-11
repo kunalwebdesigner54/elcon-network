@@ -117,13 +117,15 @@ exports.createDepositRequest = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please upload payment screenshot' });
     }
 
+    const depositId = await buildDepositId();
+    
     if (!transactionId) {
-      transactionId = `TXN${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
-    }
-
-    const existingTransaction = await DepositRequest.findOne(transactionReferenceQuery(transactionId)).select('_id');
-    if (existingTransaction) {
-      return res.status(409).json({ success: false, message: 'This transaction ID has already been used' });
+      transactionId = depositId;
+    } else {
+      const existingTransaction = await DepositRequest.findOne(transactionReferenceQuery(transactionId)).select('_id');
+      if (existingTransaction) {
+        return res.status(409).json({ success: false, message: 'This transaction ID has already been used' });
+      }
     }
 
     if (!transactionPassword || !confirmTransactionPassword) {
@@ -147,7 +149,6 @@ exports.createDepositRequest = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Transaction password is incorrect' });
     }
 
-    const depositId = await buildDepositId();
     const depositDate = formatDateTime();
     const methodLabel = ['upi', 'UPI ID'].includes(paymentMode) ? 'UPI ID' : 'Bank Transfer';
 
