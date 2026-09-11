@@ -1,99 +1,228 @@
-@import '../../Common/UserLayout.css';
-
-.level-income-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 14px 0;
-  align-items: center; /* Ensures vertical alignment */
+.level-income-page {
+  padding: 20px;
+  width: 100%;
 }
 
-.level-income-input {
-  flex: 1 1 auto;
-  border: 1px solid #ccd3db;
-  border-radius: 4px; /* Consistent 4px border radius */
-  padding: 0 12px;
-  height: 40px; /* Fixed consistent height */
-  font-size: 14px;
-  background: var(--card-bg);
-  color: var(--text-main);
-  box-sizing: border-box;
-}
-
-.level-income-search-btn {
-  height: 40px; /* Exact same height as inputs */
-  padding: 0 20px;
-  border-radius: 4px; /* Consistent border radius */
-  font-size: 14px;
-  font-weight: 600;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.table-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.level-income-total-row td {
-  font-weight: 700;
-  background: rgba(0, 212, 170, 0.08);
-}
-
-.level-income-total-row td:first-child,
-.level-income-total-row td:nth-child(8) {
-  text-align: right;
-}
-
-.level-income-pagination {
-  margin-top: 14px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
-}
-
-.level-income-page-btn {
-  min-width: 34px;
-  height: 34px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+.level-income-panel {
+  background-color: var(--panel-bg, #0B132B);
   border-radius: 8px;
-  background: var(--card-bg);
-  color: #6d7e93;
+  padding: 24px;
+  color: var(--text-color, #fff);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.level-income-heading {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.member-panel-badge {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* Toolbar and Filters */
+.level-income-toolbar {
+  margin-bottom: 16px;
+  margin-top: 32px;
+}
+
+.level-income-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.level-income-filter-input {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.level-income-filter-input::placeholder {
+  color: #a0aec0;
+  text-transform: uppercase;
+}
+
+.select-page-size {
+  max-width: 100px;
+}
+
+.level-income-filter-input:focus {
+  outline: none;
+  border-color: #0096ff;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-primary.search-btn {
+  background-color: #0096ff;
+  color: #fff;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: #00e5ff;
+  border: 1px solid #00e5ff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.btn-outline:hover {
+  background-color: rgba(0, 229, 255, 0.1);
+}
+
+/* Table Styles */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.data-table th {
+  background-color: #00a896;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-table th:nth-child(5),
+.data-table th:nth-child(6),
+.data-table th:nth-child(7),
+.data-table th:nth-child(8),
+.data-table th:nth-child(9),
+.data-table th:nth-child(10) {
+  background-color: #3b82f6; /* Matching the blue headers in the reference image */
+}
+
+.data-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.data-table tbody tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.data-table .total-row td {
+  background-color: rgba(255, 255, 255, 0.05);
   font-weight: 600;
 }
 
-.level-income-page-btn:disabled {
-  opacity: 0.45;
+/* Footer and Pagination */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.total-entries {
+  font-size: 14px;
+  color: #a0aec0;
+}
+
+.pagination {
+  display: flex;
+  gap: 4px;
+}
+
+.page-btn {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.page-btn.active-page {
+  background-color: #00e5ff;
+  color: #000;
+  border-color: #00e5ff;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.level-income-page-btn-active {
-  background: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
-  color: #fff;
-  border-color: transparent;
-}
-
 @media (max-width: 768px) {
-  .level-income-filters > * {
+  .level-income-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .level-income-filter-input {
+    width: 100%;
     flex: 1 1 100%;
   }
-
-  .level-income-filters .user-btn-blue {
-    width: 100%;
+  
+  .select-page-size {
+    flex: 1 1 40%;
+    width: auto;
+  }
+  
+  .filter-buttons {
+    display: flex;
+    flex: 1 1 50%;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  
+  .filter-buttons button {
+    flex: 1 1 calc(50% - 8px);
+    width: auto;
   }
 }
-
-@media (max-width: 620px) {
-  .user-table {
-    min-width: 760px;
-  }
-}
-
-
-
