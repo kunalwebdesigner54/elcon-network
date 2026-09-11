@@ -33,40 +33,7 @@
   color: #4a4a4a;
 }
 
-.user-orders-table-wrap {
-  border: 0;
-  border-radius: 0;
-  margin: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
 
-.user-orders-table {
-  min-width: 1080px;
-}
-
-.user-orders-table thead th {
-  background: #13a7d3;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  border-color: rgba(255, 255, 255, 0.14);
-  text-align: center;
-  padding: 10px 12px;
-}
-
-.user-orders-table tbody tr:nth-child(even) {
-  background: var(--darker);
-}
-
-.user-orders-table td {
-  font-size: 14px;
-  color: #424242;
-  text-align: center;
-  padding: 11px 12px;
-}
 
 .order-status {
   font-weight: 700;
@@ -140,21 +107,7 @@
     border-radius: 16px;
   }
 
-  /* Keep table layout on small screens and allow horizontal scrolling
-     so it matches the Level Income table behavior. */
-  .user-orders-table {
-    min-width: 860px; /* allow the table to scroll inside .table-wrap */
-  }
 
-  .user-orders-table thead th {
-    font-size: 14px;
-    padding: 8px 10px;
-  }
-
-  .user-orders-table td {
-    padding: 8px 10px;
-    font-size: 14px;
-  }
 
   .user-order-detail-btn {
     width: 34px;
@@ -181,13 +134,7 @@
     margin-bottom: 8px;
   }
 
-  .user-orders-table td {
-    padding: 10px 10px;
-  }
 
-  .user-orders-table td::before {
-    flex-basis: 46%;
-  }
 }
 
 
