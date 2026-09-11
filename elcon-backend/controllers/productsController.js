@@ -716,7 +716,7 @@ exports.getOrderByNo = async (req, res) => {
 
 exports.getAdminOrders = async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const orders = await Order.find().sort({ createdAt: -1 }).lean();
     const userIds = [...new Set(orders.map((order) => String(order.userId || '')).filter(Boolean))];
     const users = await User.find({ _id: { $in: userIds } }).select('_id memberId name contactNo').lean();
     const userMap = new Map(users.map((user) => [String(user._id), user]));
