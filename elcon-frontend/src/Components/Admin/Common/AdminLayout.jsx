@@ -350,46 +350,64 @@ function AdminLayout() {
                 ☰
               </button>
             )}
+            <h2 className="topbar-page-title">{breadcrumb[breadcrumb.length - 1] || 'Dashboard'}</h2>
           </div>
-          <div className="topbar-avatar" style={{ position: 'relative' }}>
-            <button 
-              type="button" 
-              className="topbar-avatar-btn" 
-              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px' }}
-            >
-              👨‍💼
+          
+          <div className="topbar-center">
+             <div className="topbar-search">
+               <input type="text" placeholder="Search Here ..." className="topbar-search-input" />
+               <span className="topbar-search-icon">🔍</span>
+             </div>
+          </div>
+
+          <div className="topbar-right">
+            <button className="topbar-icon-btn" aria-label="Messages">✉️</button>
+            <button className="topbar-icon-btn" aria-label="Notifications">
+               🔔
+               <span className="notification-dot"></span>
             </button>
-            {isProfileDropdownOpen && (
-              <div className="profile-dropdown" style={{
-                position: 'absolute',
-                top: '40px',
-                right: '0',
-                backgroundColor: '#fff',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                borderRadius: '4px',
-                padding: '10px 0',
-                minWidth: '160px',
-                zIndex: 1000
-              }}>
-                <Link 
-                  to="/settings/admin-settings" 
-                  style={{ display: 'block', padding: '8px 16px', color: '#333', textDecoration: 'none' }}
-                  onClick={() => setIsProfileDropdownOpen(false)}
-                >
-                  Admin Profile
-                </Link>
-                {user.adminType !== 'SUB_ADMIN' && (
+            <div className="topbar-avatar" style={{ position: 'relative' }}>
+              <button 
+                type="button" 
+                className="topbar-avatar-btn" 
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <div className="avatar-img">👨‍💼</div>
+                <span className="avatar-chevron">⌄</span>
+              </button>
+              {isProfileDropdownOpen && (
+                <div className="profile-dropdown" style={{
+                  position: 'absolute',
+                  top: '50px',
+                  right: '0',
+                  backgroundColor: '#1F1E2E',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                  borderRadius: '8px',
+                  padding: '10px 0',
+                  minWidth: '160px',
+                  zIndex: 1000
+                }}>
                   <Link 
-                    to="/sub-admins/manage" 
-                    style={{ display: 'block', padding: '8px 16px', color: '#333', textDecoration: 'none' }}
+                    to="/settings/admin-settings" 
+                    style={{ display: 'block', padding: '8px 16px', color: '#fff', textDecoration: 'none' }}
                     onClick={() => setIsProfileDropdownOpen(false)}
                   >
-                    Manage Sub-Admins
+                    Admin Profile
                   </Link>
-                )}
-              </div>
-            )}
+                  {user.adminType !== 'SUB_ADMIN' && (
+                    <Link 
+                      to="/sub-admins/manage" 
+                      style={{ display: 'block', padding: '8px 16px', color: '#fff', textDecoration: 'none' }}
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                    >
+                      Manage Sub-Admins
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
