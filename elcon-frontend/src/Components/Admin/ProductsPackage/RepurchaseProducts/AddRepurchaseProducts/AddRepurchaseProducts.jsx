@@ -40,6 +40,18 @@ function AddRepurchaseProducts() {
     };
   }, []);
 
+  const [fullProductDetails, setFullProductDetails] = useState(null);
+
+  useEffect(() => {
+    if (isEditMode && editProduct?.id) {
+      import('../../../../../api/productsService').then(({ getProductById }) => {
+        getProductById(editProduct.id)
+          .then(res => setFullProductDetails(res.product))
+          .catch(err => console.error('Failed to fetch full product details', err));
+      });
+    }
+  }, [isEditMode, editProduct?.id]);
+
   const handleAddCategory = async (e) => {
     e.preventDefault();
     if (!newCategory.name.trim()) {
@@ -97,8 +109,9 @@ function AddRepurchaseProducts() {
 
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const selectedImages = imageInputs.filter((input) => input.files && input.files.length > 0);
+    const hasExistingImage = isEditMode && ((fullProductDetails || editProduct)?.imageKey || (fullProductDetails || editProduct)?.images?.length > 0);
 
-    if (missingFields.length || (!isEditMode && selectedImages.length === 0)) {
+    if (missingFields.length || (!hasExistingImage && selectedImages.length === 0)) {
       const alertParts = [];
 
       if (missingFields.length) {
@@ -161,10 +174,14 @@ function AddRepurchaseProducts() {
       quantity: formData.get('quantity') || '0',
     };
 
-    if (images.length > 0) {
-      payload.imageKey = images[0];
-      payload.images = images;
-    }
+      if (images.length > 0) {
+        payload.images = images;
+        payload.imageKey = images[0];
+      } else if (isEditMode) {
+        const sourceProduct = fullProductDetails || editProduct;
+        payload.images = sourceProduct?.images || [];
+        payload.imageKey = sourceProduct?.imageKey || '';
+      }
 
     if (brochurePdf) {
       payload.brochurePdf = brochurePdf;

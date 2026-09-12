@@ -8,11 +8,10 @@ export const getPublicProducts = async (type) => {
   return response.data;
 };
 
-export const getAdminProducts = async (type) => {
+export const getAdminProducts = async (type, options = {}) => {
   const response = await apiClient.get('/products/admin/list', {
-    params: type ? { type } : undefined,
+    params: type ? { type, ...options } : options,
   });
-
   return response.data;
 };
 

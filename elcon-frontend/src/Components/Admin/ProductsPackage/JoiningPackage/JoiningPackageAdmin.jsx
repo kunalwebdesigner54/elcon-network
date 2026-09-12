@@ -9,30 +9,33 @@ function JoiningPackageAdmin() {
   const navigate = useNavigate();
   const [joiningPackageRows, setJoiningPackageRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await getAdminProducts('joining', { limit, page });
+      setJoiningPackageRows(response.products || []);
+      setTotalCount(response.count || 0);
+    } catch (error) {
+      setJoiningPackageRows([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await getAdminProducts('joining');
-        setJoiningPackageRows(response.products || []);
-      } catch (error) {
-        setJoiningPackageRows([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadProducts();
-  }, []);
+  }, [limit, page]);
 
   const handleDelete = async (id) => {
     if (!id) return;
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
         await deleteAdminProduct(id);
-        const response = await getAdminProducts('joining');
-        setJoiningPackageRows(response.products || []);
+        await loadProducts();
       } catch (error) {
         console.error("Error deleting product:", error);
         alert("Failed to delete product.");
@@ -86,10 +89,17 @@ function JoiningPackageAdmin() {
             <option value="showing">SHOWING</option>
             <option value="hiden">HIDEN</option>
           </select>
-          <select className="select-input admin-products-input admin-products-input-limit" defaultValue="100">
-            <option value="100">100</option>
-            <option value="50">50</option>
+          <select 
+            className="select-input admin-products-input admin-products-input-limit" 
+            value={limit}
+            onChange={(e) => {
+              setLimit(Number(e.target.value));
+              setPage(1);
+            }}
+          >
             <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
           </select>
           <div className="admin-products-filter-actions">
             <button type="button" className="btn-primary admin-products-search-btn">
@@ -190,11 +200,23 @@ function JoiningPackageAdmin() {
 
         <div className="table-footer">
           <div className="pagination">
-            <button className="page-btn">&lsaquo;</button>
-            <button className="page-btn">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">&rsaquo;</button>
+            <button 
+              className="page-btn" 
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              &lsaquo;
+            </button>
+            <span className="page-info" style={{ color: '#a0aec0', margin: '0 10px' }}>
+              Page {page} of {Math.ceil(totalCount / limit) || 1}
+            </span>
+            <button 
+              className="page-btn" 
+              onClick={() => setPage(p => p + 1)}
+              disabled={page >= Math.ceil(totalCount / limit)}
+            >
+              &rsaquo;
+            </button>
           </div>
         </div>
       </section>

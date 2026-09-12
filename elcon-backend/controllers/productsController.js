@@ -117,33 +117,47 @@ exports.getProducts = async (req, res, isAdmin = false) => {
       const cachedData = productsCache.get(cacheKey);
       return res.status(200).json({
         success: true,
-        count: cachedData.length,
-        products: cachedData.map(productToApiShape),
+        count: cachedData.count,
+        products: cachedData.products.map(productToApiShape),
       });
     }
 
-    const products = await Product.aggregate([
-      { $match: filter },
-      {
-        $project: {
-          type: 1, productCode: 1, productName: 1, category: 1, hsnCode: 1,
-          mrp: 1, dpPrice: 1, discount: 1, gst: 1, shipping: 1, bvPoint: 1, levelPoint: 1,
-          quantity: 1, reserveAmount: 1, status: 1, size: 1, color: 1, weight: 1, dimension: 1,
-          imageKey: 1,
-          images: 1,
-        }
+    const limit = req.query.limit ? parseInt(req.query.limit) : 0;
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const skip = limit ? (page - 1) * limit : 0;
+
+    let pipeline = [{ $match: filter }];
+
+    if (skip > 0) {
+      pipeline.push({ $skip: skip });
+    }
+    if (limit > 0) {
+      pipeline.push({ $limit: limit });
+    }
+
+    pipeline.push({
+      $project: {
+        type: 1, productCode: 1, productName: 1, category: 1, hsnCode: 1,
+        mrp: 1, dpPrice: 1, discount: 1, gst: 1, shipping: 1, bvPoint: 1, levelPoint: 1,
+        quantity: 1, reserveAmount: 1, status: 1, size: 1, color: 1, weight: 1, dimension: 1,
+        imageKey: 1,
       }
-    ]);
+    });
+
+    const products = await Product.aggregate(pipeline);
+    
+    // Get total count for pagination
+    const totalCount = await Product.countDocuments(filter);
 
     if (!isAdminRequest) {
-      productsCache.set(cacheKey, products);
+      productsCache.set(cacheKey, { products, count: totalCount });
       // clear cache after 1 minute
       setTimeout(() => productsCache.delete(cacheKey), 60 * 1000);
     }
 
     res.status(200).json({
       success: true,
-      count: products.length,
+      count: totalCount,
       products: products.map(productToApiShape),
     });
   } catch (error) {

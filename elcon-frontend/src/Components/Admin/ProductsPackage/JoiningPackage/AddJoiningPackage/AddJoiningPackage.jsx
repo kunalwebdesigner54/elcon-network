@@ -40,6 +40,18 @@ function AddJoiningPackage() {
     };
   }, []);
 
+  const [fullProductDetails, setFullProductDetails] = useState(null);
+
+  useEffect(() => {
+    if (isEditMode && editProduct?.id) {
+      import('../../../../../api/productsService').then(({ getProductById }) => {
+        getProductById(editProduct.id)
+          .then(res => setFullProductDetails(res.product))
+          .catch(err => console.error('Failed to fetch full product details', err));
+      });
+    }
+  }, [isEditMode, editProduct?.id]);
+
   const handleAddCategory = async (e) => {
     e.preventDefault();
     if (!newCategory.name.trim()) {
@@ -97,7 +109,7 @@ function AddJoiningPackage() {
 
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const selectedImages = imageInputs.filter((input) => input.files && input.files.length > 0);
-    const hasExistingImage = isEditMode && (editProduct?.imageKey || editProduct?.images?.length > 0);
+    const hasExistingImage = isEditMode && ((fullProductDetails || editProduct)?.imageKey || (fullProductDetails || editProduct)?.images?.length > 0);
 
     if (missingFields.length || (!hasExistingImage && selectedImages.length === 0)) {
       const alertParts = [];
@@ -160,10 +172,17 @@ function AddJoiningPackage() {
       specifications: formData.get('specifications'),
       features: formData.get('features'),
       quantity: formData.get('quantity') || '0',
-      imageKey: images[0] || editProduct?.imageKey || '',
-      images: images.length > 0 ? images : (editProduct?.images || []),
       brochurePdf: brochurePdf || editProduct?.brochurePdf || '',
     };
+
+    if (images.length > 0) {
+      payload.images = images;
+      payload.imageKey = images[0];
+    } else if (isEditMode) {
+      const sourceProduct = fullProductDetails || editProduct;
+      payload.images = sourceProduct.images || [];
+      payload.imageKey = sourceProduct.imageKey || '';
+    }
 
     try {
       if (isEditMode) {
