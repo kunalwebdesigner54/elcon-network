@@ -2,11 +2,11 @@
 
 :root {
 	/* New Premium Dark Fintech Theme (Figma Match) */
-	--primary: #EAB308; /* Yellow from reference */
-	--primary-dark: #CA8A04;
-	--primary-light: #FACC15;
+	--primary: #8046FC; /* Purple */
+	--primary-dark: #6332C9;
+	--primary-light: #9B68FD;
 	--secondary: #A855F7; /* Purple */
-	--accent: #EAB308; 
+	--accent: #8046FC; 
 	
 	/* Status Colors */
 	--success: #22C55E; 
@@ -473,7 +473,7 @@ h2,
 
 .admin-root th, .user-root th {
 	background: var(--primary) !important;
-	color: #000 !important;
+	color: #fff !important;
 	font-weight: 600 !important;
 	text-transform: uppercase !important;
 	letter-spacing: 1px !important;
@@ -575,4 +575,4 @@ h2,
 .page-btn { background-color: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s ease; display: inline-flex; justify-content: center; align-items: center; min-width: 32px; height: 32px; }
 .page-btn:hover:not(:disabled) { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
 .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.page-btn.active-page, .page-btn.active { background-color: var(--primary, #00E5FF); color: #000; border-color: var(--primary, #00E5FF); font-weight: 700; box-shadow: none !important; }
+.page-btn.active-page, .page-btn.active { background-color: var(--primary); color: #fff; border-color: var(--primary); font-weight: 700; box-shadow: none !important; }
