@@ -649,7 +649,6 @@ exports.getMemberPerformance = async (req, res) => {
       }
 
       return {
-        sNo: index + 1,
         memberId: user.memberId || '---',
         memberName: user.name || '---',
         mobile: user.contactNo || '---',
@@ -673,9 +672,18 @@ exports.getMemberPerformance = async (req, res) => {
       };
     });
 
+    // Sort by earning (top earning wise)
+    rows.sort((a, b) => b.totalIncome - a.totalIncome);
+
+    // Reassign serial number after sorting
+    const sortedRows = rows.map((row, index) => ({
+      sNo: index + 1,
+      ...row
+    }));
+
     res.status(200).json({
       success: true,
-      data: rows,
+      data: sortedRows,
     });
   } catch (error) {
     res.status(500).json({
@@ -739,6 +747,9 @@ exports.getRankHolders = async (req, res) => {
 
       // Only include users who have actually earned a rank
       if (rank === '---') return;
+
+      // Do not include users who have been hidden from rank list by admin
+      if (user.isRankVisible === false) return;
 
       rankHolders.push({
         sNo: sNo++,

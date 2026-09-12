@@ -18,6 +18,8 @@ const rankOptions = [
 
 function AdminRankHoldersList() {
   const [selectedRankFilter, setSelectedRankFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [appliedSearch, setAppliedSearch] = useState('');
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -30,15 +32,25 @@ function AdminRankHoldersList() {
   }, []);
 
   const filteredData = useMemo(() => {
-    if (!selectedRankFilter) {
-      return rows;
+    let data = rows;
+
+    if (selectedRankFilter) {
+      data = data.filter((holder) => String(holder.rank || '').toUpperCase() === selectedRankFilter);
     }
 
-    return rows.filter((holder) => String(holder.rank || '').toUpperCase() === selectedRankFilter);
-  }, [rows, selectedRankFilter]);
+    if (appliedSearch) {
+      const lowerQuery = appliedSearch.toLowerCase();
+      data = data.filter((holder) => 
+        String(holder.memberId || '').toLowerCase().includes(lowerQuery) ||
+        String(holder.memberName || '').toLowerCase().includes(lowerQuery)
+      );
+    }
+
+    return data;
+  }, [rows, selectedRankFilter, appliedSearch]);
 
   const handleSearchClick = () => {
-    setSelectedRankFilter((prev) => prev);
+    setAppliedSearch(searchQuery);
   };
 
   const handleToggleVisibility = async (memberId, isVisible) => {
@@ -74,6 +86,13 @@ function AdminRankHoldersList() {
               </option>
             ))}
           </select>
+          <input
+            type="text"
+            className="text-input"
+            placeholder="Search by ID or Name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <button className="btn-primary" onClick={handleSearchClick}>
             Search
           </button>
