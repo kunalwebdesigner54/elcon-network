@@ -269,24 +269,15 @@ function AdminLayout() {
   return (
     <div className={`admin-root ${isSidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
       <aside className="sidebar">
-        <div className="sidebar-brand">ELCON</div>
-        <div className="sidebar-user">
-          <div className="sidebar-user-meta">
-            <div className="sidebar-avatar"><i className="fa-regular fa-user"></i></div>
-            <div className="sidebar-user-details">
-              <span className="sidebar-user-name">{adminName}</span>
-              <span className="sidebar-user-id">ID: {adminUserId}</span>
-            </div>
+        <div className="sidebar-brand">
+          <div className="brand-icon"><i className="fa-solid fa-gear"></i></div>
+          <div className="brand-text-container">
+             <span className="brand-title">ELCON</span>
+             <span className="brand-subtitle">Network System</span>
           </div>
-          <button
-            type="button"
-            className="sidebar-toggle-btn"
-            aria-label="Close sidebar"
-            onClick={() => setIsSidebarOpen(false)}
-          >
-            <i className="fa-solid fa-xmark"></i>
-          </button>
         </div>
+        <div className="sidebar-decoration-curve"></div>
+
         <div className="sidebar-section-title">MAIN NAVIGATION</div>
 
         <nav className="sidebar-nav">
@@ -358,16 +349,14 @@ function AdminLayout() {
       <main className="admin-main">
         <header className="topbar">
           <div className={`topbar-left ${showBackButton ? 'has-back' : ''}`}>
-            {!isSidebarOpen && (
-              <button
-                type="button"
-                className="topbar-menu"
-                aria-label="Open sidebar"
-                onClick={toggleSidebar}
-              >
-                <i className="fa-solid fa-bars"></i>
-              </button>
-            )}
+            <button
+              type="button"
+              className="topbar-menu"
+              aria-label="Toggle sidebar"
+              onClick={toggleSidebar}
+            >
+              <i className="fa-solid fa-bars"></i>
+            </button>
             <h2 className="topbar-page-title">{breadcrumb[breadcrumb.length - 1] || 'Dashboard'}</h2>
           </div>
           
