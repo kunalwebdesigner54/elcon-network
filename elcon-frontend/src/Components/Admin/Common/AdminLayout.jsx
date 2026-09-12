@@ -258,22 +258,9 @@ function AdminLayout() {
   }, [location.pathname]);
 
   return (
-    <div className={`admin-root ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+    <div className={`admin-root ${isSidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
       <aside className="sidebar">
-        <div className="sidebar-header">
-          <div className="sidebar-logo">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28Z" stroke="#A855F7" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M21 11L11 21" stroke="#EAB308" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            {isSidebarOpen && (
-              <div className="sidebar-brand-text">
-                <h1>CRM</h1>
-                <p>Your Customers, Your Power.</p>
-              </div>
-            )}
-          </div>
-        </div>
+        <div className="sidebar-brand">ELCON</div>
         <div className="sidebar-user">
           <div className="sidebar-user-meta">
             <div className="sidebar-avatar">👤</div>
@@ -317,7 +304,7 @@ function AdminLayout() {
                             `sidebar-sublink ${isActive ? 'sidebar-active' : ''}`
                           }
                         >
-                          <span>{child.label}</span>
+                          {child.label}
                         </NavLink>
                       ))}
                     </div>
@@ -333,7 +320,7 @@ function AdminLayout() {
                   to={item.to}
                   className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-active' : ''}`}
                 >
-                  <span><strong>{item.label}</strong></span>
+                  <strong>{item.label}</strong>
                 </NavLink>
               );
             }
@@ -343,7 +330,7 @@ function AdminLayout() {
                 to={item.to}
                 className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-active' : ''}`}
               >
-                <span>{item.label}</span>
+                {item.label}
               </NavLink>
             );
           })}
@@ -352,71 +339,57 @@ function AdminLayout() {
 
       <main className="admin-main">
         <header className="topbar">
-          <div className="topbar-left">
-            <button
-              type="button"
-              className="topbar-menu"
-              aria-label="Toggle sidebar"
-              onClick={toggleSidebar}
-            >
-              {isSidebarOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-              )}
-            </button>
-            <h2 className="topbar-page-title">{breadcrumb[breadcrumb.length - 1]}</h2>
-          </div>
-          
-          <div className="topbar-search">
-            <input type="text" placeholder="Search Here ..." className="topbar-search-input" />
-            <svg className="topbar-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </div>
-
-          <div className="topbar-right">
-            <button className="topbar-icon-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            </button>
-            <button className="topbar-icon-btn topbar-bell">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-              <span className="topbar-bell-dot"></span>
-            </button>
-            
-            <div className="topbar-avatar" style={{ position: 'relative' }}>
-              <button 
-                type="button" 
-                className="topbar-avatar-btn" 
-                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+          <div className={`topbar-left ${showBackButton ? 'has-back' : ''}`}>
+            {!isSidebarOpen && (
+              <button
+                type="button"
+                className="topbar-menu"
+                aria-label="Open sidebar"
+                onClick={toggleSidebar}
               >
-                <div className="topbar-avatar-img-placeholder">
-                   <img src="https://i.pravatar.cc/150?img=11" alt="avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                ☰
               </button>
-              {isProfileDropdownOpen && (
-                <div className="profile-dropdown" style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: '0',
-                  marginTop: '8px',
-                  backgroundColor: 'var(--bg-card)',
-                  boxShadow: 'var(--glass-shadow)',
-                  borderRadius: '8px',
-                  border: '1px solid var(--glass-border)',
-                  padding: '10px 0',
-                  minWidth: '160px',
-                  zIndex: 1000
-                }}>
+            )}
+          </div>
+          <div className="topbar-avatar" style={{ position: 'relative' }}>
+            <button 
+              type="button" 
+              className="topbar-avatar-btn" 
+              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px' }}
+            >
+              👨‍💼
+            </button>
+            {isProfileDropdownOpen && (
+              <div className="profile-dropdown" style={{
+                position: 'absolute',
+                top: '40px',
+                right: '0',
+                backgroundColor: '#fff',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                borderRadius: '4px',
+                padding: '10px 0',
+                minWidth: '160px',
+                zIndex: 1000
+              }}>
+                <Link 
+                  to="/settings/admin-settings" 
+                  style={{ display: 'block', padding: '8px 16px', color: '#333', textDecoration: 'none' }}
+                  onClick={() => setIsProfileDropdownOpen(false)}
+                >
+                  Admin Profile
+                </Link>
+                {user.adminType !== 'SUB_ADMIN' && (
                   <Link 
-                    to="/settings/admin-settings" 
-                    style={{ display: 'block', padding: '8px 16px', color: 'var(--text-main)', textDecoration: 'none' }}
+                    to="/sub-admins/manage" 
+                    style={{ display: 'block', padding: '8px 16px', color: '#333', textDecoration: 'none' }}
                     onClick={() => setIsProfileDropdownOpen(false)}
                   >
-                    Admin Profile
+                    Manage Sub-Admins
                   </Link>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </header>
 
@@ -429,7 +402,7 @@ function AdminLayout() {
           <Outlet />
         </section>
 
-        <footer className="page-footer">© Copyright <span style={{color: 'var(--secondary)', fontWeight: 'bold'}}>CRM</span> 2025. All rights reserved</footer>
+        <footer className="page-footer">Copyright © 2026 Elcon Network</footer>
       </main>
     </div>
   );
