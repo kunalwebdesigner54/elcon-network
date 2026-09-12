@@ -253,11 +253,13 @@ select option {
 	h1,
 	[class*='page-title'] {
 		font-size: clamp(24px, 6vw, 30px) !important;
+		display: none !important;
 	}
 
 	h2,
 	[class*='section-title'] {
 		font-size: clamp(20px, 5vw, 26px) !important;
+		display: none !important;
 	}
 
 	[class*='table-tools'],
