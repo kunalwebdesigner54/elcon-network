@@ -90,7 +90,7 @@ import RepurchaseProducts from './Components/UserPanel/Product/RepurchaseProduct
 import ProductDetails from './Components/UserPanel/Product/ProductDetails/ProductDetails';
 import MyOrders from './Components/UserPanel/Product/MyOrders/MyOrders';
 import OrderDetails from './Components/UserPanel/Product/MyOrders/OrderDetails';
-import CouponReport from './Components/Admin/Coupon/CouponReport/CouponReport';
+
 import DiscountWalletTransaction from './Components/Admin/Coupon/DiscountWalletTransaction/DiscountWalletTransaction';
 import DiscountWalletOverview from './Components/Admin/Coupon/DiscountWalletOverview/DiscountWalletOverview';
 import DiscountCoupon from './Components/UserPanel/Coupon/DiscountCoupon/DiscountCoupon';
@@ -352,8 +352,7 @@ function App() {
           <Route path="deposits/rejected-deposits" element={<RejectedDeposits />} />
           <Route path="deposits/all-deposits" element={<AllDeposits />} />
 
-          <Route path="coupon/coupon-report" element={<CouponReport />} />
-          <Route path="admin/coupon/coupon-report" element={<CouponReport />} />
+
           <Route path="coupon/discount-wallet-overview" element={<DiscountWalletOverview />} />
           <Route path="coupon/discount-wallet-transaction" element={<DiscountWalletTransaction />} />
 

@@ -134,7 +134,7 @@ const menuItems = [
     label: 'Coupon',
     children: [
       { label: 'Discount Wallet Overview', to: '/coupon/discount-wallet-overview' },
-      { label: 'Coupon Report', to: '/admin/coupon/coupon-report' },
+
       { label: 'Manage Discount Coupon', to: '/discount-coupon/manage' },
       { label: 'Discount Wallet Transaction', to: '/coupon/discount-wallet-transaction' }
     ]
