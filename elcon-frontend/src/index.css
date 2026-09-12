@@ -2,11 +2,11 @@
 
 :root {
 	/* New Premium Dark Fintech Theme (Figma Match) */
-	--primary: #EAB308; /* Yellow */
-	--primary-dark: #CA8A04;
-	--primary-light: #FACC15;
+	--primary: #8046FC; /* Purple */
+	--primary-dark: #6332C9;
+	--primary-light: #9B68FD;
 	--secondary: #A855F7; /* Purple */
-	--accent: #EAB308; 
+	--accent: #8046FC; 
 	
 	/* Status Colors */
 	--success: #22C55E; 

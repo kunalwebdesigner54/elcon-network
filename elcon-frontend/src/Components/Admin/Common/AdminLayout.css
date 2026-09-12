@@ -270,6 +270,7 @@
   margin: 0;
   color: var(--text-main);
   letter-spacing: 0.5px;
+  display: none !important;
 }
 
 .topbar-center {
