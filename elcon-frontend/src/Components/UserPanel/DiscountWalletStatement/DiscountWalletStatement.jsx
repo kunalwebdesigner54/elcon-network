@@ -80,7 +80,6 @@ function DiscountWalletStatement() {
     <div className="discount-wallet-statement-page">
       <section className="discount-wallet-statement-panel">
         <h2 className="discount-wallet-statement-heading">Discount Wallet Statement</h2>
-        <div className="member-panel-badge">MEMBER PANEL</div>
 
         <div className="stats-row">
           <div className="stat-card card-green">

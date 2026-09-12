@@ -125,7 +125,6 @@ function RepurchaseIncome() {
     <div className="repurchase-income-page">
       <section className="repurchase-income-panel">
         <h2 className="repurchase-income-heading">Repurchase Income</h2>
-        <div className="member-panel-badge">Member Panel</div>
 
         <div className="repurchase-income-toolbar">
           <div className="repurchase-income-filter-row">

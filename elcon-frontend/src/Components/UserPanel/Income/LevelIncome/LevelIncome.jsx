@@ -125,7 +125,6 @@ function LevelIncome() {
     <div className="level-income-page">
       <section className="level-income-panel">
         <h2 className="level-income-heading">Level Income</h2>
-        <div className="member-panel-badge">MEMBER PANEL</div>
 
         <div className="level-income-toolbar">
           <div className="level-income-filter-row">
