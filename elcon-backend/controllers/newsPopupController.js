@@ -1,7 +1,7 @@
 const NewsPopup = require('../models/NewsPopup');
 
 const seedRows = [
-  { type: 'News', title: 'Welcome', description: 'Welcome to the member dashboard', displayOn: 'Member', publishDate: '28-02-2025', uptoDate: '28-02-2026', status: 'Published' },
+  { type: 'News and Event', title: 'Welcome', description: 'Welcome to the member dashboard', displayOn: 'Member panel', publishDate: '28-02-2025', uptoDate: '28-02-2026', status: 'Published' },
 ];
 
 const ensureSeed = async () => {
@@ -27,10 +27,10 @@ exports.createNewsPopup = async (req, res) => {
   try {
     const payload = req.body || {};
     const item = await NewsPopup.create({
-      type: payload.type || 'News',
+      type: payload.type || 'News and Event',
       title: payload.title || 'Untitled',
       description: payload.description || '',
-      displayOn: payload.displayOn || 'Member',
+      displayOn: payload.displayOn || 'Member panel',
       publishDate: payload.publishDate || new Date().toLocaleDateString('en-GB'),
       uptoDate: payload.uptoDate || new Date().toLocaleDateString('en-GB'),
       status: payload.status || 'Published',

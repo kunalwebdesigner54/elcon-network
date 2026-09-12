@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import './AddNew.css';
 import { createNewsPopup } from '../../../../api/managementService';
 
 export default function AddNew(){
+  const navigate = useNavigate();
   const [form, setForm] = useState({ type: 'News and Event', publishDate: '', uptoDate: '', status: 'Published', displayOn: 'Member panel', title: '', description: '' });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -12,7 +16,20 @@ export default function AddNew(){
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await createNewsPopup(form);
+    if (!form.title || !form.description) {
+      return Swal.fire("Error", "Title and Description are required", "error");
+    }
+    
+    setLoading(true);
+    try {
+      await createNewsPopup(form);
+      await Swal.fire("Success", "Successfully added!", "success");
+      navigate('/admin/news-popup/list-all');
+    } catch (error) {
+      Swal.fire("Error", error.message || "Failed to add.", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,7 +82,7 @@ export default function AddNew(){
 
           <div className="btn-row">
             <button type="reset" className="btn-danger">Reset</button>
-            <button type="submit" className="btn-primary">Add</button>
+            <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Adding...' : 'Add'}</button>
           </div>
         </form>
       </div>

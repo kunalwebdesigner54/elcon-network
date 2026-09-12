@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../Common/UserLayout.css';
 import './UserDashboard.css';
 import { getUserDashboard, getTopEarners } from '../../../api/dashboardService';
+import { getNewsPopupList } from '../../../api/managementService';
 import dashboard1 from '../../../Assets/Pictures/dashbaord1.jpeg';
 import dashboard2 from '../../../Assets/Pictures/dashbaord2.jpeg';
 import dashboard3 from '../../../Assets/Pictures/dashbaord3.jpeg';
@@ -25,6 +26,8 @@ function MemberDashboard() {
   const [memberInfo, setMemberInfo] = useState(null);
   const [topEarners, setTopEarners] = useState([]);
   const [loadingTopEarners, setLoadingTopEarners] = useState(false);
+  const [newsList, setNewsList] = useState([]);
+  const [activePopup, setActivePopup] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,16 +40,52 @@ function MemberDashboard() {
 
   useEffect(() => {
     let mounted = true;
-    const fetch = async () => {
+    const fetchDashboard = async () => {
       try {
-        const res = await getUserDashboard();
-        if (mounted && res?.success) setMemberInfo(res.data);
-      } catch (err) {
-        // ignore
+        const data = await getUserDashboard();
+        if (mounted) {
+          if (data?.dashboard) {
+            setMemberInfo(data.dashboard);
+          } else if (data?.success) {
+            setMemberInfo(data.data);
+          } else {
+            setMemberInfo(data);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
       }
     };
-    fetch();
-    return () => (mounted = false);
+    
+    const fetchNewsPopups = async () => {
+      try {
+        const response = await getNewsPopupList();
+        if (mounted && response && response.items) {
+          // Filter out drafts and items not meant for Member panel
+          const published = response.items.filter(item => 
+            item.status === 'Published' && 
+            (item.displayOn === 'Member panel' || item.displayOn === 'All')
+          );
+          
+          setNewsList(published.filter(i => i.type === 'News and Event' || i.type === 'News'));
+          
+          const popups = published.filter(i => i.type === 'Popup');
+          if (popups.length > 0) {
+            // Show the most recent popup
+            setActivePopup(popups[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch news and popups:', error);
+      }
+    };
+
+    fetchDashboard();
+    fetchNewsPopups();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -110,7 +149,7 @@ function MemberDashboard() {
 
   return (
     <div className="user-dashboard-shell">
-      <div className="user-dashboard1-member-dashboard-root">
+      <main className="user-dashboard1-member-dashboard-root">
      
 
        
@@ -138,12 +177,16 @@ function MemberDashboard() {
           </div>
         </section>
 
-        <div className="user-dashboard-news-bar" role="status" aria-live="polite">
-          <span className="user-dashboard-news-label"> NEWS</span>
-          <div className="user-dashboard-news-track">
-            <div className="user-dashboard-news-marquee">KYC is mandatory! Complete your KYC to receive payouts.</div>
+        {newsList.length > 0 && (
+          <div className="user-dashboard-news-bar" role="status" aria-live="polite">
+            <span className="user-dashboard-news-label"> NEWS</span>
+            <div className="user-dashboard-news-track">
+              <div className="user-dashboard-news-marquee">
+                {newsList.map(n => n.title + (n.description ? ` - ${n.description}` : '')).join('  |  ')}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {memberInfo?.joiningPackageDeliveryStatus === 'Pending' && memberInfo?.joiningPackageDeliveryCode && (
           <div style={{ background: '#fff3cd', border: '1px solid #ffeeba', color: '#856404', padding: '15px 20px', borderRadius: '8px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -290,7 +333,20 @@ function MemberDashboard() {
         </section>
 
         <div className="user-dashboard-bottom-spacer" />
-      </div>
+      </main>
+
+      {activePopup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ background: '#121a2f', border: '1px solid #00e5ff', borderRadius: '12px', padding: '24px', maxWidth: '500px', width: '90%', position: 'relative', boxShadow: '0 0 20px rgba(0,229,255,0.3)' }}>
+            <button 
+              onClick={() => setActivePopup(null)} 
+              style={{ position: 'absolute', top: '10px', right: '15px', background: 'transparent', border: 'none', color: '#fff', fontSize: '24px', cursor: 'pointer' }}
+            >&times;</button>
+            <h3 style={{ color: '#00e5ff', marginTop: 0, marginBottom: '16px', fontSize: '20px' }}>{activePopup.title}</h3>
+            <p style={{ color: '#e2e8f0', lineHeight: 1.6, whiteSpace: 'pre-wrap', margin: 0 }}>{activePopup.description}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

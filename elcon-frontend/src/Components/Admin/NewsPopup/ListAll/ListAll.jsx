@@ -1,27 +1,53 @@
 import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import './ListAll.css';
-import { getNewsPopupList } from '../../../../api/managementService';
+import { getNewsPopupList, deleteNewsPopup } from '../../../../api/managementService';
 
-const RowActions = () => (
+const RowActions = ({ id, onDelete }) => (
   <div className="np-actions">
     <button className="np-btn np-edit">✎</button>
-    <button className="np-btn np-delete">🗑</button>
+    <button className="np-btn np-delete" onClick={() => onDelete(id)}>🗑</button>
   </div>
 )
 
 export default function ListAll(){
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchItems = async () => {
+    try {
+      const response = await getNewsPopupList();
+      setItems(response.items || []);
+    } catch (error) {
+      setItems([]);
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await getNewsPopupList();
-        setItems(response.items || []);
-      } catch (error) {
-        setItems([]);
-      }
-    })();
+    fetchItems();
   }, []);
+
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+    
+    if (!result.isConfirmed) return;
+
+    try {
+      await deleteNewsPopup(id);
+      Swal.fire("Deleted!", "Item deleted successfully", "success");
+      fetchItems();
+    } catch (error) {
+      Swal.fire("Error", error.message || "Failed to delete item", "error");
+    }
+  };
 
   return (
     <div className="np-page container">
@@ -56,7 +82,7 @@ export default function ListAll(){
                 <td data-label="Publish Date">{item.publishDate}</td>
                 <td data-label="Upto Date">{item.uptoDate}</td>
                 <td data-label="Status"><span className="np-badge np-published">{item.status}</span></td>
-                <td data-label="Action"><RowActions/></td>
+                <td data-label="Action"><RowActions id={item.id} onDelete={handleDelete}/></td>
               </tr>
             ))}
           </tbody>
