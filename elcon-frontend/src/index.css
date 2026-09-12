@@ -1,53 +1,56 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-	/* New Premium Dark Fintech Theme */
-	--primary: #00E5FF; /* Neon Cyan */
-	--primary-dark: #00B8CC;
-	--primary-light: #33EBFF;
-	--secondary: #8A2BE2; /* Neon Purple */
-	--accent: #FF3366; /* Neon Pink/Red for accents */
+	/* New Premium Dark Fintech Theme (Figma Match) */
+	--primary: #EAB308; /* Yellow */
+	--primary-dark: #CA8A04;
+	--primary-light: #FACC15;
+	--secondary: #A855F7; /* Purple */
+	--accent: #EAB308; 
 	
 	/* Status Colors */
-	--success: #00E676; /* Neon Green */
-	--warning: #FFAB00;
-	--danger: #FF1744;
-	--info: #2979FF;
+	--success: #22C55E; 
+	--warning: #F59E0B;
+	--danger: #EF4444;
+	--info: #3B82F6;
 
 	/* Dark Backgrounds */
-	--bg-darkest: #040814;
-	--bg-dark: #0B1221;
-	--bg-card: rgba(18, 26, 47, 0.7);
-	--bg-card-hover: rgba(25, 35, 60, 0.85);
+	--bg-darkest: #13111C; /* Main app background */
+	--bg-dark: #13111C;
+	--bg-card: #1E1C2A; /* Card and sidebar background */
+	--bg-card-hover: #252233;
 	
 	/* Glassmorphism / Borders */
-	--glass-border: rgba(255, 255, 255, 0.08);
-	--glass-border-light: rgba(255, 255, 255, 0.15);
-	--glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+	--glass-border: rgba(255, 255, 255, 0.05);
+	--glass-border-light: rgba(255, 255, 255, 0.1);
+	--glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 	
 	/* Text Colors */
 	--text-main: #FFFFFF;
-	--text-muted: #94A3B8;
+	--text-muted: #9CA3AF; /* Gray-400 */
 	--text-dark: #1E293B;
 
 	/* Gradients */
-	--gradient-primary: linear-gradient(135deg, #00E5FF 0%, #0077FF 100%);
-	--gradient-secondary: linear-gradient(135deg, #8A2BE2 0%, #FF3366 100%);
-	--gradient-success: linear-gradient(135deg, #00E676 0%, #1DE9B6 100%);
-	--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+	--gradient-primary: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
+	--gradient-secondary: linear-gradient(135deg, #C084FC 0%, #A855F7 100%);
+	--gradient-success: linear-gradient(135deg, #4ADE80 0%, #22C55E 100%);
+	--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
 
-	--border-radius: 16px;
+	--border-radius: 12px;
 	--border-radius-sm: 8px;
-	--border-radius-lg: 24px;
+	--border-radius-lg: 16px;
 	
 	--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	
-	color-scheme: dark; /* Force native dark mode for dropdowns/scrollbars */
+	--sidebar-width: 250px;
+	--sidebar-collapsed-width: 80px;
+	--topbar-height: 80px;
 }
 
 * {
+	margin: 0;
+	padding: 0;
 	box-sizing: border-box;
-	font-family: 'Poppins', sans-serif !important;
 }
 
 html,
@@ -331,24 +334,21 @@ select option {
 	letter-spacing: 0.5px;
 }
 
-/* Global Glass Cards */
+/* Global Solid Cards (Figma match) */
 .admin-root .white-card, .admin-root .card, .admin-root .panel, .admin-root .content-wrap, .admin-root .form-container,
 .user-root .white-card, .user-root .card, .user-root .panel, .user-root .content-wrap, .user-root .form-container {
 	background: var(--bg-card) !important;
-	backdrop-filter: blur(12px) !important;
-	-webkit-backdrop-filter: blur(12px) !important;
 	border: 1px solid var(--glass-border) !important;
 	border-radius: var(--border-radius) !important;
-	box-shadow: var(--glass-shadow) !important;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+	padding: 24px !important;
 	color: var(--text-main) !important;
-	transition: var(--transition);
+	position: relative !important;
 }
 
-/* Hover effect on cards */
 .admin-root .white-card:hover, .user-root .white-card:hover {
 	background: var(--bg-card-hover) !important;
-	border-color: var(--primary) !important;
-	box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.15) !important;
+	border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Global Inputs & Selects */
