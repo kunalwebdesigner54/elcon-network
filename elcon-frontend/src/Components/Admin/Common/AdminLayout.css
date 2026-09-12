@@ -170,14 +170,17 @@
 }
 
 .sidebar-active {
-  background: transparent;
-  color: var(--primary) !important;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff !important;
   border-right: 0;
   border-left: 4px solid var(--primary);
   font-weight: 600;
 }
+.sidebar-active i {
+  color: var(--primary) !important;
+}
 .sidebar-link.sidebar-active, .sidebar-sublink.sidebar-active {
-  background: rgba(234, 179, 8, 0.05); /* very subtle yellow bg */
+  background: rgba(255, 255, 255, 0.05); /* very subtle white bg */
 }
 
 .admin-main {

@@ -3,10 +3,11 @@ import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import './AdminLayout.css';
 
 const menuItems = [
-  { key: 'dashboard', label: 'Dashboard', to: '/dashboard' },
+  { key: 'dashboard', label: 'Dashboard', to: '/dashboard', icon: 'fa-solid fa-house' },
   {
     key: 'epin',
     label: 'ePin',
+    icon: 'fa-solid fa-ticket',
     children: [
       { label: 'Generate ePin', to: '/epin/generate-epin' },
       { label: 'Unused ePin', to: '/epin/unused-epin' },
@@ -18,6 +19,7 @@ const menuItems = [
   {
     key: 'franchise',
     label: 'Franchise Manage',
+    icon: 'fa-solid fa-store',
     children: [
       { label: 'Create Epin Franchise', to: '/epin-franchise/list' },
       { label: 'Product Franchise Stock', to: '/product-franchise/manage' }
@@ -26,41 +28,41 @@ const menuItems = [
   {
     key: 'members',
     label: 'Members',
+    icon: 'fa-solid fa-users',
     children: [
       { label: 'KYC Request', to: '/members/kyc-request' },
       { label: 'All Members List', to: '/members/all-members-list' },
       { label: 'Member Information', to: '/members/member-information' },
       { label: 'Members Location', to: '/members/active-members' },
-      { label: 'All-Member-Performance', to: '/members/all-member-performance' },
-      
-      
-    
+      { label: 'All-Member-Performance', to: '/members/all-member-performance' }
     ]
   },
   {
     key: 'networkReports',
     label: 'Network Reports',
+    icon: 'fa-solid fa-sitemap',
     children: [
       { label: 'Network Explorer', to: '/network-reports/network-explorer' },
-      { label: 'Downline List', to: '/network-reports/downline-list' },
-    
+      { label: 'Downline List', to: '/network-reports/downline-list' }
     ]
   },
   {
     key: 'incomeReports',
     label: 'Income Reports',
+    icon: 'fa-solid fa-chart-line',
     children: [
       { label: 'Level Income Reports', to: '/income-reports/level-income-reports' },
       { label: 'Repurchase Income Reports', to: '/income-reports/repurchase-income-reports' },
       { label: 'Donations Report', to: '/income-reports/donation-report' },
-        { label: 'TDS Report', to: '/income-report/Tds-Report' },
-        { label: 'Datewise Income', to: '/income-report/Datewise-income' },
-        { label: 'Daily Payout Report', to: '/income-report/Daily-Payout-Report' }
+      { label: 'TDS Report', to: '/income-report/Tds-Report' },
+      { label: 'Datewise Income', to: '/income-report/Datewise-income' },
+      { label: 'Daily Payout Report', to: '/income-report/Daily-Payout-Report' }
     ]
   },
   {
     key: 'deposits',
     label: 'Deposits',
+    icon: 'fa-solid fa-money-bill-transfer',
     children: [
       { label: 'Pending Deposits', to: '/deposits/pending-deposits' },
       { label: 'Approve Deposits', to: '/deposits/approve-deposits' },
@@ -69,9 +71,10 @@ const menuItems = [
       { label: 'All Deposits', to: '/deposits/all-deposits' }
     ]
   },
-   {
+  {
     key: 'withdrawals',
     label: 'Withdrawals',
+    icon: 'fa-solid fa-money-bill-wave',
     children: [
       { label: 'All Request', to: '/withdrawals/all-request' },
       { label: 'Approved Request', to: '/withdrawals/approved-request' },
@@ -83,6 +86,7 @@ const menuItems = [
   {
     key: 'productsPackage',
     label: 'Products/Package',
+    icon: 'fa-solid fa-box-open',
     children: [
       { label: 'Joining Package', to: '/products-package/Joining-Package' },
       { label: 'ePin Packages', to: '/products-package/epin-packages' },
@@ -94,6 +98,7 @@ const menuItems = [
   {
     key: 'productOrder',
     label: 'Product Order',
+    icon: 'fa-solid fa-cart-shopping',
     children: [
       { label: 'All Orders', to: '/product-order/all-orders' },
       { label: 'Sales GST Report', to: '/product-order/gst-report' },
@@ -110,15 +115,16 @@ const menuItems = [
   {
     key: 'transaction',
     label: 'Transaction',
+    icon: 'fa-solid fa-list-check',
     children: [
       { label: 'Main Wallet', to: '/transaction/main-wallet' },
       { label: 'Transaction History', to: '/transactions/transaction-history' }
     ]
   },
- 
   {
     key: 'settings',
     label: 'Settings',
+    icon: 'fa-solid fa-gear',
     children: [
       { label: 'Level Plan', to: '/settings/level-plan' },
       { label: 'Manage Taxes & Deduction', to: '/settings/manage-taxes-deduction' },
@@ -132,9 +138,9 @@ const menuItems = [
   {
     key: 'coupon',
     label: 'Coupon',
+    icon: 'fa-solid fa-tag',
     children: [
       { label: 'Discount Wallet Overview', to: '/coupon/discount-wallet-overview' },
-
       { label: 'Manage Discount Coupon', to: '/discount-coupon/manage' },
       { label: 'Discount Wallet Transaction', to: '/coupon/discount-wallet-transaction' }
     ]
@@ -142,6 +148,7 @@ const menuItems = [
   {
     key: 'newsPopup',
     label: 'News & Popup',
+    icon: 'fa-solid fa-bullhorn',
     children: [
       { label: 'Add New', to: '/news-popup/add-new' },
       { label: 'List All', to: '/news-popup/list-all' }
@@ -150,6 +157,7 @@ const menuItems = [
   {
     key: 'support',
     label: 'Support',
+    icon: 'fa-solid fa-headset',
     children: [
       { label: 'Support Section', to: '/support/support-section' },
       { label: 'Support Tickets', to: '/support/support-tickets' },
@@ -159,10 +167,11 @@ const menuItems = [
   {
     key: 'rank',
     label: 'Rank',
+    icon: 'fa-solid fa-star',
     to: '/rank/rank-holders-list'
   },
-  { key: 'lastLogin', label: 'Last Login Date & Time', to: '/last-login-date-time' },
-  { key: 'signout', label: 'Sign Out', to: '/sign-out' }
+  { key: 'lastLogin', label: 'Last Login Date & Time', icon: 'fa-solid fa-clock', to: '/last-login-date-time' },
+  { key: 'signout', label: 'Sign Out', icon: 'fa-solid fa-right-from-bracket', to: '/sign-out' }
 ];
 
 function toTitleCase(text) {
@@ -291,7 +300,10 @@ function AdminLayout() {
                     className="sidebar-link sidebar-toggle"
                     onClick={() => toggleSection(item.key)}
                   >
-                    <span>{item.label}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {item.icon && <i className={item.icon} style={{ width: '20px', textAlign: 'center' }}></i>}
+                      <span>{item.label}</span>
+                    </div>
                     <span><i className={`fa-solid ${isOpen ? 'fa-angle-down' : 'fa-angle-right'}`}></i></span>
                   </button>
                   {isOpen && (
@@ -320,7 +332,10 @@ function AdminLayout() {
                   to={item.to}
                   className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-active' : ''}`}
                 >
-                  <strong>{item.label}</strong>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {item.icon && <i className={item.icon} style={{ width: '20px', textAlign: 'center' }}></i>}
+                    <strong>{item.label}</strong>
+                  </div>
                 </NavLink>
               );
             }
@@ -330,7 +345,10 @@ function AdminLayout() {
                 to={item.to}
                 className={({ isActive }) => `sidebar-link ${isActive ? 'sidebar-active' : ''}`}
               >
-                {item.label}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {item.icon && <i className={item.icon} style={{ width: '20px', textAlign: 'center' }}></i>}
+                  <span>{item.label}</span>
+                </div>
               </NavLink>
             );
           })}
