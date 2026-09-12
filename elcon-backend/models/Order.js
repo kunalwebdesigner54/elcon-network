@@ -107,6 +107,32 @@ const orderSchema = new mongoose.Schema(
       default: 'Pending',
       index: true,
     },
+    deliveryType: {
+      type: String,
+      enum: ['Company', 'Franchisee Direct'],
+      default: 'Company',
+    },
+    verificationCode: {
+      type: String,
+      default: '',
+    },
+    verificationStatus: {
+      type: String,
+      enum: ['Generated', 'Verified', 'Used', ''],
+      default: '',
+    },
+    verificationDate: {
+      type: Date,
+      default: null,
+    },
+    deliveryDate: {
+      type: Date,
+      default: null,
+    },
+    deliveredBy: {
+      type: String,
+      default: '',
+    },
     remark: {
       type: String,
       default: '-',

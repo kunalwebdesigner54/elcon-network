@@ -5,7 +5,9 @@ const {
   getAllStocks,
   getMyStock,
   sellProduct,
-  getSales
+  getSales,
+  verifyDeliveryCode,
+  confirmProductDelivery
 } = require('../controllers/productFranchiseController');
 
 const router = express.Router();
@@ -20,5 +22,7 @@ router.get('/admin/stock', authorize('admin'), getAllStocks);
 router.get('/stock', getMyStock);
 router.post('/sell', sellProduct);
 router.get('/sales', getSales);
+router.post('/verify-delivery', verifyDeliveryCode);
+router.post('/confirm-delivery', confirmProductDelivery);
 
 module.exports = router;

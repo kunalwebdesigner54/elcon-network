@@ -100,3 +100,8 @@ export const getCouponTransactionHistory = async () => {
   const response = await apiClient.get('/coupon-transaction-history');
   return response.data;
 };
+
+export const requestFranchiseDelivery = async (orderNo, franchiseId) => {
+  const response = await apiClient.post(`/orders/${orderNo}/request-franchise-delivery`, { franchiseId });
+  return response.data;
+};

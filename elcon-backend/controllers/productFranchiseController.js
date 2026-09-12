@@ -225,3 +225,115 @@ exports.getSales = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// @desc Franchise verifies the 6-digit delivery code
+exports.verifyDeliveryCode = async (req, res) => {
+  try {
+    const { code } = req.body;
+    const franchiseId = req.user.memberId;
+
+    if (!code) {
+      return res.status(400).json({ success: false, message: 'Verification code is required' });
+    }
+
+    const order = await Order.findOne({ 
+      verificationCode: code, 
+      franchiseId: franchiseId 
+    }).populate('userId', 'memberId name contactNo email');
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Invalid Verification Code' });
+    }
+
+    if (order.orderStatus !== 'Pending') {
+      return res.status(400).json({ success: false, message: 'This order is no longer pending' });
+    }
+
+    if (order.verificationStatus === 'Used') {
+      return res.status(400).json({ success: false, message: 'This Verification Code has already been used' });
+    }
+
+    // Verify stock availability
+    for (const item of (order.items || [])) {
+      const stockRec = await ProductFranchiseStock.findOne({ franchiseId, productId: item.productId });
+      if (!stockRec || stockRec.quantity < item.quantity) {
+         return res.status(400).json({ success: false, message: `Insufficient stock for product ID: ${item.productId} to fulfill this order.` });
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Code verified successfully',
+      order: {
+        orderNo: order.orderNo,
+        orderDate: order.orderDate,
+        totalPrice: order.totalPrice,
+        items: order.items,
+        user: order.userId,
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc Franchise confirms the product delivery
+exports.confirmProductDelivery = async (req, res) => {
+  try {
+    const { code } = req.body;
+    const franchiseId = req.user.memberId;
+
+    if (!code) {
+      return res.status(400).json({ success: false, message: 'Verification code is required' });
+    }
+
+    const order = await Order.findOne({ 
+      verificationCode: code, 
+      franchiseId: franchiseId 
+    }).populate('userId', 'memberId name contactNo');
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Invalid Verification Code' });
+    }
+
+    if (order.orderStatus !== 'Pending') {
+      return res.status(400).json({ success: false, message: 'This order is no longer pending' });
+    }
+
+    if (order.verificationStatus === 'Used') {
+      return res.status(400).json({ success: false, message: 'This Verification Code has already been used' });
+    }
+
+    // Deduct stock
+    for (const item of (order.items || [])) {
+      const stockRec = await ProductFranchiseStock.findOne({ franchiseId, productId: item.productId });
+      if (!stockRec || stockRec.quantity < item.quantity) {
+         return res.status(400).json({ success: false, message: `Insufficient stock for product ID: ${item.productId}` });
+      }
+    }
+
+    for (const item of (order.items || [])) {
+      await ProductFranchiseStock.updateOne(
+        { franchiseId, productId: item.productId },
+        { $inc: { quantity: -item.quantity } }
+      );
+    }
+
+    order.orderStatus = 'Delivered';
+    order.verificationStatus = 'Used';
+    order.deliveryDate = new Date();
+    order.deliveredBy = franchiseId;
+    
+    await order.save();
+
+    res.json({
+      success: true,
+      message: 'Product delivery confirmed successfully',
+      orderNo: order.orderNo
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

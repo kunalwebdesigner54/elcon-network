@@ -20,6 +20,7 @@ const {
   getAdminGstReport,
   getAdminGstSummary,
   getCouponTransactionHistory,
+  requestFranchiseDelivery,
 } = require('../controllers/productsController');
 
 const router = express.Router();
@@ -43,6 +44,7 @@ router.delete('/cart', clearCart);
 router.get('/orders', getOrders);
 router.post('/orders/checkout', checkoutCart);
 router.get('/orders/:orderNo', getOrderByNo);
+router.post('/orders/:orderNo/request-franchise-delivery', requestFranchiseDelivery);
 router.get('/admin/orders', authorize('admin'), getAdminOrders);
 router.patch('/admin/orders/:orderNo/status', authorize('admin'), updateOrderStatus);
 router.get('/admin/orders-gst-report', authorize('admin'), getAdminGstReport);

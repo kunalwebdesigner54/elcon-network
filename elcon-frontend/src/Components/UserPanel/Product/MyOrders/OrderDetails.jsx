@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../../Common/UserLayout.css';
 import './OrderDetails.css';
-import { getOrderByNo } from '../../../../api/productsService';
+import { getOrderByNo, requestFranchiseDelivery } from '../../../../api/productsService';
 import { resolveProductImage } from '../productImages';
 
 function PrinterIcon() {
@@ -26,6 +26,10 @@ function OrderDetails() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [franchiseIdInput, setFranchiseIdInput] = useState('');
+  const [requestingDelivery, setRequestingDelivery] = useState(false);
+  const [deliveryError, setDeliveryError] = useState('');
+  const [deliverySuccess, setDeliverySuccess] = useState('');
 
   useEffect(() => {
     const loadOrder = async () => {
@@ -74,6 +78,25 @@ function OrderDetails() {
 
   const handleBackToOrders = () => {
     navigate('/user/product/my-orders');
+  };
+
+  const handleRequestFranchiseDelivery = async () => {
+    if (!franchiseIdInput.trim()) {
+      setDeliveryError('Please enter a Franchise ID.');
+      return;
+    }
+    setRequestingDelivery(true);
+    setDeliveryError('');
+    setDeliverySuccess('');
+    try {
+      const response = await requestFranchiseDelivery(activeOrder.orderNo, franchiseIdInput.trim());
+      setOrder(response.order);
+      setDeliverySuccess('Franchise Direct Delivery requested successfully.');
+    } catch (error) {
+      setDeliveryError(error?.response?.data?.message || 'Failed to request franchise delivery.');
+    } finally {
+      setRequestingDelivery(false);
+    }
   };
 
   return (
@@ -152,6 +175,67 @@ function OrderDetails() {
             </div>
           </article>
         </section>
+
+        {activeOrder.orderStatus === 'Pending' && (
+          <section className="order-details-info-card" style={{ marginTop: '20px', borderLeft: '4px solid var(--primary-color)' }}>
+            <div className="order-details-info-card__header">Delivery Options</div>
+            <div className="order-details-info-list">
+              {activeOrder.deliveryType === 'Franchisee Direct' ? (
+                <>
+                  <div className="order-details-info-row">
+                    <span className="order-details-info-label">Delivery Type</span>
+                    <span className="order-details-info-value" style={{ fontWeight: '600' }}>{activeOrder.deliveryType}</span>
+                  </div>
+                  <div className="order-details-info-row">
+                    <span className="order-details-info-label">Franchise ID</span>
+                    <span className="order-details-info-value">{activeOrder.franchiseId}</span>
+                  </div>
+                  <div className="order-details-info-row">
+                    <span className="order-details-info-label">Verification Code</span>
+                    <span className="order-details-info-value" style={{ fontSize: '1.2rem', letterSpacing: '2px', color: 'var(--primary-color)', fontWeight: 'bold' }}>
+                      {activeOrder.verificationCode}
+                    </span>
+                  </div>
+                  <div className="order-details-info-row">
+                    <span className="order-details-info-label">Verification Status</span>
+                    <span className="order-details-info-value">
+                      <span className={`status-badge status-${activeOrder.verificationStatus?.toLowerCase()}`}>
+                        {activeOrder.verificationStatus}
+                      </span>
+                    </span>
+                  </div>
+                  <p style={{ marginTop: '10px', fontSize: '0.9rem', color: '#666' }}>
+                    Please provide the Verification Code to the Franchisee when collecting your products. Do not share it with anyone else.
+                  </p>
+                </>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '10px 0' }}>
+                  <p style={{ fontSize: '0.95rem', color: '#444' }}>
+                    You can choose to collect your products directly from a Franchisee instead of Company Delivery.
+                  </p>
+                  {deliveryError && <div className="alert alert-danger" style={{ padding: '10px', background: '#ffebee', color: '#c62828', borderRadius: '4px' }}>{deliveryError}</div>}
+                  {deliverySuccess && <div className="alert alert-success" style={{ padding: '10px', background: '#e8f5e9', color: '#2e7d32', borderRadius: '4px' }}>{deliverySuccess}</div>}
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input 
+                      type="text" 
+                      placeholder="Enter Franchise ID" 
+                      value={franchiseIdInput}
+                      onChange={(e) => setFranchiseIdInput(e.target.value)}
+                      style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', flex: 1, maxWidth: '300px' }}
+                    />
+                    <button 
+                      onClick={handleRequestFranchiseDelivery} 
+                      disabled={requestingDelivery}
+                      style={{ padding: '10px 20px', borderRadius: '4px', border: 'none', background: 'var(--primary-color)', color: '#fff', cursor: 'pointer', fontWeight: '500' }}
+                    >
+                      {requestingDelivery ? 'Requesting...' : 'Request Franchise Delivery'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
         <section className="order-details-items-card">
           <div className="table-wrap">

@@ -272,3 +272,13 @@ export const getFranchiseStock = async () => {
   const response = await apiClient.get('/epins/franchise-stock');
   return response.data;
 };
+
+export const verifyDeliveryCode = async (payload) => {
+  const response = await apiClient.post('/product-franchise/verify-delivery', payload);
+  return response.data;
+};
+
+export const confirmProductDelivery = async (payload) => {
+  const response = await apiClient.post('/product-franchise/confirm-delivery', payload);
+  return response.data;
+};

@@ -38,6 +38,7 @@ import FranchiseDeliveryReport from './Components/UserPanel/ePin/FranchiseDelive
 import FranchiseProductStock from './Components/UserPanel/Franchise/FranchiseProductStock';
 import FranchiseProductSell from './Components/UserPanel/Franchise/FranchiseProductSell';
 import FranchiseSalesReport from './Components/UserPanel/Franchise/FranchiseSalesReport';
+import VerifyDelivery from './Components/UserPanel/Franchise/VerifyDelivery';
 
 import AdminProductFranchise from './Components/Admin/ProductFranchise/AdminProductFranchise';
 import AdminWalletBalance from './Components/Admin/WalletManage/AdminWalletBalance';
@@ -275,6 +276,7 @@ function App() {
           <Route path="product-franchise/stock" element={<FranchiseProductStock />} />
           <Route path="product-franchise/sell" element={<FranchiseProductSell />} />
           <Route path="product-franchise/sales-report" element={<FranchiseSalesReport />} />
+          <Route path="product-franchise/verify-delivery" element={<VerifyDelivery />} />
 
           <Route path="transactions/main-wallet" element={<UserBlankPage />} />
           <Route path="transactions/transaction-history" element={<TransactionHistory />} />

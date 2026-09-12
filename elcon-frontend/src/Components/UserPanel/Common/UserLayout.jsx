@@ -76,7 +76,8 @@ const menuItems = [
     children: [
       { label: 'My Product Stock', to: '/user/product-franchise/stock' },
       { label: 'Sell Product', to: '/user/product-franchise/sell' },
-      { label: 'Sales Report', to: '/user/product-franchise/sales-report' }
+      { label: 'Sales Report', to: '/user/product-franchise/sales-report' },
+      { label: 'Verify Delivery', to: '/user/product-franchise/verify-delivery' }
     ]
   },
   {

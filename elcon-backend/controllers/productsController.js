@@ -714,6 +714,49 @@ exports.getOrderByNo = async (req, res) => {
   }
 };
 
+exports.requestFranchiseDelivery = async (req, res) => {
+  try {
+    const { franchiseId } = req.body;
+    
+    if (!franchiseId) {
+      return res.status(400).json({ success: false, message: 'Franchise ID is required' });
+    }
+
+    const order = await Order.findOne({ orderNo: req.params.orderNo, userId: req.user.id });
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    if (order.orderStatus !== 'Pending') {
+      return res.status(400).json({ success: false, message: 'Only Pending orders can request Franchise Delivery' });
+    }
+
+    if (order.deliveryType === 'Franchisee Direct') {
+      return res.status(400).json({ success: false, message: 'Franchise Delivery is already requested for this order' });
+    }
+
+    // Generate a random 6-digit Verification Code
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    order.deliveryType = 'Franchisee Direct';
+    order.franchiseId = franchiseId;
+    order.verificationCode = verificationCode;
+    order.verificationStatus = 'Generated';
+    order.verificationDate = new Date();
+    
+    await order.save();
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Franchise Delivery requested successfully', 
+      order 
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 exports.getAdminOrders = async (req, res) => {
   try {
     const { 

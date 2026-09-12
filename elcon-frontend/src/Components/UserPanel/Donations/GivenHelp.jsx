@@ -244,7 +244,7 @@ const GivenHelp = () => {
                     <div className="section-title21">Sender Details (Help Provider)</div>
                     <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{currentUser?.name || "---"}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{currentUser?.memberId || "---"}</span></div>
-                    <div className="help-info-row21"><span className="help-info-label">Mobile No :</span> <span className="help-info-value">{currentUser?.contactNo || "---"}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Mobile No :</span> <span className="help-info-value">{currentUser?.contactNo ? "***" : "---"}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">E-mail ID :</span> <span className="help-info-value">{currentUser?.email || "---"}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Current Level :</span> <span className="help-info-value">{currentUser?.unlockLevel ?? 0}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Upgrading To Level :</span> <span className="help-info-value" style={{ color: "#007bff", fontWeight: 600 }}>{nextLevel}</span></div>
@@ -255,7 +255,7 @@ const GivenHelp = () => {
                     <div className="section-title21">Receiver Details (Help Receiver)</div>
                     <div className="help-info-row21"><span className="help-info-label">Member Name :</span> <span className="help-info-value">{receiver.toName || "---"}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Member ID :</span> <span className="help-info-value">{receiver.toMemberId || "---"}</span></div>
-                    <div className="help-info-row21"><span className="help-info-label">Contact No :</span> <span className="help-info-value">{receiver.toPhone || "---"}</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Contact No :</span> <span className="help-info-value">{receiver.toPhone ? "***" : "---"}</span></div>
 
                     {payment.googlePay && (
                       <div className="help-info-row21 align-row"><span className="help-info-label">GPay :</span>

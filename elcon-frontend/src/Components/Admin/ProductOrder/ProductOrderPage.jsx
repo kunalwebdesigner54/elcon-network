@@ -387,6 +387,36 @@ const OrderDetailsModal = ({ order, onClose, loading }) => {
                   <label style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '4px' }}>Payment Status</label>
                   <span>{order.paymentStatus}</span>
                 </div>
+                {order.deliveryType === 'Franchise Direct' && (
+                  <>
+                    <div>
+                      <label style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '4px' }}>Delivery Type</label>
+                      <span style={{ fontWeight: '600', color: '#1976d2' }}>Franchise Direct</span>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '4px' }}>Franchise ID</label>
+                      <span>{order.franchiseId || 'Not Selected'}</span>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '4px' }}>Verification Status</label>
+                      <span style={{ fontWeight: '600', color: order.verificationStatus === 'Used' ? '#388e3c' : '#f57c00' }}>
+                        {order.verificationStatus || 'Not Generated'}
+                      </span>
+                    </div>
+                    {order.verificationCode && (
+                      <div>
+                        <label style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '4px' }}>Verif. Code (Masked)</label>
+                        <span>{order.verificationCode.slice(0, 2) + '****'}</span>
+                      </div>
+                    )}
+                    {order.deliveryDate && (
+                      <div>
+                        <label style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '4px' }}>Delivery Date</label>
+                        <span>{new Date(order.deliveryDate).toLocaleString()}</span>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
 
               <div style={{ marginBottom: '20px' }}>
