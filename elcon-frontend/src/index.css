@@ -50,6 +50,24 @@
 	font-family: 'Poppins', sans-serif;
 }
 
+button,
+[class*='btn'],
+[class*='Button'] {
+	box-shadow: none !important;
+}
+
+button:hover,
+[class*='btn']:hover,
+[class*='Button']:hover,
+button:focus,
+[class*='btn']:focus,
+[class*='Button']:focus,
+button:active,
+[class*='btn']:active,
+[class*='Button']:active {
+	box-shadow: none !important;
+}
+
 html,
 body,
 #root {
