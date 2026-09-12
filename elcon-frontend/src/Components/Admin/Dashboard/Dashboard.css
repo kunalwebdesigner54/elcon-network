@@ -190,11 +190,11 @@
 }
 
 .admin-dashboard-stat-card {
-	border: 1px solid rgba(255, 255, 255, 0.05);
+	border: 1px solid var(--glass-border);
 	border-radius: var(--border-radius-lg);
-	padding: 24px;
-	background: #1A1B2F;
-	min-height: 100px;
+	padding: 20px;
+	background: var(--bg-card);
+	min-height: 90px;
 	min-width: 0;
 	transition: var(--transition);
 	box-shadow: none;
@@ -205,7 +205,7 @@
 
 .admin-dashboard-stat-card:hover {
 	transform: translateY(-4px);
-	border-color: rgba(234, 179, 8, 0.3);
+	border-color: rgba(234, 179, 8, 0.3); /* Subtle yellow hover */
 }
 
 .admin-dashboard-stat-content {
@@ -215,7 +215,7 @@
 }
 
 .admin-dashboard-stat-value {
-	color: #fff;
+	color: var(--text-main);
 	font-size: 24px;
 	line-height: 1.2;
 	font-weight: 700;
@@ -224,8 +224,8 @@
 }
 
 .admin-dashboard-stat-label {
-	color: #fff;
-	font-size: 12px;
+	color: var(--text-muted);
+	font-size: 13px;
 	font-weight: 500;
 	line-height: 1.4;
 	overflow-wrap: anywhere;
@@ -233,18 +233,18 @@
 
 .admin-dashboard-stat-icon-box {
 	flex-shrink: 0;
-	width: 52px;
-	height: 52px;
+	width: 48px;
+	height: 48px;
 	border-radius: 12px;
-	background: transparent;
-	border: 2px solid var(--primary);
+	background: rgba(234, 179, 8, 0.08); /* Faint yellow */
+	border: 1px solid rgba(234, 179, 8, 0.2);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
 .admin-dashboard-stat-icon {
-	font-size: 24px;
+	font-size: 22px;
 	color: var(--primary);
 }
 
