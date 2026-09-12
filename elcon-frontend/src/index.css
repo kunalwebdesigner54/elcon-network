@@ -31,7 +31,7 @@
 	--text-dark: #1E293B;
 
 	/* Gradients */
-	--gradient-primary: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
+	--gradient-primary: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%); /* Blue */
 	--gradient-secondary: linear-gradient(135deg, #C084FC 0%, #A855F7 100%);
 	--gradient-success: linear-gradient(135deg, #4ADE80 0%, #22C55E 100%);
 	--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
@@ -146,7 +146,8 @@ select option {
 	background: var(--primary) !important;
 	color: #fff !important;
 	border: none !important;
-	padding: 12px 24px 8px; /* Adjusted padding to visually center Poppins */
+	padding: 10px 24px;
+	line-height: 1.5;
 	font-weight: 600;
 	cursor: pointer;
 	text-decoration: none;
@@ -175,7 +176,8 @@ select option {
 	background: #FF9A3C !important;
 	color: #fff !important;
 	border: none !important;
-	padding: 12px 24px 8px; /* Adjusted padding to visually center Poppins */
+	padding: 10px 24px;
+	line-height: 1.5;
 	font-weight: 600;
 	cursor: pointer;
 	text-decoration: none;
@@ -408,7 +410,8 @@ h2,
 	color: #fff !important;
 	border: none !important;
 	border-radius: var(--border-radius-sm) !important;
-	padding: 14px 24px 10px !important; /* Adjusted padding to visually center Poppins */
+	padding: 10px 24px !important;
+	line-height: 1.5 !important;
 	font-weight: 600 !important;
 	text-transform: uppercase !important;
 	letter-spacing: 1px !important;
@@ -439,10 +442,10 @@ h2,
 	border: 1px solid var(--primary) !important;
 	color: var(--primary) !important;
 	border-radius: var(--border-radius-sm) !important;
-	padding: 10px 16px 6px !important; /* Adjusted padding to visually center Poppins */
+	padding: 8px 16px !important;
 	font-weight: 500 !important;
 	transition: var(--transition) !important;
-	line-height: 1 !important;
+	line-height: 1.5 !important;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
