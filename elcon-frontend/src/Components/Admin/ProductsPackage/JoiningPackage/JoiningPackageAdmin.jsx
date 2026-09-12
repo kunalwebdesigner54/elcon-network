@@ -159,7 +159,7 @@ function JoiningPackageAdmin() {
                 joiningPackageRows.map((row, index) => (
                   <tr key={row.id || row.productCode}>
                     <td>{index + 1}</td>
-                    <td>{row.hsnCode ? `PKG${row.hsnCode}` : ''}</td>
+                    <td>{row.productCode || ''}</td>
                     <td>{row.productName}</td>
                     <td>
                       <img src={resolveProductImage(row)} alt={row.productName} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
