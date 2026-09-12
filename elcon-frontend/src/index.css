@@ -262,22 +262,20 @@ select option {
 	}
 }
 
+h1,
+[class*='page-title'] {
+	display: none !important;
+}
+
+h2,
+[class*='section-title'] {
+	display: none !important;
+}
+
 @media (max-width: 768px) {
 	html,
 	body {
 		overflow-x: hidden;
-	}
-
-	h1,
-	[class*='page-title'] {
-		font-size: clamp(24px, 6vw, 30px) !important;
-		display: none !important;
-	}
-
-	h2,
-	[class*='section-title'] {
-		font-size: clamp(20px, 5vw, 26px) !important;
-		display: none !important;
 	}
 
 	[class*='table-tools'],
@@ -357,7 +355,7 @@ select option {
 	background: var(--bg-card) !important;
 	border: 1px solid var(--glass-border) !important;
 	border-radius: var(--border-radius) !important;
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+	box-shadow: none !important;
 	padding: 24px !important;
 	color: var(--text-main) !important;
 	position: relative !important;
@@ -385,7 +383,7 @@ select option {
 .user-root input:focus, .user-root select:focus, .user-root textarea:focus {
 	outline: none !important;
 	border-color: var(--primary) !important;
-	box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.2) !important;
+	box-shadow: none !important;
 	background-color: rgba(255, 255, 255, 0.09) !important;
 }
 
@@ -414,7 +412,7 @@ select option {
 	font-weight: 600 !important;
 	text-transform: uppercase !important;
 	letter-spacing: 1px !important;
-	box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3) !important;
+	box-shadow: none !important;
 	transition: var(--transition) !important;
 	line-height: 1 !important;
 }
@@ -422,16 +420,16 @@ select option {
 .admin-root .btn-primary:hover, .user-root .btn-primary:hover,
 .admin-root button[type="submit"]:hover, .user-root button[type="submit"]:hover {
 	transform: translateY(-2px) !important;
-	box-shadow: 0 8px 25px rgba(0, 229, 255, 0.5) !important;
+	box-shadow: none !important;
 }
 
 .admin-root .btn-secondary, .user-root .btn-secondary {
 	background: var(--gradient-secondary) !important;
-	box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3) !important;
+	box-shadow: none !important;
 }
 
 .admin-root .btn-secondary:hover, .user-root .btn-secondary:hover {
-	box-shadow: 0 8px 25px rgba(138, 43, 226, 0.5) !important;
+	box-shadow: none !important;
 }
 
 /* Outline Buttons (Excel, PDF, Filters) */
@@ -453,7 +451,7 @@ select option {
 .admin-root .user-btn-outline:hover, .user-root .user-btn-outline:hover,
 .admin-root .btn-outline:hover, .user-root .btn-outline:hover {
 	background: rgba(0, 229, 255, 0.1) !important;
-	box-shadow: 0 0 10px rgba(0, 229, 255, 0.2) !important;
+	box-shadow: none !important;
 }
 
 /* Global Tables */
@@ -577,4 +575,4 @@ select option {
 .page-btn { background-color: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s ease; display: inline-flex; justify-content: center; align-items: center; min-width: 32px; height: 32px; }
 .page-btn:hover:not(:disabled) { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
 .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.page-btn.active-page, .page-btn.active { background-color: var(--primary, #00E5FF); color: #000; border-color: var(--primary, #00E5FF); font-weight: 700; box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
+.page-btn.active-page, .page-btn.active { background-color: var(--primary, #00E5FF); color: #000; border-color: var(--primary, #00E5FF); font-weight: 700; box-shadow: none !important; }
