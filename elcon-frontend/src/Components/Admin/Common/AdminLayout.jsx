@@ -260,11 +260,8 @@ function AdminLayout() {
   return (
     <div className={`admin-root ${isSidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
       <aside className="sidebar">
-        <div className="sidebar-brand" style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', lineHeight: '1.2' }}>
-          <div><span className="highlight" style={{ fontSize: '28px' }}>CRM</span></div>
-          <div style={{ fontSize: '10px', fontWeight: '400', color: 'var(--text-muted)', letterSpacing: '0' }}>Your Customers, Your Power.</div>
-        </div>
-        <div className="sidebar-user" style={{ borderBottom: 'none', paddingBottom: '0' }}>
+        <div className="sidebar-brand">ELCON</div>
+        <div className="sidebar-user">
           <div className="sidebar-user-meta">
             <div className="sidebar-avatar">👤</div>
             <div className="sidebar-user-details">
@@ -342,106 +339,66 @@ function AdminLayout() {
 
       <main className="admin-main">
         <header className="topbar">
-          <div className="topbar-left" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <button
-              type="button"
-              className="topbar-menu"
-              aria-label="Toggle sidebar"
-              onClick={toggleSidebar}
-              style={{ background: 'none', border: 'none', color: '#fff', fontSize: '24px', cursor: 'pointer', padding: 0 }}
-            >
-              ☰
-            </button>
-            <h2 style={{ margin: 0, fontSize: '22px', fontWeight: '700' }}>{breadcrumb[breadcrumb.length - 1]}</h2>
-          </div>
-          
-          <div className="topbar-center" style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-            <div className="search-bar" style={{ 
-              background: '#1F1E2E', 
-              borderRadius: '20px', 
-              padding: '8px 20px', 
-              display: 'flex', 
-              alignItems: 'center',
-              width: '400px',
-              border: '1px solid var(--glass-border)'
-            }}>
-              <input 
-                type="text" 
-                placeholder="Search Here ..." 
-                style={{ 
-                  background: 'transparent', 
-                  border: 'none', 
-                  color: '#fff', 
-                  outline: 'none', 
-                  width: '100%',
-                  boxShadow: 'none',
-                  padding: 0
-                }} 
-              />
-              <span style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>🔍</span>
-            </div>
-          </div>
-
-          <div className="topbar-right" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <span style={{ cursor: 'pointer', color: 'var(--text-main)', fontSize: '18px' }}>✉️</span>
-            <span style={{ cursor: 'pointer', color: 'var(--text-main)', fontSize: '18px' }}>🔔</span>
-            <div className="topbar-avatar" style={{ position: 'relative' }}>
-              <button 
-                type="button" 
-                className="topbar-avatar-btn" 
-                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  cursor: 'pointer', 
-                  padding: 0, 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  gap: '5px'
-                }}
+          <div className={`topbar-left ${showBackButton ? 'has-back' : ''}`}>
+            {!isSidebarOpen && (
+              <button
+                type="button"
+                className="topbar-menu"
+                aria-label="Open sidebar"
+                onClick={toggleSidebar}
               >
-                <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" 
-                  alt="Profile" 
-                  style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#fff' }} 
-                />
-                <span style={{ color: '#fff', fontSize: '12px' }}>▼</span>
+                ☰
               </button>
-              {isProfileDropdownOpen && (
-                <div className="profile-dropdown" style={{
-                  position: 'absolute',
-                  top: '45px',
-                  right: '0',
-                  backgroundColor: '#fff',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                  borderRadius: '8px',
-                  padding: '8px 0',
-                  minWidth: '160px',
-                  zIndex: 1000
-                }}>
+            )}
+          </div>
+          <div className="topbar-avatar" style={{ position: 'relative' }}>
+            <button 
+              type="button" 
+              className="topbar-avatar-btn" 
+              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '24px' }}
+            >
+              👨‍💼
+            </button>
+            {isProfileDropdownOpen && (
+              <div className="profile-dropdown" style={{
+                position: 'absolute',
+                top: '40px',
+                right: '0',
+                backgroundColor: '#fff',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                borderRadius: '4px',
+                padding: '10px 0',
+                minWidth: '160px',
+                zIndex: 1000
+              }}>
+                <Link 
+                  to="/settings/admin-settings" 
+                  style={{ display: 'block', padding: '8px 16px', color: '#333', textDecoration: 'none' }}
+                  onClick={() => setIsProfileDropdownOpen(false)}
+                >
+                  Admin Profile
+                </Link>
+                {user.adminType !== 'SUB_ADMIN' && (
                   <Link 
-                    to="/settings/admin-settings" 
-                    style={{ display: 'block', padding: '10px 16px', color: '#1F1E2E', textDecoration: 'none', fontWeight: '500' }}
+                    to="/sub-admins/manage" 
+                    style={{ display: 'block', padding: '8px 16px', color: '#333', textDecoration: 'none' }}
                     onClick={() => setIsProfileDropdownOpen(false)}
                   >
-                    Admin Profile
+                    Manage Sub-Admins
                   </Link>
-                  {user.adminType !== 'SUB_ADMIN' && (
-                    <Link 
-                      to="/sub-admins/manage" 
-                      style={{ display: 'block', padding: '10px 16px', color: '#1F1E2E', textDecoration: 'none', fontWeight: '500' }}
-                      onClick={() => setIsProfileDropdownOpen(false)}
-                    >
-                      Manage Sub-Admins
-                    </Link>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </header>
 
         <section className="page-container">
+          <div className="page-breadcrumb-row">
+            <span className="crumb-home">Home</span>
+            <span className="crumb-divider">/</span>
+            <span>{breadcrumb[breadcrumb.length - 1]}</span>
+          </div>
           <Outlet />
         </section>
 

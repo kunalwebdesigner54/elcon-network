@@ -1,44 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-	/* CRM Dashboard Figma Theme */
-	--primary: #EAB308; /* Gold/Yellow */
-	--primary-dark: #CA8A04;
-	--primary-light: #FACC15;
-	--secondary: #A855F7; /* Purple */
-	--accent: #EAB308; /* Yellow */
+	/* New Premium Dark Fintech Theme */
+	--primary: #00E5FF; /* Neon Cyan */
+	--primary-dark: #00B8CC;
+	--primary-light: #33EBFF;
+	--secondary: #8A2BE2; /* Neon Purple */
+	--accent: #FF3366; /* Neon Pink/Red for accents */
 	
 	/* Status Colors */
-	--success: #22C55E; /* Green */
-	--warning: #F59E0B;
-	--danger: #EF4444;
-	--info: #3B82F6;
+	--success: #00E676; /* Neon Green */
+	--warning: #FFAB00;
+	--danger: #FF1744;
+	--info: #2979FF;
 
 	/* Dark Backgrounds */
-	--bg-darkest: #100E17; /* App background */
-	--bg-dark: #151322; /* Alternative dark bg */
-	--bg-card: #1F1E2E; /* Card and sidebar background */
-	--bg-card-hover: #262438;
+	--bg-darkest: #040814;
+	--bg-dark: #0B1221;
+	--bg-card: rgba(18, 26, 47, 0.7);
+	--bg-card-hover: rgba(25, 35, 60, 0.85);
 	
 	/* Glassmorphism / Borders */
-	--glass-border: rgba(255, 255, 255, 0.05);
-	--glass-border-light: rgba(255, 255, 255, 0.1);
-	--glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	--glass-border: rgba(255, 255, 255, 0.08);
+	--glass-border-light: rgba(255, 255, 255, 0.15);
+	--glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 	
 	/* Text Colors */
 	--text-main: #FFFFFF;
 	--text-muted: #94A3B8;
-	--text-dark: #0F172A;
+	--text-dark: #1E293B;
 
 	/* Gradients */
-	--gradient-primary: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
-	--gradient-secondary: linear-gradient(135deg, #C084FC 0%, #A855F7 100%);
-	--gradient-success: linear-gradient(135deg, #4ADE80 0%, #22C55E 100%);
-	--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+	--gradient-primary: linear-gradient(135deg, #00E5FF 0%, #0077FF 100%);
+	--gradient-secondary: linear-gradient(135deg, #8A2BE2 0%, #FF3366 100%);
+	--gradient-success: linear-gradient(135deg, #00E676 0%, #1DE9B6 100%);
+	--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
 
-	--border-radius: 12px;
+	--border-radius: 16px;
 	--border-radius-sm: 8px;
-	--border-radius-lg: 16px;
+	--border-radius-lg: 24px;
 	
 	--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	
@@ -331,10 +331,12 @@ select option {
 	letter-spacing: 0.5px;
 }
 
-/* Global Solid Cards */
+/* Global Glass Cards */
 .admin-root .white-card, .admin-root .card, .admin-root .panel, .admin-root .content-wrap, .admin-root .form-container,
 .user-root .white-card, .user-root .card, .user-root .panel, .user-root .content-wrap, .user-root .form-container {
 	background: var(--bg-card) !important;
+	backdrop-filter: blur(12px) !important;
+	-webkit-backdrop-filter: blur(12px) !important;
 	border: 1px solid var(--glass-border) !important;
 	border-radius: var(--border-radius) !important;
 	box-shadow: var(--glass-shadow) !important;
@@ -346,7 +348,7 @@ select option {
 .admin-root .white-card:hover, .user-root .white-card:hover {
 	background: var(--bg-card-hover) !important;
 	border-color: var(--primary) !important;
-	box-shadow: 0 4px 12px rgba(234, 179, 8, 0.1) !important;
+	box-shadow: 0 8px 32px 0 rgba(0, 229, 255, 0.15) !important;
 }
 
 /* Global Inputs & Selects */
@@ -393,7 +395,7 @@ select option {
 	font-weight: 600 !important;
 	text-transform: uppercase !important;
 	letter-spacing: 1px !important;
-	box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3) !important;
+	box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3) !important;
 	transition: var(--transition) !important;
 	line-height: 1 !important;
 }
@@ -401,16 +403,16 @@ select option {
 .admin-root .btn-primary:hover, .user-root .btn-primary:hover,
 .admin-root button[type="submit"]:hover, .user-root button[type="submit"]:hover {
 	transform: translateY(-2px) !important;
-	box-shadow: 0 8px 25px rgba(234, 179, 8, 0.5) !important;
+	box-shadow: 0 8px 25px rgba(0, 229, 255, 0.5) !important;
 }
 
 .admin-root .btn-secondary, .user-root .btn-secondary {
 	background: var(--gradient-secondary) !important;
-	box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3) !important;
+	box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3) !important;
 }
 
 .admin-root .btn-secondary:hover, .user-root .btn-secondary:hover {
-	box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5) !important;
+	box-shadow: 0 8px 25px rgba(138, 43, 226, 0.5) !important;
 }
 
 /* Outline Buttons (Excel, PDF, Filters) */
@@ -431,8 +433,8 @@ select option {
 
 .admin-root .user-btn-outline:hover, .user-root .user-btn-outline:hover,
 .admin-root .btn-outline:hover, .user-root .btn-outline:hover {
-	background: rgba(234, 179, 8, 0.1) !important;
-	box-shadow: 0 0 10px rgba(234, 179, 8, 0.2) !important;
+	background: rgba(0, 229, 255, 0.1) !important;
+	box-shadow: 0 0 10px rgba(0, 229, 255, 0.2) !important;
 }
 
 /* Global Tables */
@@ -453,11 +455,11 @@ select option {
 }
 
 .admin-root th, .user-root th {
-	background: var(--primary) !important;
-	color: #000000 !important;
-	font-weight: 700 !important;
-	text-transform: capitalize !important;
-	letter-spacing: 0.5px !important;
+	background: rgba(0, 0, 0, 0.3) !important;
+	color: var(--primary-light) !important;
+	font-weight: 600 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 1px !important;
 	padding: 16px !important;
 	border-bottom: 1px solid var(--glass-border) !important;
 	white-space: nowrap !important;
@@ -556,4 +558,4 @@ select option {
 .page-btn { background-color: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s ease; display: inline-flex; justify-content: center; align-items: center; min-width: 32px; height: 32px; }
 .page-btn:hover:not(:disabled) { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
 .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.page-btn.active-page, .page-btn.active { background-color: var(--primary); color: #000; border-color: var(--primary); font-weight: 700; box-shadow: 0 0 10px rgba(234, 179, 8, 0.3); }
+.page-btn.active-page, .page-btn.active { background-color: var(--primary, #00E5FF); color: #000; border-color: var(--primary, #00E5FF); font-weight: 700; box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
