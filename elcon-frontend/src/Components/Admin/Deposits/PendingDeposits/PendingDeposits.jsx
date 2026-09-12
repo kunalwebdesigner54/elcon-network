@@ -100,44 +100,34 @@ function PendingDeposits() {
             <thead>
               <tr>
                 <th>S.no</th>
-                <th>Deposit Date</th>
+                <th>Request Time</th>
                 <th>Member Id</th>
-                <th>Member Name</th>
-                <th>Mobile No</th>
-                <th>Trasaction ID</th>
-                <th>Payment Mode</th>
-                <th>AMOUNT</th>
-                <th>UTR NUMBER</th>
-                <th>SLIP</th>
-                <th>Status</th>
+                <th>Amount</th>
+                <th>Entered UTR</th>
+                <th>OCR UTR</th>
+                <th>Verification Status</th>
                 <th>Action</th>
                 <th>Remark</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="13">Loading...</td></tr>
+                <tr><td colSpan="9">Loading...</td></tr>
               ) : visibleRows.length > 0 ? visibleRows.map((row) => (
                 <tr key={`${row.sno}-${row.transactionId}`}>
                   <td>{row.sno}</td>
                   <td>{row.depositDate}</td>
                   <td>{row.memberId}</td>
-                  <td>{row.memberName}</td>
-                  <td>{row.mobileNo}</td>
-                  <td>{row.transactionId}</td>
-                  <td>{row.paymentMode}</td>
                   <td>{Number(row.amount || 0).toFixed(2)}</td>
                   <td>{row.utrNumber}</td>
-                  <td>
-                    <button type="button" className="deposit-slip-btn" onClick={() => row.slip && window.open(row.slip, '_blank')}>
-                      VIEW
-                    </button>
+                  <td>{row.ocrUtr || '---'}</td>
+                  <td style={{ color: row.verificationStatus === 'Verified' ? 'green' : (row.verificationStatus === 'Mismatch' ? 'red' : 'inherit') }}>
+                    {row.verificationStatus}
                   </td>
-                  <td>{row.status}</td>
                   <td className="action-cell"><DepositActionButtons depositId={row.depositId} utrNumber={row.utrNumber} reloadRows={loadRows} allowedActions={['Approve', 'Reject']} /></td>
                   <td className="remark-cell">{row.remark}</td>
                 </tr>
-              )) : (<tr><td colSpan="13">No pending deposits found</td></tr>)}
+              )) : (<tr><td colSpan="9">No pending deposits found</td></tr>)}
             </tbody>
           </table>
         </div>

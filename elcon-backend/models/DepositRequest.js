@@ -72,6 +72,20 @@ const depositRequestSchema = new mongoose.Schema(
       enum: ['Pending', 'Approve', 'Succeed', 'Rejected'],
       default: 'Pending',
     },
+    ocrUtr: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    ocrAmount: {
+      type: Number,
+      default: 0,
+    },
+    verificationStatus: {
+      type: String,
+      enum: ['Pending', 'Verified', 'Mismatch'],
+      default: 'Pending',
+    },
     remark: {
       type: String,
       default: '-',

@@ -1,6 +1,7 @@
 const DepositRequest = require('../models/DepositRequest');
 const User = require('../models/User');
 const { createWalletTransaction } = require('../utils/walletHelper');
+const Tesseract = require('tesseract.js');
 
 const buildDepositId = async () => {
   let depositId = '';
@@ -54,6 +55,8 @@ const toApiRow = (request, index) => ({
   paymentMode: request.paymentMode,
   amount: Number(request.amount || 0).toFixed(2),
   utrNumber: request.utrNumber,
+  ocrUtr: request.ocrUtr || '',
+  verificationStatus: request.verificationStatus || 'Pending',
   slip: request.slip || '',
   status: request.status,
   remark: request.remark || '-',
@@ -117,6 +120,33 @@ exports.createDepositRequest = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please upload payment screenshot' });
     }
 
+    if (utrNumber) {
+      const existingUtr = await DepositRequest.findOne({ utrNumber }).select('_id');
+      if (existingUtr) {
+        return res.status(409).json({ success: false, message: 'This UTR Number has already been used' });
+      }
+    }
+
+    let ocrUtr = '';
+    let ocrAmount = 0;
+    try {
+      const { data: { text } } = await Tesseract.recognize(paymentScreenshot, 'eng');
+      const cleanText = text.replace(/,/g, '').replace(/\s+/g, '');
+      
+      if (cleanText.includes(utrNumber)) {
+        ocrUtr = utrNumber;
+      }
+      if (cleanText.includes(amount.toString())) {
+        ocrAmount = amount;
+      }
+
+      if (ocrUtr !== utrNumber || ocrAmount !== amount) {
+        return res.status(400).json({ success: false, message: 'OCR Verification Failed. UTR or Amount mismatch in the screenshot.' });
+      }
+    } catch (error) {
+      return res.status(400).json({ success: false, message: 'Error analyzing screenshot. Please ensure the image is clear and try again.' });
+    }
+
     const depositId = await buildDepositId();
     
     if (!transactionId) {
@@ -161,9 +191,12 @@ exports.createDepositRequest = async (req, res) => {
       mobileNo: user.contactNo || '---',
       transactionId,
       utrNumber,
+      ocrUtr,
+      ocrAmount,
+      verificationStatus: 'Verified',
       paymentMode: methodLabel,
       amount,
-      slip: paymentScreenshot,
+      slip: '',
       description,
       status: 'Pending',
       remark: '-',
