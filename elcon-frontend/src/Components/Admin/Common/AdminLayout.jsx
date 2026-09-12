@@ -263,7 +263,7 @@ function AdminLayout() {
         <div className="sidebar-brand">ELCON</div>
         <div className="sidebar-user">
           <div className="sidebar-user-meta">
-            <div className="sidebar-avatar">👤</div>
+            <div className="sidebar-avatar"><i className="fa-regular fa-user"></i></div>
             <div className="sidebar-user-details">
               <span className="sidebar-user-name">{adminName}</span>
               <span className="sidebar-user-id">ID: {adminUserId}</span>
@@ -275,7 +275,7 @@ function AdminLayout() {
             aria-label="Close sidebar"
             onClick={() => setIsSidebarOpen(false)}
           >
-            ✕
+            <i className="fa-solid fa-xmark"></i>
           </button>
         </div>
         <div className="sidebar-section-title">MAIN NAVIGATION</div>
@@ -292,7 +292,7 @@ function AdminLayout() {
                     onClick={() => toggleSection(item.key)}
                   >
                     <span>{item.label}</span>
-                    <span>{isOpen ? '⌄' : '›'}</span>
+                    <span><i className={`fa-solid ${isOpen ? 'fa-angle-down' : 'fa-angle-right'}`}></i></span>
                   </button>
                   {isOpen && (
                     <div className="sidebar-submenu">
@@ -347,7 +347,7 @@ function AdminLayout() {
                 aria-label="Open sidebar"
                 onClick={toggleSidebar}
               >
-                ☰
+                <i className="fa-solid fa-bars"></i>
               </button>
             )}
             <h2 className="topbar-page-title">{breadcrumb[breadcrumb.length - 1] || 'Dashboard'}</h2>
@@ -356,14 +356,14 @@ function AdminLayout() {
           <div className="topbar-center">
              <div className="topbar-search">
                <input type="text" placeholder="Search Here ..." className="topbar-search-input" />
-               <span className="topbar-search-icon">🔍</span>
+               <span className="topbar-search-icon"><i className="fa-solid fa-magnifying-glass"></i></span>
              </div>
           </div>
 
           <div className="topbar-right">
-            <button className="topbar-icon-btn" aria-label="Messages">✉️</button>
+            <button className="topbar-icon-btn" aria-label="Messages"><i className="fa-regular fa-envelope"></i></button>
             <button className="topbar-icon-btn" aria-label="Notifications">
-               🔔
+               <i className="fa-regular fa-bell"></i>
                <span className="notification-dot"></span>
             </button>
             <div className="topbar-avatar" style={{ position: 'relative' }}>
@@ -373,8 +373,8 @@ function AdminLayout() {
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
               >
-                <div className="avatar-img">👨‍💼</div>
-                <span className="avatar-chevron">⌄</span>
+                <div className="avatar-img"><i className="fa-regular fa-user"></i></div>
+                <span className="avatar-chevron"><i className="fa-solid fa-angle-down"></i></span>
               </button>
               {isProfileDropdownOpen && (
                 <div className="profile-dropdown" style={{

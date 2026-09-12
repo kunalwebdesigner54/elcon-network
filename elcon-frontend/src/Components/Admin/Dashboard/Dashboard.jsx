@@ -149,7 +149,7 @@ function Dashboard() {
 				<section className="admin-dashboard-stats-grid" aria-label="Admin dashboard metrics">
 					{stats.map((stat, index) => {
 						// Alternate generic icons based on index for visual variety (Basket, Box, User, Wallet)
-						const icons = ['🧺', '📦', '👤', '💳'];
+						const icons = ['fa-solid fa-basket-shopping', 'fa-solid fa-box', 'fa-regular fa-user', 'fa-solid fa-wallet'];
 						const icon = icons[index % 4];
 
 						return (
@@ -159,7 +159,7 @@ function Dashboard() {
 									<div className="admin-dashboard-stat-label">{stat.label}</div>
 								</div>
 								<div className="admin-dashboard-stat-icon-box">
-									<span className="admin-dashboard-stat-icon">{icon}</span>
+									<i className={`admin-dashboard-stat-icon ${icon}`}></i>
 								</div>
 							</article>
 						);

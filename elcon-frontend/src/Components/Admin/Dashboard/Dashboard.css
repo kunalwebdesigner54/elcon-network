@@ -245,10 +245,7 @@
 
 .admin-dashboard-stat-icon {
 	font-size: 22px;
-	/* No filter needed since we are using emojis for now, 
-	   if SVG is used, color it yellow. Emojis have their own color, 
-	   but it works well enough. To make them match perfectly we can apply a sepia/hue-rotate filter */
-	filter: sepia(1) hue-rotate(35deg) saturate(3) brightness(1.2);
+	color: var(--primary);
 }
 
 .admin-dashboard-bottom-band {
