@@ -352,9 +352,9 @@ const OrderDetailsModal = ({ order, onClose, loading }) => {
 
   return (
     <div className="admin-modal-overlay" onClick={onClose} style={{ zIndex: 1000 }}>
-      <div className="admin-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '900px', width: '95%', maxHeight: '85vh', overflow: 'auto' }}>
+      <div className="admin-modal" onClick={(e) => e.stopPropagation()} style={{ background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '16px', maxWidth: '900px', width: '95%', maxHeight: '85vh', overflow: 'auto' }}>
         <div className="admin-modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--glass-border)' }}>
-          <h3 style={{ margin: 0 }}>Order Details - {order.orderNo}</h3>
+          <h3 style={{ margin: 0, color: 'var(--primary)' }}>Order Details - {order.orderNo}</h3>
           <button type="button" className="admin-modal-close" onClick={onClose} style={{ fontSize: '24px', background: 'none', border: 'none', cursor: 'pointer', color: '#fff' }}>&times;</button>
         </div>
         <div className="admin-modal-form" style={{ padding: '20px' }}>
