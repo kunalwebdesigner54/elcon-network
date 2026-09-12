@@ -160,7 +160,7 @@ function TransactionHistory() {
           <div style={{ color: '#a0aec0', fontSize: '1rem', fontWeight: '500' }}>
             Total Transactions : <span style={{ color: '#fff', fontWeight: 'bold' }}>{totalTransactions}</span>
           </div>
-          <div className="pagination" style={{ display: 'flex', gap: '5px' }}>
+          <div className="pagination">
             <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>«</button>
             <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>‹</button>
             {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {

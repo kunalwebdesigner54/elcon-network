@@ -226,7 +226,7 @@ function TdsReport() {
           >
             Total Entries: {filteredRows.length}
           </div>
-          <div className="pagination" style={{ margin: 0 }}>
+          <div className="pagination">
             <button
               type="button"
               className="page-btn"

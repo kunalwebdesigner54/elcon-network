@@ -550,3 +550,12 @@ select option {
     grid-template-columns: 1fr;
   }
 }
+
+/* Global Pagination Styles */
+.table-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; flex-wrap: wrap; gap: 16px; }
+.total-entries { font-size: 14px; color: var(--text-muted, #a0aec0); font-weight: 600; }
+.pagination { display: flex; gap: 4px; flex-wrap: wrap; margin: 0; padding: 0; }
+.page-btn { background-color: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s ease; display: inline-flex; justify-content: center; align-items: center; min-width: 32px; height: 32px; }
+.page-btn:hover:not(:disabled) { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-btn.active-page, .page-btn.active { background-color: var(--primary, #00E5FF); color: #000; border-color: var(--primary, #00E5FF); font-weight: 700; box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }

@@ -185,44 +185,6 @@
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* Footer and Pagination */
-.table-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
-}
-
-.total-entries {
-  font-size: 14px;
-  color: #a0aec0;
-}
-
-.pagination {
-  display: flex;
-  gap: 4px;
-}
-
-.page-btn {
-  background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.page-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.page-btn.active-page {
-  background-color: #00e5ff;
-  color: #000;
-  border-color: #00e5ff;
-}
-
 @media (max-width: 1024px) {
   .stats-row {
     grid-template-columns: repeat(2, 1fr);

@@ -231,10 +231,6 @@
     grid-column: span 1;
   }
 
-  .admin-products-table-footer .pagination {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
 }
 
 

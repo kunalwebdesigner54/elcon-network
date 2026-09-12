@@ -173,7 +173,7 @@ function MyTeam() {
                 Total: {filteredRows.length} members
               </span>
               
-              <div className="pagination" style={{ margin: 0 }}>
+              <div className="pagination">
                 <button className="user-page-btn" onClick={() => setPage(1)} disabled={page === 1}>«</button>
               <button className="user-page-btn" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>‹</button>
               {[...Array(Math.min(totalPages, 7))].map((_, i) => {

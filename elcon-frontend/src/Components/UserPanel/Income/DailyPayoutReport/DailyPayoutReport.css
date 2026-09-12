@@ -52,27 +52,11 @@
   margin-top: 14px;
 }
 
-.page-btn {
-  min-width: 36px;
-  height: 36px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  background: var(--card-bg);
-  color: #6d7e93;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
 
-.page-btn:hover {
-  border-color: #00d4aa;
-}
 
-.page-btn.active {
-  background: linear-gradient(135deg, #00d4aa 0%, #6c63ff 100%);
-  color: #fff;
-  border-color: transparent;
-}
+
+
+
 
 @media (max-width: 840px) {
   .report-filters > * {

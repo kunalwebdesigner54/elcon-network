@@ -140,48 +140,15 @@
   margin-bottom: 16px;
 }
 
-.table-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
-  background: var(--card-bg);
-  border-radius: 12px;
-  font-size: 14px;
-  color: var(--dark);
-  flex-wrap: wrap;
-  gap: 10px;
-}
 
-.pagination {
-  display: flex;
-  gap: 4px;
-}
 
-.page-btn {
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--line-soft);
-  background: var(--card-bg);
-  color: var(--dark);
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
 
-.page-btn:hover {
-  border-color: var(--primary);
-  background: rgba(0, 212, 170, 0.1);
-  color: var(--primary);
-}
 
-.page-btn.active {
-  background: var(--gradient-primary);
-  color: #fff;
-  border-color: var(--primary);
-}
+
+
+
+
+
 
 .panel {
   background: var(--card-bg);
@@ -284,16 +251,9 @@
     font-size: 8px;
   }
 
-  .table-footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  
 
-  .pagination {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
+  
 
   .rank-title {
     font-size: 18px;
@@ -339,16 +299,9 @@
     margin-bottom: 16px;
   }
 
-  .table-footer {
-    font-size: 14px;
-    padding: 10px;
-  }
+  
 
-  .page-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
-  }
+  
 
   .rank-select {
     min-height: 32px;

@@ -144,7 +144,7 @@ function MyDirectReferral() {
             <span>
               Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, filteredRows.length)} of {filteredRows.length} entries
             </span>
-            <div className="pagination" style={{ display: 'flex', gap: '4px' }}>
+            <div className="pagination">
               <button 
                 className="page-btn" 
                 onClick={() => setPage(p => Math.max(1, p - 1))}

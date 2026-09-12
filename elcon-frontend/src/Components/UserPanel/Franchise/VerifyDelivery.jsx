@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { verifyDeliveryCode, confirmProductDelivery } from '../../../../api/managementService';
-import '../../Common/UserLayout.css';
+import { verifyDeliveryCode, confirmProductDelivery } from "../../../api/managementService";
+import "../Common/UserLayout.css";
 import './FranchiseStyles.css';
 
 function VerifyDelivery() {

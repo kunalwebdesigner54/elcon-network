@@ -275,7 +275,7 @@ function DatewiseIncome() {
             <i className="fa-solid fa-chart-pie" style={{ marginRight: '8px' }}></i>
             Total Entries : {adminDatewiseIncomeData.length}
           </div>
-          <div className="pagination" style={{ margin: 0, display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+          <div className="pagination">
             <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
             <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
             {[...Array(totalPages)].map((_, i) => {

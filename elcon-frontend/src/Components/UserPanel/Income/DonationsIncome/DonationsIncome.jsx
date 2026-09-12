@@ -142,7 +142,7 @@ function DonationsIncome() {
             <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
               Total: {filteredRows.length} requests
             </span>
-            <div className="pagination" style={{ display: 'flex', gap: '6px' }}>
+            <div className="pagination">
               <button type="button" className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
               <button type="button" className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
               
