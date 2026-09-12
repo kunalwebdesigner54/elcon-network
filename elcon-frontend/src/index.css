@@ -2,11 +2,11 @@
 
 :root {
 	/* New Premium Dark Fintech Theme (Figma Match) */
-	--primary: #8046FC; /* Purple */
-	--primary-dark: #6332C9;
-	--primary-light: #9B68FD;
+	--primary: #EAB308; /* Yellow from reference */
+	--primary-dark: #CA8A04;
+	--primary-light: #FACC15;
 	--secondary: #A855F7; /* Purple */
-	--accent: #8046FC; 
+	--accent: #EAB308; 
 	
 	/* Status Colors */
 	--success: #22C55E; 
@@ -472,8 +472,8 @@ h2,
 }
 
 .admin-root th, .user-root th {
-	background: rgba(0, 0, 0, 0.3) !important;
-	color: var(--primary-light) !important;
+	background: var(--primary) !important;
+	color: #000 !important;
 	font-weight: 600 !important;
 	text-transform: uppercase !important;
 	letter-spacing: 1px !important;

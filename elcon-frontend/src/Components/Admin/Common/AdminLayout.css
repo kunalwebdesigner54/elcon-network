@@ -42,7 +42,7 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--glass-border);
-  box-shadow: none;
+  box-shadow: none !important;
   transition: margin-left 0.3s ease, opacity 0.3s ease;
   overflow-y: auto;
   overflow-x: hidden;
@@ -150,7 +150,7 @@
 
 .sidebar-link:hover,
 .sidebar-sublink:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent;
   color: var(--primary);
   transform: translateX(3px);
 }
@@ -170,7 +170,7 @@
 }
 
 .sidebar-active {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent;
   color: var(--primary) !important;
   border-right: 0;
   border-left: 4px solid var(--primary);
@@ -180,7 +180,7 @@
   color: var(--primary) !important;
 }
 .sidebar-link.sidebar-active, .sidebar-sublink.sidebar-active {
-  background: rgba(255, 255, 255, 0.05); /* very subtle white bg */
+  background: transparent;
 }
 
 .admin-main {
@@ -270,7 +270,6 @@
   margin: 0;
   color: var(--text-main);
   letter-spacing: 0.5px;
-  display: none !important;
 }
 
 .topbar-center {
@@ -300,7 +299,7 @@
 
 .topbar-search-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.2);
+  box-shadow: none !important;
 }
 
 .topbar-search-icon {
@@ -410,13 +409,13 @@
   border: 1px solid var(--border-soft);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: none !important;
   transition: all 0.25s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
+  box-shadow: none !important;
 }
 
 .stat-head {
@@ -482,7 +481,7 @@
 .text-input:focus,
 .select-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.15);
+  box-shadow: none !important;
 }
 
 .btn-row {
@@ -510,7 +509,7 @@
 .btn-primary {
   background: var(--gradient-primary);
   color: #fff;
-  box-shadow: 0 8px 20px rgba(234, 179, 8, 0.25);
+  box-shadow: none !important;
 }
 
 .btn-secondary {
@@ -660,7 +659,7 @@
   background: var(--card-bg);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: none !important;
 }
 
 @media (max-width: 1280px) {
