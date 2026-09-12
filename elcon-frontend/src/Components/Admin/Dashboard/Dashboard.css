@@ -34,7 +34,7 @@
 }
 
 .admin-dashboard-breadcrumb-active {
-	color: #13bea8;
+	color: var(--primary);
 }
 
 .admin-dashboard-carousel-card {

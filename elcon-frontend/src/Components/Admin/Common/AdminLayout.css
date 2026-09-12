@@ -16,9 +16,9 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.03) 0%, transparent 40%),
-    radial-gradient(circle at 90% 30%, rgba(138, 43, 226, 0.03) 0%, transparent 40%),
-    radial-gradient(circle at 50% 80%, rgba(255, 51, 102, 0.03) 0%, transparent 40%);
+    radial-gradient(circle at 10% 20%, rgba(234, 179, 8, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 90% 30%, rgba(168, 85, 247, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(250, 204, 21, 0.03) 0%, transparent 40%);
   pointer-events: none;
   z-index: 0;
 }
@@ -134,7 +134,7 @@
 .sidebar-link,
 .sidebar-sublink {
   text-decoration: none;
-  color: #fff;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -171,7 +171,7 @@
 
 .sidebar-active {
   background: rgba(255, 255, 255, 0.05);
-  color: #ffffff !important;
+  color: var(--primary) !important;
   border-right: 0;
   border-left: 4px solid var(--primary);
   font-weight: 600;
@@ -256,7 +256,7 @@
 }
 
 .topbar-menu:hover, .topbar-back:hover {
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(234, 179, 8, 0.1);
   color: var(--primary);
 }
 
@@ -481,7 +481,7 @@
 .text-input:focus,
 .select-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.15);
+  box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.15);
 }
 
 .btn-row {
@@ -509,7 +509,7 @@
 .btn-primary {
   background: var(--gradient-primary);
   color: #fff;
-  box-shadow: 0 8px 20px rgba(0, 212, 170, 0.25);
+  box-shadow: 0 8px 20px rgba(234, 179, 8, 0.25);
 }
 
 .btn-secondary {
@@ -518,8 +518,8 @@
 }
 
 .btn-outline {
-  background: rgba(0, 212, 170, 0.1);
-  border: 1px solid rgba(0, 212, 170, 0.35);
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.35);
   color: var(--primary-dark);
 }
 
@@ -586,11 +586,11 @@
   border-radius: 5px;
 }
 .table-wrap::-webkit-scrollbar-thumb {
-  background: #17a2b8;
+  background: var(--primary);
   border-radius: 5px;
 }
 .table-wrap::-webkit-scrollbar-thumb:hover {
-  background: #138496;
+  background: var(--primary-dark);
 }
 
 .data-table {
@@ -617,12 +617,12 @@
   letter-spacing: 0.6px;
   color: #ffffff;
   text-align: left;
-  background: #17a2b8;
-  border-bottom: 2px solid #138496;
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--primary);
 }
 
 .data-table tbody tr:nth-child(odd) {
-  background: rgba(0, 212, 170, 0.03);
+  background: rgba(234, 179, 8, 0.03);
 }
 
 
