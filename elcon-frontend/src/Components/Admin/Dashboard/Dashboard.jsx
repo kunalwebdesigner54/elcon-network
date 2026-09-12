@@ -147,15 +147,29 @@ function Dashboard() {
 				</section>
 
 				<section className="admin-dashboard-stats-grid" aria-label="Admin dashboard metrics">
-					{stats.map((stat) => (
+					{stats.map((stat, index) => (
 						<article className="admin-dashboard-stat-card" key={stat.label}>
-							<div className="admin-dashboard-stat-label">{stat.label}</div>
-							<div className="admin-dashboard-stat-value">{stat.value}</div>
+							<div className="admin-dashboard-stat-content">
+								<div className="admin-dashboard-stat-value">{stat.value}</div>
+								<div className="admin-dashboard-stat-label">{stat.label}</div>
+							</div>
+							<div className="admin-dashboard-stat-icon-wrapper" style={{ 
+								background: 'rgba(234, 179, 8, 0.15)', 
+								borderRadius: '12px', 
+								padding: '12px', 
+								display: 'flex', 
+								alignItems: 'center', 
+								justifyContent: 'center',
+								color: 'var(--primary)',
+								border: '1px solid rgba(234, 179, 8, 0.3)'
+							}}>
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+									<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+								</svg>
+							</div>
 						</article>
 					))}
 				</section>
-
-				<div className="admin-dashboard-bottom-band" />
 			</div>
 		</div>
 	);
