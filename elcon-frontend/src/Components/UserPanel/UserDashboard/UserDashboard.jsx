@@ -4,17 +4,9 @@ import '../Common/UserLayout.css';
 import './UserDashboard.css';
 import { getUserDashboard, getTopEarners } from '../../../api/dashboardService';
 import { getNewsPopupList } from '../../../api/managementService';
-import dashboard1 from '../../../Assets/Pictures/dashbaord1.jpeg';
-import dashboard2 from '../../../Assets/Pictures/dashbaord2.jpeg';
-import dashboard3 from '../../../Assets/Pictures/dashbaord3.jpeg';
-import dashboard4 from '../../../Assets/Pictures/dashbaord4.jpeg';
-import dashboard5 from '../../../Assets/Pictures/dashbaord5.jpeg';
 import productPads from '../../../Assets/Pictures/pads.jpeg';
 import productAirpods from '../../../Assets/Pictures/airpods.jpeg';
 import { formatDate } from '../../../utils/dateFormatter';
-
-const bannerSlides = [dashboard1, dashboard2, dashboard3, dashboard4, dashboard5];
-
 const productImages = [
   { src: productPads, name: 'Elcon Anion Sanitary Pads' },
   { src: productAirpods, name: 'Wireless Airpods' }
@@ -22,21 +14,12 @@ const productImages = [
 
 function MemberDashboard() {
   const [activeTab, setActiveTab] = useState('top');
-  const [activeSlide, setActiveSlide] = useState(0);
   const [memberInfo, setMemberInfo] = useState(null);
   const [topEarners, setTopEarners] = useState([]);
   const [loadingTopEarners, setLoadingTopEarners] = useState(false);
   const [newsList, setNewsList] = useState([]);
   const [activePopup, setActivePopup] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % bannerSlides.length);
-    }, 3500);
-
-    return () => window.clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -139,43 +122,9 @@ function MemberDashboard() {
     { key: 'rewards', label: 'Rewards', title: 'Rewards' }
   ];
 
-  const goToPreviousSlide = () => {
-    setActiveSlide((current) => (current - 1 + bannerSlides.length) % bannerSlides.length);
-  };
-
-  const goToNextSlide = () => {
-    setActiveSlide((current) => (current + 1) % bannerSlides.length);
-  };
-
   return (
     <div className="user-dashboard-shell">
       <main className="user-dashboard1-member-dashboard-root">
-     
-
-       
-
-        <section className="user-dashboard-carousel-card" aria-label="Dashboard banner carousel">
-          <div className="user-dashboard-carousel-stage">
-            <button type="button" className="user-dashboard-carousel-nav user-dashboard-carousel-nav-left" onClick={goToPreviousSlide} aria-label="Previous banner">
-              ‹
-            </button>
-            <img src={bannerSlides[activeSlide]} alt={`Dashboard banner ${activeSlide + 1}`} className="user-dashboard-carousel-image" />
-            <button type="button" className="user-dashboard-carousel-nav user-dashboard-carousel-nav-right" onClick={goToNextSlide} aria-label="Next banner">
-              ›
-            </button>
-          </div>
-          <div className="user-dashboard-carousel-dots" aria-label="Banner navigation dots">
-            {bannerSlides.map((slide, index) => (
-              <button
-                key={slide}
-                type="button"
-                className={`user-dashboard-carousel-dot ${index === activeSlide ? 'is-active' : ''}`}
-                onClick={() => setActiveSlide(index)}
-                aria-label={`Show banner ${index + 1}`}
-              />
-            ))}
-          </div>
-        </section>
 
         {newsList.length > 0 && (
           <div className="user-dashboard-news-bar" role="status" aria-live="polite">

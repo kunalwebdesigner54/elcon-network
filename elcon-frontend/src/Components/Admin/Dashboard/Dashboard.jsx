@@ -3,13 +3,7 @@ import './Dashboard.css';
 import { getAdminFullDashboard } from '../../../api/dashboardService';
 import { getUser } from '../../../utils/auth';
 import { getProfile } from '../../../api/authService';
-import dashboard1 from '../../../Assets/Pictures/dashbaord1.jpeg';
-import dashboard2 from '../../../Assets/Pictures/dashbaord2.jpeg';
-import dashboard3 from '../../../Assets/Pictures/dashbaord3.jpeg';
-import dashboard4 from '../../../Assets/Pictures/dashbaord4.jpeg';
-import dashboard5 from '../../../Assets/Pictures/dashbaord5.jpeg';
 
-const bannerSlides = [dashboard1, dashboard2, dashboard3, dashboard4, dashboard5];
 
 const defaultAdminStats = [
 	{ label: 'Total Joining Turnover', value: '₹ 0' },
@@ -51,19 +45,12 @@ const defaultAdminStats = [
 ];
 
 function Dashboard() {
-	const [activeSlide, setActiveSlide] = useState(0);
 	const [stats, setStats] = useState(defaultAdminStats);
 	const user = getUser() || {};
 	const [adminName, setAdminName] = useState(user.name || (user.adminType === 'SUB_ADMIN' ? 'Sub Administrator' : 'Administrator'));
 	const [adminUserId, setAdminUserId] = useState(user.memberId || user.id || user._id || 'N/A');
 
-	useEffect(() => {
-		const timer = window.setInterval(() => {
-			setActiveSlide((current) => (current + 1) % bannerSlides.length);
-		}, 3500);
 
-		return () => window.clearInterval(timer);
-	}, []);
 
 	useEffect(() => {
 		let mounted = true;
@@ -96,41 +83,14 @@ function Dashboard() {
 		return () => (mounted = false);
 	}, []);
 
-	const goToPreviousSlide = () => {
-		setActiveSlide((current) => (current - 1 + bannerSlides.length) % bannerSlides.length);
-	};
 
-	const goToNextSlide = () => {
-		setActiveSlide((current) => (current + 1) % bannerSlides.length);
-	};
 
 	return (
 		<div className="admin-dashboard-shell">
 			<div className="admin-dashboard-root">
 
 
-				<section className="admin-dashboard-carousel-card" aria-label="Dashboard banner carousel">
-					<div className="admin-dashboard-carousel-stage">
-						<button type="button" className="admin-dashboard-carousel-nav admin-dashboard-carousel-nav-left" onClick={goToPreviousSlide} aria-label="Previous banner">
-							‹
-						</button>
-						<img src={bannerSlides[activeSlide]} alt={`Dashboard banner ${activeSlide + 1}`} className="admin-dashboard-carousel-image" />
-						<button type="button" className="admin-dashboard-carousel-nav admin-dashboard-carousel-nav-right" onClick={goToNextSlide} aria-label="Next banner">
-							›
-						</button>
-					</div>
-					<div className="admin-dashboard-carousel-dots" aria-label="Banner navigation dots">
-						{bannerSlides.map((slide, index) => (
-							<button
-								key={slide}
-								type="button"
-								className={`admin-dashboard-carousel-dot ${index === activeSlide ? 'is-active' : ''}`}
-								onClick={() => setActiveSlide(index)}
-								aria-label={`Show banner ${index + 1}`}
-							/>
-						))}
-					</div>
-				</section>
+
 
 				<div className="admin-dashboard-news-bar" role="status" aria-live="polite">
 					<span className="admin-dashboard-news-label"> NEWS</span>
