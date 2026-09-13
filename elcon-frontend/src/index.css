@@ -1,24 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-	/* New Premium Dark Fintech Theme (Figma Match) */
-	--primary: #8046FC; /* Purple */
+	/* Beast Mode Theme Palette */
+	--theme-purple: #8046FC;
+	--theme-dark-blue: #050409;
+	--theme-blue: #5093FB;
+	--theme-lime: #82C419;
+	--theme-periwinkle: #9580FF;
+
+	/* Mapped Theme Colors */
+	--primary: var(--theme-purple);
 	--primary-dark: #6332C9;
-	--primary-light: #9B68FD;
-	--secondary: #A855F7; /* Purple */
-	--accent: #8046FC; 
+	--primary-light: var(--theme-periwinkle);
+	--secondary: var(--theme-purple);
+	--accent: var(--theme-purple); 
 	
 	/* Status Colors */
-	--success: #22C55E; 
+	--success: var(--theme-lime); 
 	--warning: #F59E0B;
 	--danger: #EF4444;
-	--info: #3B82F6;
+	--info: var(--theme-blue);
 
 	/* Dark Backgrounds */
-	--bg-darkest: #13111C; /* Main app background */
-	--bg-dark: #13111C;
-	--bg-card: #1E1C2A; /* Card and sidebar background */
-	--bg-card-hover: #252233;
+	--bg-darkest: var(--theme-dark-blue); /* Main app background */
+	--bg-dark: var(--theme-dark-blue);
+	--bg-card: #090812; /* Slightly lighter than darkest for contrast */
+	--bg-card-hover: #13111C;
 	
 	/* Glassmorphism / Borders */
 	--glass-border: rgba(255, 255, 255, 0.05);
@@ -78,8 +85,8 @@ body {
 	margin: 0;
 	font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
 	font-size: 14px;
-	background: #0b192c;
-	color: var(--dark);
+	background: var(--theme-dark-blue);
+	color: var(--text-main);
 	line-height: 1.6;
 }
 
@@ -108,7 +115,7 @@ button,
 /* Base Select styling to fix white dropdown options on Windows */
 select {
     color-scheme: dark; 
-    background-color: var(--bg-dark);
+    background-color: var(--theme-dark-blue);
     color: var(--text-main);
     
     /* Custom Dropdown Arrow & Enforced Border Radius */
@@ -131,14 +138,14 @@ select option {
 .light-theme select,
 [data-theme="light"] select {
     color-scheme: light;
-    background-color: #fff;
+    background-color: var(--theme-dark-blue);
     color: #000;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") !important;
 }
 
 .light-theme select option,
 [data-theme="light"] select option {
-    background-color: #fff;
+    background-color: var(--theme-dark-blue);
     color: #000;
 }
 
@@ -324,7 +331,7 @@ select option {
 
 /* Premium Dark Theme Resets (Scoped to Dashboards) */
 .admin-root, .user-root {
-	background-color: var(--bg-darkest);
+	background-color: var(--theme-dark-blue);
 	color: var(--text-main);
 	min-height: 100vh;
 	font-family: 'Poppins', sans-serif;
@@ -391,7 +398,7 @@ select option {
 
 .public-root select option {
 	color: #1a1a2e;
-	background: #ffffff;
+	background: var(--theme-dark-blue);
 }
 
 /* Global Dashboard Buttons */

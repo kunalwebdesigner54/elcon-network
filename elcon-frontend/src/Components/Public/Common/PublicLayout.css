@@ -447,7 +447,7 @@
   --public-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
   --public-gradient-primary: linear-gradient(135deg, #0A37C4 0%, #3b6de8 100%);
   --public-gradient-secondary: linear-gradient(135deg, #ff6b6b 0%, #ffd166 100%);
-  background: #0b192c;
+  background: var(--theme-dark-blue);
   color: var(--public-text);
   position: relative;
   overflow: hidden;

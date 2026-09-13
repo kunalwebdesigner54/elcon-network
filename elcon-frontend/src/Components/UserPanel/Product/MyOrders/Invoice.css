@@ -27,7 +27,7 @@
 
 /* ========== Paper/Invoice Styling ========== */
 .invoice-paper {
-  background: white;
+  background: var(--theme-dark-blue);
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -333,7 +333,7 @@
 
 @media print {
   .invoice-container {
-    background: white;
+    background: var(--theme-dark-blue);
     padding: 0;
   }
 
@@ -351,7 +351,7 @@
   body {
     margin: 0;
     padding: 0;
-    background: white;
+    background: var(--theme-dark-blue);
   }
 
   * {

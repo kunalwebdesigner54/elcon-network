@@ -346,7 +346,7 @@
   padding: 6px 10px;
   border: 1px solid var(--glass-border);
   border-radius: 8px;
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   color: var(--text-main);
   font-size: 14px;
   cursor: pointer;
@@ -390,7 +390,7 @@
   width: 32px;
   height: 32px;
   border: 1px solid var(--glass-border);
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   color: var(--text-main);
   border-radius: 6px;
   cursor: pointer;

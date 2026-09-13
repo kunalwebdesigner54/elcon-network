@@ -91,7 +91,7 @@
   padding: 16px;
 }
 .mc-item-image {
-  background: #fff;
+  background: var(--theme-dark-blue);
   border-radius: 6px;
   padding: 4px;
   margin-right: 20px;
@@ -136,7 +136,7 @@
   background: rgba(255, 255, 255, 0.2);
 }
 .qty-val-v {
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   color: var(--text-main);
   font-weight: bold;
   padding: 4px 14px;
@@ -204,7 +204,7 @@
   padding: 8px;
   border-radius: 6px;
   border: 1px solid var(--glass-border-light);
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   color: var(--text-main);
 }
 .mc-coupon-input::placeholder {

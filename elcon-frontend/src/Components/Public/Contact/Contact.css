@@ -18,7 +18,7 @@
 }
 
 .contact-info-cards .step-card {
-  background: #0b192c !important;
+  background: var(--theme-dark-blue) !important;
 }
 
 /* Remove background image and overlay inherited from Home page */

@@ -660,7 +660,7 @@
 /* Print support */
 @media print {
   .buy-epin-container {
-    background: white;
+    background: var(--theme-dark-blue);
     padding: 0;
   }
   

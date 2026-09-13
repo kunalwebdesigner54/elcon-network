@@ -154,7 +154,7 @@
 .step-card {
   position: relative;
   z-index: 1;
-  background: #111827;
+  background: var(--theme-dark-blue);
   border-radius: 17px;
   width: 100%;
   height: 100%;

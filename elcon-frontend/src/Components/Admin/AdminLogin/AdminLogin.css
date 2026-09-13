@@ -21,7 +21,7 @@
 
 /* Main card */
 .admin-login-card {
-	background: white;
+	background: var(--theme-dark-blue);
 	border-radius: 12px;
 	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 	overflow: hidden;
@@ -141,7 +141,7 @@
 .admin-login-input:focus {
 	outline: none;
 	border-color: #667eea;
-	background-color: white;
+	background-color: var(--theme-dark-blue);
 	box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 

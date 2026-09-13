@@ -114,7 +114,7 @@
 }
 
 .kyc-modal-content {
-  background: #fff;
+  background: var(--theme-dark-blue);
   border-radius: 16px;
   width: 100%;
   max-width: 600px;

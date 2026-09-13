@@ -703,11 +703,11 @@
   .admin-add-product-panel {
     padding: 0;
     margin: 0;
-    background: white;
+    background: var(--theme-dark-blue);
   }
   
   .admin-add-product-card {
-    background: white;
+    background: var(--theme-dark-blue);
     box-shadow: none;
     padding: 0;
   }
@@ -724,7 +724,7 @@
   .admin-add-product-spec-row input,
   .admin-add-product-description {
     border: 1px solid var(--border-color);
-    background: white;
+    background: var(--theme-dark-blue);
     color: black;
   }
 }

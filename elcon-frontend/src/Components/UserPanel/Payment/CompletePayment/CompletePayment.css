@@ -1,6 +1,6 @@
 .complete-payment-wrapper {
   padding: 20px;
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   min-height: 100vh;
   border-radius: 12px;
 }
@@ -93,7 +93,7 @@
   justify-content: center;
   position: relative;
   flex-shrink: 0;
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   transition: var(--transition);
 }
 
@@ -327,7 +327,7 @@
   font-family: Arial, sans-serif;
   transition: var(--transition);
   box-sizing: border-box;
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   color: var(--text-main);
 }
 
@@ -569,7 +569,7 @@
 @media (max-width: 480px) {
   .complete-payment-wrapper {
     padding: 10px;
-    background: var(--bg-dark);
+    background: var(--theme-dark-blue);
     border-radius: 0;
   }
 

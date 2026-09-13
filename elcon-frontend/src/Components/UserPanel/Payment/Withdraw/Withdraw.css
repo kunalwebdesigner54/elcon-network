@@ -143,7 +143,7 @@
   font-size: 14px;
   transition: all 0.3s ease;
   box-sizing: border-box;
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   color: var(--text-main);
 }
 
@@ -183,7 +183,7 @@
 
 /* Withdrawal Summary */
 .withdrawal-summary {
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
@@ -256,7 +256,7 @@
   font-family: Arial, sans-serif;
   transition: all 0.3s ease;
   box-sizing: border-box;
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   color: var(--text-main);
 }
 

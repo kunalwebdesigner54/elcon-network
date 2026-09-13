@@ -8,7 +8,7 @@
 .welcome-letter-sheet {
   margin: 0 auto;
   max-width: 920px;
-  background: #ffffff;
+  background: var(--theme-dark-blue);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
@@ -237,7 +237,7 @@
   .welcome-letter-sheet {
     margin: 0 !important;
     padding: 0 !important;
-    background: #ffffff !important;
+    background: var(--theme-dark-blue) !important;
     box-shadow: none !important;
     border-radius: 0 !important;
   }

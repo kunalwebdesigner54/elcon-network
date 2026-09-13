@@ -72,7 +72,7 @@
   height: 38px;
   border-radius: 50%;
   border: 1px solid var(--glass-border);
-  background: var(--bg-dark);
+  background: var(--theme-dark-blue);
   color: var(--text-main);
   font-size: 30px;
   line-height: 1;

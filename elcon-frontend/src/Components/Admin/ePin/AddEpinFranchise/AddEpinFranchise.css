@@ -59,7 +59,7 @@
 
 .add-epin-qr-box {
   border-radius: 24px;
-  background: #ffffff; /* White background needed for QR code readability */
+  background: var(--theme-dark-blue); /* White background needed for QR code readability */
   padding: 16px;
   display: grid;
   place-items: center;
