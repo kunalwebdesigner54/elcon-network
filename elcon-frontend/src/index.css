@@ -264,15 +264,6 @@ select option {
 	}
 }
 
-h1,
-[class*='page-title'] {
-	display: none !important;
-}
-
-h2,
-[class*='section-title'] {
-	display: none !important;
-}
 
 @media (max-width: 768px) {
 	html,
