@@ -378,11 +378,9 @@ function AdminLayout() {
           </div>
 
           <div className="topbar-right">
-            <button className="topbar-icon-btn" aria-label="Messages"><i className="fa-regular fa-envelope"></i></button>
-            <button className="topbar-icon-btn" aria-label="Notifications">
-               <i className="fa-regular fa-bell"></i>
-               <span className="notification-dot"></span>
-            </button>
+            <span className="topbar-user-name" style={{ marginRight: '16px', fontWeight: '600', fontSize: '15px' }}>
+              Welcome, {adminName}
+            </span>
             <div className="topbar-avatar" style={{ position: 'relative' }}>
               <button 
                 type="button" 
