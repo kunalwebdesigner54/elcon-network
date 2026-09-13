@@ -368,7 +368,6 @@ function AdminLayout() {
                 <i className="fa-solid fa-bars"></i>
               </button>
             )}
-            <h2 className="topbar-page-title">{breadcrumb[breadcrumb.length - 1] || 'Dashboard'}</h2>
           </div>
           
           <div className="topbar-center">
