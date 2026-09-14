@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Donation = require('../models/Donation');
+const SiteSetting = require('../models/SiteSetting');
 const { createWalletTransaction } = require('../utils/walletHelper');
 
 const DONATION_AMOUNTS = Donation.DONATION_AMOUNTS;
@@ -143,10 +144,21 @@ exports.upgradeMember = async (req, res) => {
     }, { new: true });
 
     if (targetLevel === 1 && !user.receivedWelcomeCoupon) {
-      await User.findByIdAndUpdate(user._id, {
-        $inc: { couponWalletBalance: 1000 },
-        $set: { receivedWelcomeCoupon: true }
-      });
+      let couponAmount = 0;
+      const globalSettingsDoc = await SiteSetting.findOne({ settingKey: 'global-settings' });
+      if (globalSettingsDoc && globalSettingsDoc.data && globalSettingsDoc.data.couponDistributionEnabled) {
+        couponAmount = Number(globalSettingsDoc.data.defaultCouponAmount) || 0;
+      }
+      if (couponAmount > 0) {
+        await User.findByIdAndUpdate(user._id, {
+          $inc: { couponWalletBalance: couponAmount },
+          $set: { receivedWelcomeCoupon: true }
+        });
+      } else {
+        await User.findByIdAndUpdate(user._id, {
+          $set: { receivedWelcomeCoupon: true }
+        });
+      }
     }
 
     await createWalletTransaction({
@@ -307,9 +319,23 @@ exports.updateDonationStatus = async (req, res) => {
       const receiver = await User.findOne({ memberId: donation.toMemberId });
 
       if (payer && payer.unlockLevel < donation.level) {
+        let couponUpdate = {};
+        if (donation.level === 1 && !payer.receivedWelcomeCoupon) {
+          let couponAmount = 0;
+          const globalSettingsDoc = await SiteSetting.findOne({ settingKey: 'global-settings' });
+          if (globalSettingsDoc && globalSettingsDoc.data && globalSettingsDoc.data.couponDistributionEnabled) {
+            couponAmount = Number(globalSettingsDoc.data.defaultCouponAmount) || 0;
+          }
+          if (couponAmount > 0) {
+            couponUpdate = { $inc: { couponWalletBalance: couponAmount }, $set: { receivedWelcomeCoupon: true } };
+          } else {
+            couponUpdate = { $set: { receivedWelcomeCoupon: true } };
+          }
+        }
+        
         await User.findByIdAndUpdate(payer._id, {
-          $set: { unlockLevel: donation.level },
-          ...(donation.level === 1 && !payer.receivedWelcomeCoupon ? { $inc: { couponWalletBalance: 1000 }, $set: { receivedWelcomeCoupon: true } } : {})
+          $set: { unlockLevel: donation.level, ...couponUpdate.$set },
+          ...(couponUpdate.$inc ? { $inc: couponUpdate.$inc } : {})
         });
       }
       if (receiver) {
