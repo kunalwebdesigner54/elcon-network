@@ -4,13 +4,7 @@ import '../Common/UserLayout.css';
 import './UserDashboard.css';
 import { getUserDashboard, getTopEarners } from '../../../api/dashboardService';
 import { getNewsPopupList } from '../../../api/managementService';
-import productPads from '../../../Assets/Pictures/pads.jpeg';
-import productAirpods from '../../../Assets/Pictures/airpods.jpeg';
 import { formatDate } from '../../../utils/dateFormatter';
-const productImages = [
-  { src: productPads, name: 'Elcon Anion Sanitary Pads' },
-  { src: productAirpods, name: 'Wireless Airpods' }
-];
 
 function MemberDashboard() {
   const [activeTab, setActiveTab] = useState('top');
@@ -269,17 +263,7 @@ function MemberDashboard() {
           </div>
         </section>
 
-        <section className="user-dashboard1-member-dashboard-products-section">
-          <div className="user-dashboard1-member-dashboard-products-title">📦 Featured Products</div>
-          <div className="user-dashboard1-member-dashboard-products-grid">
-            {productImages.map((img, idx) => (
-              <div className="user-dashboard1-member-dashboard-product-card" key={idx}>
-                <img src={img.src} alt={img.name} />
-                <div className="user-dashboard1-member-dashboard-product-name">{img.name}</div>
-              </div>
-            ))}
-          </div>
-        </section>
+
 
         <div className="user-dashboard-bottom-spacer" />
       </main>
