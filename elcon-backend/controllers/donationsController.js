@@ -338,32 +338,9 @@ exports.updateDonationStatus = async (req, res) => {
           ...(couponUpdate.$inc ? { $inc: couponUpdate.$inc } : {})
         });
       }
-      if (receiver) {
-        await User.findByIdAndUpdate(receiver._id, {
-          $inc: { walletBalance: donation.amount }
-        }, { new: true });
-
-        await createWalletTransaction({
-          memberId: receiver.memberId,
-          description: `DONATION CREDIT - ${donation.donationId}`,
-          credit: donation.amount,
-        });
-      }
-
-      if (payer && !donation.walletDebited) {
-        const updatedPayer = await User.findByIdAndUpdate(payer._id, {
-          $inc: { walletBalance: -donation.amount }
-        }, { new: true }).select('memberId');
-
-        if (updatedPayer) {
-          await createWalletTransaction({
-            memberId: updatedPayer.memberId,
-            description: `DONATION DEBIT - ${donation.donationId}`,
-            debit: donation.amount,
-          });
-          donation.walletDebited = true;
-        }
-      }
+      // Removed virtual wallet debit/credit for P2P donations
+      // since the payment is directly transferred to the receiver's bank/UPI.
+      // We only update the unlock level and coupon above.
     }
 
     donation.status = status;
