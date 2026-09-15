@@ -1,0 +1,117 @@
+/* Services Section */
+.home-services-section {
+  padding: 100px 0;
+  background: linear-gradient(to bottom, #ffffff, #f7f7fa); /* Subtle gradient like reference */
+  position: relative;
+}
+
+.home-services-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 80px;
+}
+
+.home-services-header h2 {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--public-text, #1e293b);
+  margin: 0 0 20px;
+  text-transform: none;
+}
+
+.home-services-header p {
+  font-size: 16px;
+  color: var(--public-muted, #64748b);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.home-services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 50px 40px; /* larger vertical gap to accommodate overlapping icon */
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.service-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 30px 40px 40px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* soft shadow */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.service-icon-wrap {
+  position: absolute;
+  top: -25px; /* Overlaps top edge */
+  left: 40px; /* Align with padding */
+  width: 50px;
+  height: 50px;
+  background: #6c5ce7; /* Distinct purple from reference */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+}
+
+.service-icon-wrap i {
+  color: #fff;
+  font-size: 20px;
+}
+
+.service-card-content {
+  margin-top: 15px; /* Space from top edge for icon overlap */
+}
+
+.service-card-content h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--public-text, #1e293b);
+  margin: 0 0 15px;
+}
+
+.service-card-content p {
+  font-size: 15px;
+  color: var(--public-muted, #64748b);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .home-services-grid {
+    gap: 40px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-services-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    gap: 50px;
+  }
+  
+  .home-services-header h2 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-card {
+    padding: 30px 25px 35px;
+  }
+  
+  .service-icon-wrap {
+    left: 25px;
+  }
+}

@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import './Home.css';
 import ParticleSwarm from './ParticleSwarm';
 import GridGallery from './GridGallery';
+import Services from './Services';
 
 function Home() {
   const bannerRef = useRef(null);
@@ -169,6 +170,9 @@ function Home() {
           <GridGallery />
         </div>
       </section>
+
+      {/* Services Section */}
+      <Services />
 
     </div>
   );
