@@ -14,6 +14,7 @@
   background: rgba(0, 0, 0, 0.6); /* Dark overlay to make text pop */
   z-index: 5;
   pointer-events: none;
+  display: none; /* Removed because it's too dark */
 }
 
 .home-banner-inner {
