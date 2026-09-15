@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-const LINK_DISTANCE = 165;
+const LINK_DISTANCE = 145;
+const POINTER_RADIUS = 280;
 
 const createParticles = (width, height) => {
-  const count = Math.max(70, Math.min(120, Math.round((width * height) / 12500)));
+  const count = Math.max(180, Math.min(240, Math.round((width * height) / 6500)));
 
   return Array.from({ length: count }, () => ({
     x: Math.random() * width,
@@ -65,8 +66,8 @@ export default function ParticleSwarm() {
 
           if (pointer.active) {
             const distanceToPointer = Math.hypot(pointer.x - particle.x, pointer.y - particle.y);
-            if (distanceToPointer < 220) {
-              const pullStrength = (1 - distanceToPointer / 220) * 0.0022;
+            if (distanceToPointer < POINTER_RADIUS) {
+              const pullStrength = (1 - distanceToPointer / POINTER_RADIUS) * 0.0035;
               particle.vx += (pointer.x - particle.x) * pullStrength;
               particle.vy += (pointer.y - particle.y) * pullStrength;
             }
@@ -91,8 +92,8 @@ export default function ParticleSwarm() {
           if (distance >= LINK_DISTANCE) continue;
 
           const nearPointer = pointer.active
-            && (Math.hypot(a.x - pointer.x, a.y - pointer.y) < 220
-              || Math.hypot(b.x - pointer.x, b.y - pointer.y) < 220);
+            && (Math.hypot(a.x - pointer.x, a.y - pointer.y) < POINTER_RADIUS
+              || Math.hypot(b.x - pointer.x, b.y - pointer.y) < POINTER_RADIUS);
           const opacity = (1 - distance / LINK_DISTANCE) * (nearPointer ? 0.95 : 0.72);
           context.beginPath();
           context.moveTo(a.x, a.y);
@@ -103,18 +104,41 @@ export default function ParticleSwarm() {
         }
       }
 
+      if (pointer.active) {
+        const glow = context.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, POINTER_RADIUS);
+        glow.addColorStop(0, 'rgba(196, 181, 253, 0.24)');
+        glow.addColorStop(0.45, 'rgba(147, 197, 253, 0.1)');
+        glow.addColorStop(1, 'rgba(147, 197, 253, 0)');
+        context.beginPath();
+        context.arc(pointer.x, pointer.y, POINTER_RADIUS, 0, Math.PI * 2);
+        context.fillStyle = glow;
+        context.fill();
+      }
+
       particles.forEach((particle, index) => {
         const color = index % 3 === 0 ? '147, 197, 253' : '255, 255, 255';
-        const closeToPointer = pointer.active && Math.hypot(particle.x - pointer.x, particle.y - pointer.y) < 220;
+        const distanceToPointer = pointer.active ? Math.hypot(particle.x - pointer.x, particle.y - pointer.y) : Infinity;
+        const closeToPointer = distanceToPointer < POINTER_RADIUS;
+
+        if (closeToPointer) {
+          const opacity = (1 - distanceToPointer / POINTER_RADIUS) * 0.82;
+          context.beginPath();
+          context.moveTo(particle.x, particle.y);
+          context.lineTo(pointer.x, pointer.y);
+          context.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+          context.lineWidth = 1.15;
+          context.stroke();
+        }
+
         context.beginPath();
-        context.arc(particle.x, particle.y, particle.radius + (closeToPointer ? 1.15 : 0), 0, Math.PI * 2);
+        context.arc(particle.x, particle.y, particle.radius + (closeToPointer ? 1.7 : 0), 0, Math.PI * 2);
         context.fillStyle = `rgba(${color}, ${closeToPointer ? 1 : particle.opacity})`;
         context.fill();
       });
 
       if (pointer.active) {
         context.beginPath();
-        context.arc(pointer.x, pointer.y, 3.5, 0, Math.PI * 2);
+        context.arc(pointer.x, pointer.y, 5, 0, Math.PI * 2);
         context.fillStyle = 'rgba(255, 255, 255, 0.95)';
         context.fill();
       }
@@ -139,12 +163,14 @@ export default function ParticleSwarm() {
     resize();
     setMotion();
     window.addEventListener('pointermove', trackPointer);
+    window.addEventListener('mousemove', trackPointer);
     reduceMotion.addEventListener('change', setMotion);
 
     return () => {
       window.cancelAnimationFrame(frameId);
       observer.disconnect();
       window.removeEventListener('pointermove', trackPointer);
+      window.removeEventListener('mousemove', trackPointer);
       reduceMotion.removeEventListener('change', setMotion);
     };
   }, []);
