@@ -4,8 +4,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  /* Add a default image in case particles are slow to load */
-  background: url('/banner-img.png') center/cover no-repeat, #232536; 
+  background: var(--public-bg);
 }
 
 .home-banner::after {
