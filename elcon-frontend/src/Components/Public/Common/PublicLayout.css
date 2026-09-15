@@ -43,32 +43,6 @@
 	flex-wrap: wrap;
 }
 
-.public-header {
-	background: transparent;
-	border: none;
-	position: fixed;
-	width: 100%;
-	top: 0;
-	z-index: 40;
-	transition: background 0.3s ease;
-}
-
-.public-header.scrolled {
-	background: #ffffff;
-	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-}
-
-.public-header.scrolled .public-logo-text,
-.public-header.scrolled .public-nav-link {
-	color: var(--public-text) !important;
-}
-
-.public-header-inner {
-	min-height: 78px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
 
 .public-nav {
 	display: flex;

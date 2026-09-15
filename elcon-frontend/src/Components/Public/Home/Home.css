@@ -267,6 +267,8 @@
 .home-banner-slider-wrap .slick-slider,
 .home-banner-slider-wrap .slick-list,
 .home-banner-slider-wrap .slick-track,
+.home-banner-slider-wrap .slick-slide,
+.home-banner-slider-wrap .slick-slide > div,
 .home-banner-slide-item {
   height: 100%;
 }
@@ -286,15 +288,16 @@
   height: 50px;
 }
 .home-banner-slider-wrap .slick-prev {
-  left: 20px;
+  left: 30px;
 }
 .home-banner-slider-wrap .slick-next {
-  right: 20px;
+  right: 30px;
 }
 .home-banner-slider-wrap .slick-prev:before,
 .home-banner-slider-wrap .slick-next:before {
   font-size: 40px;
-  opacity: 0.7;
+  opacity: 1;
+  color: #ffffff;
 }
 
 .home-banner-overlay {
