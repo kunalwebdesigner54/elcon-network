@@ -149,6 +149,10 @@ import DeliveredOrders from './Components/Admin/ProductOrder/DeliveredOrders/Del
 import ReturnedOrders from './Components/Admin/ProductOrder/ReturnedOrders/ReturnedOrders';
 import CancelledOrders from './Components/Admin/ProductOrder/CancelledOrders/CancelledOrders';
 import useGlobalTableDrag from './hooks/useGlobalTableDrag';
+import AwardsRewardsSetting from './Components/Admin/AwardsRewards/AwardsRewardsSetting';
+import LuckyDrawSetting from './Components/Admin/AwardsRewards/LuckyDrawSetting';
+import RewardsQualifiers from './Components/Common/RewardsQualifiers';
+import LuckyDrawWinners from './Components/Common/LuckyDrawWinners';
 
 function App() {
   useEffect(() => {
@@ -283,6 +287,8 @@ function App() {
 
           <Route path="ticket-support" element={<CreateTicket />} />
           <Route path="news-events" element={<UserBlankPage />} />
+          <Route path="awards-rewards/qualifiers" element={<RewardsQualifiers />} />
+          <Route path="awards-rewards/lucky-draw-winners" element={<LuckyDrawWinners />} />
           <Route path="rank/my-rank" element={<UserMyRank />} />
           <Route path="log-out" element={<UserSignOut />} />
 
@@ -403,6 +409,11 @@ function App() {
 
           <Route path="news-popup/add-new" element={<NewsAdd />} />
           <Route path="news-popup/list-all" element={<NewsList />} />
+
+          <Route path="awards-rewards/setting" element={<AwardsRewardsSetting />} />
+          <Route path="awards-rewards/lucky-draw" element={<LuckyDrawSetting />} />
+          <Route path="awards-rewards/qualifiers" element={<RewardsQualifiers />} />
+          <Route path="awards-rewards/lucky-draw-winners" element={<LuckyDrawWinners />} />
 
           <Route path="support/support-section" element={<AdminBlankPage />} />
           <Route path="support/support-tickets" element={<TicketHistory />} />

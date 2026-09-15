@@ -118,6 +118,14 @@ const menuItems = [
     { key: 'discountWalletStatement', label: 'Discount Wallet Statement', to: '/user/discount-wallet-statement' },
   { key: 'ticketSupport', label: 'Ticket Support', to: '/user/ticket-support' },
   { key: 'newsEvents', label: 'News & Events', to: '/user/news-events' },
+  {
+    key: 'awardsRewards',
+    label: 'Awards & Rewards',
+    children: [
+      { label: 'Rewards Qualifiers', to: '/user/awards-rewards/qualifiers' },
+      { label: 'Lucky Draw Winners', to: '/user/awards-rewards/lucky-draw-winners' }
+    ]
+  },
   { key: 'rank', label: 'My Rank', to: '/user/rank/my-rank' },
   { key: 'logout', label: 'Log Out', to: '/user/log-out' }
 ];

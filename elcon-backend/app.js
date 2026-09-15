@@ -22,6 +22,8 @@ const adminControlsRoutes = require('./routes/adminControls');
 const categoryRoutes = require('./routes/categories');
 const subAdminRoutes = require('./routes/subadmins');
 const adminProfileRoutes = require('./routes/adminProfile');
+const rewardsRoutes = require('./routes/rewards');
+const luckyDrawRoutes = require('./routes/luckyDraw');
 
 const app = express();
 
@@ -66,6 +68,8 @@ app.use('/api/admin-controls', adminControlsRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/subadmins', subAdminRoutes);
 app.use('/api/admin-profile', adminProfileRoutes);
+app.use('/api/rewards', rewardsRoutes);
+app.use('/api/luckydraw', luckyDrawRoutes);
 app.use('/api', productRoutes);
 
 // Health check

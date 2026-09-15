@@ -1,0 +1,140 @@
+.awards-rewards-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.awards-rewards-card {
+  background: var(--card-bg, #0B1120);
+  border: 1px solid var(--border-color, #1F2937);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.awards-rewards-title {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+.form-section-header {
+  background: #00B4D8;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-weight: 600;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  margin-top: 16px;
+  text-transform: uppercase;
+}
+
+.ar-form-group {
+  margin-bottom: 16px;
+}
+
+.ar-form-label {
+  display: block;
+  color: #a0aec0;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.ar-form-input {
+  width: 100%;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  color: #1a202c;
+  font-size: 0.95rem;
+}
+
+.ar-form-input:focus {
+  outline: none;
+  border-color: #00B4D8;
+}
+
+.ar-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.ar-col {
+  flex: 1;
+}
+
+.ar-file-upload {
+  display: flex;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.ar-file-btn {
+  background: #718096;
+  color: #fff;
+  padding: 12px 16px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.ar-file-name {
+  padding: 12px;
+  color: #4a5568;
+  flex: 1;
+}
+
+.ar-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #FF0080 0%, #00B4D8 50%, #9D4EDD 100%);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 24px;
+  text-transform: uppercase;
+}
+
+.ar-table-title {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 40px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.ar-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #0B1120;
+}
+
+.ar-table th {
+  background: #00B4D8;
+  color: #fff;
+  padding: 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #1F2937;
+}
+
+.ar-table td {
+  padding: 12px;
+  text-align: center;
+  color: #e2e8f0;
+  border: 1px solid #1F2937;
+  font-size: 0.9rem;
+}

@@ -155,6 +155,17 @@ const menuItems = [
     ]
   },
   {
+    key: 'awardsRewards',
+    label: 'Awards & Rewards',
+    icon: 'fa-solid fa-trophy',
+    children: [
+      { label: 'Award & Reward Setting', to: '/awards-rewards/setting' },
+      { label: 'Lucky Draw Setting', to: '/awards-rewards/lucky-draw' },
+      { label: 'Rewards Qualifiers', to: '/awards-rewards/qualifiers' },
+      { label: 'Lucky Draw Winners', to: '/awards-rewards/lucky-draw-winners' }
+    ]
+  },
+  {
     key: 'support',
     label: 'Support',
     icon: 'fa-solid fa-headset',
@@ -234,6 +245,7 @@ function AdminLayout() {
           'settings': 'SUPER_ADMIN_ONLY', // Sub-admins usually shouldn't access settings, but let's say 'user_management'
           'coupon': 'wallet_management',
           'newsPopup': 'product_management',
+          'awardsRewards': 'product_management',
           'support': 'support',
           'rank': 'reports'
         };
