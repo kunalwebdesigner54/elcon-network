@@ -52,17 +52,17 @@ const ParticleSwarm = () => {
         color: "#ffffff",
         distance: 150,
         enable: true,
-        opacity: 0.3,
-        width: 1,
+        opacity: 0.6,
+        width: 1.5,
       },
       move: {
         direction: "none",
         enable: true,
         outModes: {
-          default: "out",
+          default: "bounce",
         },
         random: false,
-        speed: 1,
+        speed: 2.5,
         straight: false,
       },
       number: {
@@ -70,7 +70,7 @@ const ParticleSwarm = () => {
           enable: true,
           area: 800,
         },
-        value: 60,
+        value: 100,
       },
       opacity: {
         value: 0.7,
@@ -79,7 +79,7 @@ const ParticleSwarm = () => {
         type: "circle",
       },
       size: {
-        value: { min: 1.5, max: 2.5 },
+        value: { min: 2, max: 4 },
       },
     },
     detectRetina: true,
