@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-
-let engineInitialized = false;
+let enginePromise = null;
 
 const ParticleSwarm = () => {
   const [init, setInit] = useState(false);
 
   useEffect(() => {
-    if (engineInitialized) {
-      setInit(true);
-      return;
+    if (!enginePromise) {
+      enginePromise = initParticlesEngine(async (engine) => {
+        await loadSlim(engine);
+      });
     }
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      engineInitialized = true;
+
+    enginePromise.then(() => {
       setInit(true);
+    }).catch((err) => {
+      console.error("Failed to init tsparticles", err);
     });
   }, []);
 
