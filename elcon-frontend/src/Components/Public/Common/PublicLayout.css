@@ -223,7 +223,7 @@
 }
 
 .public-footer {
-	margin-top: 64px;
+	margin-top: 54px;
 	background: var(--darker);
 	border-top: 1px solid rgba(17, 17, 17, 0.06);
 }
@@ -231,8 +231,8 @@
 .public-footer-grid {
 	display: grid;
 	grid-template-columns: 1.4fr 1fr 1fr 1fr;
-	gap: 28px;
-	padding: 48px 0 36px;
+	gap: 24px;
+	padding: 41px 0 31px;
 }
 
 .public-footer h4 {
@@ -256,7 +256,7 @@
 
 .public-footer-link {
 	display: block;
-	padding: 6px 0;
+	padding: 5px 0;
 	color: var(--text-muted);
 	font-size: 14px;
 }
@@ -270,7 +270,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
-	margin-top: 16px;
+	margin-top: 14px;
 }
 
 .public-footer-apps span {
@@ -288,7 +288,7 @@
 }
 
 .public-copyright {
-	padding: 16px 0 26px;
+	padding: 14px 0 22px;
 	border-top: 1px solid rgba(17, 17, 17, 0.06);
 	text-align: center;
 	font-size: 14px;
@@ -743,14 +743,14 @@ main,
   background: #0a1628;
   color: #fff;
   margin: 0;
-  padding: 70px 0 40px;
+  padding: 59px 0 34px;
 }
 
 .public-footer-grid {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 34px;
 }
 
 .public-footer-grid > div:nth-child(1) {
