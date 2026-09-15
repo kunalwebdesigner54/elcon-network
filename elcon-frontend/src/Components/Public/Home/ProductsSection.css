@@ -1,0 +1,123 @@
+/* Products Section */
+.home-products-section {
+  padding: 100px 0;
+  background: #ffffff;
+  position: relative;
+}
+
+.home-products-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+}
+
+.home-products-header h2 {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--public-text, #1e293b);
+  margin: 0 0 20px;
+  text-transform: none;
+}
+
+.home-products-header p {
+  font-size: 16px;
+  color: var(--public-muted, #64748b);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Slider Wrapper */
+.products-slider-wrapper {
+  position: relative;
+  padding: 0 40px; /* Space for arrows */
+}
+
+/* Slider Custom Arrows */
+.product-slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px;
+  height: 45px;
+  background: #6c5ce7; /* Distinct purple from reference */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.product-slider-arrow:hover {
+  background: #5a4bcf;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.product-slider-prev {
+  left: -20px;
+}
+
+.product-slider-next {
+  right: -20px;
+}
+
+/* Slide Items */
+.product-slide-item {
+  padding: 15px; /* Spacing between cards */
+}
+
+.product-card {
+  background: #f8f9fa; /* Slight off-white to contrast if needed, but screenshot shows white body with light shadow */
+  background: #ffffff;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  border-radius: 0px; /* Reference seems to have sharp or very slightly rounded edges */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-img-wrap img {
+  transform: scale(1.05);
+}
+
+.product-card-body {
+  padding: 25px 20px;
+  text-align: center;
+  background: #fdfdfd;
+}
+
+.product-card-body h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--public-text, #1e293b);
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .products-slider-wrapper {
+    padding: 0 20px;
+  }
+  .product-slider-prev {
+    left: 0;
+  }
+  .product-slider-next {
+    right: 0;
+  }
+}

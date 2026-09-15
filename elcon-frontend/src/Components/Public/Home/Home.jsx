@@ -6,6 +6,7 @@ import './Home.css';
 import ParticleSwarm from './ParticleSwarm';
 import GridGallery from './GridGallery';
 import Services from './Services';
+import ProductsSection from './ProductsSection';
 
 function Home() {
   const bannerRef = useRef(null);
@@ -173,6 +174,9 @@ function Home() {
 
       {/* Services Section */}
       <Services />
+
+      {/* Products Section */}
+      <ProductsSection />
 
     </div>
   );
