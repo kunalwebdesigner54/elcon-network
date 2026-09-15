@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import './AwardsRewardsSetting.css'; // Reusing the same CSS
 
 const LuckyDrawSetting = () => {
@@ -41,14 +41,14 @@ const LuckyDrawSetting = () => {
         { withCredentials: true }
       );
       if (res.data.success) {
-        toast.success('Lucky Draw Winner added successfully');
+        Swal.fire('Success', 'Lucky Draw Winner added successfully', 'success');
         setFormData({
           serialNo: '', memberId: '', memberName: '', drawDate: '', rewardName: '', rewardImage: '', transactionPassword: ''
         });
         setFileName('');
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to add winner');
+      Swal.fire('Error', error.response?.data?.message || 'Failed to add winner', 'error');
     }
   };
 
