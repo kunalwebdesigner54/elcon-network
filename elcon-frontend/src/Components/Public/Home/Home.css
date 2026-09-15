@@ -261,7 +261,6 @@
 .home-banner-slider-wrap {
   position: absolute;
   inset: 0;
-  z-index: 1;
 }
 
 .home-banner-slider-wrap .slick-slider,
@@ -300,7 +299,7 @@
   font-weight: 900 !important;
   font-size: 40px !important;
   opacity: 1 !important;
-  color: #ffffff !important;
+  color: #FF9A3C !important;
   cursor: pointer;
 }
 .home-banner-slider-wrap .slick-prev:before {
@@ -315,12 +314,14 @@
   inset: 0;
   background: rgba(10, 22, 40, 0.4); /* Lighter overlay */
   z-index: 2;
+  pointer-events: none;
 }
 
 .home-banner-particles-wrap {
   position: absolute;
   inset: 0;
   z-index: 3;
+  pointer-events: none;
 }
 
 .home-banner-inner {
