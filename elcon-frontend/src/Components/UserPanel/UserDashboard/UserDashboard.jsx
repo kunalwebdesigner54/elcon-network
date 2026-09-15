@@ -120,16 +120,16 @@ function MemberDashboard() {
     <div className="user-dashboard-shell">
       <main className="user-dashboard1-member-dashboard-root">
 
-        {newsList.length > 0 && (
-          <div className="user-dashboard-news-bar" role="status" aria-live="polite">
-            <span className="user-dashboard-news-label"> NEWS</span>
-            <div className="user-dashboard-news-track">
-              <div className="user-dashboard-news-marquee">
-                {newsList.map(n => n.title + (n.description ? ` - ${n.description}` : '')).join('  |  ')}
-              </div>
+        <div className="user-dashboard-news-bar" role="status" aria-live="polite">
+          <span className="user-dashboard-news-label"> NEWS</span>
+          <div className="user-dashboard-news-track">
+            <div className="user-dashboard-news-marquee">
+              {newsList.length > 0 
+                ? newsList.map(n => n.title + (n.description ? ` - ${n.description}` : '')).join('  |  ') 
+                : 'KYC is mandatory! Complete your KYC to receive payouts.'}
             </div>
           </div>
-        )}
+        </div>
 
         {memberInfo?.joiningPackageDeliveryStatus === 'Pending' && memberInfo?.joiningPackageDeliveryCode && (
           <div style={{ background: '#fff3cd', border: '1px solid #ffeeba', color: '#856404', padding: '15px 20px', borderRadius: '8px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
