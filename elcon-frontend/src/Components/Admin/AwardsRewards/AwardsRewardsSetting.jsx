@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import './AwardsRewardsSetting.css';
 
 const AwardsRewardsSetting = () => {
@@ -57,7 +57,7 @@ const AwardsRewardsSetting = () => {
         { withCredentials: true }
       );
       if (res.data.success) {
-        toast.success('Reward Contest created successfully');
+        Swal.fire('Success', 'Reward Contest created successfully', 'success');
         setFormData({
           startDate: '', endDate: '', targetDirects: '', targetUpgradeLevel: '', rewardName: '', popupImage: '', transactionPassword: ''
         });
@@ -65,7 +65,7 @@ const AwardsRewardsSetting = () => {
         fetchActiveContest();
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to create contest');
+      Swal.fire('Error', error.response?.data?.message || 'Failed to create contest', 'error');
     }
   };
 
