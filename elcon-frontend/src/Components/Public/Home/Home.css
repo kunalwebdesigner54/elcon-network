@@ -296,17 +296,17 @@
 }
 .home-banner-slider-wrap .slick-prev:before,
 .home-banner-slider-wrap .slick-next:before {
-  font-family: "Font Awesome 6 Free", sans-serif;
-  font-weight: 900;
-  font-size: 40px;
-  opacity: 1;
-  color: #e8851f; /* Orange color matching registration button */
+  font-family: "Font Awesome 6 Free", sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 40px !important;
+  opacity: 1 !important;
+  color: #e8851f !important;
 }
 .home-banner-slider-wrap .slick-prev:before {
-  content: "\f060";
+  content: "\f060" !important;
 }
 .home-banner-slider-wrap .slick-next:before {
-  content: "\f061";
+  content: "\f061" !important;
 }
 
 .home-banner-overlay {
