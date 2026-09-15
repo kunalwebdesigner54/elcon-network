@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 
+let engineInitialized = false;
+
 const ParticleSwarm = () => {
   const [init, setInit] = useState(false);
 
   useEffect(() => {
+    if (engineInitialized) {
+      setInit(true);
+      return;
+    }
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
     }).then(() => {
+      engineInitialized = true;
       setInit(true);
     });
   }, []);

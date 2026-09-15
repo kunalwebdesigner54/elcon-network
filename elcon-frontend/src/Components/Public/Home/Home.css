@@ -262,6 +262,7 @@
 .home-banner-slider-wrap {
   position: absolute;
   inset: 0;
+  z-index: 1; /* Creates a stacking context so slick-slide's high z-index doesn't leak out */
 }
 
 .home-banner-slider-wrap .slick-slider,
@@ -313,7 +314,7 @@
 .home-banner-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(10, 22, 40, 0.4); /* Lighter overlay */
+  background: rgba(10, 22, 40, 0.1); /* Very Light overlay */
   z-index: 2;
   pointer-events: none;
 }
