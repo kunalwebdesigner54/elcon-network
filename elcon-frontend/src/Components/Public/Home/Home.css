@@ -256,3 +256,36 @@
     font-size: 32px;
   }
 }
+
+/* ===== Slider Styles ===== */
+.home-banner-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  z-index: 1;
+}
+
+.home-banner-slide.active {
+  opacity: 1;
+}
+
+.home-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.7); /* Darker overlay to make text readable */
+  z-index: 2;
+}
+
+.home-banner-particles-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.home-banner-inner {
+  position: relative;
+  z-index: 10;
+}

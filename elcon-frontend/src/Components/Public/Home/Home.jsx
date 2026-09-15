@@ -1,10 +1,25 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Home.css';
 import ParticleSwarm from './ParticleSwarm';
 import MagneticCarousel from './MagneticCarousel';
 
 function Home() {
   const bannerRef = useRef(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const sliderImages = [
+    '/feature-bg.jpg',
+    '/gallery-bg.jpg',
+    '/grow-bg.jpg',
+    '/sparkle-bg.jpg'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [sliderImages.length]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -17,7 +32,17 @@ function Home() {
   return (
     <div>
       <section className="home-banner">
-        <ParticleSwarm />
+        {sliderImages.map((img, index) => (
+          <div
+            key={index}
+            className={`home-banner-slide ${index === currentSlide ? 'active' : ''}`}
+            style={{ backgroundImage: `url(${img})` }}
+          />
+        ))}
+        <div className="home-banner-overlay" />
+        <div className="home-banner-particles-wrap">
+          <ParticleSwarm />
+        </div>
         <div className="public-container home-banner-inner">
           <div className="home-banner-content" ref={bannerRef}>
             <p className="home-banner-kicker">Welcome To</p>
