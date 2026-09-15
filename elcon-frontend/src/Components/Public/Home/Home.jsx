@@ -4,7 +4,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './Home.css';
 import ParticleSwarm from './ParticleSwarm';
-import MagneticCarousel from './MagneticCarousel';
+import GridGallery from './GridGallery';
 
 function Home() {
   const bannerRef = useRef(null);
@@ -158,15 +158,15 @@ function Home() {
       </section>
 
       {/* Gallery Section */}
-      <section className="home-gallery-section">
+      <section className="home-gallery-section" style={{ paddingBottom: 0 }}>
         <div className="public-container">
           <div className="home-gallery-header">
             <h2>Gallery</h2>
             <p>A glimpse into our successful events and growing community.</p>
           </div>
-          <div style={{ marginTop: '50px', height: '500px' }}>
-            <MagneticCarousel />
-          </div>
+        </div>
+        <div style={{ marginTop: '50px' }}>
+          <GridGallery />
         </div>
       </section>
 
