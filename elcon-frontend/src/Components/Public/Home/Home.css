@@ -262,7 +262,7 @@
 .home-banner-slider-wrap {
   position: absolute;
   inset: 0;
-  z-index: 1; /* Creates a stacking context so slick-slide's high z-index doesn't leak out */
+  z-index: 1;
 }
 
 .home-banner-slider-wrap .slick-slider,
@@ -281,6 +281,20 @@
   background-position: center;
   /* Keep imagery visible, while allowing the white banner copy to remain readable. */
   filter: brightness(0.82) saturate(0.92);
+}
+
+.home-banner-slide-item {
+  position: relative;
+}
+
+.home-banner-slide-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(4, 8, 20, 0.44) 0%, rgba(8, 12, 31, 0.28) 52%, rgba(4, 8, 20, 0.42) 100%),
+    rgba(5, 10, 24, 0.12);
+  pointer-events: none;
 }
 
 /* Slick Arrows */
@@ -303,7 +317,8 @@
   font-weight: 900 !important;
   font-size: 40px !important;
   opacity: 1 !important;
-  color: #FF9A3C !important;
+  color: #ff9a3c !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
   cursor: pointer;
 }
 .home-banner-slider-wrap .slick-prev:before {
@@ -316,10 +331,7 @@
 .home-banner-overlay {
   position: absolute;
   inset: 0;
-  /* A layered gradient keeps contrast consistent across every slider image. */
-  background:
-    linear-gradient(90deg, rgba(4, 8, 20, 0.44) 0%, rgba(8, 12, 31, 0.28) 52%, rgba(4, 8, 20, 0.42) 100%),
-    rgba(5, 10, 24, 0.12);
+  display: none;
   z-index: 2;
   pointer-events: none;
 }
