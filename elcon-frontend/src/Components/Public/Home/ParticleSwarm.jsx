@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 const LINK_DISTANCE = 145;
-const POINTER_RADIUS = 280;
+const POINTER_REPEL_RADIUS = 150;
+const POINTER_CLEAR_RADIUS = 50;
 
 const createParticles = (width, height) => {
   const count = Math.max(180, Math.min(240, Math.round((width * height) / 6500)));
@@ -65,11 +66,23 @@ export default function ParticleSwarm() {
           particle.y += particle.vy;
 
           if (pointer.active) {
-            const distanceToPointer = Math.hypot(pointer.x - particle.x, pointer.y - particle.y);
-            if (distanceToPointer < POINTER_RADIUS) {
-              const pullStrength = (1 - distanceToPointer / POINTER_RADIUS) * 0.0035;
-              particle.vx += (pointer.x - particle.x) * pullStrength;
-              particle.vy += (pointer.y - particle.y) * pullStrength;
+            const deltaX = particle.x - pointer.x;
+            const deltaY = particle.y - pointer.y;
+            const distanceToPointer = Math.hypot(deltaX, deltaY) || 0.01;
+
+            if (distanceToPointer < POINTER_REPEL_RADIUS) {
+              const directionX = deltaX / distanceToPointer;
+              const directionY = deltaY / distanceToPointer;
+              const repelStrength = (1 - distanceToPointer / POINTER_REPEL_RADIUS) ** 2 * 1.15;
+
+              particle.vx += directionX * repelStrength;
+              particle.vy += directionY * repelStrength;
+
+              // Maintain a subtle empty space around the cursor without a visual glow.
+              if (distanceToPointer < POINTER_CLEAR_RADIUS) {
+                particle.x = pointer.x + directionX * POINTER_CLEAR_RADIUS;
+                particle.y = pointer.y + directionY * POINTER_CLEAR_RADIUS;
+              }
             }
           }
 
@@ -91,10 +104,7 @@ export default function ParticleSwarm() {
 
           if (distance >= LINK_DISTANCE) continue;
 
-          const nearPointer = pointer.active
-            && (Math.hypot(a.x - pointer.x, a.y - pointer.y) < POINTER_RADIUS
-              || Math.hypot(b.x - pointer.x, b.y - pointer.y) < POINTER_RADIUS);
-          const opacity = (1 - distance / LINK_DISTANCE) * (nearPointer ? 0.95 : 0.72);
+          const opacity = (1 - distance / LINK_DISTANCE) * 0.72;
           context.beginPath();
           context.moveTo(a.x, a.y);
           context.lineTo(b.x, b.y);
@@ -104,44 +114,13 @@ export default function ParticleSwarm() {
         }
       }
 
-      if (pointer.active) {
-        const glow = context.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, POINTER_RADIUS);
-        glow.addColorStop(0, 'rgba(196, 181, 253, 0.24)');
-        glow.addColorStop(0.45, 'rgba(147, 197, 253, 0.1)');
-        glow.addColorStop(1, 'rgba(147, 197, 253, 0)');
-        context.beginPath();
-        context.arc(pointer.x, pointer.y, POINTER_RADIUS, 0, Math.PI * 2);
-        context.fillStyle = glow;
-        context.fill();
-      }
-
       particles.forEach((particle, index) => {
         const color = index % 3 === 0 ? '147, 197, 253' : '255, 255, 255';
-        const distanceToPointer = pointer.active ? Math.hypot(particle.x - pointer.x, particle.y - pointer.y) : Infinity;
-        const closeToPointer = distanceToPointer < POINTER_RADIUS;
-
-        if (closeToPointer) {
-          const opacity = (1 - distanceToPointer / POINTER_RADIUS) * 0.82;
-          context.beginPath();
-          context.moveTo(particle.x, particle.y);
-          context.lineTo(pointer.x, pointer.y);
-          context.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-          context.lineWidth = 1.15;
-          context.stroke();
-        }
-
         context.beginPath();
-        context.arc(particle.x, particle.y, particle.radius + (closeToPointer ? 1.7 : 0), 0, Math.PI * 2);
-        context.fillStyle = `rgba(${color}, ${closeToPointer ? 1 : particle.opacity})`;
+        context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        context.fillStyle = `rgba(${color}, ${particle.opacity})`;
         context.fill();
       });
-
-      if (pointer.active) {
-        context.beginPath();
-        context.arc(pointer.x, pointer.y, 5, 0, Math.PI * 2);
-        context.fillStyle = 'rgba(255, 255, 255, 0.95)';
-        context.fill();
-      }
     };
 
     const animate = () => {
