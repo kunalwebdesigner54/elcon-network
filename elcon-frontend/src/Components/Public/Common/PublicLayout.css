@@ -232,7 +232,7 @@
 	display: grid;
 	grid-template-columns: 1.4fr 1fr 1fr 1fr;
 	gap: 24px;
-	padding: 41px 0 31px;
+	padding: 35px 0 26px;
 }
 
 .public-footer h4 {
@@ -743,7 +743,7 @@ main,
   background: #0a1628;
   color: #fff;
   margin: 0;
-  padding: 59px 0 34px;
+  padding: 50px 0 29px;
 }
 
 .public-footer-grid {
