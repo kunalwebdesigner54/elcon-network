@@ -466,6 +466,8 @@
 		opacity: 1;
 		pointer-events: auto;
 	}
+}
+
 .public-root::before {
 	display: none;
 }
