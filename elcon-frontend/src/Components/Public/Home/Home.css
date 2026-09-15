@@ -331,8 +331,10 @@
   pointer-events: none;
 }
 
-.home-banner-particles-wrap canvas {
+.home-banner-particle-canvas {
   display: block;
+  position: absolute;
+  inset: 0;
   width: 100% !important;
   height: 100% !important;
   opacity: 0.88;
