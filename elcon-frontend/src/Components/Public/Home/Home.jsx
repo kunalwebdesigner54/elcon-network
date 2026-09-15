@@ -25,7 +25,8 @@ function Home() {
     autoplay: true,
     autoplaySpeed: 4000,
     fade: true,
-    arrows: true
+    arrows: true,
+    waitForAnimate: false
   };
 
   useEffect(() => {
