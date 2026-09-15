@@ -67,18 +67,20 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     });
   });
 
-  const epins = await Epin.find(dateFilter).sort({ createdAt: -1 }).skip(skip).limit(limit);
-  epins.forEach((epin) => {
-    rows.push({
-      dateTime: formatDateTime(epin.createdAt),
-      transactionId: epin.epinNo,
-      memberId: epin.generatedBy,
-      description: 'EPIN GENERATION',
-      credit: 0,
-      debit: Number(epin.cost || 0),
-      createdAt: epin.createdAt,
+  if (scope === 'admin') {
+    const epins = await Epin.find(dateFilter).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    epins.forEach((epin) => {
+      rows.push({
+        dateTime: formatDateTime(epin.createdAt),
+        transactionId: epin.epinNo,
+        memberId: epin.generatedBy,
+        description: 'EPIN GENERATION',
+        credit: 0,
+        debit: Number(epin.cost || 0),
+        createdAt: epin.createdAt,
+      });
     });
-  });
+  }
 
   const walletTransactions = await WalletTransaction.find({ 
     approvalStatus: 'Approved',
@@ -259,7 +261,15 @@ exports.getTransactionHistory = async (req, res) => {
       row.sNo = index + 1;
     });
 
-    res.json({ success: true, transactions: mappedRows, total, page, limit, totalPages: Math.ceil(total / limit) });
+    let walletBalance = 0;
+    if (scope === 'user' && req.user?.memberId) {
+      const dbUser = await User.findOne({ memberId: req.user.memberId });
+      if (dbUser) {
+        walletBalance = dbUser.walletBalance || 0;
+      }
+    }
+
+    res.json({ success: true, transactions: mappedRows, total, page, limit, totalPages: Math.ceil(total / limit), walletBalance });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

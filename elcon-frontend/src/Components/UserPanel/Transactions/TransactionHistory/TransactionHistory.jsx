@@ -15,6 +15,7 @@ function TransactionHistory() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [viewMode, setViewMode] = useState('statement');
+  const [actualBalance, setActualBalance] = useState(0);
 
   const [filters, setFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
   const [appliedFilters, setAppliedFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
@@ -33,10 +34,14 @@ function TransactionHistory() {
       setRows(response.transactions || []);
       setTotal(response.total || 0);
       setTotalPages(response.totalPages || 1);
+      if (response.walletBalance !== undefined) {
+        setActualBalance(response.walletBalance);
+      }
     } catch (error) {
       setRows([]);
       setTotal(0);
       setTotalPages(1);
+      setActualBalance(0);
     } finally {
       setLoading(false);
     }
@@ -53,7 +58,6 @@ function TransactionHistory() {
 
   const totalCredit = useMemo(() => rows.reduce((sum, row) => sum + Number(row.credit || 0), 0), [rows]);
   const totalDebit = useMemo(() => rows.reduce((sum, row) => sum + Number(row.debit || 0), 0), [rows]);
-  const totalBalance = rows.length ? rows[0].balance : 0;
   const totalTransactions = total;
 
   const handleFilterChange = (e) => {
@@ -78,7 +82,7 @@ function TransactionHistory() {
       <div className="user-panel">
         <div className="transaction-header">
           <div className="transaction-summary-group">
-            <h3>Total Balance: {totalBalance ? Number(totalBalance).toFixed(2) : '0.00'}</h3>
+            <h3>Total Balance: {actualBalance ? Number(actualBalance).toFixed(2) : '0.00'}</h3>
           </div>
           <div className="view-toggle">
             <button 
@@ -122,12 +126,9 @@ function TransactionHistory() {
                 <th>S.NO</th>
                 <th>TRANSACTION DATE & TIME</th>
                 <th>TRANSACTION ID</th>
-                <th>MEMBER ID</th>
-                <th>MEMBER NAME</th>
                 <th>DISCRIPTIONS</th>
                 <th>CREDIT</th>
                 <th>DEBIT</th>
-                <th>BALANCE</th>
               </tr>
             </thead>
             <tbody>
@@ -138,19 +139,15 @@ function TransactionHistory() {
                   <td>{row.sNo}</td>
                   <td>{row.dateTime}</td>
                   <td>{row.transactionId}</td>
-                  <td>{row.memberId}</td>
-                  <td>{row.memberName}</td>
                   <td>{row.description}</td>
                   <td>{formatAmount(row.credit)}</td>
                   <td>{formatAmount(row.debit)}</td>
-                  <td>{formatAmount(row.balance)}</td>
                 </tr>
-              )) : (<tr><td colSpan="9">No transactions found</td></tr>)}
+              )) : (<tr><td colSpan="6">No transactions found</td></tr>)}
               <tr className="report-total-row">
-                <td colSpan="6" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL</td>
+                <td colSpan="4" style={{ textAlign: 'right', fontWeight: 700 }}>TOTAL</td>
                 <td>{totalCredit.toFixed(2)}</td>
                 <td>{totalDebit.toFixed(2)}</td>
-                <td>{totalBalance.toFixed(2)}</td>
               </tr>
             </tbody>
           </table>
