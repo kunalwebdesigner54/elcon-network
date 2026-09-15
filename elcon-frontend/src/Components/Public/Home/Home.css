@@ -258,24 +258,49 @@
 }
 
 /* ===== Slider Styles ===== */
-.home-banner-slide {
+.home-banner-slider-wrap {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 1.5s ease-in-out;
   z-index: 1;
 }
 
-.home-banner-slide.active {
-  opacity: 1;
+.home-banner-slider-wrap .slick-slider,
+.home-banner-slider-wrap .slick-list,
+.home-banner-slider-wrap .slick-track,
+.home-banner-slide-item {
+  height: 100%;
+}
+
+.home-banner-slide-bg {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Slick Arrows */
+.home-banner-slider-wrap .slick-prev,
+.home-banner-slider-wrap .slick-next {
+  z-index: 20;
+  width: 50px;
+  height: 50px;
+}
+.home-banner-slider-wrap .slick-prev {
+  left: 20px;
+}
+.home-banner-slider-wrap .slick-next {
+  right: 20px;
+}
+.home-banner-slider-wrap .slick-prev:before,
+.home-banner-slider-wrap .slick-next:before {
+  font-size: 40px;
+  opacity: 0.7;
 }
 
 .home-banner-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(10, 22, 40, 0.7); /* Darker overlay to make text readable */
+  background: rgba(10, 22, 40, 0.4); /* Lighter overlay */
   z-index: 2;
 }
 

@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import './Home.css';
 import ParticleSwarm from './ParticleSwarm';
 import MagneticCarousel from './MagneticCarousel';
 
 function Home() {
   const bannerRef = useRef(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
 
   const sliderImages = [
     '/feature-bg.jpg',
@@ -14,12 +16,17 @@ function Home() {
     '/sparkle-bg.jpg'
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [sliderImages.length]);
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    fade: true,
+    arrows: true
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -32,13 +39,18 @@ function Home() {
   return (
     <div>
       <section className="home-banner">
-        {sliderImages.map((img, index) => (
-          <div
-            key={index}
-            className={`home-banner-slide ${index === currentSlide ? 'active' : ''}`}
-            style={{ backgroundImage: `url(${img})` }}
-          />
-        ))}
+        <div className="home-banner-slider-wrap">
+          <Slider {...sliderSettings}>
+            {sliderImages.map((img, index) => (
+              <div key={index} className="home-banner-slide-item">
+                <div
+                  className="home-banner-slide-bg"
+                  style={{ backgroundImage: `url(${img})` }}
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
         <div className="home-banner-overlay" />
         <div className="home-banner-particles-wrap">
           <ParticleSwarm />
