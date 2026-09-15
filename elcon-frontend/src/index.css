@@ -387,18 +387,20 @@ select option {
 	background-color: rgba(255, 255, 255, 0.09) !important;
 }
 
-/* Global Public Page Inputs — white text on dark background */
+/* Global Public Page Inputs — dark text on light background */
 .public-root input, .public-root select, .public-root textarea {
-	color: #ffffff !important;
+	color: #333333 !important;
+	background-color: #ffffff !important;
+	border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .public-root input::placeholder, .public-root textarea::placeholder {
-	color: rgba(255, 255, 255, 0.45) !important;
+	color: rgba(0, 0, 0, 0.4) !important;
 }
 
 .public-root select option {
-	color: #1a1a2e;
-	background: var(--theme-dark-blue);
+	color: #333333;
+	background: #ffffff;
 }
 
 /* Global Dashboard Buttons */

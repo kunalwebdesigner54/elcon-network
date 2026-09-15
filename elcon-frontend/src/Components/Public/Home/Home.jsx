@@ -43,9 +43,11 @@ function Home() {
               <div className="step-card-body">
                 <span className="step-badge step-badge-blue">Step 1</span>
                 <div className="step-card-header">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="float-3d-icon" style={{ color: '#60a5fa' }}>
-                    <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clipRule="evenodd" />
-                  </svg>
+                  <div className="step-icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="float-3d-icon">
+                      <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                   <h2 className="step-card-title">Register</h2>
                 </div>
                 <p className="step-desc" style={{ color: '#d1d5db', fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
@@ -61,10 +63,12 @@ function Home() {
               <div className="step-card-body">
                 <span className="step-badge step-badge-orange">Step 2</span>
                 <div className="step-card-header">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="float-3d-icon" style={{ color: '#fbbf24' }}>
-                    <path fillRule="evenodd" d="M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z" clipRule="evenodd" />
-                    <path d="M5.082 14.254a8.287 8.287 0 00-1.308 5.135 9.687 9.687 0 01-1.764-.44l-.115-.04a.563.563 0 01-.373-.487l-.01-.121a3.75 3.75 0 016.576-1.99 6.74 6.74 0 01-3.006-2.057zM19.226 19.389a8.286 8.286 0 00-1.308-5.135 6.74 6.74 0 01-3.006 2.057 3.75 3.75 0 016.576 1.99l-.01.121a.563.563 0 01-.373.486l-.115.04c-.56.195-1.15.349-1.764.441z" />
-                  </svg>
+                  <div className="step-icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="float-3d-icon">
+                      <path fillRule="evenodd" d="M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z" clipRule="evenodd" />
+                      <path d="M5.082 14.254a8.287 8.287 0 00-1.308 5.135 9.687 9.687 0 01-1.764-.44l-.115-.04a.563.563 0 01-.373-.487l-.01-.121a3.75 3.75 0 016.576-1.99 6.74 6.74 0 01-3.006-2.057zM19.226 19.389a8.286 8.286 0 00-1.308-5.135 6.74 6.74 0 01-3.006 2.057 3.75 3.75 0 016.576 1.99l-.01.121a.563.563 0 01-.373.486l-.115.04c-.56.195-1.15.349-1.764.441z" />
+                    </svg>
+                  </div>
                   <h2 className="step-card-title">Invite Friends</h2>
                 </div>
                 <p className="step-desc" style={{ color: '#d1d5db', fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
@@ -80,9 +84,11 @@ function Home() {
               <div className="step-card-body">
                 <span className="step-badge step-badge-green">Step 3</span>
                 <div className="step-card-header">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="float-3d-icon" style={{ color: '#34d399' }}>
-                    <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005z" clipRule="evenodd" />
-                  </svg>
+                  <div className="step-icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="float-3d-icon">
+                      <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                   <h2 className="step-card-title">Success</h2>
                 </div>
                 <p className="step-desc" style={{ color: '#d1d5db', fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
