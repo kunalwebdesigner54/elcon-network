@@ -14,7 +14,6 @@ function TransactionHistory() {
   const [pageSize, setPageSize] = useState(50);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [viewMode, setViewMode] = useState('statement');
   const [actualBalance, setActualBalance] = useState(0);
 
   const [filters, setFilters] = useState({ transactionId: '', startDate: '', endDate: '' });
@@ -23,9 +22,7 @@ function TransactionHistory() {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const includeAudit = viewMode === 'audit';
       const response = await getUserTransactionHistory({
-        audit: includeAudit,
         page,
         limit: pageSize,
         startDate: appliedFilters.startDate || undefined,
@@ -49,7 +46,7 @@ function TransactionHistory() {
 
   useEffect(() => {
     fetchTransactions();
-  }, [viewMode, page, pageSize, appliedFilters]);
+  }, [page, pageSize, appliedFilters]);
 
   const handleSearch = () => {
     setAppliedFilters(filters);
@@ -65,11 +62,6 @@ function TransactionHistory() {
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleViewModeChange = (mode) => {
-    setViewMode(mode);
-    setPage(1);
-  };
-
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
@@ -83,22 +75,6 @@ function TransactionHistory() {
         <div className="transaction-header">
           <div className="transaction-summary-group">
             <h3>Total Balance: {actualBalance ? Number(actualBalance).toFixed(2) : '0.00'}</h3>
-          </div>
-          <div className="view-toggle">
-            <button 
-              type="button" 
-              className={`view-toggle-btn ${viewMode === 'statement' ? 'active' : ''}`}
-              onClick={() => handleViewModeChange('statement')}
-            >
-              Statement
-            </button>
-            <button 
-              type="button" 
-              className={`view-toggle-btn ${viewMode === 'audit' ? 'active' : ''}`}
-              onClick={() => handleViewModeChange('audit')}
-            >
-              Audit Log
-            </button>
           </div>
         </div>
 

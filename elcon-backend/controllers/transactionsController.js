@@ -89,14 +89,16 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
   walletTransactions.forEach((transaction) => {
     const desc = String(transaction.description || '');
     if (
-      /^LEVEL INCOME(?: CREDIT)? - Level \d+$/.test(desc) ||
-      /^REPURCHASE INCOME(?: CREDIT)? - Level \d+$/.test(desc) ||
-      /^TDS DEDUCTION \(Level \d+\)$/.test(desc) ||
-      /^ADMIN CHARGE \(Level \d+\)$/.test(desc) ||
-      /^PRODUCT PURCHASE(?: REVERSED)? - /.test(desc) ||
-      /^WITHDRAWAL (DEBIT|REVERSED) - /.test(desc) ||
-      /^EPIN GENERATION - /.test(desc) ||
-      /^DONATION (DEBIT|CREDIT) - /.test(desc)
+      !includeAudit && (
+        /^LEVEL INCOME(?: CREDIT)? - Level \d+$/.test(desc) ||
+        /^REPURCHASE INCOME(?: CREDIT)? - Level \d+$/.test(desc) ||
+        /^TDS DEDUCTION \(Level \d+\)$/.test(desc) ||
+        /^ADMIN CHARGE \(Level \d+\)$/.test(desc) ||
+        /^PRODUCT PURCHASE(?: REVERSED)? - /.test(desc) ||
+        /^WITHDRAWAL (DEBIT|REVERSED) - /.test(desc) ||
+        /^EPIN GENERATION - /.test(desc) ||
+        /^DONATION (DEBIT|CREDIT) - /.test(desc)
+      )
     ) {
       return;
     }
