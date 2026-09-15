@@ -21,12 +21,16 @@ const ParticleSwarm = () => {
   }, []);
 
   const options = {
+    // Keep the canvas inside the hero instead of using tsParticles' page-wide canvas.
+    fullScreen: {
+      enable: false,
+    },
     background: {
       color: {
         value: "transparent",
       },
     },
-    fpsLimit: 50,
+    fpsLimit: 55,
     interactivity: {
       events: {
         onClick: {
@@ -49,14 +53,14 @@ const ParticleSwarm = () => {
     },
     particles: {
       color: {
-        value: ["#ffffff", "#c4b5fd", "#93c5fd"],
+        value: ["#ffffff", "#e9d5ff", "#bfdbfe"],
       },
       links: {
-        color: "#d8b4fe",
+        color: "#c4b5fd",
         distance: 165,
         enable: true,
-        opacity: 0.48,
-        width: 1,
+        opacity: 0.78,
+        width: 1.25,
       },
       move: {
         direction: "none",
@@ -73,16 +77,16 @@ const ParticleSwarm = () => {
           enable: true,
           area: 800,
         },
-        value: 76,
+        value: 96,
       },
       opacity: {
-        value: { min: 0.35, max: 0.8 },
+        value: { min: 0.5, max: 0.95 },
       },
       shape: {
         type: "circle",
       },
       size: {
-        value: { min: 1, max: 3 },
+        value: { min: 1.5, max: 3.5 },
       },
     },
     detectRetina: true,

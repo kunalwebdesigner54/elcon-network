@@ -280,7 +280,7 @@
   background-size: cover;
   background-position: center;
   /* Keep imagery visible, while allowing the white banner copy to remain readable. */
-  filter: brightness(0.62) saturate(0.9);
+  filter: brightness(0.82) saturate(0.92);
 }
 
 /* Slick Arrows */
@@ -318,8 +318,8 @@
   inset: 0;
   /* A layered gradient keeps contrast consistent across every slider image. */
   background:
-    linear-gradient(90deg, rgba(4, 8, 20, 0.66) 0%, rgba(8, 12, 31, 0.48) 52%, rgba(4, 8, 20, 0.62) 100%),
-    rgba(5, 10, 24, 0.28);
+    linear-gradient(90deg, rgba(4, 8, 20, 0.44) 0%, rgba(8, 12, 31, 0.28) 52%, rgba(4, 8, 20, 0.42) 100%),
+    rgba(5, 10, 24, 0.12);
   z-index: 2;
   pointer-events: none;
 }
@@ -332,6 +332,9 @@
 }
 
 .home-banner-particles-wrap canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
   opacity: 0.88;
 }
 
