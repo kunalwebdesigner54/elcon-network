@@ -39,7 +39,7 @@
   transform: translateY(-50%);
   width: 45px;
   height: 45px;
-  background: #6c5ce7; /* Distinct purple from reference */
+  background: var(--public-primary); /* Use public primary theme color */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -47,12 +47,12 @@
   color: #fff;
   cursor: pointer;
   z-index: 2;
-  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+  box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .product-slider-arrow:hover {
-  background: #5a4bcf;
+  background: var(--public-primary-dark);
   transform: translateY(-50%) scale(1.05);
 }
 

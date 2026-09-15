@@ -3,8 +3,8 @@
 	overflow-x: clip;
 	background: #f4f5f9;
 	color: #333333;
-	--public-primary: #7B68EE;
-	--public-primary-dark: #6A5ACD;
+	--public-primary: #0ea5e9;
+	--public-primary-dark: #0284c7;
 	--public-secondary: #00D4AA;
 	--public-accent: #FF6B6B;
 	--public-text: #333333;
@@ -14,7 +14,7 @@
 	--card-bg: #ffffff;
 	--public-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
 	--public-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
-	--public-gradient-primary: linear-gradient(135deg, #7B68EE 0%, #9580FF 100%);
+	--public-gradient-primary: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
 	font-family: 'Poppins', sans-serif;
 }
 

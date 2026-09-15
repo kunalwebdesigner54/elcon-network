@@ -56,7 +56,7 @@
   left: 40px; /* Align with padding */
   width: 50px;
   height: 50px;
-  background: #6c5ce7; /* Distinct purple from reference */
+  background: var(--public-primary); /* Use public primary theme color */
   border-radius: 50%;
   display: flex;
   align-items: center;
