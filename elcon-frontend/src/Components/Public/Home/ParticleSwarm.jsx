@@ -20,17 +20,13 @@ const ParticleSwarm = () => {
     });
   }, []);
 
-  const particlesLoaded = (container) => {
-    console.log(container);
-  };
-
   const options = {
     background: {
       color: {
         value: "transparent",
       },
     },
-    fpsLimit: 60,
+    fpsLimit: 50,
     interactivity: {
       events: {
         onClick: {
@@ -53,14 +49,14 @@ const ParticleSwarm = () => {
     },
     particles: {
       color: {
-        value: "#ffffff",
+        value: ["#ffffff", "#c4b5fd", "#93c5fd"],
       },
       links: {
-        color: "#ffffff",
-        distance: 150,
+        color: "#d8b4fe",
+        distance: 165,
         enable: true,
-        opacity: 0.6,
-        width: 1.5,
+        opacity: 0.48,
+        width: 1,
       },
       move: {
         direction: "none",
@@ -69,7 +65,7 @@ const ParticleSwarm = () => {
           default: "bounce",
         },
         random: false,
-        speed: 2.5,
+        speed: 1.35,
         straight: false,
       },
       number: {
@@ -77,16 +73,16 @@ const ParticleSwarm = () => {
           enable: true,
           area: 800,
         },
-        value: 100,
+        value: 76,
       },
       opacity: {
-        value: 0.7,
+        value: { min: 0.35, max: 0.8 },
       },
       shape: {
         type: "circle",
       },
       size: {
-        value: { min: 2, max: 4 },
+        value: { min: 1, max: 3 },
       },
     },
     detectRetina: true,
@@ -97,7 +93,6 @@ const ParticleSwarm = () => {
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Particles
           id="tsparticles"
-          particlesLoaded={particlesLoaded}
           options={options}
           style={{ width: '100%', height: '100%' }}
         />
