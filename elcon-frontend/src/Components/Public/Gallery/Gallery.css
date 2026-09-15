@@ -1,3 +1,8 @@
+.gallery-section {
+  padding: 80px 0;
+  background: var(--public-bg);
+}
+
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -160,7 +160,7 @@ function Home() {
       </section>
 
       {/* Gallery Section */}
-      <section className="home-gallery-section" style={{ paddingBottom: '80px' }}>
+      <section className="home-gallery-section">
         <div className="public-container">
           <div className="home-gallery-header">
             <h2>Gallery</h2>

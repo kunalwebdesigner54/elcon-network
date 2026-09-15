@@ -6,8 +6,8 @@
 .grid-gallery-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1px; /* Very thin gap to create a border effect */
-  background: #fff; /* White background to create thin lines between images */
+  gap: 2px; /* Small gap between images */
+  background: transparent; /* Use section background */
 }
 
 @media (max-width: 1024px) {

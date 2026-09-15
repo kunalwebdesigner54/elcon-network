@@ -6,7 +6,7 @@ function Gallery() {
   return (
     <div>
       <PublicPageHeader title="Gallery" />
-      <section className="public-page" style={{ paddingBottom: '80px' }}>
+      <section className="public-page gallery-section">
         <GridGallery />
       </section>
     </div>
