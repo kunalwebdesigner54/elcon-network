@@ -14,6 +14,7 @@ const ReceivedHelp = () => {
   useEffect(() => {
     setPage(1);
   }, [filters, activeTab, pageSize]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -39,8 +40,8 @@ const ReceivedHelp = () => {
         dateRaw: donation.dateRaw,
         transactionId: donation.donationId || '-',
         utrNumber: donation.utrNumber || '---',
-        skippedIds: donation.skippedMembers && donation.skippedMembers.length > 0 
-          ? donation.skippedMembers.map(s => s.memberId || s).join(', ') 
+        skippedIds: donation.skippedMembers && donation.skippedMembers.length > 0
+          ? donation.skippedMembers.map(s => s.memberId || s).join(', ')
           : '---',
         status: donation.status || 'PENDING'
       }));
@@ -50,17 +51,36 @@ const ReceivedHelp = () => {
     } catch (err) {
       setError('Failed to load received donations');
       console.error('ReceivedHelp fetch error:', err);
-      setReceivedHelpRows([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleUpdateStatus = async (donationId, status) => {
-    if (!window.confirm(`Are you sure you want to mark this donation as ${status}?`)) return;
+    let utrNumber = '';
+    let transactionPassword = '';
+
+    if (status === 'APPROVED') {
+      utrNumber = window.prompt(`Donation ACCEPT karne ke liye UTR / Transaction ID darj karein:`);
+      if (utrNumber === null) return; // User cancelled
+      if (utrNumber.trim() === '') {
+        alert('UTR / Transaction ID required hai donation accept karne ke liye.');
+        return;
+      }
+
+      transactionPassword = window.prompt(`Security Verification: Apna Transaction Password darj karein:`);
+      if (transactionPassword === null) return; // User cancelled
+      if (transactionPassword.trim() === '') {
+        alert('Transaction Password required hai.');
+        return;
+      }
+    } else {
+      if (!window.confirm(`Are you sure you want to mark this donation as ${status}?`)) return;
+    }
+
     try {
       setLoading(true);
-      await updateDonationStatus(donationId, status);
+      await updateDonationStatus(donationId, status, '', utrNumber, transactionPassword);
       await fetchReceivedDonations();
     } catch (err) {
       setError(err?.response?.data?.message || 'Failed to update status');
@@ -100,6 +120,11 @@ const ReceivedHelp = () => {
 
   const totalPages = Math.ceil(filteredRows.length / Number(pageSize)) || 1;
   const visibleRows = filteredRows.slice((page - 1) * Number(pageSize), page * Number(pageSize));
+
+  const handlePageChange = (p) => {
+    if (p >= 1 && p <= totalPages) setPage(p);
+  };
+
   const formatRowsForExport = (rows) => rows.map((row) => ([
     row.sNo, row.memberId, row.name, row.amount, row.rank, row.requestDate, row.transactionId, row.utrNumber, row.skippedIds, row.status.replace(/_/g, ' ')
   ]));
@@ -160,7 +185,7 @@ const ReceivedHelp = () => {
           { key: 'REJECTED', label: 'REJECTED' },
           { key: 'ALL', label: 'ALL HISTORY' }
         ].map(tab => (
-          <button 
+          <button
             key={tab.key}
             className={`donation-tab-btn ${activeTab === tab.key ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.key)}
@@ -172,7 +197,7 @@ const ReceivedHelp = () => {
       <div className="user-panel">
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         {loading && <div style={{ color: '#666', marginBottom: '14px' }}>Loading...</div>}
-        
+
         {!loading && (
           <>
             <div
@@ -209,7 +234,6 @@ const ReceivedHelp = () => {
                 <option value="10">10</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
-                <option value="100">100</option>
               </select>
               <button className="user-btn-blue3" type="button" style={{ height: '100%', minHeight: '40px', padding: '0' }} onClick={() => {}}>Search</button>
             </div>
@@ -235,52 +259,52 @@ const ReceivedHelp = () => {
                     <th>SKIPPED ID</th>
                     <th>ACTION</th>
                     <th>STATUS</th>
-              </tr>
-            </thead>
+                  </tr>
+                </thead>
                 <tbody>
                   {visibleRows.length > 0 ? (
                     visibleRows.map((row) => (
-                    <tr key={row.sNo}>
-                      <td>{row.sNo}</td>
-                      <td>{row.memberId}</td>
-                      <td>{row.name}</td>
-                      <td>{row.directs || 0}</td>
-                      <td>{row.rank}</td>
-                      <td style={{ color: '#27ae60', fontWeight: 'bold' }}>₹ {row.amount?.toLocaleString('en-IN')}</td>
-                      <td>Level {row.rank}</td>
-                      <td>{row.requestDate}</td>
-                      <td>{row.transactionId}</td>
-                      <td>{row.utrNumber}</td>
-                      <td style={{ maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.skippedIds}</td>
-                      <td>
-                        {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
-                          <div style={{ display: 'flex', gap: '4px' }}>
-                            <button className="user-mini-btn user-accept" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>ACCEPT</button>
-                            <button className="user-mini-btn user-reject" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>REJECT</button>
-                          </div>
-                        ) : (
-                          <span>-</span>
-                        )}
-                      </td>
-                      <td style={{
-                        color: ['APPROVED', 'COMPLETED'].includes(row.status) ? '#27ae60' : row.status === 'REJECTED' ? '#e74c3c' : '#f39c12',
-                        fontWeight: 500
-                      }}>
-                        {row.status.replace(/_/g, ' ')}
-                      </td>
-                    </tr>
+                      <tr key={row.sNo}>
+                        <td>{row.sNo}</td>
+                        <td>{row.memberId}</td>
+                        <td>{row.name}</td>
+                        <td>{row.directs || 0}</td>
+                        <td>{row.rank}</td>
+                        <td style={{ color: '#27ae60', fontWeight: 'bold' }}>₹ {row.amount?.toLocaleString('en-IN')}</td>
+                        <td>Level {row.rank}</td>
+                        <td>{row.requestDate}</td>
+                        <td>{row.transactionId}</td>
+                        <td>{row.utrNumber}</td>
+                        <td style={{ maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.skippedIds}</td>
+                        <td>
+                          {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
+                            <div style={{ display: 'flex', gap: '4px' }}>
+                              <button className="user-mini-btn user-accept" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>ACCEPT</button>
+                              <button className="user-mini-btn user-reject" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>REJECT</button>
+                            </div>
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </td>
+                        <td style={{
+                          color: ['APPROVED', 'COMPLETED'].includes(row.status) ? '#27ae60' : row.status === 'REJECTED' ? '#e74c3c' : '#f39c12',
+                          fontWeight: 500
+                        }}>
+                          {row.status.replace(/_/g, ' ')}
+                        </td>
+                      </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="10" style={{ textAlign: 'center', padding: '30px', color: '#888', fontSize: '15px' }}>
+                      <td colSpan="13" style={{ textAlign: 'center', padding: '30px', color: '#888', fontSize: '15px' }}>
                         No donations found for the selected tab or filters.
                       </td>
                     </tr>
                   )}
                 </tbody>
-          </table>
+              </table>
             </div>
-            
+
             <div className="table-footer" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', alignItems: 'center' }}>
               <span style={{ fontSize: '0.95em', color: 'var(--text-muted)', fontWeight: '500', paddingLeft: '8px' }}>
                 Total: {filteredRows.length} requests
@@ -295,8 +319,8 @@ const ReceivedHelp = () => {
                   if (e - s < 2) s = Math.max(1, e - 2);
                   if (p < s || p > e) return null;
                   return (
-                    <button 
-                      key={p} 
+                    <button
+                      key={p}
                       className={`page-btn ${page === p ? 'active' : ''}`}
                       onClick={() => handlePageChange(p)}
                     >

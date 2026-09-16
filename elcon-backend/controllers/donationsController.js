@@ -322,17 +322,17 @@ exports.updateDonationStatus = async (req, res) => {
       return res.status(400).json({ success: false, message: `Donation is already ${donation.status}` });
     }
 
-    if (status === 'APPROVED' && req.user.role === 'admin') {
-      const adminUser = await User.findById(req.user._id).select('+transactionPassword');
-      if (!adminUser) {
-        return res.status(404).json({ success: false, message: 'Admin user not found' });
+    if (status === 'APPROVED') {
+      const approverUser = await User.findById(req.user._id).select('+transactionPassword');
+      if (!approverUser) {
+        return res.status(404).json({ success: false, message: 'User not found' });
       }
-      
-      const isMatch = await adminUser.matchTransactionPassword(transactionPassword);
+
+      const isMatch = await approverUser.matchTransactionPassword(transactionPassword);
       if (!isMatch) {
         return res.status(401).json({ success: false, message: 'Invalid Transaction Password' });
       }
-      
+
       if (!utrNumber || utrNumber.trim() === '') {
         return res.status(400).json({ success: false, message: 'UTR Number is required for approval' });
       }
