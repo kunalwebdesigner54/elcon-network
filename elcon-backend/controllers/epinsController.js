@@ -5,6 +5,7 @@ const EpinRequest = require('../models/EpinRequest');
 const EpinTransfer = require('../models/EpinTransfer');
 const EpinFranchise = require('../models/EpinFranchise');
 const EpinPackage = require('../models/EpinPackage');
+const SiteSetting = require('../models/SiteSetting');
 const crypto = require('crypto');
 
 const getUserIdentifiers = (req) => [req.user?.memberId, req.user?.epin, req.user?.id]
@@ -205,6 +206,13 @@ exports.getEpins = async (req, res) => {
 
 exports.generateEpins = async (req, res) => {
   try {
+    const globalSettingsDoc = await SiteSetting.findOne({ settingKey: 'global-settings' }).lean();
+    const globalSettings = globalSettingsDoc ? globalSettingsDoc.data : {};
+    
+    if (!isAdmin(req) && globalSettings.ePinGenerationEnabled === false) {
+      return res.status(403).json({ success: false, message: 'e-Pin generation is currently disabled by the administrator' });
+    }
+
     const qty = Math.max(1, Number(req.body.qty || req.body.numberOfEpins || 1));
     const epinName = String(req.body.epinName || 'Activation').trim();
     const identifiers = getUserIdentifiers(req);
