@@ -61,7 +61,8 @@ function MembersLocation() {
     });
   }, [filters, searchText, membersLocationRows]);
 
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
+  const totalPages = Math.ceil(filteredRows.length / Number(pageSize)) || 1;
+  const visibleRows = filteredRows.slice((page - 1) * Number(pageSize), page * Number(pageSize));
 
   const handleFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
@@ -138,7 +139,7 @@ function MembersLocation() {
   };
 
 
-  const totalPages = pagination?.pages || 1;
+  // totalPages calculated above
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);

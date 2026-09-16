@@ -81,7 +81,8 @@ function AllMemberPerformance() {
     });
   }, [filters, memberPerformanceRows]);
 
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
+  const totalPages = Math.ceil(filteredRows.length / Number(pageSize)) || 1;
+  const visibleRows = filteredRows.slice((page - 1) * Number(pageSize), page * Number(pageSize));
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
     row.sNo,
@@ -156,7 +157,7 @@ function AllMemberPerformance() {
   };
 
 
-  const totalPages = pagination?.pages || 1;
+  // totalPages calculated above
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);

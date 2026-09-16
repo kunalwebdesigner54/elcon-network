@@ -198,7 +198,7 @@ function KYCRequest() {
   };
 
 
-  const totalPages = pagination?.pages || 1;
+  // totalPages calculated above
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
