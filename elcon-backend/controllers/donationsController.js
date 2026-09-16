@@ -323,7 +323,7 @@ exports.updateDonationStatus = async (req, res) => {
     }
 
     if (status === 'APPROVED') {
-      const approverUser = await User.findById(req.user._id).select('+transactionPassword');
+      const approverUser = await User.findById(req.user.id).select('+transactionPassword');
       if (!approverUser) {
         return res.status(404).json({ success: false, message: 'User not found' });
       }
