@@ -1,208 +1,276 @@
 .plan-page {
-  margin: 20px auto;
   padding: 20px;
-  background: #606060; /* To show contrast as per image if it's placed on dark background */
-  min-height: 100vh;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .plan-header {
-  font-size: 20px;
-  margin-bottom: 15px;
-  color: #fff;
-  font-weight: bold;
+  font-size: 24px;
+  margin-bottom: 24px;
+  color: var(--text-main);
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .plan-page form {
-  background: #adadad; /* gray container background */
-  padding: 24px;
-  border-radius: 20px;
-  max-width: 900px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  padding: 30px;
+  border-radius: var(--border-radius-lg);
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .plan-card {
   display: flex;
-  gap: 20px;
-  margin-bottom: 24px;
+  gap: 30px;
+  margin-bottom: 30px;
 }
 
 .ps-col {
   flex: 1;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
 }
 
 .ps-col-head {
-  background: #009ec3;
+  background: var(--gradient-primary);
   color: #fff;
-  padding: 10px;
-  border-radius: 4px 4px 0 0;
-  font-weight: bold;
+  padding: 14px;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 2px;
+  font-size: 16px;
+  letter-spacing: 1px;
 }
 
 .ps-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 2px;
+  border-collapse: collapse;
 }
 
 .ps-table th {
-  background: #c3dae5;
-  color: #333;
-  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--primary-light);
+  padding: 12px;
   text-align: center;
   font-weight: 600;
   font-size: 14px;
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .ps-table td {
-  padding: 0;
+  padding: 6px;
   text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
 }
 
-.ps-table tbody tr:nth-child(odd) td {
-  background: #b5b5b5;
+.ps-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
-.ps-table tbody tr:nth-child(even) td {
-  background: #eef8fc;
+.ps-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ps-table td:first-child {
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
 .ps-input-cell {
-  width: 100%;
-  padding: 8px;
-  background: transparent;
-  border: none;
+  width: 80%;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
   text-align: center;
-  color: #333;
+  color: var(--text-main);
   font-size: 14px;
+  font-weight: 500;
   outline: none;
+  transition: var(--transition);
+}
+
+.ps-input-cell:focus {
+  border-color: var(--primary);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.1);
 }
 
 .plan-footer-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px 40px;
-  margin-bottom: 24px;
+  gap: 20px;
+  margin-bottom: 30px;
 }
 
 .plan-item {
   display: flex;
   align-items: stretch;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
 }
 
 .plan-item .label {
-  background: #009ec3;
-  color: #fff;
-  padding: 10px 15px;
-  font-weight: bold;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  padding: 12px 16px;
+  font-weight: 600;
   font-size: 13px;
   flex: 1;
   display: flex;
   align-items: center;
   text-transform: uppercase;
+  border-right: 1px solid var(--glass-border);
 }
 
 .plan-item .label-icon {
-  background: #009ec3;
-  color: #fff;
-  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--primary-light);
+  padding: 12px 16px;
   font-weight: bold;
   font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 2px;
+  border-right: 1px solid var(--glass-border);
 }
 
 .ps-input-global {
-  flex: 1;
-  padding: 10px;
+  flex: 1.5;
+  padding: 12px;
   border: none;
-  background: #fff;
-  color: #333;
-  font-weight: bold;
-  font-size: 14px;
-  text-align: center;
+  background: transparent;
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 15px;
+  text-align: right;
   outline: none;
-  margin-left: 2px;
+}
+
+.ps-input-global:focus {
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .ps-save-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
+  margin-top: 20px;
+  padding-top: 30px;
+  border-top: 1px dashed var(--glass-border);
 }
 
 .ps-password-row {
   display: flex;
   width: 100%;
-  max-width: 600px;
-  margin-top: 10px;
+  max-width: 500px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.ps-password-row:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.1);
 }
 
 .password-label {
-  background: #009ec3;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
   padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   display: flex;
   align-items: center;
+  border-right: 1px solid var(--glass-border);
 }
 
 .ps-password-input {
   flex: 1;
-  padding: 12px;
+  padding: 12px 16px;
   border: none;
-  background: #fff;
+  background: transparent;
+  color: var(--text-main);
   font-size: 16px;
   outline: none;
+  letter-spacing: 2px;
 }
 
 .ps-actions {
   display: flex;
-  gap: 20px;
-  margin-top: 10px;
+  gap: 16px;
 }
 
 .ps-btn {
-  padding: 10px 40px;
+  padding: 12px 40px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   color: #fff;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 15px;
   cursor: pointer;
-  background: linear-gradient(90deg, #18dbba, #009ec3);
-  transition: opacity 0.2s;
+  transition: var(--transition);
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.ps-btn:hover {
-  opacity: 0.9;
+.ps-btn-edit {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
 }
 
-.ps-btn:disabled {
-  opacity: 0.5;
+.ps-btn-edit:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.ps-btn-update {
+  background: var(--gradient-primary);
+  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2);
+}
+
+.ps-btn-update:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 229, 255, 0.3);
+}
+
+.ps-btn-update:disabled {
+  opacity: 0.7;
   cursor: not-allowed;
+  transform: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
   .plan-card {
     flex-direction: column;
+    gap: 20px;
   }
   .plan-footer-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 16px;
   }
   .ps-password-row {
     flex-direction: column;
   }
   .password-label {
     justify-content: center;
-    margin-bottom: 2px;
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .ps-input-global {
+    text-align: left;
   }
 }
