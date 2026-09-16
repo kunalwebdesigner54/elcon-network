@@ -37,13 +37,14 @@
 }
 
 .ps-col-head {
-  background: var(--gradient-primary);
-  color: #fff;
+  background: transparent;
+  color: var(--primary);
   padding: 14px;
   font-weight: 700;
   text-align: center;
   font-size: 16px;
   letter-spacing: 1px;
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .ps-table {
@@ -52,7 +53,7 @@
 }
 
 .ps-table th {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent;
   color: var(--primary-light);
   padding: 12px;
   text-align: center;
