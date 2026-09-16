@@ -1,5 +1,7 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { getAllDonations, updateDonationStatus } from '../../../../api/donationsService';
+import DonationVerificationModal from '../../../shared/DonationVerificationModal/DonationVerificationModal';
+import FlashMessage from '../../../shared/FlashMessage/FlashMessage';
 import './DonationReport.css';
 
 const exportColumns = [
@@ -8,16 +10,9 @@ const exportColumns = [
 ];
 
 const rankLabels = {
-  '1': 'Starter',
-  '2': 'Achiever',
-  '3': 'Performer',
-  '4': 'Leader',
-  '5': 'Silver Leader',
-  '6': 'Gold Leader',
-  '7': 'Platinum Leader',
-  '8': 'Diamond Leader',
-  '9': 'Crown Leader',
-  '10': 'Royal Crown'
+  '1': 'Starter', '2': 'Achiever', '3': 'Performer', '4': 'Leader',
+  '5': 'Silver Leader', '6': 'Gold Leader', '7': 'Platinum Leader',
+  '8': 'Diamond Leader', '9': 'Crown Leader', '10': 'Royal Crown'
 };
 
 function parseDate(value) {
@@ -37,21 +32,32 @@ import { formatDate } from '../../../../utils/dateFormatter';
 function formatDateTime(value) {
   return formatDate(value);
 }
+
 function DonationReport() {
   const [donationRows, setDonationRows] = useState([]);
   const [activeTab, setActiveTab] = useState('ALL');
   const [filters, setFilters] = useState({
-    donorMemberId: '',
-    receiverMemberId: '',
-    amount: '',
-    rank: '',
-    startDate: '',
-    endDate: ''
+    donorMemberId: '', receiverMemberId: '', amount: '', rank: '', startDate: '', endDate: ''
   });
   const [pageSize, setPageSize] = useState('10');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [pendingDonationId, setPendingDonationId] = useState(null);
+
+  // Flash message state
+  const [flash, setFlash] = useState({ message: '', type: 'info' });
+
+  const showFlash = useCallback((message, type = 'info') => {
+    setFlash({ message, type });
+  }, []);
+
+  const clearFlash = useCallback(() => {
+    setFlash({ message: '', type: 'info' });
+  }, []);
 
   useEffect(() => {
     fetchDonations();
@@ -79,19 +85,67 @@ function DonationReport() {
         status: donation.status || 'PENDING',
         skippedMembers: donation.skippedMembers || []
       })));
-      setError('');
     } catch (err) {
-      setError('Failed to load donations');
+      showFlash('Failed to load donations', 'error');
       console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Open modal on Approve click
+  const handleApproveClick = (donationId) => {
+    setPendingDonationId(donationId);
+    setModalOpen(true);
+  };
+
+  // Called when admin submits the modal
+  const handleModalSubmit = async ({ utrNumber, transactionPassword, remark }) => {
+    if (!pendingDonationId) return;
+    try {
+      setModalLoading(true);
+      await updateDonationStatus(pendingDonationId, 'APPROVED', remark, utrNumber, transactionPassword);
+      setModalOpen(false);
+      setPendingDonationId(null);
+      showFlash('Donation approved successfully!', 'success');
+      await fetchDonations();
+    } catch (err) {
+      setModalLoading(false);
+      showFlash(err?.response?.data?.message || 'Failed to approve donation', 'error');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleModalCancel = () => {
+    setModalOpen(false);
+    setPendingDonationId(null);
+  };
+
+  // Reject without modal (simple confirm)
+  const handleReject = async (donationId) => {
+    if (!window.confirm('Are you sure you want to REJECT this donation?')) return;
+    try {
+      setLoading(true);
+      await updateDonationStatus(donationId, 'REJECTED');
+      showFlash('Donation rejected.', 'warning');
+      await fetchDonations();
+    } catch (err) {
+      showFlash(err?.response?.data?.message || 'Failed to reject donation', 'error');
+      setLoading(false);
+    }
+  };
+
+  const filteredRows = useMemo(() => {
+    return donationRows.filter((row) => {
+      const byDonorId = !filters.donorMemberId || row.donorMemberId.toLowerCase().includes(filters.donorMemberId.toLowerCase());
       const byReceiverId = !filters.receiverMemberId || row.receiverMemberId.toLowerCase().includes(filters.receiverMemberId.toLowerCase());
       const byAmount = !filters.amount || row.amount.includes(filters.amount);
       const byRank = !filters.rank || row.rank === filters.rank;
       const byStatus = activeTab === 'ALL' || row.status === activeTab;
-
       const rowDate = parseDate(row.requestDate);
       const byStartDate = !filters.startDate || rowDate >= filters.startDate;
       const byEndDate = !filters.endDate || rowDate <= filters.endDate;
-
       return byDonorId && byReceiverId && byAmount && byRank && byStatus && byStartDate && byEndDate;
     });
   }, [filters, donationRows, activeTab]);
@@ -101,30 +155,16 @@ function DonationReport() {
   const visibleRows = filteredRows.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / Number(pageSize)));
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
+  const handlePageChange = (pageNumber) => { setCurrentPage(pageNumber); };
   const handleFilterChange = (key) => (event) => {
     setFilters((prev) => ({ ...prev, [key]: event.target.value }));
     setCurrentPage(1);
   };
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
-    row.srNo,
-    row.donorMemberId,
-    row.donorMemberName,
-    row.receiverMemberId,
-    row.receiverMemberName,
-    row.amount,
-    row.rank, // Upgrade
-    row.directs, // Directs
-    row.levelDepth, // Level Depth
-    row.requestDate,
-    row.approveDate,
-    row.transactionId,
-    row.paymentProof,
-    row.status,
+    row.srNo, row.donorMemberId, row.donorMemberName, row.receiverMemberId, row.receiverMemberName,
+    row.amount, row.rank, row.directs, row.levelDepth, row.requestDate, row.approveDate,
+    row.transactionId, row.paymentProof, row.status,
     row.skippedMembers && row.skippedMembers.length > 0 ? (row.skippedMembers[0].memberId || row.skippedMembers[0]) : '---'
   ]));
 
@@ -132,7 +172,6 @@ function DonationReport() {
     const csvRows = [exportColumns, ...formatRowsForExport(filteredRows)]
       .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','))
       .join('\n');
-
     const blob = new Blob([csvRows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -146,12 +185,8 @@ function DonationReport() {
     const tableRows = formatRowsForExport(filteredRows)
       .map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`)
       .join('');
-
     const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      return;
-    }
-
+    if (!printWindow) return;
     printWindow.document.write(`
       <html>
         <head>
@@ -166,10 +201,8 @@ function DonationReport() {
         </head>
         <body>
           <h2>Donations Report</h2>
-          <table className="data-table">
-            <thead>
-              <tr>${exportColumns.map((column) => `<th>${column}</th>`).join('')}</tr>
-            </thead>
+          <table>
+            <thead><tr>${exportColumns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>
             <tbody>${tableRows}</tbody>
           </table>
         </body>
@@ -182,6 +215,18 @@ function DonationReport() {
 
   return (
     <div>
+      {/* Flash notification */}
+      <FlashMessage message={flash.message} type={flash.type} onClose={clearFlash} />
+
+      {/* Verification Modal */}
+      <DonationVerificationModal
+        isOpen={modalOpen}
+        title="ADMIN RE-VERIFICATION"
+        onSubmit={handleModalSubmit}
+        onCancel={handleModalCancel}
+        loading={modalLoading}
+      />
+
       <h2 className="section-title tds-screen-title">Donations Report</h2>
 
       <div className="donation-tabs">
@@ -192,7 +237,7 @@ function DonationReport() {
           { key: 'REJECTED', label: 'REJECTED' },
           { key: 'ALL', label: 'ALL HISTORY' }
         ].map(tab => (
-          <button 
+          <button
             key={tab.key}
             className={`donation-tab-btn ${activeTab === tab.key ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.key)}
@@ -203,9 +248,8 @@ function DonationReport() {
       </div>
 
       <div className="panel" style={{ borderRadius: '28px', padding: '24px' }}>
-        {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         {loading && <div style={{ color: '#666', marginBottom: '14px' }}>Loading donations...</div>}
-        
+
         {!loading && (
           <>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
@@ -275,31 +319,38 @@ function DonationReport() {
                           <button className="btn-primary" type="button" style={{ padding: '5px 10px', fontSize: '14px' }}>
                             {row.paymentProof}
                           </button>
-                        ) : (
-                          '-'
-                        )}
+                        ) : '-'}
                       </td>
                       <td className={
                         row.status === 'COMPLETED' ? 'text-success' :
                         row.status === 'APPROVED' ? 'text-info' :
-                        row.status === 'REJECTED' ? 'text-danger' :
-                        'text-warning'
+                        row.status === 'REJECTED' ? 'text-danger' : 'text-warning'
                       }>
                         {row.status.replace(/_/g, ' ')}
                       </td>
                       <td style={{ maxWidth: '150px', wordWrap: 'break-word' }}>
-                        {row.skippedMembers && row.skippedMembers.length > 0 
-                          ? (row.skippedMembers[0].memberId || row.skippedMembers[0]) 
+                        {row.skippedMembers && row.skippedMembers.length > 0
+                          ? (row.skippedMembers[0].memberId || row.skippedMembers[0])
                           : '---'}
                       </td>
                       <td>
                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                           {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) && (
                             <>
-                              <button className="accept-btn" type="button" title="Accept" style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>
+                              <button
+                                className="accept-btn"
+                                type="button"
+                                style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }}
+                                onClick={() => handleApproveClick(row.transactionId)}
+                              >
                                 Approve
                               </button>
-                              <button className="reject-btn" type="button" title="Reject" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>
+                              <button
+                                className="reject-btn"
+                                type="button"
+                                style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }}
+                                onClick={() => handleReject(row.transactionId)}
+                              >
                                 Reject
                               </button>
                             </>
@@ -327,11 +378,7 @@ function DonationReport() {
                   if (e - s < 2) s = Math.max(1, e - 2);
                   if (p < s || p > e) return null;
                   return (
-                    <button 
-                      key={p} 
-                      className={`page-btn ${currentPage === p ? 'active' : ''}`}
-                      onClick={() => handlePageChange(p)}
-                    >
+                    <button key={p} className={`page-btn ${currentPage === p ? 'active' : ''}`} onClick={() => handlePageChange(p)}>
                       {p}
                     </button>
                   );
@@ -348,4 +395,3 @@ function DonationReport() {
 }
 
 export default DonationReport;
-

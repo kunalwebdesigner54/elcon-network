@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { getMyDonations, updateDonationStatus } from "../../../../api/donationsService";
+import DonationVerificationModal from "../../../shared/DonationVerificationModal/DonationVerificationModal";
+import FlashMessage from "../../../shared/FlashMessage/FlashMessage";
 import "./ReceivedHelp.css";
+
 const exportColumns = ['S.NO', 'DONAR MID', 'DONAR MEMBER NAME', 'AMOUNT', 'UPGRADE', 'REQUEST DATE', 'TRANSACTION ID', 'UTR NUMBER', 'SKIPPED ID', 'STATUS'];
 
 const ReceivedHelp = () => {
@@ -10,13 +13,20 @@ const ReceivedHelp = () => {
   const [pageSize, setPageSize] = useState('10');
   const [page, setPage] = useState(1);
 
-  // Reset page when filters change
-  useEffect(() => {
-    setPage(1);
-  }, [filters, activeTab, pageSize]);
-
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [pendingDonationId, setPendingDonationId] = useState(null);
+
+  // Flash message
+  const [flash, setFlash] = useState({ message: '', type: 'info' });
+  const showFlash = useCallback((message, type = 'info') => setFlash({ message, type }), []);
+  const clearFlash = useCallback(() => setFlash({ message: '', type: 'info' }), []);
+
+  // Reset page when filters change
+  useEffect(() => { setPage(1); }, [filters, activeTab, pageSize]);
 
   useEffect(() => {
     fetchReceivedDonations();
@@ -26,7 +36,6 @@ const ReceivedHelp = () => {
     try {
       setLoading(true);
       const data = await getMyDonations();
-      // Backend returns: { success, data: { sent: [...], received: [...], summary: {...} } }
       const receivedDonations = data?.data?.received || [];
 
       const received = receivedDonations.map((donation, index) => ({
@@ -47,43 +56,53 @@ const ReceivedHelp = () => {
       }));
 
       setReceivedHelpRows(received);
-      setError('');
     } catch (err) {
-      setError('Failed to load received donations');
+      showFlash('Failed to load received donations', 'error');
       console.error('ReceivedHelp fetch error:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdateStatus = async (donationId, status) => {
-    let utrNumber = '';
-    let transactionPassword = '';
+  // Open modal when member clicks ACCEPT
+  const handleAcceptClick = (donationId) => {
+    setPendingDonationId(donationId);
+    setModalOpen(true);
+  };
 
-    if (status === 'APPROVED') {
-      utrNumber = window.prompt(`Donation ACCEPT karne ke liye UTR / Transaction ID darj karein:`);
-      if (utrNumber === null) return; // User cancelled
-      if (utrNumber.trim() === '') {
-        alert('UTR / Transaction ID required hai donation accept karne ke liye.');
-        return;
-      }
-
-      transactionPassword = window.prompt(`Security Verification: Apna Transaction Password darj karein:`);
-      if (transactionPassword === null) return; // User cancelled
-      if (transactionPassword.trim() === '') {
-        alert('Transaction Password required hai.');
-        return;
-      }
-    } else {
-      if (!window.confirm(`Are you sure you want to mark this donation as ${status}?`)) return;
-    }
-
+  // Member submits modal with UTR + transaction password
+  const handleModalSubmit = async ({ utrNumber, transactionPassword, remark }) => {
+    if (!pendingDonationId) return;
     try {
-      setLoading(true);
-      await updateDonationStatus(donationId, status, '', utrNumber, transactionPassword);
+      setModalLoading(true);
+      await updateDonationStatus(pendingDonationId, 'APPROVED', remark, utrNumber, transactionPassword);
+      setModalOpen(false);
+      setPendingDonationId(null);
+      showFlash('Donation accepted successfully!', 'success');
       await fetchReceivedDonations();
     } catch (err) {
-      setError(err?.response?.data?.message || 'Failed to update status');
+      setModalLoading(false);
+      showFlash(err?.response?.data?.message || 'Failed to accept donation', 'error');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleModalCancel = () => {
+    setModalOpen(false);
+    setPendingDonationId(null);
+  };
+
+  // Reject without modal
+  const handleReject = async (donationId) => {
+    if (!window.confirm('Are you sure you want to REJECT this donation?')) return;
+    try {
+      setLoading(true);
+      await updateDonationStatus(donationId, 'REJECTED');
+      showFlash('Donation rejected.', 'warning');
+      await fetchReceivedDonations();
+    } catch (err) {
+      showFlash(err?.response?.data?.message || 'Failed to reject donation', 'error');
       setLoading(false);
     }
   };
@@ -126,7 +145,8 @@ const ReceivedHelp = () => {
   };
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
-    row.sNo, row.memberId, row.name, row.amount, row.rank, row.requestDate, row.transactionId, row.utrNumber, row.skippedIds, row.status.replace(/_/g, ' ')
+    row.sNo, row.memberId, row.name, row.amount, row.rank, row.requestDate,
+    row.transactionId, row.utrNumber, row.skippedIds, row.status.replace(/_/g, ' ')
   ]));
 
   const handleExportExcel = () => {
@@ -162,7 +182,7 @@ const ReceivedHelp = () => {
         </head>
         <body>
           <h2>Received Help (Downline ➔ You)</h2>
-          <table className="data-table">
+          <table>
             <thead><tr>${exportColumns.map((c) => `<th>${c}</th>`).join('')}</tr></thead>
             <tbody>${tableRows}</tbody>
           </table>
@@ -176,7 +196,20 @@ const ReceivedHelp = () => {
 
   return (
     <div>
+      {/* Flash notification */}
+      <FlashMessage message={flash.message} type={flash.type} onClose={clearFlash} />
+
+      {/* Verification Modal */}
+      <DonationVerificationModal
+        isOpen={modalOpen}
+        title="DONATION RE-VERIFICATION"
+        onSubmit={handleModalSubmit}
+        onCancel={handleModalCancel}
+        loading={modalLoading}
+      />
+
       <h1 className="user-page-title">Received Help (Downline ➔ You)</h1>
+
       <div className="donation-tabs">
         {[
           { key: 'WAITING_FOR_RECEIVER_CONFIRMATION', label: 'WAITING' },
@@ -194,8 +227,8 @@ const ReceivedHelp = () => {
           </button>
         ))}
       </div>
+
       <div className="user-panel">
-        {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         {loading && <div style={{ color: '#666', marginBottom: '14px' }}>Loading...</div>}
 
         {!loading && (
@@ -213,16 +246,7 @@ const ReceivedHelp = () => {
               <input className="text-input" placeholder="DONAR MID" value={filters.donorMemberId} onChange={handleFilterChange('donorMemberId')} />
               <select className="select-input" value={filters.rank} onChange={handleFilterChange('rank')}>
                 <option value="">UPGRADE</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
+                {[1,2,3,4,5,6,7,8,9,10].map(v => <option key={v} value={String(v)}>{v}</option>)}
               </select>
               <label className="filter-field">
                 <input className="text-input" type="date" aria-label="Start Date" value={filters.startDate} onChange={handleFilterChange('startDate')} />
@@ -237,11 +261,13 @@ const ReceivedHelp = () => {
               </select>
               <button className="user-btn-blue3" type="button" style={{ height: '100%', minHeight: '40px', padding: '0' }} onClick={() => {}}>Search</button>
             </div>
+
             <div className="epin-tools" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 10 }}>
               <button className="btn-outline" onClick={handleExportExcel}>Excel</button>
               <button className="btn-outline" onClick={handleExportPdf}>PDF</button>
               <button className="btn-outline" onClick={handleExportPdf}>Print</button>
             </div>
+
             <div className="table-wrap">
               <table className="data-table">
                 <thead>
@@ -279,8 +305,20 @@ const ReceivedHelp = () => {
                         <td>
                           {['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'].includes(row.status) ? (
                             <div style={{ display: 'flex', gap: '4px' }}>
-                              <button className="user-mini-btn user-accept" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'APPROVED')}>ACCEPT</button>
-                              <button className="user-mini-btn user-reject" type="button" onClick={() => handleUpdateStatus(row.transactionId, 'REJECTED')}>REJECT</button>
+                              <button
+                                className="user-mini-btn user-accept"
+                                type="button"
+                                onClick={() => handleAcceptClick(row.transactionId)}
+                              >
+                                ACCEPT
+                              </button>
+                              <button
+                                className="user-mini-btn user-reject"
+                                type="button"
+                                onClick={() => handleReject(row.transactionId)}
+                              >
+                                REJECT
+                              </button>
                             </div>
                           ) : (
                             <span>-</span>
@@ -319,11 +357,7 @@ const ReceivedHelp = () => {
                   if (e - s < 2) s = Math.max(1, e - 2);
                   if (p < s || p > e) return null;
                   return (
-                    <button
-                      key={p}
-                      className={`page-btn ${page === p ? 'active' : ''}`}
-                      onClick={() => handlePageChange(p)}
-                    >
+                    <button key={p} className={`page-btn ${page === p ? 'active' : ''}`} onClick={() => handlePageChange(p)}>
                       {p}
                     </button>
                   );
