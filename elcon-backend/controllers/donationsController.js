@@ -617,6 +617,7 @@ exports.getMyStatus = async (req, res) => {
       fromMemberId: memberId,
       status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] }
     }).lean();
+    const DONATION_AMOUNTS = await getDynamicDonationAmounts();
     res.status(200).json({
       success: true,
       data: {
