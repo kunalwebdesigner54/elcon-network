@@ -209,53 +209,55 @@ const AwardsRewardsSetting = () => {
 
         {/* ─── CURRENT RUNNING REWARDS CONTEST TABLE ─── */}
         <h3 className="ar-table-title">CURRENT RUNNING REWARDS CONTEST</h3>
-        <table className="ar-table">
-          <thead>
-            <tr>
-              <th>START DATE</th>
-              <th>END DATE</th>
-              <th>NEW DIRECTS</th>
-              <th>UPGRADE LEVEL</th>
-              <th>REWARD</th>
-              <th>ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            {activeContest ? (
+        <div className="ar-table-responsive">
+          <table className="ar-table">
+            <thead>
               <tr>
-                <td>{toDisplayDate(activeContest.startDate)}</td>
-                <td>{toDisplayDate(activeContest.endDate)}</td>
-                <td>{activeContest.targetDirects}</td>
-                <td>{activeContest.targetUpgradeLevel}</td>
-                <td>{activeContest.rewardName}</td>
-                <td>
-                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                    <button
-                      className="ar-action-btn ar-edit-btn"
-                      type="button"
-                      title="Edit Contest"
-                      onClick={handleEditClick}
-                    >
-                      ✏️ EDIT
-                    </button>
-                    <button
-                      className="ar-action-btn ar-delete-btn"
-                      type="button"
-                      title="Delete Contest"
-                      onClick={handleDeleteClick}
-                    >
-                      🗑️ DELETE
-                    </button>
-                  </div>
-                </td>
+                <th>START DATE</th>
+                <th>END DATE</th>
+                <th>NEW DIRECTS</th>
+                <th>UPGRADE LEVEL</th>
+                <th>REWARD</th>
+                <th>ACTION</th>
               </tr>
-            ) : (
-              <tr>
-                <td colSpan="6">No active contest</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {activeContest ? (
+                <tr>
+                  <td>{toDisplayDate(activeContest.startDate)}</td>
+                  <td>{toDisplayDate(activeContest.endDate)}</td>
+                  <td>{activeContest.targetDirects}</td>
+                  <td>{activeContest.targetUpgradeLevel}</td>
+                  <td>{activeContest.rewardName}</td>
+                  <td>
+                    <div className="ar-actions-cell">
+                      <button
+                        className="ar-action-btn ar-edit-btn"
+                        type="button"
+                        title="Edit Contest"
+                        onClick={handleEditClick}
+                      >
+                        ✏️ EDIT
+                      </button>
+                      <button
+                        className="ar-action-btn ar-delete-btn"
+                        type="button"
+                        title="Delete Contest"
+                        onClick={handleDeleteClick}
+                      >
+                        🗑️ DELETE
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <td colSpan="6">No active contest</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* ─── EDIT MODAL ─── */}

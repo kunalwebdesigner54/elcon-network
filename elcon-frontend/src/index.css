@@ -581,3 +581,165 @@ select option {
 .page-btn:hover:not(:disabled) { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
 .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .page-btn.active-page, .page-btn.active { background-color: var(--primary); color: #fff; border-color: var(--primary); font-weight: 700; box-shadow: none !important; }
+
+/* ==========================================================================
+   GLOBAL SWEETALERT2 DARK THEME (BEAST MODE CONSISTENCY)
+   ========================================================================== */
+.swal2-container {
+  background-color: rgba(4, 8, 20, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  z-index: 999999 !important;
+}
+
+.swal2-popup {
+  background: linear-gradient(145deg, #0d1b3e 0%, #0b1221 100%) !important;
+  border: 1px solid rgba(14, 165, 233, 0.35) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 0 40px rgba(14, 165, 233, 0.18), 0 24px 48px rgba(0, 0, 0, 0.75) !important;
+  color: #f8fafc !important;
+  font-family: 'Poppins', sans-serif !important;
+  padding: 28px 24px !important;
+}
+
+.swal2-title {
+  color: #ffffff !important;
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  font-family: 'Poppins', sans-serif !important;
+  margin-top: 12px !important;
+  text-transform: uppercase !important;
+}
+
+.swal2-html-container {
+  color: #94a3b8 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+  font-family: 'Poppins', sans-serif !important;
+  margin-top: 8px !important;
+}
+
+.swal2-actions {
+  margin-top: 24px !important;
+  gap: 12px !important;
+}
+
+.swal2-confirm {
+  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  letter-spacing: 0.8px !important;
+  padding: 10px 32px !important;
+  font-family: 'Poppins', sans-serif !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal2-confirm:hover {
+  opacity: 0.92 !important;
+  transform: translateY(-1px) !important;
+}
+
+.swal2-confirm:focus {
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.4) !important;
+}
+
+.swal2-cancel {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #94a3b8 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  letter-spacing: 0.5px !important;
+  padding: 10px 24px !important;
+  font-family: 'Poppins', sans-serif !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal2-cancel:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #f1f5f9 !important;
+}
+
+.swal2-deny {
+  background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  padding: 10px 24px !important;
+  font-family: 'Poppins', sans-serif !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+}
+
+/* Success Icon Fix (kill default white masks) */
+.swal2-icon.swal2-success {
+  border-color: #22c55e !important;
+  color: #22c55e !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #22c55e !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border: 4px solid rgba(34, 197, 94, 0.35) !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-circular-line-left,
+.swal2-icon.swal2-success .swal2-success-circular-line-right,
+.swal2-icon.swal2-success .swal2-success-fix {
+  background-color: transparent !important;
+}
+
+/* Error Icon Fix */
+.swal2-icon.swal2-error {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+.swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+  background-color: #ef4444 !important;
+}
+
+/* Warning Icon Fix */
+.swal2-icon.swal2-warning {
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+}
+
+/* Info Icon Fix */
+.swal2-icon.swal2-info {
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+/* Question Icon Fix */
+.swal2-icon.swal2-question {
+  border-color: #818cf8 !important;
+  color: #818cf8 !important;
+}
+
+/* Form Inputs inside Swal */
+.swal2-input, .swal2-textarea, .swal2-select {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+.swal2-input:focus, .swal2-textarea:focus, .swal2-select:focus {
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.25) !important;
+  outline: none !important;
+}
+
