@@ -197,6 +197,14 @@ function KYCRequest() {
     printWindow.print();
   };
 
+
+  const totalPages = pagination?.pages || 1;
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
   return (
     <div>
       <h1 className="page-title" style={{ fontSize: '42px', marginBottom: '14px' }}>KYC Request</h1>

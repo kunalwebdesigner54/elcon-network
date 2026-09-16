@@ -30,6 +30,14 @@ function MemberAlertList() {
     );
   }, [rows, search]);
 
+
+  const totalPages = pagination?.pages || 1;
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
   return (
     <div>
       <h1 className="page-title">Member Alert List</h1>
