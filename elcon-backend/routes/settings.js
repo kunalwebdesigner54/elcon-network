@@ -10,7 +10,7 @@ router.use(protect);
 
 router.put('/global', authorize('admin'), updateGlobalSettings);
 
-router.get('/plan', authorize('admin'), getPlanSetting);
+router.get('/plan', getPlanSetting);
 router.put('/plan', authorize('admin'), updatePlanSetting);
 router.get('/bank-account', getBankAccount);
 router.put('/bank-account', authorize('admin'), updateBankAccount);

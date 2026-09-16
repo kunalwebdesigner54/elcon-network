@@ -3,8 +3,28 @@ const Donation = require('../models/Donation');
 const SiteSetting = require('../models/SiteSetting');
 const { createWalletTransaction, createDiscountWalletTransaction } = require('../utils/walletHelper');
 
-const DONATION_AMOUNTS = Donation.DONATION_AMOUNTS;
-
+const getDynamicDonationAmounts = async () => {
+  const defaultAmounts = {
+    1: 300, 2: 1000, 3: 2000, 4: 4000, 5: 8000,
+    6: 16000, 7: 32000, 8: 64000, 9: 128000, 10: 256000
+  };
+  try {
+    const plan = await SiteSetting.findOne({ settingKey: 'plan-setting' });
+    if (plan && plan.data && plan.data.donationIncome) {
+      const dynamicAmounts = {};
+      plan.data.donationIncome.forEach((amt, index) => {
+        const parsed = parseFloat(amt);
+        if (!isNaN(parsed)) {
+          dynamicAmounts[index + 1] = parsed;
+        }
+      });
+      return { ...defaultAmounts, ...dynamicAmounts };
+    }
+  } catch (err) {
+    console.error("Error fetching dynamic donation amounts", err);
+  }
+  return defaultAmounts;
+};
 // Generate a unique donation ID: DON + timestamp + 4-digit random
 const generateDonationId = () => {
   const ts = Date.now().toString().slice(-8);
@@ -45,6 +65,7 @@ const findEligibleUpline = async (startMemberId, targetLevel) => {
 // ─────────────────────────────────────────────────────────────────────────────
 exports.getDonationTarget = async (req, res) => {
   try {
+    const DONATION_AMOUNTS = await getDynamicDonationAmounts();
     const level = parseInt(req.params.level, 10);
     if (!DONATION_AMOUNTS[level]) {
       return res.status(400).json({ success: false, message: 'Invalid donation level (1–10)' });
@@ -93,6 +114,7 @@ exports.getDonationTarget = async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 exports.upgradeMember = async (req, res) => {
   try {
+    const DONATION_AMOUNTS = await getDynamicDonationAmounts();
     const { level } = req.body;
     const targetLevel = parseInt(level, 10);
 
@@ -223,6 +245,7 @@ exports.upgradeMember = async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 exports.submitDonation = async (req, res) => {
   try {
+    const DONATION_AMOUNTS = await getDynamicDonationAmounts();
     const { level, utrNumber, paymentProof, remark } = req.body;
     const targetLevel = parseInt(level, 10);
 

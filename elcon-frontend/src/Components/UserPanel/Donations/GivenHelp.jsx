@@ -5,10 +5,7 @@ import { getDonationTarget, submitDonation, getMyStatus, getMyDonations } from "
 import apiClient from "../../../api/config";
 import { formatDate } from '../../../utils/dateFormatter';
 
-const DONATION_AMOUNTS = {
-  1: 300, 2: 1000, 3: 2000, 4: 4000, 5: 8000,
-  6: 16000, 7: 32000, 8: 64000, 9: 128000, 10: 256000,
-};
+
 
 const CopyIcon = ({ onClick }) => (
   <svg
@@ -50,6 +47,11 @@ const GivenHelp = () => {
   const [donationHistory, setDonationHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
 
+  const [donationAmounts, setDonationAmounts] = useState({
+    1: 300, 2: 1000, 3: 2000, 4: 4000, 5: 8000,
+    6: 16000, 7: 32000, 8: 64000, 9: 128000, 10: 256000,
+  });
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -78,6 +80,20 @@ const GivenHelp = () => {
         } else {
           const target = await getDonationTarget(next);
           setTargetData(target.data);
+        }
+
+        try {
+          const planRes = await apiClient.get('/settings/plan');
+          if (planRes.data && planRes.data.planSetting && planRes.data.planSetting.donationIncome) {
+            const dynamicAmounts = { ...donationAmounts };
+            planRes.data.planSetting.donationIncome.forEach((amt, idx) => {
+              const val = parseFloat(amt);
+              if (!isNaN(val)) dynamicAmounts[idx + 1] = val;
+            });
+            setDonationAmounts(dynamicAmounts);
+          }
+        } catch (planErr) {
+          console.error("Could not fetch plan settings for donation amounts", planErr);
         }
 
         // Always fetch donation history to allow viewing past donations
@@ -233,7 +249,7 @@ const GivenHelp = () => {
                   <span className="donation-free-will">"I am donating of my own free will"</span>{" "}
                   <span className="donation-desc">
                     I declare that I am gifting{" "}
-                    <b>₹{DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}</b> to{" "}
+                    <b>₹{donationAmounts[nextLevel]?.toLocaleString("en-IN")}</b> to{" "}
                     <b>{receiver.toName}</b> and I will never claim this amount in future.
                   </span>
                 </div>
@@ -307,7 +323,7 @@ const GivenHelp = () => {
                   {/* Donation details */}
                   <div className="donation-section">
                     <div className="section-title21">Donation / Help Details</div>
-                    <div className="help-info-row21"><span className="help-info-label">Amount :</span> <span className="help-info-value amount">₹ {DONATION_AMOUNTS[nextLevel]?.toLocaleString("en-IN")}.00</span></div>
+                    <div className="help-info-row21"><span className="help-info-label">Amount :</span> <span className="help-info-value amount">₹ {donationAmounts[nextLevel]?.toLocaleString("en-IN")}.00</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Upgrade Level :</span> <span className="help-info-value">Level {nextLevel}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Donation Date :</span> <span className="help-info-value">{formatDate(new Date())}</span></div>
                     <div className="help-info-row21"><span className="help-info-label">Donation Status :</span> <span className="help-info-value" style={{ color: "#f39c12", fontWeight: 600 }}>PENDING</span></div>
@@ -357,7 +373,7 @@ const GivenHelp = () => {
                       border: isSelected && isCompleted ? '2px solid #333' : undefined,
                       transform: isSelected && isCompleted ? 'scale(1.1)' : undefined
                     }}
-                    title={`Level ${lvl} — ₹${DONATION_AMOUNTS[lvl]?.toLocaleString("en-IN")}`}
+                    title={`Level ${lvl} — ₹${donationAmounts[lvl]?.toLocaleString("en-IN")}`}
                     onClick={() => handleLevelClick(lvl)}
                   >
                     {lvl}
