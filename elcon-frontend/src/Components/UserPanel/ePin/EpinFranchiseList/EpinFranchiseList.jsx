@@ -55,10 +55,10 @@ function EpinFranchiseList() {
       const term = search.toLowerCase().trim();
       const matchesSearch =
         !term ||
-        item.name.toLowerCase().includes(term) ||
-        item.upi.toLowerCase().includes(term) ||
-        item.city.toLowerCase().includes(term) ||
-        item.franchiseId.toLowerCase().includes(term);
+        String(item.name || '').toLowerCase().includes(term) ||
+        String(item.upi || '').toLowerCase().includes(term) ||
+        String(item.city || '').toLowerCase().includes(term) ||
+        String(item.franchiseId || '').toLowerCase().includes(term);
       const matchesCity = city === 'All' || item.city === city;
       return matchesSearch && matchesCity;
     });

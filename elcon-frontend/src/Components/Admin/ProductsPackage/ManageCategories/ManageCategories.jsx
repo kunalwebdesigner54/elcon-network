@@ -171,7 +171,7 @@ function ManageCategories() {
                       <td>{cat.name}</td>
                       <td>{cat.description || '-'}</td>
                       <td>
-                        <span className={`status-badge ${(cat.status || 'ACTIVE').toLowerCase()}`}>
+                        <span className={`status-badge ${String(cat.status || 'ACTIVE').toLowerCase()}`}>
                           {cat.status || 'ACTIVE'}
                         </span>
                       </td>

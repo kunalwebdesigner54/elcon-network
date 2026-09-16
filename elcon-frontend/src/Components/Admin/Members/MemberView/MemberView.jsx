@@ -75,11 +75,11 @@ function MemberView() {
       const filterText = searchText.trim().toLowerCase();
       const inGlobalSearch = !filterText || Object.values(row).some((value) => String(value).toLowerCase().includes(filterText));
 
-      const bySponsor = !filters.sponsorId || row.sponsorId.toLowerCase().includes(filters.sponsorId.toLowerCase());
-      const byMember = !filters.memberId || row.memberId.toLowerCase().includes(filters.memberId.toLowerCase());
-      const byName = !filters.name || row.name.toLowerCase().includes(filters.name.toLowerCase());
-      const byMobile = !filters.mobile || row.mobile.toLowerCase().includes(filters.mobile.toLowerCase());
-      const byCity = !filters.city || row.city.toLowerCase().includes(filters.city.toLowerCase());
+      const bySponsor = !filters.sponsorId || String(row.sponsorId || '').toLowerCase().includes(filters.sponsorId.toLowerCase());
+      const byMember = !filters.memberId || String(row.memberId || '').toLowerCase().includes(filters.memberId.toLowerCase());
+      const byName = !filters.name || String(row.name || '').toLowerCase().includes(filters.name.toLowerCase());
+      const byMobile = !filters.mobile || String(row.mobile || '').toLowerCase().includes(filters.mobile.toLowerCase());
+      const byCity = !filters.city || String(row.city || '').toLowerCase().includes(filters.city.toLowerCase());
       const byLevel = !filters.level || row.jLevel === filters.level;
       const byStatus = !filters.status || row.status === filters.status;
       const byStartDate = !filters.startDate || row.joiningDateTime >= filters.startDate;

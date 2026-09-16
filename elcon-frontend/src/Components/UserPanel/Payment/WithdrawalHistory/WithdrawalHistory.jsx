@@ -51,7 +51,7 @@ function WithdrawalHistory() {
 
   const filteredRows = useMemo(() => {
     return withdrawalData.filter((row) => {
-      const byRequestId = !appliedFilters.requestId || row.requestId.toLowerCase().includes(appliedFilters.requestId.toLowerCase());
+      const byRequestId = !appliedFilters.requestId || String(row.requestId || '').toLowerCase().includes(appliedFilters.requestId.toLowerCase());
       const byAmount = !appliedFilters.amount || String(Number(row.amount || 0)).includes(appliedFilters.amount);
       const byStatus = !appliedFilters.status || row.status === appliedFilters.status;
       

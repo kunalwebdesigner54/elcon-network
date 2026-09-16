@@ -141,8 +141,8 @@ function DonationReport() {
 
   const filteredRows = useMemo(() => {
     return donationRows.filter((row) => {
-      const byDonorId = !filters.donorMemberId || row.donorMemberId.toLowerCase().includes(filters.donorMemberId.toLowerCase());
-      const byReceiverId = !filters.receiverMemberId || row.receiverMemberId.toLowerCase().includes(filters.receiverMemberId.toLowerCase());
+      const byDonorId = !filters.donorMemberId || String(row.donorMemberId || '').toLowerCase().includes(filters.donorMemberId.toLowerCase());
+      const byReceiverId = !filters.receiverMemberId || String(row.receiverMemberId || '').toLowerCase().includes(filters.receiverMemberId.toLowerCase());
       const byAmount = !filters.amount || row.amount.includes(filters.amount);
       const byRank = !filters.rank || row.rank === filters.rank;
       const byStatus = activeTab === 'ALL' || row.status === activeTab;

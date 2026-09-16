@@ -38,8 +38,8 @@ function ApproveWithdrawalRequest() {
 
   const filteredRows = useMemo(() => {
     return withdrawalRows.filter((row) => {
-      const matchRequestId = !appliedFilters.requestId || row.requestId.toLowerCase().includes(appliedFilters.requestId.toLowerCase());
-      const matchMemberId = !appliedFilters.memberId || (row.memberId || '').toLowerCase().includes(appliedFilters.memberId.toLowerCase());
+      const matchRequestId = !appliedFilters.requestId || String(row.requestId || '').toLowerCase().includes(appliedFilters.requestId.toLowerCase());
+      const matchMemberId = !appliedFilters.memberId || String(row.memberId || '').toLowerCase().includes(appliedFilters.memberId.toLowerCase());
       const matchAmount = !appliedFilters.amount || String(Number(row.amount || 0)).includes(appliedFilters.amount);
       const matchStatus = !appliedFilters.status || row.status === appliedFilters.status;
 

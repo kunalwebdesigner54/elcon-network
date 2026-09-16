@@ -113,7 +113,7 @@ const ReceivedHelp = () => {
 
   const filteredRows = useMemo(() => {
     return receivedHelpRows.filter((row) => {
-      const byDonorId = !filters.donorMemberId || row.memberId.toLowerCase().includes(filters.donorMemberId.toLowerCase());
+      const byDonorId = !filters.donorMemberId || String(row.memberId || '').toLowerCase().includes(filters.donorMemberId.toLowerCase());
       const byRank = !filters.rank || String(row.rank) === filters.rank;
       const byStatus = activeTab === 'ALL' || row.status === activeTab;
 

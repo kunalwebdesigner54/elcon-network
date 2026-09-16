@@ -28,7 +28,7 @@ function DiscountCoupon() {
       // Transform coupons for card display
       const cards = coupons.map((coupon) => {
         const status = coupon.status || 'ACTIVE';
-        const themeClass = `coupon-card-${status.toLowerCase()}`;
+        const themeClass = `coupon-card-${String(status || '').toLowerCase()}`;
         const dateText = status === 'USED' 
           ? `Used on ${coupon.usedDate ? formatDate(coupon.usedDate) : 'N/A'}`
           : status === 'EXPIRED'

@@ -124,7 +124,7 @@ function FranchiseDeliveryReport() {
                     <td>{item.joiningPackage}</td>
                     <td>{formatDate(item.registeredAt)}</td>
                     <td>
-                      <span className={`status-badge ${item.deliveryStatus.toLowerCase()}`}>
+                      <span className={`status-badge ${String(item.deliveryStatus || '').toLowerCase()}`}>
                         {item.deliveryStatus}
                       </span>
                       {item.deliveryStatus === 'Delivered' && (
