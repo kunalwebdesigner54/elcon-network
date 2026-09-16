@@ -34,7 +34,7 @@ function MemberAlertList() {
   }, [rows, search]);
 
 
-  // totalPages calculated above
+  const totalPages = pagination?.pages || 1;
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
