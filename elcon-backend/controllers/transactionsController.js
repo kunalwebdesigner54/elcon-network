@@ -326,10 +326,10 @@ exports.getDiscountWalletTransactions = async (req, res) => {
       totalUsed += Number(tx.debit || 0);
     });
 
-    // Get user wallet balance
+    // Get user coupon balance
     const User = require('../models/User');
-    const user = await User.findOne({ memberId }).select('walletBalance discountCouponBalance');
-    const walletBalance = user ? (user.walletBalance || 0) : 0;
+    const user = await User.findOne({ memberId }).select('couponWalletBalance discountCouponBalance');
+    const walletBalance = user ? ((user.couponWalletBalance || 0) + (user.discountCouponBalance || 0)) : 0;
 
     res.json({ 
       success: true, 
