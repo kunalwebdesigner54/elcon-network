@@ -212,12 +212,12 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                           {row.status === 'Unused' && (
                             <button className="action-btn reject-btn" type="button" title="Block" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleAction(row.epin, 'block')}>
-                              Block
+                              <i className="fa-solid fa-ban" style={{ marginRight: '4px' }}></i> Block
                             </button>
                           )}
                           {row.status === 'Blocked' && (
                             <button className="action-btn accept-btn" type="button" title="Unblock" style={{ background: '#e8f8f5', color: '#27ae60', border: '1px solid #27ae60', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleAction(row.epin, 'unblock')}>
-                              Unblock
+                              <i className="fa-solid fa-unlock" style={{ marginRight: '4px' }}></i> Unblock
                             </button>
                           )}
                           {!['Unused', 'Blocked'].includes(row.status) && '-'}
