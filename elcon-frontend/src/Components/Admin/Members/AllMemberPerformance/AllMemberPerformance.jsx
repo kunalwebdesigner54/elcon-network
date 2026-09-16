@@ -61,7 +61,7 @@ function AllMemberPerformance() {
 
   const filteredRows = useMemo(() => {
     return memberPerformanceRows.filter((row) => {
-      const joinDateValue = row.joinDateRaw ? new Date(row.joinDateRaw).toISOString().slice(0, 10) : '';
+      const joinDateValue = row.joinDateRaw && !isNaN(new Date(row.joinDateRaw)) ? new Date(row.joinDateRaw).toISOString().slice(0, 10) : '';
 
       const byMemberId = !filters.memberId || row.memberId.toLowerCase().includes(filters.memberId.toLowerCase());
       const byName = !filters.memberName || row.memberName.toLowerCase().includes(filters.memberName.toLowerCase());

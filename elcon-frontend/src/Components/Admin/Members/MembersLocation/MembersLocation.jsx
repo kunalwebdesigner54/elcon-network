@@ -53,7 +53,7 @@ function MembersLocation() {
       const byState = !filters.state || row.state.toLowerCase().includes(filters.state.toLowerCase());
       const byCity = !filters.city || row.city.toLowerCase().includes(filters.city.toLowerCase());
       const byStatus = !filters.status || row.status === filters.status;
-      const joinDateValue = row.joinDateRaw ? new Date(row.joinDateRaw).toISOString().slice(0, 10) : '';
+      const joinDateValue = row.joinDateRaw && !isNaN(new Date(row.joinDateRaw)) ? new Date(row.joinDateRaw).toISOString().slice(0, 10) : '';
       const byStartDate = !filters.startDate || joinDateValue >= filters.startDate;
       const byEndDate = !filters.endDate || joinDateValue <= filters.endDate;
 
