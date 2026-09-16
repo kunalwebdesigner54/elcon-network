@@ -117,3 +117,61 @@ exports.getQualifiers = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.updateContest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { startDate, endDate, targetDirects, targetUpgradeLevel, rewardName, popupImage, transactionPassword } = req.body;
+
+    const adminUser = await User.findById(req.user.id).select('+transactionPassword');
+    if (!adminUser) {
+      return res.status(404).json({ success: false, message: 'Admin user not found' });
+    }
+    const isMatch = await adminUser.matchTransactionPassword(transactionPassword);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Invalid transaction password' });
+    }
+
+    const contest = await RewardContest.findById(id);
+    if (!contest) {
+      return res.status(404).json({ success: false, message: 'Contest not found' });
+    }
+
+    if (startDate) contest.startDate = new Date(startDate);
+    if (endDate) contest.endDate = new Date(endDate);
+    if (targetDirects !== undefined) contest.targetDirects = Number(targetDirects);
+    if (targetUpgradeLevel !== undefined) contest.targetUpgradeLevel = Number(targetUpgradeLevel);
+    if (rewardName) contest.rewardName = rewardName;
+    if (popupImage) contest.popupImage = popupImage;
+
+    await contest.save();
+    res.json({ success: true, contest });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.deleteContest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { transactionPassword } = req.body;
+
+    const adminUser = await User.findById(req.user.id).select('+transactionPassword');
+    if (!adminUser) {
+      return res.status(404).json({ success: false, message: 'Admin user not found' });
+    }
+    const isMatch = await adminUser.matchTransactionPassword(transactionPassword);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Invalid transaction password' });
+    }
+
+    const contest = await RewardContest.findByIdAndDelete(id);
+    if (!contest) {
+      return res.status(404).json({ success: false, message: 'Contest not found' });
+    }
+
+    res.json({ success: true, message: 'Contest deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
