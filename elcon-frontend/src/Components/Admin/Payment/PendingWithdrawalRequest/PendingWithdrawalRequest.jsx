@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState, useMemo } from 'react';
 import './PendingWithdrawalRequest.css';
 import { getAdminWithdrawalRequests, updateWithdrawalRequestStatus } from '../../../../api/paymentService';
@@ -5,6 +6,10 @@ import { getAdminWithdrawalRequests, updateWithdrawalRequestStatus } from '../..
 import WithdrawalActionButtons from '../WithdrawalActionButtons';
 
 function PendingWithdrawalRequest() {
+  const [page, setPage] = React.useState(1);
+  const handlePageChange = (p) => setPage(p);
+  const totalPages = 1;
+
   const [withdrawalRows, setWithdrawalRows] = useState([]);
   const [pageSize, setPageSize] = useState('10');
   const [loading, setLoading] = useState(true);

@@ -1,6 +1,11 @@
+import React from 'react';
 import './TeamLevel.css';
 
 function TeamLevel() {
+  const [page, setPage] = React.useState(1);
+  const handlePageChange = (p) => setPage(p);
+  const totalPages = 1;
+
   return (
     <div>
       <h1 className="page-title">My Team Level</h1>

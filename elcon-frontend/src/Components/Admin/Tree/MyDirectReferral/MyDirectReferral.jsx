@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { getTeamTree } from '../../../../api/donationsService';
 
 function flattenDirects(node, showAllDescendants = false) {
+  const handlePageChange = (p) => typeof setPage === 'function' ? setPage(p) : null;
+
   const acc = [];
   
   const traverse = (n) => {

@@ -4,6 +4,8 @@ import './TransactionHistory.css';
 import { getUserTransactionHistory } from '../../../../api/managementService';
 
 function formatAmount(value) {
+  const totalPages = 1;
+
   return Number(value || 0).toFixed(2);
 }
 

@@ -1,22 +1,9 @@
+import React from 'react';
 import { useEffect, useState, useMemo } from 'react';
 import './AllWithdrawalRequest.css';
 import { getAdminWithdrawalRequests, updateWithdrawalRequestStatus } from '../../../../api/paymentService';
 
 import WithdrawalActionButtons from '../WithdrawalActionButtons';
-
-function AllWithdrawalRequest() {
-  const [withdrawalRows, setWithdrawalRows] = useState([]);
-  const [pageSize, setPageSize] = useState('10');
-  const [loading, setLoading] = useState(true);
-
-  const [filters, setFilters] = useState({ requestId: '', memberId: '', amount: '', status: '', startDate: '', endDate: '' });
-  const [appliedFilters, setAppliedFilters] = useState({ requestId: '', memberId: '', amount: '', status: '', startDate: '', endDate: '' });
-
-  const loadRows = async () => {
-    try {
-      const response = await getAdminWithdrawalRequests();
-      setWithdrawalRows(response.data || []);
-    } catch (error) {
       setWithdrawalRows([]);
     } finally {
       setLoading(false);
@@ -28,6 +15,10 @@ function AllWithdrawalRequest() {
   }, []);
 
   const handleSearch = () => {
+  const [page, setPage] = React.useState(1);
+  const handlePageChange = (p) => setPage(p);
+  const totalPages = 1;
+
     setAppliedFilters(filters);
   };
 
@@ -51,7 +42,8 @@ function AllWithdrawalRequest() {
     });
   }, [appliedFilters, withdrawalRows]);
 
-  const visibleRows = filteredRows.slice(0, Number(pageSize));
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / Number(pageSize)));
+  const visibleRows = filteredRows.slice((page - 1) * Number(pageSize), page * Number(pageSize));
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

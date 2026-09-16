@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import './AllMemberPerformance.css';
 import { getMemberPerformance } from '../../../../api/membersService';
@@ -23,6 +24,10 @@ const exportColumns = [
 ];
 
 function AllMemberPerformance() {
+  const [page, setPage] = React.useState(1);
+  const handlePageChange = (p) => setPage(p);
+  const totalPages = 1;
+
   const [memberPerformanceRows, setMemberPerformanceRows] = useState([]);
   const [filters, setFilters] = useState({
     memberId: '',

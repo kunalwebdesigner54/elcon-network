@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../Common/UserLayout.css';
@@ -5,6 +6,10 @@ import './WithdrawalHistory.css';
 import { getMyWithdrawalHistory } from '../../../../api/paymentService';
 
 function getStatusIcon(status) {
+  const [page, setPage] = React.useState(1);
+  const handlePageChange = (p) => setPage(p);
+  const totalPages = 1;
+
   switch (status) {
     case 'Pending':
       return { className: 'withdrawal-detail-btn withdrawal-detail-btn--pending', label: 'Pending', icon: '▭' };

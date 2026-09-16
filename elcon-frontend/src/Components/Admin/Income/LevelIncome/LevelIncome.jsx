@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react';
 import { getLevelIncomeReports } from '../../../../api/levelIncomeService';
 
 function LevelIncome() {
+  const totalPages = 1;
+
+  const handlePageChange = (p) => typeof setPage === 'function' ? setPage(p) : null;
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

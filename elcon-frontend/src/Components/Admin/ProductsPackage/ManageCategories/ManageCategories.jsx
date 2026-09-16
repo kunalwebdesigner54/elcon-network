@@ -1,3 +1,4 @@
+import React from 'react';
 import './ManageCategories.css';
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -5,6 +6,10 @@ import { getCategories, deleteCategory, updateCategory } from '../../../../api/c
 import { eventEmitter, CATEGORY_EVENTS } from '../../../../utils/eventEmitter';
 
 function ManageCategories() {
+  const [page, setPage] = React.useState(1);
+  const handlePageChange = (p) => setPage(p);
+  const totalPages = 1;
+
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
