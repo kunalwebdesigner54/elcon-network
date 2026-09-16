@@ -3,7 +3,7 @@
 :root {
 	/* Beast Mode Theme Palette */
 	--theme-purple: #8046FC;
-	--theme-dark-blue: #050409;
+	--theme-dark-blue: #0B1221;
 	--theme-blue: #0ea5e9; /* Updated to light blue */
 	--theme-blue-dark: #0284c7;
 	--theme-blue-light: #38bdf8;
@@ -24,10 +24,10 @@
 	--info: var(--theme-blue);
 
 	/* Dark Backgrounds */
-	--bg-darkest: var(--theme-dark-blue); /* Main app background */
-	--bg-dark: var(--theme-dark-blue);
-	--bg-card: #090812; /* Slightly lighter than darkest for contrast */
-	--bg-card-hover: #13111C;
+	--bg-darkest: #040814;
+	--bg-dark: #0B1221;
+	--bg-card: rgba(18, 26, 47, 0.7);
+	--bg-card-hover: rgba(25, 35, 60, 0.85);
 	
 	/* Glassmorphism / Borders */
 	--glass-border: rgba(255, 255, 255, 0.05);
@@ -87,7 +87,7 @@ body {
 	margin: 0;
 	font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
 	font-size: 14px;
-	background: var(--theme-dark-blue);
+	background: var(--bg-darkest);
 	color: var(--text-main);
 	line-height: 1.6;
 }
@@ -333,7 +333,7 @@ select option {
 
 /* Premium Dark Theme Resets (Scoped to Dashboards) */
 .admin-root, .user-root {
-	background-color: var(--theme-dark-blue);
+	background-color: var(--bg-darkest);
 	color: var(--text-main);
 	min-height: 100vh;
 	font-family: 'Poppins', sans-serif;
