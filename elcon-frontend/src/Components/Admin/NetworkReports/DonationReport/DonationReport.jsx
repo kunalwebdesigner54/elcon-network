@@ -4,7 +4,7 @@ import './DonationReport.css';
 
 const exportColumns = [
   'S.No', 'Donor Member ID', 'Donor Member Name', 'Receiver Member ID', 'Receiver Member Name', 'Amount (₹)',
-  'Upgrade', 'Directs', 'Level Depth', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status'
+  'Upgrade', 'Directs', 'Level Depth', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status', 'Skipped IDs'
 ];
 
 const rankLabels = {
@@ -76,7 +76,8 @@ function DonationReport() {
         transactionId: donation.donationId || '',
         requestDate: formatDateTime(donation.dateRaw),
         approveDate: ['APPROVED', 'COMPLETED'].includes(donation.status) ? formatDateTime(donation.reviewedAt) : '\u2014',
-        status: donation.status || 'PENDING'
+        status: donation.status || 'PENDING',
+        skippedMembers: donation.skippedMembers || []
       })));
       setError('');
     } catch (err) {
@@ -155,7 +156,8 @@ function DonationReport() {
     row.approveDate,
     row.transactionId,
     row.paymentProof,
-    row.status
+    row.status,
+    row.skippedMembers && row.skippedMembers.length > 0 ? row.skippedMembers.map(s => s.memberId || s).join(', ') : '---'
   ]));
 
   const handleExportExcel = () => {
