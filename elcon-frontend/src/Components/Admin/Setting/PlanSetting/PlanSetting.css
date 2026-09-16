@@ -28,8 +28,13 @@
   margin-bottom: 30px;
 }
 
-.ps-col {
+.ps-col-wrapper {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ps-col {
   background: rgba(0, 0, 0, 0.2);
   border-radius: var(--border-radius);
   border: 1px solid var(--glass-border);
@@ -39,12 +44,11 @@
 .ps-col-head {
   background: transparent;
   color: var(--primary);
-  padding: 14px;
+  padding: 0 0 16px 0;
   font-weight: 700;
   text-align: center;
   font-size: 16px;
   letter-spacing: 1px;
-  border-bottom: 1px solid var(--glass-border);
 }
 
 .ps-table {

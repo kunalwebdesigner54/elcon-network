@@ -77,31 +77,33 @@ export default function PlanSetting() {
   }
 
   const renderColumn = (title, field) => (
-    <div className="ps-col">
+    <div className="ps-col-wrapper">
       <div className="ps-col-head">{title}</div>
-      <table className="ps-table">
-        <thead>
-          <tr>
-            <th>LEVEL</th>
-            <th>AMOUNT</th>
-          </tr>
-        </thead>
-        <tbody>
-          {plan[field] && plan[field].map((val, i) => (
-            <tr key={i}>
-              <td>{String(i + 1).padStart(2, '0')}</td>
-              <td>
-                <input 
-                  type="text" 
-                  className="ps-input-cell" 
-                  value={val} 
-                  onChange={(e) => handleArrayChange(field, i, e.target.value)} 
-                />
-              </td>
+      <div className="ps-col">
+        <table className="ps-table">
+          <thead>
+            <tr>
+              <th>LEVEL</th>
+              <th>AMOUNT</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {plan[field] && plan[field].map((val, i) => (
+              <tr key={i}>
+                <td>{String(i + 1).padStart(2, '0')}</td>
+                <td>
+                  <input 
+                    type="text" 
+                    className="ps-input-cell" 
+                    value={val} 
+                    onChange={(e) => handleArrayChange(field, i, e.target.value)} 
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
