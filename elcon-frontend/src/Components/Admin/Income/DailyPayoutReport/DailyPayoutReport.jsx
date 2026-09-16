@@ -1,8 +1,11 @@
+import React from 'react';
 import './DailyPayoutReport.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getDailyPayoutReport } from '../../../../api/membersService';
 
 function DailyPayoutReport() {
+  const [page, setPage] = React.useState(1);
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

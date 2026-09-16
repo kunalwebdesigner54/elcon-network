@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMemo, useState } from 'react';
 import './MembersLocation.css';
 import { useEffect } from 'react';
@@ -9,6 +10,8 @@ const exportColumns = [
 ];
 
 function MembersLocation() {
+  const [page, setPage] = React.useState(1);
+
   const [membersLocationRows, setMembersLocationRows] = useState([]);
   const [filters, setFilters] = useState({
     memberId: '',

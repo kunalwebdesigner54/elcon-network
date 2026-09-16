@@ -1,3 +1,4 @@
+import React from 'react';
 import './MyTree.css';
 
 const rows = [
@@ -14,6 +15,10 @@ const rows = [
 ];
 
 function MyTree() {
+  const totalPages = 1;
+
+  const [page, setPage] = React.useState(1);
+
   return (
     <div>
       <h1 className="page-title">My level</h1>

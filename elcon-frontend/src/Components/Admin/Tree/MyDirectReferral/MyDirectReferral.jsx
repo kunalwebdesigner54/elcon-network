@@ -30,6 +30,7 @@ function flattenDirects(node, showAllDescendants = false) {
 }
 
 function MyDirectReferral() {
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

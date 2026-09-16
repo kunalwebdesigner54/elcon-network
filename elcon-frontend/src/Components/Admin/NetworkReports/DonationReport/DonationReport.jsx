@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { getAllDonations, updateDonationStatus } from '../../../../api/donationsService';
 import DonationVerificationModal from '../../../shared/DonationVerificationModal/DonationVerificationModal';
@@ -34,6 +35,8 @@ function formatDateTime(value) {
 }
 
 function DonationReport() {
+  const [page, setPage] = React.useState(1);
+
   const [donationRows, setDonationRows] = useState([]);
   const [activeTab, setActiveTab] = useState('ALL');
   const [filters, setFilters] = useState({

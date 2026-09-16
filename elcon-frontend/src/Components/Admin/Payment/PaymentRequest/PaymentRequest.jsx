@@ -1,8 +1,13 @@
+import React from 'react';
 import './PaymentRequest.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getAllDonations } from '../../../../api/donationsService';
 
 function PaymentRequest() {
+  const totalPages = 1;
+
+  const [page, setPage] = React.useState(1);
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

@@ -3,6 +3,8 @@ import './LevelIncome.css';
 import { getLevelIncomeReports } from '../../../../api/levelIncomeService';
 
 function LevelIncome() {
+  const [page, setPage] = React.useState(1);
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

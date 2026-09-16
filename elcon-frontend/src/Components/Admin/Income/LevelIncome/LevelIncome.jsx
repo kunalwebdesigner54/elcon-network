@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getLevelIncomeReports } from '../../../../api/levelIncomeService';
 
 function LevelIncome() {
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import './DiscountWalletOverview.css';
 
 function DiscountWalletOverview() {
+  const totalPages = 1;
+
+  const [page, setPage] = React.useState(1);
+
   const [filters, setFilters] = useState({
     memberId: '',
     donationStatus: '',

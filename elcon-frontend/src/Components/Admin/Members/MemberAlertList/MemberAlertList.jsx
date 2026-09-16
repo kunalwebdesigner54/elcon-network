@@ -1,8 +1,11 @@
+import React from 'react';
 import './MemberAlertList.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getAllMembersList } from '../../../../api/membersService';
 
 function MemberAlertList() {
+  const [page, setPage] = React.useState(1);
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

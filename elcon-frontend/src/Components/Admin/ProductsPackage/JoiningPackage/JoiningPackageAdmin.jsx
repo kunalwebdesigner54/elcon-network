@@ -6,6 +6,8 @@ import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from '../../
 import { resolveProductImage } from '../../../UserPanel/Product/productImages';
 
 function JoiningPackageAdmin() {
+  const totalPages = 1;
+
   const navigate = useNavigate();
   const [joiningPackageRows, setJoiningPackageRows] = useState([]);
   const [loading, setLoading] = useState(true);

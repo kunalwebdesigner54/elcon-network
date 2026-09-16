@@ -3,6 +3,7 @@ import './DiscountWalletStatement.css';
 import { getUserDiscountWalletStatement } from '../../../api/managementService';
 
 function DiscountWalletStatement() {
+
   const [filters, setFilters] = useState({
     transactionType: '',
     memberId: '',

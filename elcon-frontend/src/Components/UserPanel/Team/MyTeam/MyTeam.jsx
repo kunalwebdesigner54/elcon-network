@@ -25,6 +25,7 @@ function flattenDescendants(node, depth = 0, acc = []) {
 }
 
 function MyTeam() {
+
   const [allRows, setAllRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

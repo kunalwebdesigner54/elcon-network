@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../Common/UserLayout.css';
@@ -20,6 +21,10 @@ function getStatusIcon(status) {
 }
 
 function WithdrawalHistory() {
+  const totalPages = 1;
+
+  const [page, setPage] = React.useState(1);
+
   const navigate = useNavigate();
   const [withdrawalData, setWithdrawalData] = useState([]);
   const [filters, setFilters] = useState({ requestId: '', amount: '', status: '', startDate: '', endDate: '' });

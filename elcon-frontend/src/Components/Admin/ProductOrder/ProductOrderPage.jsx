@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import '../Common/AdminLayout.css';
 import './ProductOrder.css';
@@ -26,6 +27,10 @@ const statusToClass = {
 };
 
 function ProductOrderPage({ title, statusFilter, renderActions }) {
+  const totalPages = 1;
+
+  const [page, setPage] = React.useState(1);
+
   const [orders, setOrders] = useState([]);
   const [totalOrders, setTotalOrders] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);

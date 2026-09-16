@@ -1,8 +1,13 @@
+import React from 'react';
 import './TicketHistory.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getAdminSupportTickets } from '../../../../api/managementService';
 
 function TicketHistory() {
+  const totalPages = 1;
+
+  const [page, setPage] = React.useState(1);
+
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

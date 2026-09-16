@@ -1,3 +1,4 @@
+import React from 'react';
 import '../../Common/AdminLayout.css';
 import './ShoppingProductsAdmin.css';
 import { useEffect, useState, useMemo } from 'react';
@@ -6,6 +7,8 @@ import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from '../../
 import { resolveProductImage } from '../../../UserPanel/Product/productImages';
 
 function ShoppingProductsAdmin() {
+  const [page, setPage] = React.useState(1);
+
   const navigate = useNavigate();
   const [shoppingRows, setShoppingRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

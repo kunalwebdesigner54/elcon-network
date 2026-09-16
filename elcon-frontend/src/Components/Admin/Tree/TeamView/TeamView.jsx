@@ -1,3 +1,4 @@
+import React from 'react';
 import './TeamView.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getTeamTree } from '../../../../api/donationsService';
@@ -28,6 +29,10 @@ function flattenTree(node, parentId = '', depth = 0, acc = []) {
 }
 
 function TeamView() {
+  const totalPages = 1;
+
+  const [page, setPage] = React.useState(1);
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

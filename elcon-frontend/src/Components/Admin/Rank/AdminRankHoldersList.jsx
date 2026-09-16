@@ -1,3 +1,4 @@
+import React from 'react';
 import './AdminRankHoldersList.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getMemberPerformance } from '../../../api/membersService';
@@ -17,6 +18,10 @@ const rankOptions = [
 ];
 
 function AdminRankHoldersList() {
+  const totalPages = 1;
+
+  const [page, setPage] = React.useState(1);
+
   const [selectedRankFilter, setSelectedRankFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedSearch, setAppliedSearch] = useState('');
