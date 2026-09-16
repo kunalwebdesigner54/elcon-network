@@ -1,13 +1,8 @@
-import React from 'react';
 import './LevelIncomeReports.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getLevelIncomeReports } from '../../../../api/membersService';
 
 function LevelIncomeReports() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

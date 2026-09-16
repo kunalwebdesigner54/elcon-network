@@ -1,4 +1,3 @@
-import React from 'react';
 import './UserMyRank.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getRankHolders } from '../../../api/membersService';
@@ -20,10 +19,6 @@ const rankProgressionData = [
 const rankOptions = rankProgressionData.map((rank) => rank.name);
 
 function UserMyRank() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const [expandedRank, setExpandedRank] = useState(5);
   const [selectedRankFilter, setSelectedRankFilter] = useState('');
   const [rankRows, setRankRows] = useState([]);

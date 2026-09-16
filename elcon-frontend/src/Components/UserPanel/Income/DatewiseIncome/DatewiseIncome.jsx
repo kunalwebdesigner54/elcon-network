@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../Common/UserLayout.css';
 import './DatewiseIncome.css';
 import { useEffect, useMemo, useState } from 'react';
@@ -6,10 +5,6 @@ import { getMyDatewiseIncome } from '../../../../api/membersService';
 import { getUser } from '../../../../utils/auth';
 
 function DatewiseIncome() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const currentUser = getUser() || {};
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);

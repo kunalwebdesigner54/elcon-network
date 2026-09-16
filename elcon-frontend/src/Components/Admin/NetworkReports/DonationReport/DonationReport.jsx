@@ -1,4 +1,3 @@
-import React from 'react';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { getAllDonations, updateDonationStatus } from '../../../../api/donationsService';
 import DonationVerificationModal from '../../../shared/DonationVerificationModal/DonationVerificationModal';
@@ -17,10 +16,6 @@ const rankLabels = {
 };
 
 function parseDate(value) {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   if (!value || value === '\u2014') return '';
   const datePart = typeof value === 'string' ? value.split(' ')[0] : '';
   if (!datePart) return value;

@@ -4,8 +4,6 @@ import './DonationsIncome.css';
 import { getMyDonations } from '../../../../api/donationsService';
 
 function DonationsIncome() {
-  const handlePageChange = (p) => typeof setPage === 'function' ? setPage(p) : null;
-
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

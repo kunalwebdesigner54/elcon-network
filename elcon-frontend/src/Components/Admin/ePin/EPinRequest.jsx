@@ -1,13 +1,8 @@
-import React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import './EPinRequest.css';
 import { getAdminEpinRequests, updateAdminEpinRequestStatus } from '../../../api/managementService';
 
 function EPinRequest() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

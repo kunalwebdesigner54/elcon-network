@@ -1,4 +1,3 @@
-import React from 'react';
 import { useMemo, useState } from "react";
 import "./TdsReport.css";
 import { useEffect } from "react";
@@ -6,10 +5,6 @@ import { getMemberPerformance } from "../../../../api/membersService";
 import { getMembersLocation } from "../../../../api/membersService";
 
 function TdsReport() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const [filters, setFilters] = useState({
     memberId: "",
     panNo: "",

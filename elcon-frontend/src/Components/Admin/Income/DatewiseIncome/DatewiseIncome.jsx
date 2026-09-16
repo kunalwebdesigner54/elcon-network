@@ -1,13 +1,8 @@
-import React from 'react';
 import './DatewiseIncome.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getMemberPerformance } from '../../../../api/membersService';
 
 function DatewiseIncome() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

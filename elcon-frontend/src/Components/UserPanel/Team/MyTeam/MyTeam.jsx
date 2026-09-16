@@ -6,8 +6,6 @@ import { getTeamTree } from '../../../../api/donationsService';
 
 // Flatten a nested tree into an array with `level` (depth) metadata
 function flattenDescendants(node, depth = 0, acc = []) {
-  const handlePageChange = (p) => typeof setPage === 'function' ? setPage(p) : null;
-
   if (!node) return acc;
   (node.children || []).forEach((child) => {
     acc.push({

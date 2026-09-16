@@ -6,10 +6,6 @@ import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from '../../
 import { resolveProductImage } from '../../../UserPanel/Product/productImages';
 
 function JoiningPackageAdmin() {
-  const totalPages = 1;
-
-  const handlePageChange = (p) => typeof setPage === 'function' ? setPage(p) : null;
-
   const navigate = useNavigate();
   const [joiningPackageRows, setJoiningPackageRows] = useState([]);
   const [loading, setLoading] = useState(true);

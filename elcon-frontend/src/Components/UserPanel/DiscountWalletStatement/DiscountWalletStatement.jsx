@@ -3,10 +3,6 @@ import './DiscountWalletStatement.css';
 import { getUserDiscountWalletStatement } from '../../../api/managementService';
 
 function DiscountWalletStatement() {
-  const totalPages = 1;
-
-  const handlePageChange = (p) => typeof setPage === 'function' ? setPage(p) : null;
-
   const [filters, setFilters] = useState({
     transactionType: '',
     memberId: '',

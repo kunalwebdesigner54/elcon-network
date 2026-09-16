@@ -1,4 +1,3 @@
-import React from 'react';
 import { useMemo, useState } from 'react';
 import './MemberView.css';
 
@@ -54,10 +53,6 @@ const exportColumns = [
 ];
 
 function MemberView() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const [filters, setFilters] = useState({
     sponsorId: '',
     memberId: '',

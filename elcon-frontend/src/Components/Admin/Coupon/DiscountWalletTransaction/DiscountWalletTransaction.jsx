@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import './DiscountWalletTransaction.css';
 
 function DiscountWalletTransaction() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const [filters, setFilters] = useState({
     transactionType: '',
     memberId: '',

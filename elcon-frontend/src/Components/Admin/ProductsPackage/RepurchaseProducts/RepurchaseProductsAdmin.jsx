@@ -1,4 +1,3 @@
-import React from 'react';
 import '../../Common/AdminLayout.css';
 import './RepurchaseProductsAdmin.css';
 import { useEffect, useState } from 'react';
@@ -7,10 +6,6 @@ import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from '../../
 import { resolveProductImage } from '../../../UserPanel/Product/productImages';
 
 function RepurchaseProductsAdmin() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const navigate = useNavigate();
   const [repurchaseRows, setRepurchaseRows] = useState([]);
 

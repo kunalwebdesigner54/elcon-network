@@ -1,13 +1,8 @@
-import React from 'react';
 import './TeamView.css';
 import { useEffect, useMemo, useState } from 'react';
 import { getTeamTree } from '../../../../api/donationsService';
 
 function flattenTree(node, parentId = '', depth = 0, acc = []) {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   if (!node) {
     return acc;
   }

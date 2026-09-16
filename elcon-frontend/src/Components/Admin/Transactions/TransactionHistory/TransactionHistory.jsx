@@ -1,14 +1,9 @@
-import React from 'react';
 
 import { useEffect, useMemo, useState } from 'react';
 import './TransactionHistory.css';
 import { getAdminTransactionHistory } from '../../../../api/managementService';
 
 function TransactionHistory() {
-  const [page, setPage] = React.useState(1);
-  const handlePageChange = (p) => setPage(p);
-  const totalPages = 1;
-
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState('10');
