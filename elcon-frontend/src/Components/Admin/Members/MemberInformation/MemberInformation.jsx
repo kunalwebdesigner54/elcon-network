@@ -184,17 +184,11 @@ const MemberInformation = () => {
                       disabled={actionLoading === member.memberId}
                       onClick={() => handleToggleBlock(member.memberId, member.blockStatus || 'Unblock')}
                     >
-                      {actionLoading === member.memberId ? 'PROCESSING...' : (
+                      {actionLoading === member.memberId ? '...' : (
                         member.blockStatus === 'Block' ? (
-                          <>
-                            <span style={{ marginRight: '6px', fontSize: '14px' }}>🔓</span>
-                            UNBLOCK
-                          </>
+                          <i className="fas fa-unlock" title="Unblock" style={{ fontSize: '16px' }}></i>
                         ) : (
-                          <>
-                            <span style={{ marginRight: '6px', fontSize: '14px' }}>🔒</span>
-                            BLOCK
-                          </>
+                          <i className="fas fa-lock" title="Block" style={{ fontSize: '16px' }}></i>
                         )
                       )}
                     </button>
