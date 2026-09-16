@@ -157,7 +157,7 @@ function DonationReport() {
     row.transactionId,
     row.paymentProof,
     row.status,
-    row.skippedMembers && row.skippedMembers.length > 0 ? row.skippedMembers.map(s => s.memberId || s).join(', ') : '---'
+    row.skippedMembers && row.skippedMembers.length > 0 ? (row.skippedMembers[0].memberId || row.skippedMembers[0]) : '---'
   ]));
 
   const handleExportExcel = () => {
@@ -321,7 +321,7 @@ function DonationReport() {
                       </td>
                       <td style={{ maxWidth: '150px', wordWrap: 'break-word' }}>
                         {row.skippedMembers && row.skippedMembers.length > 0 
-                          ? row.skippedMembers.map(s => s.memberId || s).join(', ') 
+                          ? (row.skippedMembers[0].memberId || row.skippedMembers[0]) 
                           : '---'}
                       </td>
                       <td>
