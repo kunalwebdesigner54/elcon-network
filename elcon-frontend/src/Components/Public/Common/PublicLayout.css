@@ -15,6 +15,11 @@
 	--public-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
 	--public-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
 	--public-gradient-primary: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+	
+	/* Override generic theme variables to keep public layout light blue */
+	--primary: var(--public-primary);
+	--primary-dark: var(--public-primary-dark);
+	
 	font-family: 'Poppins', sans-serif;
 }
 
@@ -887,7 +892,7 @@ main,
   }
 
   .public-mobile-link.active {
-    background: var(--public-gradient-primary);
+    background: var(--public-gradient-primary) !important;
     border-color: transparent;
   }
 
