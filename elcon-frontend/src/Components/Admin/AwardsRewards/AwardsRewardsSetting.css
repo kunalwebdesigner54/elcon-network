@@ -20,7 +20,7 @@
 }
 
 .form-section-header {
-  background: #00B4D8;
+  background: var(--gradient-primary);
   color: #fff;
   text-align: center;
   padding: 10px;
@@ -37,7 +37,7 @@
 
 .ar-form-label {
   display: block;
-  color: #a0aec0;
+  color: var(--text-muted);
   font-size: 0.85rem;
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -47,16 +47,17 @@
 .ar-form-input {
   width: 100%;
   padding: 12px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  color: #1a202c;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
   font-size: 0.95rem;
 }
 
 .ar-form-input:focus {
   outline: none;
-  border-color: #00B4D8;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
 }
 
 .ar-row {
@@ -71,14 +72,14 @@
 
 .ar-file-upload {
   display: flex;
-  background: #fff;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--border-radius);
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--glass-border);
 }
 
 .ar-file-btn {
-  background: #718096;
+  background: var(--gradient-primary);
   color: #fff;
   padding: 12px 16px;
   border: none;
@@ -88,22 +89,27 @@
 
 .ar-file-name {
   padding: 12px;
-  color: #4a5568;
+  color: var(--text-primary);
   flex: 1;
 }
 
 .ar-submit-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(90deg, #FF0080 0%, #00B4D8 50%, #9D4EDD 100%);
+  background: var(--gradient-primary);
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   font-weight: bold;
   font-size: 1.1rem;
   cursor: pointer;
   margin-top: 24px;
   text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+
+.ar-submit-btn:hover {
+  opacity: 0.9;
 }
 
 .ar-table-title {
@@ -118,23 +124,23 @@
 .ar-table {
   width: 100%;
   border-collapse: collapse;
-  background: #0B1120;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .ar-table th {
-  background: #00B4D8;
+  background: var(--gradient-primary);
   color: #fff;
   padding: 12px;
   text-align: center;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid #1F2937;
+  border: 1px solid var(--glass-border);
 }
 
 .ar-table td {
   padding: 12px;
   text-align: center;
-  color: #e2e8f0;
-  border: 1px solid #1F2937;
+  color: var(--text-muted);
+  border: 1px solid var(--glass-border);
   font-size: 0.9rem;
 }
