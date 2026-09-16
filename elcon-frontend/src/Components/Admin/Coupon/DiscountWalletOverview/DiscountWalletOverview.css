@@ -49,7 +49,7 @@
 .card-green { background: #059669 !important; }
 .card-blue { background: #0284c7 !important; }
 .card-orange { background: #ea580c !important; }
-.card-purple { background: #9333ea !important; } /* A solid purple */
+.card-purple { background: var(--theme-blue) !important; } /* A solid blue to match primary */
 
 .stat-title {
   font-size: 14px;

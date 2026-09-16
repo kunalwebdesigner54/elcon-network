@@ -4,16 +4,18 @@
 	/* Beast Mode Theme Palette */
 	--theme-purple: #8046FC;
 	--theme-dark-blue: #050409;
-	--theme-blue: #5093FB;
+	--theme-blue: #0ea5e9; /* Updated to light blue */
+	--theme-blue-dark: #0284c7;
+	--theme-blue-light: #38bdf8;
 	--theme-lime: #82C419;
 	--theme-periwinkle: #9580FF;
 
 	/* Mapped Theme Colors */
-	--primary: var(--theme-purple);
-	--primary-dark: #6332C9;
-	--primary-light: var(--theme-periwinkle);
-	--secondary: var(--theme-purple);
-	--accent: var(--theme-purple); 
+	--primary: var(--theme-blue);
+	--primary-dark: var(--theme-blue-dark);
+	--primary-light: var(--theme-blue-light);
+	--secondary: var(--theme-blue);
+	--accent: var(--theme-blue); 
 	
 	/* Status Colors */
 	--success: var(--theme-lime); 
@@ -38,8 +40,8 @@
 	--text-dark: #1E293B;
 
 	/* Gradients */
-	--gradient-primary: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%); /* Blue */
-	--gradient-secondary: linear-gradient(135deg, #C084FC 0%, #A855F7 100%);
+	--gradient-primary: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); /* Light Blue */
+	--gradient-secondary: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); /* Replaced purple gradient with light blue */
 	--gradient-success: linear-gradient(135deg, #4ADE80 0%, #22C55E 100%);
 	--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
 
