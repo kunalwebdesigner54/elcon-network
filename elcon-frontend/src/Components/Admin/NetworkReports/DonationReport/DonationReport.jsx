@@ -83,38 +83,6 @@ function DonationReport() {
     } catch (err) {
       setError('Failed to load donations');
       console.error(err);
-      setDonationRows([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpdateStatus = async (donationId, status) => {
-    let utrNumber = '';
-    if (status === 'APPROVED') {
-      utrNumber = window.prompt(`Are you sure you want to mark this donation as APPROVED?\nPlease enter the Transaction ID:`);
-      if (utrNumber === null) return; // User cancelled
-      if (utrNumber.trim() === '') {
-        alert('Transaction ID is required to approve.');
-        return;
-      }
-    } else {
-      if (!window.confirm(`Are you sure you want to mark this donation as ${status}?`)) return;
-    }
-    
-    try {
-      setLoading(true);
-      await updateDonationStatus(donationId, status, '', utrNumber);
-      await fetchDonations();
-    } catch (err) {
-      setError(err?.response?.data?.message || 'Failed to update status');
-      setLoading(false);
-    }
-  };
-
-  const filteredRows = useMemo(() => {
-    return donationRows.filter((row) => {
-      const byDonorId = !filters.donorMemberId || row.donorMemberId.toLowerCase().includes(filters.donorMemberId.toLowerCase());
       const byReceiverId = !filters.receiverMemberId || row.receiverMemberId.toLowerCase().includes(filters.receiverMemberId.toLowerCase());
       const byAmount = !filters.amount || row.amount.includes(filters.amount);
       const byRank = !filters.rank || row.rank === filters.rank;

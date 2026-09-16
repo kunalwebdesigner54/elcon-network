@@ -304,7 +304,7 @@ exports.submitDonation = async (req, res) => {
 exports.updateDonationStatus = async (req, res) => {
   try {
     const { donationId } = req.params;
-    const { status, remark, utrNumber } = req.body;
+    const { status, remark, utrNumber, transactionPassword } = req.body;
 
     if (!['APPROVED', 'COMPLETED', 'REJECTED'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Status must be APPROVED or REJECTED' });
@@ -320,6 +320,22 @@ exports.updateDonationStatus = async (req, res) => {
     }
     if (!['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'].includes(donation.status)) {
       return res.status(400).json({ success: false, message: `Donation is already ${donation.status}` });
+    }
+
+    if (status === 'APPROVED' && req.user.role === 'admin') {
+      const adminUser = await User.findById(req.user._id).select('+transactionPassword');
+      if (!adminUser) {
+        return res.status(404).json({ success: false, message: 'Admin user not found' });
+      }
+      
+      const isMatch = await adminUser.matchTransactionPassword(transactionPassword);
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: 'Invalid Transaction Password' });
+      }
+      
+      if (!utrNumber || utrNumber.trim() === '') {
+        return res.status(400).json({ success: false, message: 'UTR Number is required for approval' });
+      }
     }
 
     if (status === 'APPROVED' || status === 'COMPLETED') {
