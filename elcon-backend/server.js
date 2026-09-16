@@ -29,6 +29,7 @@ const productFranchiseRoutes = require('./routes/productFranchise');
 const adminControlsRoutes = require('./routes/adminControls');
 const categoryRoutes = require('./routes/categories');
 const rewardsRoutes = require('./routes/rewards');
+const luckyDrawRoutes = require('./routes/luckyDraw');
 
 // Initialize Express app
 const app = express();
@@ -90,6 +91,7 @@ const startServer = async () => {
     app.use('/api/admin-controls', adminControlsRoutes);
     app.use('/api/categories', categoryRoutes);
     app.use('/api/rewards', rewardsRoutes);
+    app.use('/api/luckydraw', luckyDrawRoutes);
 
     // Health check route should be registered before the catch-all /api product routes,
     // otherwise productRoutes may intercept /api/health and require authentication.
