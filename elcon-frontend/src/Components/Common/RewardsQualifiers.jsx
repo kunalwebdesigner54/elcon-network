@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../../api/config';
 import '../Admin/AwardsRewards/AwardsRewardsSetting.css'; // Reusing table styles
 
 const RewardsQualifiers = () => {
@@ -9,7 +9,7 @@ const RewardsQualifiers = () => {
   useEffect(() => {
     const fetchQualifiers = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/rewards/qualifiers`, {
+        const res = await apiClient.get(`/rewards/qualifiers`, {
           withCredentials: true
         });
         if (res.data.success) {

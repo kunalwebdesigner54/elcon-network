@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import apiClient from '../../../api/config';
 import Swal from 'sweetalert2';
 import './AwardsRewardsSetting.css'; // Reusing the same CSS
 
@@ -35,8 +35,8 @@ const LuckyDrawSetting = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/luckydraw/winner`,
+      const res = await apiClient.post(
+        `/luckydraw/winner`,
         formData,
         { withCredentials: true }
       );

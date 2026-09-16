@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../../../api/config';
 import Swal from 'sweetalert2';
 import './AwardsRewardsSetting.css';
 
@@ -22,7 +22,7 @@ const AwardsRewardsSetting = () => {
 
   const fetchActiveContest = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/rewards/contest/active`);
+      const res = await apiClient.get(`/rewards/contest/active`);
       if (res.data.success) {
         setActiveContest(res.data.contest);
       }
@@ -51,8 +51,8 @@ const AwardsRewardsSetting = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/rewards/contest`,
+      const res = await apiClient.post(
+        `/rewards/contest`,
         formData,
         { withCredentials: true }
       );

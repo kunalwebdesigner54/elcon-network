@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../../api/config';
 import '../Admin/AwardsRewards/AwardsRewardsSetting.css'; // Reusing table styles
 
 const LuckyDrawWinners = () => {
@@ -9,7 +9,7 @@ const LuckyDrawWinners = () => {
   useEffect(() => {
     const fetchWinners = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/luckydraw/winners`, {
+        const res = await apiClient.get(`/luckydraw/winners`, {
           withCredentials: true
         });
         if (res.data.success) {
