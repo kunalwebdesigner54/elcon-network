@@ -165,7 +165,7 @@
 /* ===== Feature Block Section ===== */
 .home-feature-section {
   padding: 100px 0;
-  background: #ffffff; /* White background for this section */
+  background: transparent;
   position: relative;
 }
 

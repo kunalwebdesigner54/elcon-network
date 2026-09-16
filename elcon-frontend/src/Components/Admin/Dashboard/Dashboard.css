@@ -49,8 +49,8 @@
 	min-height: 160px;
 	overflow: hidden;
 	border-radius: 12px;
-	background: #000;
-	border: 0;
+	background: rgba(0, 0, 0, 0.2);
+	border: 1px solid var(--glass-border);
 	box-shadow: none;
 }
 

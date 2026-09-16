@@ -103,8 +103,8 @@
   min-height: 170px;
   overflow: hidden;
   border-radius: 12px;
-  background: #000;
-  border: 0;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
   box-shadow: none;
 }
 
@@ -113,7 +113,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  background: #000;
+  background: transparent;
   border-radius: 12px;
   transform: scale(1.01);
 }

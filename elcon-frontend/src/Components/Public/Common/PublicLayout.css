@@ -1,19 +1,19 @@
 .public-root {
 	position: relative;
 	overflow-x: clip;
-	background: #f4f5f9;
-	color: #333333;
+	background: var(--bg-darkest, #0B1120);
+	color: var(--text-primary, #ffffff);
 	--public-primary: #0ea5e9;
 	--public-primary-dark: #0284c7;
 	--public-secondary: #00D4AA;
 	--public-accent: #FF6B6B;
-	--public-text: #333333;
+	--public-text: var(--text-primary, #ffffff);
 	--public-text-light: #ffffff;
-	--public-muted: #666666;
-	--public-bg: #f4f5f9;
-	--card-bg: #ffffff;
-	--public-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-	--public-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
+	--public-muted: var(--text-muted, #9ca3af);
+	--public-bg: transparent;
+	--card-bg: rgba(0,0,0,0.2);
+	--public-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+	--public-shadow-hover: 0 12px 40px rgba(14, 165, 233, 0.15);
 	--public-gradient-primary: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
 	
 	/* Override generic theme variables to keep public layout light blue */
@@ -29,10 +29,11 @@
 }
 
 .public-top-strip {
-	background: rgba(255, 255, 255, 0.3);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	background: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(8px);
+	border-bottom: 1px solid var(--glass-border);
 	font-size: 14px;
-	color: #fff;
+	color: var(--text-primary);
 	position: fixed;
 	width: 100%;
 	top: 0;
@@ -745,10 +746,10 @@ main,
 }
 
 .public-footer {
-  background: #0a1628;
-  color: #fff;
-  margin: 0;
-  padding: 50px 0 29px;
+	background: rgba(0, 0, 0, 0.3);
+	border-top: 1px solid var(--glass-border);
+	color: var(--text-muted);
+	padding: 80px 0 40px;
 }
 
 .public-footer-grid {

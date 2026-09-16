@@ -1,7 +1,7 @@
 /* Products Section */
 .home-products-section {
   padding: 100px 0;
-  background: #ffffff;
+  background: transparent;
   position: relative;
 }
 
@@ -70,9 +70,9 @@
 }
 
 .product-card {
-  background: #f8f9fa; /* Slight off-white to contrast if needed, but screenshot shows white body with light shadow */
-  background: #ffffff;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  background: var(--card-bg, rgba(0, 0, 0, 0.2));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  box-shadow: none;
   border-radius: 0px; /* Reference seems to have sharp or very slightly rounded edges */
   overflow: hidden;
   display: flex;

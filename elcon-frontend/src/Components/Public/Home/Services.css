@@ -1,7 +1,7 @@
 /* Services Section */
 .home-services-section {
   padding: 100px 0;
-  background: linear-gradient(to bottom, #ffffff, #f7f7fa); /* Subtle gradient like reference */
+  background: transparent;
   position: relative;
 }
 
@@ -35,11 +35,12 @@
 }
 
 .service-card {
-  background: #ffffff;
+  background: var(--card-bg, rgba(0, 0, 0, 0.2));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
   border-radius: 10px;
   padding: 30px 40px 40px;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* soft shadow */
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease, box-shadow 0.3s ease;

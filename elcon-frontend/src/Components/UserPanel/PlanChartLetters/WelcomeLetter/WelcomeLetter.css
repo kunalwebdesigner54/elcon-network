@@ -1,6 +1,6 @@
 .welcome-letter-page {
   width: 100%;
-  background: #ececec;
+  background: transparent;
   border-radius: 18px;
   padding: 22px 20px 28px;
 }
@@ -8,18 +8,19 @@
 .welcome-letter-sheet {
   margin: 0 auto;
   max-width: 920px;
-  background: var(--theme-dark-blue);
+  background: var(--card-bg, #0B1120);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color, #1F2937);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .welcome-letter-frame {
   position: relative;
   padding: 72px 72px 54px;
-  border: 2px solid #7f7f7f;
-  outline: 2px solid #b8b8b8;
+  border: 2px solid var(--border-color, #1F2937);
+  outline: 2px solid var(--border-color, #1F2937);
   outline-offset: -10px;
-  color: #000000;
+  color: var(--text-primary, #fff);
   font-family: 'Trebuchet MS', 'Segoe UI', Tahoma, sans-serif;
   line-height: 1.3;
 }
@@ -30,7 +31,7 @@
   position: absolute;
   width: 58px;
   height: 58px;
-  border: 2px solid #7c7c7c;
+  border: 2px solid var(--border-color, #1F2937);
   pointer-events: none;
 }
 
@@ -48,7 +49,7 @@
   border-top: 0;
 }
 
-/* Force all text inside the frame to be black and override global dark theme */
+/* Force text to use theme text colors, override legacy styles */
 .user-root .welcome-letter-page .welcome-letter-frame,
 .user-root .welcome-letter-page .welcome-letter-frame *,
 .user-root .welcome-letter-page .welcome-letter-frame h2,
@@ -57,7 +58,7 @@
 .user-root .welcome-letter-page .welcome-letter-frame td,
 .user-root .welcome-letter-page .welcome-letter-frame th,
 .user-root .welcome-letter-page .welcome-letter-frame strong {
-  color: #000000 !important;
+  color: var(--text-primary, #fff) !important;
 }
 
 .welcome-letter-title {
@@ -66,7 +67,7 @@
   font-size: 34px;
   letter-spacing: 0.5px;
   font-weight: 700;
-  color: #000000 !important;
+  color: var(--text-primary, #fff) !important;
 }
 
 .welcome-letter-joining-date {
@@ -107,14 +108,14 @@
 
 .welcome-letter-table th,
 .welcome-letter-table td {
-  border: 1px solid #7d7d7d;
+  border: 1px solid var(--border-color, #1F2937);
   padding: 10px 14px !important;
   text-align: center;
   white-space: nowrap;
 }
 
 .welcome-letter-table td {
-  color: #000000 !important;
+  color: var(--text-primary, #fff) !important;
 }
 
 .welcome-letter-footnote {
@@ -133,12 +134,12 @@
   padding: 14px 44px;
   border-radius: 14px;
   cursor: pointer;
-  background: linear-gradient(90deg, #03c2a0 0%, #5374ff 100%);
-  box-shadow: 0 10px 20px rgba(36, 87, 201, 0.3);
+  background: var(--gradient-primary);
+  box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
 }
 
 .welcome-letter-print-btn:hover {
-  filter: brightness(1.04);
+  filter: brightness(1.1);
 }
 
 @media (max-width: 1280px) {
@@ -237,19 +238,39 @@
   .welcome-letter-sheet {
     margin: 0 !important;
     padding: 0 !important;
-    background: var(--theme-dark-blue) !important;
+    background: #ffffff !important;
+    color: #000000 !important;
     box-shadow: none !important;
     border-radius: 0 !important;
   }
 
   .welcome-letter-frame {
-    border: 1px solid #555;
+    border: 1px solid #000 !important;
     outline: none;
     padding: 34px 26px;
+    color: #000000 !important;
+  }
+  
+  .welcome-letter-frame::before,
+  .welcome-letter-frame::after {
+    border-color: #000 !important;
+  }
+
+  /* Force print to be black text for readability */
+  .user-root .welcome-letter-page .welcome-letter-frame,
+  .user-root .welcome-letter-page .welcome-letter-frame *,
+  .user-root .welcome-letter-page .welcome-letter-frame h2,
+  .user-root .welcome-letter-page .welcome-letter-frame p,
+  .user-root .welcome-letter-page .welcome-letter-frame span,
+  .user-root .welcome-letter-page .welcome-letter-frame td,
+  .user-root .welcome-letter-page .welcome-letter-frame th,
+  .user-root .welcome-letter-page .welcome-letter-frame strong {
+    color: #000000 !important;
   }
 
   .welcome-letter-title {
     font-size: 18px;
+    color: #000000 !important;
   }
 
   .welcome-letter-joining-date,
@@ -258,6 +279,13 @@
   .welcome-letter-table,
   .welcome-letter-footnote {
     font-size: 14px;
+    color: #000000 !important;
+  }
+
+  .welcome-letter-table th,
+  .welcome-letter-table td {
+    border-color: #000 !important;
+    color: #000 !important;
   }
 
   .welcome-letter-table {
