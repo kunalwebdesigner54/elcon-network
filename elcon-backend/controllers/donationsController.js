@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Donation = require('../models/Donation');
 const SiteSetting = require('../models/SiteSetting');
-const { createWalletTransaction } = require('../utils/walletHelper');
+const { createWalletTransaction, createDiscountWalletTransaction } = require('../utils/walletHelper');
 
 const DONATION_AMOUNTS = Donation.DONATION_AMOUNTS;
 
@@ -153,6 +153,14 @@ exports.upgradeMember = async (req, res) => {
         await User.findByIdAndUpdate(user._id, {
           $inc: { couponWalletBalance: couponAmount },
           $set: { receivedWelcomeCoupon: true }
+        });
+        await createDiscountWalletTransaction({
+          memberId: user.memberId,
+          memberName: user.name,
+          transactionType: 'REWARD CREDIT',
+          credit: couponAmount,
+          balance: (user.couponWalletBalance || 0) + (user.discountCouponBalance || 0) + couponAmount,
+          reference: 'Welcome Coupon',
         });
       } else {
         await User.findByIdAndUpdate(user._id, {
@@ -337,6 +345,17 @@ exports.updateDonationStatus = async (req, res) => {
           $set: { unlockLevel: donation.level, ...couponUpdate.$set },
           ...(couponUpdate.$inc ? { $inc: couponUpdate.$inc } : {})
         });
+        
+        if (couponUpdate.$inc && couponUpdate.$inc.couponWalletBalance) {
+          await createDiscountWalletTransaction({
+            memberId: payer.memberId,
+            memberName: payer.name,
+            transactionType: 'REWARD CREDIT',
+            credit: couponUpdate.$inc.couponWalletBalance,
+            balance: (payer.couponWalletBalance || 0) + (payer.discountCouponBalance || 0) + couponUpdate.$inc.couponWalletBalance,
+            reference: 'Welcome Coupon',
+          });
+        }
       }
       // Removed virtual wallet debit/credit for P2P donations
       // since the payment is directly transferred to the receiver's bank/UPI.

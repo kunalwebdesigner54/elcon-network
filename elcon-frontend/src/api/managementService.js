@@ -13,6 +13,11 @@ export const getUserTransactionHistory = async ({ audit = false, page = 1, limit
   return response.data;
 };
 
+export const getUserDiscountWalletStatement = async (params = {}) => {
+  const response = await apiClient.get('/transactions/discount-wallet', { params });
+  return response.data;
+};
+
 export const getPlanSetting = async () => {
   const response = await apiClient.get('/settings/plan');
   return response.data;

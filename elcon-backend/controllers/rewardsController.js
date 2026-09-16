@@ -6,7 +6,12 @@ exports.createContest = async (req, res) => {
     const { startDate, endDate, targetDirects, targetUpgradeLevel, rewardName, popupImage, transactionPassword } = req.body;
 
     // Verify Admin transaction password
-    const adminUser = await User.findById(req.user._id).select('+transactionPassword');
+    const adminUser = await User.findById(req.user.id).select('+transactionPassword');
+    
+    if (!adminUser) {
+      return res.status(404).json({ success: false, message: 'Admin user not found' });
+    }
+
     const isMatch = await adminUser.matchTransactionPassword(transactionPassword);
     
     if (!isMatch) {

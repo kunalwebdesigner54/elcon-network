@@ -1,9 +1,10 @@
 const express = require('express');
 const { protect } = require('../middleware/auth');
-const { getTransactionHistory } = require('../controllers/transactionsController');
+const { getTransactionHistory, getDiscountWalletTransactions } = require('../controllers/transactionsController');
 
 const router = express.Router();
 
+router.get('/discount-wallet', protect, getDiscountWalletTransactions);
 router.get('/', protect, getTransactionHistory);
 
 module.exports = router;

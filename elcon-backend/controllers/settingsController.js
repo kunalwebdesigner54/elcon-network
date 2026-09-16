@@ -1,4 +1,5 @@
 const SiteSetting = require('../models/SiteSetting');
+const User = require('../models/User');
 
 const defaultPlanSetting = {
   levelIncome: ['00.00', '20.00', '20.00', '20.00', '20.00', '20.00', '20.00', '20.00', '20.00', '20.00'],
@@ -6,6 +7,7 @@ const defaultPlanSetting = {
   donationIncome: ['300.00', '1000.00', '2000.00', '4000.00', '8000.00', '16000.00', '32000.00', '64000.00', '128000.00', '-'],
   tdsCharge: '5 %',
   adminCharges: '5 %',
+  shippingCharges: '₹ 50',
   idRenewalCharge: '₹ 350',
 };
 
@@ -38,9 +40,21 @@ exports.getPlanSetting = async (req, res) => {
 
 exports.updatePlanSetting = async (req, res) => {
   try {
+    const { transactionPassword, ...planData } = req.body || {};
+
+    const adminUser = await User.findById(req.user.id).select('+transactionPassword');
+    if (!adminUser) {
+      return res.status(404).json({ success: false, message: 'Admin user not found' });
+    }
+
+    const isMatch = await adminUser.matchTransactionPassword(transactionPassword);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Invalid transaction password' });
+    }
+
     const setting = await SiteSetting.findOneAndUpdate(
       { settingKey: 'plan-setting' },
-      { data: { ...defaultPlanSetting, ...(req.body || {}) } },
+      { data: { ...defaultPlanSetting, ...planData } },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
     res.json({ success: true, planSetting: setting.data });

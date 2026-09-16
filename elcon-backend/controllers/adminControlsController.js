@@ -2,6 +2,7 @@ const User = require('../models/User');
 const WalletTransaction = require('../models/WalletTransaction');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const { createDiscountWalletTransaction } = require('../utils/walletHelper');
 
 /**
  * @desc    Manage Discount Coupon Balance
@@ -60,6 +61,14 @@ exports.manageDiscountCoupon = async (req, res) => {
           { new: true }
         );
         console.log(`[COUPON] ADD single: memberId=${updatedUser.memberId}, prevTotal=${totalAvailable}, added=${parsedAmount}, newBalance=${updatedUser.couponWalletBalance}`);
+        await createDiscountWalletTransaction({
+          memberId: updatedUser.memberId,
+          memberName: updatedUser.name,
+          transactionType: 'ADMIN CREDIT',
+          credit: parsedAmount,
+          balance: updatedUser.couponWalletBalance,
+          reference: 'Admin Credit',
+        });
         return res.json({ 
           success: true, 
           message: `Discount coupon balance updated for ${updatedUser.memberId}. New balance: ₹${updatedUser.couponWalletBalance}`,
@@ -82,6 +91,14 @@ exports.manageDiscountCoupon = async (req, res) => {
           { new: true }
         );
         console.log(`[COUPON] DEBIT single: memberId=${updatedUser.memberId}, prevTotal=${totalAvailable}, debited=${parsedAmount}, newBalance=${updatedUser.couponWalletBalance}`);
+        await createDiscountWalletTransaction({
+          memberId: updatedUser.memberId,
+          memberName: updatedUser.name,
+          transactionType: 'ADMIN DEBIT',
+          debit: parsedAmount,
+          balance: updatedUser.couponWalletBalance,
+          reference: 'Admin Debit',
+        });
         return res.json({ 
           success: true, 
           message: `Discount coupon balance updated for ${updatedUser.memberId}. New balance: ₹${updatedUser.couponWalletBalance}`,
@@ -108,6 +125,16 @@ exports.manageDiscountCoupon = async (req, res) => {
         }));
         if (bulkOps.length > 0) {
           await User.bulkWrite(bulkOps);
+          for (const user of users) {
+            await createDiscountWalletTransaction({
+              memberId: user.memberId,
+              memberName: user.name,
+              transactionType: 'ADMIN CREDIT',
+              credit: parsedAmount,
+              balance: (user.couponWalletBalance || 0) + (user.discountCouponBalance || 0) + parsedAmount,
+              reference: 'Bulk Admin Credit',
+            });
+          }
         }
       } else {
         const bulkOps = users.map(u => {
@@ -124,6 +151,21 @@ exports.manageDiscountCoupon = async (req, res) => {
         });
         if (bulkOps.length > 0) {
           await User.bulkWrite(bulkOps);
+          for (const u of users) {
+            let newBalance = (u.couponWalletBalance || 0) + (u.discountCouponBalance || 0) - parsedAmount;
+            if (newBalance < 0) newBalance = 0;
+            const actualDebit = Math.min((u.couponWalletBalance || 0) + (u.discountCouponBalance || 0), parsedAmount);
+            if (actualDebit > 0) {
+              await createDiscountWalletTransaction({
+                memberId: u.memberId,
+                memberName: u.name,
+                transactionType: 'ADMIN DEBIT',
+                debit: actualDebit,
+                balance: newBalance,
+                reference: 'Bulk Admin Debit',
+              });
+            }
+          }
         }
       }
       return res.json({ success: true, message: `Discount coupon balance updated for all active users` });

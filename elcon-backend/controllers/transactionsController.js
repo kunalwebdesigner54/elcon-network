@@ -276,3 +276,72 @@ exports.getTransactionHistory = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+const DiscountWalletTransaction = require('../models/DiscountWalletTransaction');
+
+exports.getDiscountWalletTransactions = async (req, res) => {
+  try {
+    const memberId = req.user?.memberId;
+    if (!memberId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const { page = 1, limit = 10, transactionType, reference, fromDate, toDate } = req.query;
+    
+    // Build query
+    const query = { memberId };
+    if (transactionType) query.transactionType = transactionType;
+    if (reference) query.reference = { $regex: reference, $options: 'i' };
+    if (fromDate || toDate) {
+      query.createdAt = {};
+      if (fromDate) query.createdAt.$gte = new Date(fromDate);
+      if (toDate) {
+        const end = new Date(toDate);
+        end.setHours(23, 59, 59, 999);
+        query.createdAt.$lte = end;
+      }
+    }
+
+    const total = await DiscountWalletTransaction.countDocuments(query);
+    const skip = (Number(page) - 1) * Number(limit);
+    
+    const rawTransactions = await DiscountWalletTransaction.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit))
+      .lean();
+
+    // Map serial numbers and format date
+    const transactions = rawTransactions.map((tx, index) => ({
+      ...tx,
+      sno: skip + index + 1,
+      transactionDate: new Date(tx.createdAt).toLocaleString('en-GB')
+    }));
+
+    // Calculate totals for the user
+    const allUserTx = await DiscountWalletTransaction.find({ memberId }).lean();
+    let totalIssued = 0;
+    let totalUsed = 0;
+    allUserTx.forEach(tx => {
+      totalIssued += Number(tx.credit || 0);
+      totalUsed += Number(tx.debit || 0);
+    });
+
+    // Get user wallet balance
+    const User = require('../models/User');
+    const user = await User.findOne({ memberId }).select('walletBalance discountCouponBalance');
+    const walletBalance = user ? (user.walletBalance || 0) : 0;
+
+    res.json({ 
+      success: true, 
+      transactions, 
+      total, 
+      totalPages: Math.ceil(total / Number(limit)),
+      walletBalance,
+      totalIssued,
+      totalUsed
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+

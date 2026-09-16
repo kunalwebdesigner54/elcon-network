@@ -6,7 +6,7 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const productSeedData = require('../data/productSeedData');
 const { distributeRepurchaseIncome } = require('../services/repurchaseIncomeService');
-const { createWalletTransaction } = require('../utils/walletHelper');
+const { createWalletTransaction, createDiscountWalletTransaction } = require('../utils/walletHelper');
 
 const productToApiShape = (product) => ({
   id: product._id,
@@ -634,6 +634,14 @@ exports.checkoutCart = async (req, res) => {
     if (appliedDiscount > 0) {
       await User.findByIdAndUpdate(req.user.id, {
         $set: { couponWalletBalance: remainingCoupon, discountCouponBalance: 0 }
+      });
+      await createDiscountWalletTransaction({
+        memberId: user.memberId,
+        memberName: user.name,
+        transactionType: 'DISCOUNT USED',
+        debit: appliedDiscount,
+        balance: remainingCoupon,
+        reference: orderNo,
       });
     }
 
