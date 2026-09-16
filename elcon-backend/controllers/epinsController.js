@@ -209,7 +209,7 @@ exports.generateEpins = async (req, res) => {
     const globalSettingsDoc = await SiteSetting.findOne({ settingKey: 'global-settings' }).lean();
     const globalSettings = globalSettingsDoc ? globalSettingsDoc.data : {};
     
-    if (!isAdmin(req) && globalSettings.ePinGenerationEnabled === false) {
+    if (globalSettings.ePinGenerationEnabled === false) {
       return res.status(403).json({ success: false, message: 'e-Pin generation is currently disabled by the administrator' });
     }
 
