@@ -212,29 +212,27 @@ function ManageCategories() {
 
           {totalPages > 1 && (
             <div className="pagination">
-              <span className="pagination-info">
-                Showing Page {currentPage} of {totalPages} — {filteredCategories.length} Categories
-              </span>
-              <button className="page-btn" disabled={currentPage === 1} onClick={() => setCurrentPage(1)}>«</button>
-              <button className="page-btn" disabled={currentPage === 1} onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}>‹</button>
-              {[...Array(totalPages)].map((_, i) => {
-                const p = i + 1;
-                if (p >= currentPage - 2 && p <= currentPage + 2) {
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, currentPage - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
                   return (
-                    <button
-                      key={p}
+                    <button 
+                      key={p} 
                       className={`page-btn ${currentPage === p ? 'active' : ''}`}
-                      onClick={() => setCurrentPage(p)}
+                      onClick={() => handlePageChange(p)}
                     >
                       {p}
                     </button>
                   );
-                }
-                return null;
-              })}
-              <button className="page-btn" disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}>›</button>
-              <button className="page-btn" disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)}>»</button>
-            </div>
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>&gt;&gt;</button>
+              </div>
           )}
         </div>
       )}

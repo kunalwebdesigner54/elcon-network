@@ -145,38 +145,27 @@ function MyDirectReferral() {
               Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, filteredRows.length)} of {filteredRows.length} entries
             </span>
             <div className="pagination">
-              <button 
-                className="page-btn" 
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
-                Prev
-              </button>
-              
-              {[...Array(Math.min(totalPages, 5))].map((_, i) => {
-                let p = page > 3 && totalPages > 5 ? page - 2 + i : i + 1;
-                if (p > totalPages) p = totalPages - (4 - i); // adjust if at end
-                if (p < 1) p = 1;
-                
-                return (
-                  <button
-                    key={p}
-                    className={`page-btn ${page === p ? 'active' : ''}`}
-                    onClick={() => setPage(p)}
-                  >
-                    {p}
-                  </button>
-                );
-              })}
-              
-              <button 
-                className="page-btn" 
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-              >
-                Next
-              </button>
-            </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, page - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${page === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>&gt;&gt;</button>
+              </div>
           </div>
         )}
       </div>

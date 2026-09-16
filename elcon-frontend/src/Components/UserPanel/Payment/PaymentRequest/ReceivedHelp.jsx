@@ -207,8 +207,8 @@ const ReceivedHelp = () => {
               </label>
               <select className="select-input" value={pageSize} onChange={(e) => setPageSize(e.target.value)}>
                 <option value="10">10</option>
-                <option value="25">25</option>
                 <option value="50">50</option>
+                <option value="100">100</option>
                 <option value="100">100</option>
               </select>
               <button className="user-btn-blue3" type="button" style={{ height: '100%', minHeight: '40px', padding: '0' }} onClick={() => {}}>Search</button>
@@ -286,29 +286,26 @@ const ReceivedHelp = () => {
                 Total: {filteredRows.length} requests
               </span>
               <div className="pagination">
-                <button type="button" className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
-                <button type="button" className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
-                
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let start = Math.max(1, page - 2);
-                  if (start + 4 > totalPages) start = Math.max(1, totalPages - 4);
-                  const pageNum = start + i;
-                  if (pageNum > totalPages) return null;
-                  
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, page - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
                   return (
                     <button 
-                      key={pageNum} 
-                      type="button"
-                      className={`page-btn ${page === pageNum ? 'active' : ''}`}
-                      onClick={() => setPage(pageNum)}
+                      key={p} 
+                      className={`page-btn ${page === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
                     >
-                      {pageNum}
+                      {p}
                     </button>
                   );
                 })}
-                
-                <button type="button" className="page-btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0}>&rsaquo;</button>
-                <button type="button" className="page-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages || totalPages === 0}>&raquo;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>&gt;&gt;</button>
               </div>
             </div>
           </>

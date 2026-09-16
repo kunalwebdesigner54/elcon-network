@@ -163,7 +163,9 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
           <input className="text-input" placeholder="Current Owner" value={filters.currentOwner} onChange={(event) => setFilters((prev) => ({ ...prev, currentOwner: event.target.value }))} />
           <input className="text-input" type="date" value={filters.fromDate} onChange={(event) => setFilters((prev) => ({ ...prev, fromDate: event.target.value }))} />
           <input className="text-input" type="date" value={filters.toDate} onChange={(event) => setFilters((prev) => ({ ...prev, toDate: event.target.value }))} />
-          <select className="select-input" value={pageSize} onChange={(event) => setPageSize(event.target.value)}><option value="10">10</option><option value="25">25</option><option value="50">50</option></select>
+          <select className="select-input" value={pageSize} onChange={(event) => setPageSize(event.target.value)}><option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option></select>
           <button className="btn-primary" type="button" onClick={handleSearch}>Search</button>
         </div>
         <div className="table-wrap">

@@ -254,8 +254,8 @@ function DonationReport() {
               <input className="text-input" type="date" style={{ maxWidth: '120px' }} value={filters.endDate} onChange={handleFilterChange('endDate')} />
               <select className="select-input" style={{ maxWidth: '92px' }} value={pageSize} onChange={(event) => { setPageSize(event.target.value); setCurrentPage(1); }}>
                 <option value="10">10</option>
-                <option value="25">25</option>
                 <option value="50">50</option>
+                <option value="100">100</option>
               </select>
               <button className="btn-primary" type="button">Search</button>
             </div>
@@ -352,15 +352,22 @@ function DonationReport() {
               <div className="pagination">
                 <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>&lt;&lt;</button>
                 <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
-                {[...Array(totalPages)].map((_, i) => (
-                  <button 
-                    key={i + 1} 
-                    className={`page-btn ${currentPage === i + 1 ? 'active' : ''}`}
-                    onClick={() => handlePageChange(i + 1)}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, currentPage - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${currentPage === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
                 <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
                 <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>&gt;&gt;</button>
               </div>

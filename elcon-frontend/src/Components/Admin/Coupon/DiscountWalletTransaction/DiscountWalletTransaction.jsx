@@ -193,12 +193,27 @@ function DiscountWalletTransaction() {
             Total Entries : {dummyData.length}
           </div>
           <div className="pagination">
-            <button type="button" className="page-btn">«</button>
-            <button type="button" className="page-btn">1</button>
-            <button type="button" className="page-btn active-page">2</button>
-            <button type="button" className="page-btn">3</button>
-            <button type="button" className="page-btn">»</button>
-          </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, page - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${page === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>&gt;&gt;</button>
+              </div>
         </div>
       </section>
     </div>

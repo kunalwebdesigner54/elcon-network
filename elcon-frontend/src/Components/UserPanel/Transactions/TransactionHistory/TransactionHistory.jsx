@@ -134,22 +134,27 @@ function TransactionHistory() {
             Total Transactions : <span style={{ color: '#fff', fontWeight: 'bold' }}>{totalTransactions}</span>
           </div>
           <div className="pagination">
-            <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>«</button>
-            <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>‹</button>
-            {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
-              const pageNum = i + 1;
-              let show = true;
-              if (totalPages > 7) {
-                if (pageNum > 3 && pageNum < totalPages - 1 && pageNum < page - 1 && pageNum > page + 1) show = false;
-              }
-              if (show) {
-                return <button key={pageNum} className={`page-btn ${page === pageNum ? 'active' : ''}`} onClick={() => handlePageChange(pageNum)}>{pageNum}</button>;
-              }
-              return null;
-            })}
-            <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>›</button>
-            <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>»</button>
-          </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, page - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${page === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>&gt;&gt;</button>
+              </div>
         </div>
       </div>
     </div>

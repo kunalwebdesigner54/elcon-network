@@ -223,19 +223,27 @@ function ShoppingProductsAdmin() {
 
         <div className="table-footer">
           <div className="pagination">
-            <button className="page-btn" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>&lsaquo;</button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button 
-                key={page} 
-                className={`page-btn ${currentPage === page ? 'active' : ''}`} 
-                onClick={() => goToPage(page)}
-                style={currentPage === page ? { background: 'var(--accent-primary)', color: 'white' } : {}}
-              >
-                {page}
-              </button>
-            ))}
-            <button className="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>&rsaquo;</button>
-          </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, currentPage - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${currentPage === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>&gt;&gt;</button>
+              </div>
         </div>
       </section>
     </div>

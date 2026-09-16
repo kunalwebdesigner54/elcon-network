@@ -323,21 +323,27 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
           <div className="table-footer">
             <div>Showing {paginatedOrders.length > 0 ? startIndex + 1 : 0} to {Math.min(startIndex + limit, totalOrders)} of {totalOrders} entries</div>
             <div className="pagination">
-              <button type="button" className="page-btn" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={safePage <= 1}>❮</button>
-              <button type="button" className="page-btn" onClick={() => setCurrentPage(1)} disabled={safePage <= 1}>⟨⟨</button>
-              {Array.from({ length: Math.min(7, totalFilteredPages) }, (_, index) => {
-                // simple pagination view centered around current page
-                let startPage = Math.max(1, safePage - 3);
-                if (startPage + 6 > totalFilteredPages) {
-                  startPage = Math.max(1, totalFilteredPages - 6);
-                }
-                const page = startPage + index;
-                if (page > totalFilteredPages) return null;
-                return <button key={page} type="button" className={`page-btn ${safePage === page ? 'active' : ''}`} onClick={() => setCurrentPage(page)}>{page}</button>;
-              })}
-              <button type="button" className="page-btn" onClick={() => setCurrentPage(totalFilteredPages)} disabled={safePage >= totalFilteredPages || totalFilteredPages === 0}>⟩⟩</button>
-              <button type="button" className="page-btn" onClick={() => setCurrentPage((page) => Math.min(totalFilteredPages, page + 1))} disabled={safePage >= totalFilteredPages || totalFilteredPages === 0}>❯</button>
-            </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, page - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${page === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>&gt;&gt;</button>
+              </div>
           </div>
         </section>
       </div>

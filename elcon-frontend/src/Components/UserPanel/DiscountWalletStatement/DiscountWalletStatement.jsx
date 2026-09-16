@@ -228,33 +228,27 @@ function DiscountWalletStatement() {
             Total Entries : {totalEntries}
           </div>
           <div className="pagination">
-            <button 
-              type="button" 
-              className="page-btn" 
-              onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-              disabled={page === 1}
-            >
-              «
-            </button>
-            {generatePageNumbers().map((num) => (
-              <button 
-                key={num} 
-                type="button" 
-                className={`page-btn ${page === num ? 'active-page' : ''}`}
-                onClick={() => setPage(num)}
-              >
-                {num}
-              </button>
-            ))}
-            <button 
-              type="button" 
-              className="page-btn" 
-              onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
-              disabled={page === totalPages}
-            >
-              »
-            </button>
-          </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, page - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${page === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>&gt;&gt;</button>
+              </div>
         </div>
       </section>
     </div>

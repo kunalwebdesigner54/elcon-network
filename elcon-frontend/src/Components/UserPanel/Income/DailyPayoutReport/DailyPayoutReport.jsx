@@ -141,36 +141,27 @@ function DailyPayoutReport() {
             Total Entries : {dailyPayoutData.length}
           </div>
           <div className="pagination">
-            <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>«</button>
-            <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>‹</button>
-            {[...Array(totalPages)].map((_, i) => {
-              const pageNum = i + 1;
-              if (
-                totalPages <= 7 ||
-                pageNum === 1 ||
-                pageNum === totalPages ||
-                Math.abs(currentPage - pageNum) <= 1
-              ) {
-                return (
-                  <button
-                    key={pageNum}
-                    className={`page-btn ${currentPage === pageNum ? 'active' : ''}`}
-                    onClick={() => handlePageChange(pageNum)}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              } else if (
-                (pageNum === 2 && currentPage > 3) ||
-                (pageNum === totalPages - 1 && currentPage < totalPages - 2)
-              ) {
-                return <span key={pageNum} style={{color: '#00e5ff', padding: '0 5px'}}>...</span>;
-              }
-              return null;
-            })}
-            <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
-            <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>»</button>
-          </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, currentPage - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${currentPage === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>&gt;&gt;</button>
+              </div>
         </div>
       </div>
     </div>

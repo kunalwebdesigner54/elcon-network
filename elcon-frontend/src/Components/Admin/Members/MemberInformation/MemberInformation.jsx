@@ -206,29 +206,27 @@ const MemberInformation = () => {
             Total: {pagination.total} members
           </span>
           <div className="pagination">
-            <button className="page-btn" onClick={() => setPage(1)} disabled={page === 1}>&laquo;</button>
-            <button className="page-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>&lsaquo;</button>
-            
-            {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
-              let start = Math.max(1, page - 2);
-              if (start + 4 > pagination.pages) start = Math.max(1, pagination.pages - 4);
-              const pageNum = start + i;
-              if (pageNum > pagination.pages) return null;
-              
-              return (
-                <button 
-                  key={pageNum} 
-                  className={`page-btn ${page === pageNum ? 'active' : ''}`}
-                  onClick={() => setPage(pageNum)}
-                >
-                  {pageNum}
-                </button>
-              );
-            })}
-            
-            <button className="page-btn" onClick={() => setPage(p => Math.min(pagination.pages, p + 1))} disabled={page === pagination.pages || pagination.pages === 0}>&rsaquo;</button>
-            <button className="page-btn" onClick={() => setPage(pagination.pages)} disabled={page === pagination.pages || pagination.pages === 0}>&raquo;</button>
-          </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, page - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${page === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>&gt;&gt;</button>
+              </div>
         </div>
 
       </div>

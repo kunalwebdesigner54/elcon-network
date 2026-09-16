@@ -200,24 +200,27 @@ function JoiningPackageAdmin() {
 
         <div className="table-footer">
           <div className="pagination">
-            <button 
-              className="page-btn" 
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={page === 1}
-            >
-              &lsaquo;
-            </button>
-            <span className="page-info" style={{ color: '#a0aec0', margin: '0 10px' }}>
-              Page {page} of {Math.ceil(totalCount / limit) || 1}
-            </span>
-            <button 
-              className="page-btn" 
-              onClick={() => setPage(p => p + 1)}
-              disabled={page >= Math.ceil(totalCount / limit)}
-            >
-              &rsaquo;
-            </button>
-          </div>
+                <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
+                <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>Prev</button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const p = i + 1;
+                  let s = Math.max(1, page - 1);
+                  let e = Math.min(totalPages, s + 2);
+                  if (e - s < 2) s = Math.max(1, e - 2);
+                  if (p < s || p > e) return null;
+                  return (
+                    <button 
+                      key={p} 
+                      className={`page-btn ${page === p ? 'active' : ''}`}
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>Next</button>
+                <button className="page-btn" onClick={() => handlePageChange(totalPages)} disabled={page === totalPages}>&gt;&gt;</button>
+              </div>
         </div>
       </section>
     </div>
