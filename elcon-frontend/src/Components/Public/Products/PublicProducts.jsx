@@ -25,43 +25,27 @@ const SlickArrow = ({ className, onClick, direction }) => (
   </button>
 );
 
-const sliderSettings = {
-  dots: false,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 4,
-  slidesToScroll: 1,
-  swipeToSlide: true,
-  arrows: true,
-  prevArrow: <SlickArrow direction="prev" />,
-  nextArrow: <SlickArrow direction="next" />,
-  responsive: [
-    {
-      breakpoint: 1200,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 1
-      }
-    },
-    {
-      breakpoint: 992,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 1
-      }
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1
-      }
-    }
-  ],
-};
-
-const ProductSection = ({ title, products, onProductClick }) => {
+const ProductSection = ({ title, products, onProductClick, windowWidth }) => {
   const sliderRef = useRef(null);
+
+  const getSlidesToShow = () => {
+    if (windowWidth < 768) return 1;
+    if (windowWidth < 992) return 2;
+    if (windowWidth < 1200) return 3;
+    return 4;
+  };
+
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: getSlidesToShow(),
+    slidesToScroll: 1,
+    swipeToSlide: true,
+    arrows: true,
+    prevArrow: <SlickArrow direction="prev" />,
+    nextArrow: <SlickArrow direction="next" />,
+  };
 
   if (!products.length) {
     return (
@@ -123,6 +107,13 @@ const PublicProducts = () => {
   const navigate = useNavigate();
   const [sections, setSections] = useState({});
   const [loading, setLoading] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -169,6 +160,7 @@ const PublicProducts = () => {
                   title={sec.title}
                   products={products}
                   onProductClick={handleProductClick}
+                  windowWidth={windowWidth}
                 />
               );
             })

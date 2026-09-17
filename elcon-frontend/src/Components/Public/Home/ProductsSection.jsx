@@ -42,37 +42,28 @@ function PrevArrow(props) {
 }
 
 function ProductsSection() {
+  const [windowWidth, setWindowWidth] = React.useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
+  React.useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const getSlidesToShow = () => {
+    if (windowWidth < 768) return 1;
+    if (windowWidth < 992) return 2;
+    return 3;
+  };
+
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: getSlidesToShow(),
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-    ]
   };
 
   return (
