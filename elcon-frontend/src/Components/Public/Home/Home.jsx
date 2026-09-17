@@ -74,9 +74,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      <LatestNews />
-
       <section className="home-steps-section">
         <div className="public-container home-steps-row">
 
@@ -180,6 +177,9 @@ function Home() {
 
       {/* Products Section */}
       <ProductsSection />
+
+      {/* Latest News & Blogs */}
+      <LatestNews />
 
     </div>
   );

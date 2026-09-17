@@ -109,6 +109,10 @@
   box-shadow: 0 4px 15px rgba(255, 154, 60, 0.35);
 }
 
+.pp-slick-arrow::before {
+  display: none !important;
+}
+
 .pp-slick-arrow:hover {
   background: rgb(230, 130, 40);
   box-shadow: 0 6px 20px rgba(255, 154, 60, 0.5);
