@@ -66,7 +66,7 @@
 .pp-slider-wrap {
   position: relative;
   margin: 0 auto;
-  padding: 0 50px;
+  padding: 0;
 }
 
 .pp-slider-wrap .slick-list {
@@ -127,11 +127,11 @@
 }
 
 .pp-slick-arrow-prev {
-  left: 0;
+  left: -20px;
 }
 
 .pp-slick-arrow-next {
-  right: 0;
+  right: -20px;
 }
 
 /* Hide default slick arrows */
@@ -302,11 +302,11 @@
   }
 
   .pp-slick-arrow-prev {
-    left: 0;
+    left: -15px;
   }
 
   .pp-slick-arrow-next {
-    right: 0;
+    right: -15px;
   }
 }
 
@@ -322,10 +322,10 @@
   }
 
   .pp-slick-arrow-prev {
-    left: 0;
+    left: -12px;
   }
 
   .pp-slick-arrow-next {
-    right: 0;
+    right: -12px;
   }
 }
