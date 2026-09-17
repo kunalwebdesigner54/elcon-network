@@ -17,7 +17,7 @@ const PublicProducts = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await getPublicProducts(type);
+        const response = await getPublicProducts(type || 'joining');
         const rawProducts = response.products || [];
         const visibleProducts = rawProducts.filter(p => (p.status || '').toUpperCase() === 'SHOWING');
         setProducts(visibleProducts);
@@ -28,9 +28,7 @@ const PublicProducts = () => {
         setLoading(false);
       }
     };
-    if (type) {
-      fetchProducts();
-    }
+    fetchProducts();
   }, [type]);
 
   const handleProductClick = (product) => {

@@ -266,7 +266,7 @@ exports.generateEpins = async (req, res) => {
         return res.status(403).json({ success: false, message: 'Not authorized to generate ePins' });
       }
 
-      const user = await User.findById(req.user.id).select('walletBalance name contactNo');
+      const user = await User.findById(req.user.id).select('walletBalance name contactNo memberId');
       if (!user) {
         return res.status(404).json({ success: false, message: 'User not found' });
       }
@@ -279,17 +279,15 @@ exports.generateEpins = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Insufficient wallet balance to generate ePins' });
       }
 
-      const request = await EpinRequest.create({
-        clientId: identifiers[0],
-        name: user.name || 'Member',
-        packageCost: epinName,
-        qty,
-        paidAmount: totalCost,
-        mobile: user.contactNo || '-',
-        status: 'Pending',
-      });
+      user.walletBalance -= totalCost;
+      await user.save();
 
-      return res.status(201).json({ success: true, request: mapRequest(request, 0) });
+      const { createWalletTransaction } = require('../utils/walletHelper');
+      await createWalletTransaction({
+        memberId: user.memberId,
+        description: `E-Pin Generated: ${qty} x ${epinName}`,
+        debit: totalCost,
+      });
     }
 
     const generatedBy = isAdmin(req)
