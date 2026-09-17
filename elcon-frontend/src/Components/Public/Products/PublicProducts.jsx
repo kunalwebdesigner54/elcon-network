@@ -32,7 +32,9 @@ const sliderSettings = {
   slidesToShow: 4,
   slidesToScroll: 1,
   swipeToSlide: true,
-  arrows: false,
+  arrows: true,
+  prevArrow: <SlickArrow direction="prev" />,
+  nextArrow: <SlickArrow direction="next" />,
   responsive: [
     { breakpoint: 1200, settings: { slidesToShow: 3 } },
     { breakpoint: 900, settings: { slidesToShow: 2 } },
@@ -62,7 +64,6 @@ const ProductSection = ({ title, products, onProductClick }) => {
         {title}
       </h2>
       <div className="pp-slider-wrap">
-        <SlickArrow direction="prev" onClick={() => sliderRef.current?.slickPrev()} />
         <Slider ref={sliderRef} {...sliderSettings}>
           {products.map((product) => {
             const imageUrl = resolveProductImage(product);
@@ -95,7 +96,6 @@ const ProductSection = ({ title, products, onProductClick }) => {
             );
           })}
         </Slider>
-        <SlickArrow direction="next" onClick={() => sliderRef.current?.slickNext()} />
       </div>
     </div>
   );

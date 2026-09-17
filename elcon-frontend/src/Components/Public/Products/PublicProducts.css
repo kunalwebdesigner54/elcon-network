@@ -96,7 +96,7 @@
   z-index: 10;
   width: 44px;
   height: 44px;
-  border-radius: 50%;
+  border-radius: 50% !important;
   border: none;
   background: rgb(255, 154, 60);
   color: #fff;
@@ -133,12 +133,6 @@
 
 .pp-slick-arrow-next {
   right: -20px;
-}
-
-/* Hide default slick arrows */
-.pp-slider-wrap .slick-prev,
-.pp-slider-wrap .slick-next {
-  display: none !important;
 }
 
 /* ─── Product Card — No shadow, no cursor on card ─── */
