@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getFranchiseDeliveryReport, verifyJoiningPackageDelivery, getFranchiseStock } from '../../../../api/managementService';
 import './FranchiseDeliveryReport.css';
 import { formatDate } from '../../../../utils/dateFormatter';
+import EpinSummaryCards from '../../../shared/EpinSummaryCards';
 
 function FranchiseDeliveryReport() {
   const [report, setReport] = useState([]);
@@ -75,6 +76,8 @@ function FranchiseDeliveryReport() {
 
   return (
     <div className="user-product-page">
+      <h1 className="page-title">Franchise Delivery Report</h1>
+      <EpinSummaryCards />
       <div className="user-panel">
         <h2 className="discount-coupon-heading" style={{ marginBottom: '20px' }}>JOINING PACKAGE DELIVERY REPORT</h2>
         

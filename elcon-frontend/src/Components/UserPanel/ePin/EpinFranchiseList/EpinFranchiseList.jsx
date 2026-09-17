@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import qrCode from '../../../../Assets/Pictures/QR-Code.png';
 import './EpinFranchiseList.css';
 import { getEpinFranchises } from '../../../../api/managementService';
+import EpinSummaryCards from '../../../shared/EpinSummaryCards';
 
 const CopyIcon = ({ onClick }) => (
   <svg
@@ -66,6 +67,8 @@ function EpinFranchiseList() {
 
   return (
     <div className="franchise-list-page">
+      <h1 className="page-title">Franchise List</h1>
+      <EpinSummaryCards />
       <section className="panel franchise-list-panel">
         <h2 className="section-title franchise-list-title">E-PIN FRANCHISE LIST</h2>
 
