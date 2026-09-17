@@ -76,8 +76,7 @@
 }
 
 .pp-slider-wrap .slick-track {
-  display: flex !important;
-  margin-left: 0;
+  /* Removed display: flex !important as it breaks react-slick responsiveness */
 }
 
 .pp-slider-wrap .slick-slide {
