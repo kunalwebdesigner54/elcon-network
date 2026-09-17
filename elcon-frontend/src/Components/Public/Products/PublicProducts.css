@@ -66,6 +66,7 @@
 .pp-slider-wrap {
   position: relative;
   margin: 0 auto;
+  padding: 0 50px;
 }
 
 .pp-slider-wrap .slick-list {
@@ -125,11 +126,11 @@
 }
 
 .pp-slick-arrow-prev {
-  left: -22px;
+  left: 0;
 }
 
 .pp-slick-arrow-next {
-  right: -22px;
+  right: 0;
 }
 
 /* ─── Product Card — No shadow, no cursor on card ─── */
@@ -294,11 +295,11 @@
   }
 
   .pp-slick-arrow-prev {
-    left: -18px;
+    left: 0;
   }
 
   .pp-slick-arrow-next {
-    right: -18px;
+    right: 0;
   }
 }
 
@@ -314,10 +315,10 @@
   }
 
   .pp-slick-arrow-prev {
-    left: -16px;
+    left: 0;
   }
 
   .pp-slick-arrow-next {
-    right: -16px;
+    right: 0;
   }
 }
