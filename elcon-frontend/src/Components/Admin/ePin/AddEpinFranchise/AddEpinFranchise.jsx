@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getEpinFranchises, upsertEpinFranchise, updateEpinFranchise, getEpinList } from '../../../../api/managementService';
 import { getSponsorDetails } from '../../../../api/authService';
 import { useRef } from 'react';
+import EpinSummaryCards from '../../../shared/EpinSummaryCards';
 import './AddEpinFranchise.css';
 
 function AddEpinFranchise() {
@@ -101,7 +102,8 @@ function AddEpinFranchise() {
 
   return (
     <div className="admin-add-epin-page">
-     
+      <h1 className="page-title">Add ePin Franchise</h1>
+      <EpinSummaryCards />
       <section className="panel add-epin-panel">
         <h2 className="section-title add-epin-title">ADD-UPDATE FRANCHISE</h2>
 

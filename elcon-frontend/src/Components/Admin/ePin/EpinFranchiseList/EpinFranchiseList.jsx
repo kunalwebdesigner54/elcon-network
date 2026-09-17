@@ -53,10 +53,11 @@ function AdminEpinFranchiseList() {
   };
 
   return (
-    <section className="panel admin-epin-franchise-panel">
+    <>
       <h1 className="page-title">ePin Franchise</h1>
       <EpinSummaryCards />
-      <h2 className="section-title admin-epin-franchise-title">ADD E-PIN FRANCHISE</h2>
+      <section className="panel admin-epin-franchise-panel">
+        <h2 className="section-title admin-epin-franchise-title">ADD E-PIN FRANCHISE</h2>
 
       <div className="admin-epin-franchise-controls">
         <div className="admin-epin-franchise-filters">
@@ -130,7 +131,8 @@ function AdminEpinFranchiseList() {
           </tbody>
         </table>
       </div>
-    </section>
+      </section>
+    </>
   );
 }
 
