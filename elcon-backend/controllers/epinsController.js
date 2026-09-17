@@ -204,6 +204,35 @@ exports.getEpins = async (req, res) => {
   }
 };
 
+exports.getEpinSummary = async (req, res) => {
+  try {
+    const baseFilter = {};
+    if (!isAdmin(req)) {
+      const identifiers = getUserIdentifiers(req);
+      if (!identifiers.length) {
+        return res.status(403).json({ success: false, message: 'Not authorized to view ePins' });
+      }
+      baseFilter.$or = [
+        { currentOwner: { $in: identifiers } },
+        { usedBy: { $in: identifiers } },
+        { deletedBy: { $in: identifiers } },
+        { generatedBy: { $in: identifiers } },
+      ];
+    }
+
+    const [total, available, used, blocked] = await Promise.all([
+      Epin.countDocuments({ ...baseFilter }),
+      Epin.countDocuments({ ...baseFilter, status: 'Unused' }),
+      Epin.countDocuments({ ...baseFilter, status: 'Used' }),
+      Epin.countDocuments({ ...baseFilter, status: { $in: ['Blocked', 'Deleted'] } }),
+    ]);
+
+    res.json({ success: true, summary: { total, available, used, blocked } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 exports.generateEpins = async (req, res) => {
   try {
     const globalSettingsDoc = await SiteSetting.findOne({ settingKey: 'global-settings' }).lean();

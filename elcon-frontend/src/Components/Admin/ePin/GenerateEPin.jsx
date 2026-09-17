@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import './GenerateEPin.css';
 import { generateEpins } from '../../../api/managementService';
 import { getUser } from '../../../utils/auth';
+import EpinSummaryCards from '../../shared/EpinSummaryCards';
 
 function GenerateEPin() {
   const defaultGeneratedBy = useMemo(() => {
@@ -60,6 +61,7 @@ function GenerateEPin() {
   return (
     <div>
       <h1 className="page-title">Generate ePin</h1>
+      <EpinSummaryCards />
 
       <div className="panel">
         <div className="epin-header-row">

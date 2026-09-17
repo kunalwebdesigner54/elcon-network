@@ -28,6 +28,10 @@ const luckyDrawWinnerSchema = new mongoose.Schema(
     rewardImage: {
       type: String, // Data URL or external URL
     },
+    isHidden: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

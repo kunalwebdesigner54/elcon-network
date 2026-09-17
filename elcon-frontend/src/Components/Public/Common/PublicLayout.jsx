@@ -7,6 +7,14 @@ const navItems = [
   { label: 'About Us', to: '/about-us' },
   { label: 'Helping Process', to: '/helping-process' },
   { label: 'Our Activity', to: '/our-activity' },
+  { 
+    label: 'Products', 
+    dropdown: [
+      { label: 'Joining Product', to: '/products/joining' },
+      { label: 'Shopping Product', to: '/products/shopping' },
+      { label: 'Repurchase Product', to: '/products/repurchase' }
+    ] 
+  },
   { label: 'Contact', to: '/contact' }
 ];
 
@@ -44,16 +52,39 @@ function PublicLayout() {
           </button>
 
           <nav className="public-nav">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => `public-nav-link ${isActive ? 'active' : ''}`}
-                end={item.to === '/'}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+            {navItems.map((item) => {
+              if (item.dropdown) {
+                return (
+                  <div key={item.label} className="public-nav-dropdown">
+                    <span className="public-nav-link public-nav-dropdown-toggle">
+                      {item.label} <span className="dropdown-arrow">▼</span>
+                    </span>
+                    <div className="public-dropdown-menu">
+                      {item.dropdown.map(dropItem => (
+                        <NavLink
+                          key={dropItem.to}
+                          to={dropItem.to}
+                          className={({ isActive }) => `public-dropdown-item ${isActive ? 'active' : ''}`}
+                        >
+                          {dropItem.label}
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+              
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => `public-nav-link ${isActive ? 'active' : ''}`}
+                  end={item.to === '/'}
+                >
+                  {item.label}
+                </NavLink>
+              );
+            })}
           </nav>
 
           <div className="public-auth-btns">
@@ -69,17 +100,36 @@ function PublicLayout() {
 
       <aside className="public-mobile-sidebar">
         <nav className="public-mobile-nav">
-          {navItems.map((item) => (
-            <NavLink
-              key={`mobile-${item.to}`}
-              to={item.to}
-              className={({ isActive }) => `public-mobile-link ${isActive ? 'active' : ''}`}
-              end={item.to === '/'}
-              onClick={closeMenu}
-            >
-              {item.label}
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            if (item.dropdown) {
+              return (
+                <div key={item.label} className="public-mobile-dropdown">
+                  <div className="public-mobile-dropdown-title">{item.label}</div>
+                  {item.dropdown.map(dropItem => (
+                    <NavLink
+                      key={`mobile-${dropItem.to}`}
+                      to={dropItem.to}
+                      className={({ isActive }) => `public-mobile-link public-mobile-sublink ${isActive ? 'active' : ''}`}
+                      onClick={closeMenu}
+                    >
+                      {dropItem.label}
+                    </NavLink>
+                  ))}
+                </div>
+              );
+            }
+            return (
+              <NavLink
+                key={`mobile-${item.to}`}
+                to={item.to}
+                className={({ isActive }) => `public-mobile-link ${isActive ? 'active' : ''}`}
+                end={item.to === '/'}
+                onClick={closeMenu}
+              >
+                {item.label}
+              </NavLink>
+            );
+          })}
         </nav>
 
         <div className="public-mobile-auth">

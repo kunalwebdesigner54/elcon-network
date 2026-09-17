@@ -139,6 +139,11 @@ export const getEpinTransferHistory = async () => {
   return response.data;
 };
 
+export const getEpinSummary = async () => {
+  const response = await apiClient.get('/epins/summary');
+  return response.data;
+};
+
 export const getEpinFranchises = async () => {
   const response = await apiClient.get('/epins/franchises');
   return response.data;

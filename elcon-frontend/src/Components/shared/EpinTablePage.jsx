@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getEpinList, updateEpinStatus, transferEpin, getEpinTransferHistory } from '../../api/managementService';
+import EpinSummaryCards from './EpinSummaryCards';
 
 const statusClass = (status) => {
   if (status === 'Used') return 'epin-chip-used';
@@ -132,7 +133,8 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
   return (
     <div>
       <h1 className="page-title">{title}</h1>
-      
+      <EpinSummaryCards />
+
       {showTabs && (
         <div className="epin-tabs-container" style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center' }}>
           <Link to="/user/epin/list-all-epin" style={{ color: location.pathname.includes('list-all-epin') || location.pathname.includes('all-epin') ? '#00e5ff' : '#a0aec0', textDecoration: 'none', fontWeight: 'bold', borderBottom: location.pathname.includes('list-all-epin') || location.pathname.includes('all-epin') ? '2px solid #00e5ff' : 'none', paddingBottom: '4px' }}>All epins</Link>
@@ -143,18 +145,6 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
         </div>
       )}
 
-      {showTabs && !isTransferHistory && (
-        <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-          <div style={{ background: 'linear-gradient(90deg, rgba(0,229,255,0.1) 0%, rgba(0,229,255,0.05) 100%)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '15px 25px', borderRadius: '12px', flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ color: '#a0aec0', fontSize: '1.1rem', fontWeight: '500' }}>Available ePins</span>
-            <span style={{ color: '#00e5ff', fontSize: '1.5rem', fontWeight: 'bold' }}>{counts.available}</span>
-          </div>
-          <div style={{ background: 'linear-gradient(90deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.05) 100%)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '15px 25px', borderRadius: '12px', flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ color: '#a0aec0', fontSize: '1.1rem', fontWeight: '500' }}>Used ePins</span>
-            <span style={{ color: '#ef4444', fontSize: '1.5rem', fontWeight: 'bold' }}>{counts.used}</span>
-          </div>
-        </div>
-      )}
       <div className="panel">
         <div className="epin-header-row"><h2 className="epin-title">{heading}</h2></div>
         <div className="epin-filter-grid">

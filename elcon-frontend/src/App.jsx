@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import RepurchaseProductsAdmin from './Components/Admin/ProductsPackage/RepurchaseProducts/RepurchaseProductsAdmin';
+import PublicProducts from './Components/Public/Products/PublicProducts';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import AdminLayout from './Components/Admin/Common/AdminLayout';
@@ -221,6 +222,7 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="registration" element={<Register />} />
           <Route path="user-login" element={<UserLogin />} />
+          <Route path="products/:type" element={<PublicProducts />} />
         </Route>
 
         <Route path="/user" element={<ProtectedRoute><UserLayout /></ProtectedRoute>}>

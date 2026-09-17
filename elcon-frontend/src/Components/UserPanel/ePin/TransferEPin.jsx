@@ -3,6 +3,7 @@ import { getEpinList, transferEpins } from '../../../api/managementService';
 import { getSponsorDetails } from '../../../api/authService';
 import Swal from 'sweetalert2';
 import './GenerateEPin.css';
+import EpinSummaryCards from '../../shared/EpinSummaryCards';
 
 export default function TransferEPin() {
   const [epins, setEpins] = useState([]);
@@ -130,6 +131,7 @@ export default function TransferEPin() {
   return (
     <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh' }}>
       <h1 className="buyepin-title">Transfer ePin</h1>
+      <EpinSummaryCards />
       <div className="ge-wallet-section" style={{ flexGrow: 1 }}>
         
         {loading ? (

@@ -35,18 +35,51 @@ exports.addWinner = async (req, res) => {
 
 exports.getWinners = async (req, res) => {
   try {
-    const winnersRaw = await LuckyDrawWinner.find().sort({ createdAt: -1 });
+    let query = {};
+    if (req.user && req.user.role !== 'admin' && req.user.role !== 'SUPER_ADMIN' && req.user.role !== 'SUB_ADMIN') {
+      query.isHidden = { $ne: true };
+    }
+
+    const winnersRaw = await LuckyDrawWinner.find(query).sort({ createdAt: -1 });
     
     const winners = winnersRaw.map((w, index) => ({
+      _id: w._id,
       sNo: w.serialNo || index + 1,
       memberId: w.memberId,
       name: w.memberName,
       date: w.drawDate ? w.drawDate.toISOString().split('T')[0] : '---',
       rewardName: w.rewardName,
       rewardImage: w.rewardImage,
+      isHidden: w.isHidden,
     }));
 
     res.json({ success: true, winners });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.toggleHideWinner = async (req, res) => {
+  try {
+    const winner = await LuckyDrawWinner.findById(req.params.id);
+    if (!winner) {
+      return res.status(404).json({ success: false, message: 'Winner not found' });
+    }
+    winner.isHidden = !winner.isHidden;
+    await winner.save();
+    res.json({ success: true, message: `Winner ${winner.isHidden ? 'hidden' : 'unhidden'} successfully`, isHidden: winner.isHidden });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.deleteWinner = async (req, res) => {
+  try {
+    const winner = await LuckyDrawWinner.findByIdAndDelete(req.params.id);
+    if (!winner) {
+      return res.status(404).json({ success: false, message: 'Winner not found' });
+    }
+    res.json({ success: true, message: 'Winner deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -19,7 +19,8 @@ const {
   deletePackage,
   getFranchiseDeliveryReport,
   verifyJoiningPackageDelivery,
-  getFranchiseStock
+  getFranchiseStock,
+  getEpinSummary
 } = require('../controllers/epinsController');
 
 const router = express.Router();
@@ -31,6 +32,7 @@ router.post('/requests', createEpinRequest);
 router.patch('/requests/:requestId/status', authorize('admin'), updateEpinRequestStatus);
 
 router.get('/', getEpins);
+router.get('/summary', getEpinSummary);
 router.post('/generate', generateEpins);
 router.post('/transfer', transferEpins);
 router.patch('/:epinNo/status', updateEpinStatus);

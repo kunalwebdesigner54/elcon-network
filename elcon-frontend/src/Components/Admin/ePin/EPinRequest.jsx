@@ -2,6 +2,7 @@ import React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import './EPinRequest.css';
 import { getAdminEpinRequests, updateAdminEpinRequestStatus } from '../../../api/managementService';
+import EpinSummaryCards from '../../shared/EpinSummaryCards';
 
 function EPinRequest() {
   const totalPages = 1;
@@ -72,6 +73,7 @@ function EPinRequest() {
   return (
     <div>
       <h1 className="page-title">ePin Request</h1>
+      <EpinSummaryCards />
 
       <div className="panel">
         <div className="epin-header-row">

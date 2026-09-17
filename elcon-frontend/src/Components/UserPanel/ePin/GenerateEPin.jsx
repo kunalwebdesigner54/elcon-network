@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 import { getProfile, getSponsorDetails } from '../../../api/authService';
 import { useNavigate } from "react-router-dom";
+import EpinSummaryCards from '../../shared/EpinSummaryCards';
 
 const GenerateEPin = () => {
   const isAdmin = useMemo(() => {
@@ -181,6 +182,7 @@ const GenerateEPin = () => {
   return (
     <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh' }}>
       <h1 className="buyepin-title">Generate ePin</h1>
+      <EpinSummaryCards />
 
       <div className="ge-wallet-section" style={{ flexGrow: 1 }}>
         <div className="ge-balance-cards">
