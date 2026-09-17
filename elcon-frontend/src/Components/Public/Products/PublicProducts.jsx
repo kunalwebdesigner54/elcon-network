@@ -66,7 +66,7 @@ const ProductSection = ({ title, products, onProductClick }) => {
             const imageUrl = resolveProductImage(product);
             return (
               <div key={product._id || product.productCode} className="pp-slide">
-                <div className="pp-card" onClick={() => onProductClick(product)}>
+                <div className="pp-card">
                   <div className="pp-card-img-wrap">
                     {imageUrl ? (
                       <img src={imageUrl} alt={product.productName || product.name} className="pp-card-img" loading="lazy" />
@@ -86,7 +86,7 @@ const ProductSection = ({ title, products, onProductClick }) => {
                         <span className="pp-card-mrp">₹{product.mrp}</span>
                       )}
                     </div>
-                    <button className="pp-card-btn">View Details</button>
+                    <button className="pp-card-btn" onClick={() => onProductClick(product)}>View Details</button>
                   </div>
                 </div>
               </div>
