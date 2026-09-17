@@ -7,6 +7,7 @@ import ParticleSwarm from './ParticleSwarm';
 import GridGallery from './GridGallery';
 import Services from './Services';
 import ProductsSection from './ProductsSection';
+import LatestNews from './LatestNews';
 
 function Home() {
   const bannerRef = useRef(null);
@@ -73,6 +74,8 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <LatestNews />
 
       <section className="home-steps-section">
         <div className="public-container home-steps-row">
