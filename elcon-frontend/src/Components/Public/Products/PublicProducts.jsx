@@ -27,7 +27,7 @@ const SlickArrow = ({ className, onClick, direction }) => (
 
 const sliderSettings = {
   dots: false,
-  infinite: false,
+  infinite: true,
   speed: 500,
   slidesToShow: 4,
   slidesToScroll: 1,
