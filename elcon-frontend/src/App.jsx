@@ -222,7 +222,7 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="registration" element={<Register />} />
           <Route path="user-login" element={<UserLogin />} />
-          <Route path="products/:type" element={<PublicProducts />} />
+          <Route path="product" element={<PublicProducts />} />
         </Route>
 
         <Route path="/user" element={<ProtectedRoute><UserLayout /></ProtectedRoute>}>
