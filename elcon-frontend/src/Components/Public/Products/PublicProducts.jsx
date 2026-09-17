@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -29,11 +29,10 @@ const sliderSettings = {
   dots: false,
   infinite: false,
   speed: 500,
-  slidesToShow: 3,
+  slidesToShow: 4,
   slidesToScroll: 1,
   swipeToSlide: true,
-  prevArrow: <SlickArrow direction="prev" />,
-  nextArrow: <SlickArrow direction="next" />,
+  arrows: false,
   responsive: [
     { breakpoint: 1200, settings: { slidesToShow: 3 } },
     { breakpoint: 900, settings: { slidesToShow: 2 } },
@@ -42,6 +41,8 @@ const sliderSettings = {
 };
 
 const ProductSection = ({ title, products, onProductClick }) => {
+  const sliderRef = useRef(null);
+
   if (!products.length) {
     return (
       <div className="pp-section">
@@ -61,7 +62,8 @@ const ProductSection = ({ title, products, onProductClick }) => {
         {title}
       </h2>
       <div className="pp-slider-wrap">
-        <Slider {...sliderSettings}>
+        <SlickArrow direction="prev" onClick={() => sliderRef.current?.slickPrev()} />
+        <Slider ref={sliderRef} {...sliderSettings}>
           {products.map((product) => {
             const imageUrl = resolveProductImage(product);
             return (
@@ -93,6 +95,7 @@ const ProductSection = ({ title, products, onProductClick }) => {
             );
           })}
         </Slider>
+        <SlickArrow direction="next" onClick={() => sliderRef.current?.slickNext()} />
       </div>
     </div>
   );
