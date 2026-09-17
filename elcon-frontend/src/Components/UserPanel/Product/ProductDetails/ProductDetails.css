@@ -23,8 +23,8 @@
 
 .product-details-grid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
   align-items: start;
 }
 
@@ -41,7 +41,7 @@
 
 .carousel-frame {
   position: relative;
-  min-height: 320px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,17 +50,17 @@
 
 .carousel-image-wrap {
   width: 100%;
-  min-height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding: 20px;
 }
 
 .carousel-image {
   width: 100%;
-  height: 100%;
-  max-height: 320px;
+  height: auto;
+  max-height: 600px;
   object-fit: contain;
 }
 
@@ -268,7 +268,7 @@
 
   .carousel-frame,
   .carousel-image-wrap {
-    min-height: 280px;
+    width: 100%;
   }
 }
 
@@ -287,11 +287,12 @@
 
   .carousel-frame,
   .carousel-image-wrap {
-    min-height: 260px;
+    width: 100%;
   }
 
   .carousel-image {
-    max-height: 260px;
+    width: 100%;
+    height: auto;
   }
 
   .product-spec-table th,
@@ -323,11 +324,12 @@
 
   .carousel-frame,
   .carousel-image-wrap {
-    min-height: 220px;
+    width: 100%;
   }
 
   .carousel-image {
-    max-height: 220px;
+    width: 100%;
+    height: auto;
   }
 
   .carousel-arrow {
@@ -380,11 +382,12 @@
 
   .carousel-frame,
   .carousel-image-wrap {
-    min-height: 190px;
+    width: 100%;
   }
 
   .carousel-image {
-    max-height: 190px;
+    width: 100%;
+    height: auto;
   }
 
   .product-tab-btn {
