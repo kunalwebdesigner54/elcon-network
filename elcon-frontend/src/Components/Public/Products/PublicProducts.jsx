@@ -1,5 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import { getPublicProducts } from '../../../api/productsService';
 import { resolveProductImage } from '../../UserPanel/Product/productImages';
 import PublicPageHeader from '../Common/PublicPageHeader';
@@ -11,83 +14,86 @@ const SECTIONS = [
   { key: 'repurchase', title: 'Repurchase Products' },
 ];
 
-const ProductCarousel = ({ products, onProductClick }) => {
-  const trackRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
+const SlickArrow = ({ className, onClick, direction }) => (
+  <button
+    className={`pp-slick-arrow pp-slick-arrow-${direction} ${className || ''}`}
+    onClick={onClick}
+    aria-label={direction === 'prev' ? 'Previous' : 'Next'}
+    type="button"
+  >
+    <i className={`fa fa-chevron-${direction === 'prev' ? 'left' : 'right'}`}></i>
+  </button>
+);
 
-  const updateScrollState = () => {
-    const el = trackRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 5);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 5);
-  };
+const sliderSettings = {
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  swipeToSlide: true,
+  prevArrow: <SlickArrow direction="prev" />,
+  nextArrow: <SlickArrow direction="next" />,
+  responsive: [
+    { breakpoint: 1200, settings: { slidesToShow: 3 } },
+    { breakpoint: 900, settings: { slidesToShow: 2 } },
+    { breakpoint: 560, settings: { slidesToShow: 1, centerMode: true, centerPadding: '30px' } },
+  ],
+};
 
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    updateScrollState();
-    el.addEventListener('scroll', updateScrollState, { passive: true });
-    window.addEventListener('resize', updateScrollState);
-    return () => {
-      el.removeEventListener('scroll', updateScrollState);
-      window.removeEventListener('resize', updateScrollState);
-    };
-  }, [products]);
-
-  const scroll = (dir) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const cardWidth = el.querySelector('.pp-card')?.offsetWidth || 280;
-    el.scrollBy({ left: dir * (cardWidth + 24), behavior: 'smooth' });
-  };
-
+const ProductSection = ({ title, products, onProductClick }) => {
   if (!products.length) {
-    return <div className="pp-empty">No products available in this category.</div>;
+    return (
+      <div className="pp-section">
+        <h2 className="pp-section-title">
+          <span className="pp-section-title-accent"></span>
+          {title}
+        </h2>
+        <div className="pp-empty">No products available in this category.</div>
+      </div>
+    );
   }
 
   return (
-    <div className="pp-carousel-wrap">
-      {canScrollLeft && (
-        <button className="pp-carousel-btn pp-carousel-btn-left" onClick={() => scroll(-1)} aria-label="Scroll left">
-          <i className="fa fa-chevron-left"></i>
-        </button>
-      )}
-      <div className="pp-carousel-track" ref={trackRef}>
-        {products.map((product) => {
-          const imageUrl = resolveProductImage(product);
-          return (
-            <div key={product._id || product.productCode} className="pp-card" onClick={() => onProductClick(product)}>
-              <div className="pp-card-img-wrap">
-                {imageUrl ? (
-                  <img src={imageUrl} alt={product.productName || product.name} className="pp-card-img" loading="lazy" />
-                ) : (
-                  <div className="pp-card-no-img">No Image</div>
-                )}
-                {product.discount > 0 && (
-                  <span className="pp-card-badge">{product.discount}% OFF</span>
-                )}
-              </div>
-              <div className="pp-card-body">
-                <h4 className="pp-card-name">{product.productName || product.name}</h4>
-                <p className="pp-card-category">{product.category}</p>
-                <div className="pp-card-price-row">
-                  <span className="pp-card-price">₹{product.dpPrice || product.price}</span>
-                  {product.mrp > (product.dpPrice || product.price) && (
-                    <span className="pp-card-mrp">₹{product.mrp}</span>
-                  )}
+    <div className="pp-section">
+      <h2 className="pp-section-title">
+        <span className="pp-section-title-accent"></span>
+        {title}
+      </h2>
+      <div className="pp-slider-wrap">
+        <Slider {...sliderSettings}>
+          {products.map((product) => {
+            const imageUrl = resolveProductImage(product);
+            return (
+              <div key={product._id || product.productCode} className="pp-slide">
+                <div className="pp-card" onClick={() => onProductClick(product)}>
+                  <div className="pp-card-img-wrap">
+                    {imageUrl ? (
+                      <img src={imageUrl} alt={product.productName || product.name} className="pp-card-img" loading="lazy" />
+                    ) : (
+                      <div className="pp-card-no-img">No Image</div>
+                    )}
+                    {product.discount > 0 && (
+                      <span className="pp-card-badge">{product.discount}% OFF</span>
+                    )}
+                  </div>
+                  <div className="pp-card-body">
+                    <h4 className="pp-card-name">{product.productName || product.name}</h4>
+                    <p className="pp-card-category">{product.category}</p>
+                    <div className="pp-card-price-row">
+                      <span className="pp-card-price">₹{product.dpPrice || product.price}</span>
+                      {product.mrp > (product.dpPrice || product.price) && (
+                        <span className="pp-card-mrp">₹{product.mrp}</span>
+                      )}
+                    </div>
+                    <button className="pp-card-btn">View Details</button>
+                  </div>
                 </div>
-                <button className="pp-card-btn">View Details</button>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </Slider>
       </div>
-      {canScrollRight && (
-        <button className="pp-carousel-btn pp-carousel-btn-right" onClick={() => scroll(1)} aria-label="Scroll right">
-          <i className="fa fa-chevron-right"></i>
-        </button>
-      )}
     </div>
   );
 };
@@ -137,13 +143,12 @@ const PublicProducts = () => {
             SECTIONS.map((sec) => {
               const products = sections[sec.key] || [];
               return (
-                <div key={sec.key} className="pp-section">
-                  <h2 className="pp-section-title">
-                    <span className="pp-section-title-accent"></span>
-                    {sec.title}
-                  </h2>
-                  <ProductCarousel products={products} onProductClick={handleProductClick} />
-                </div>
+                <ProductSection
+                  key={sec.key}
+                  title={sec.title}
+                  products={products}
+                  onProductClick={handleProductClick}
+                />
               );
             })
           )}
