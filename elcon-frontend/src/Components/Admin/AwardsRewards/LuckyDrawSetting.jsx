@@ -55,10 +55,10 @@ const LuckyDrawSetting = () => {
   return (
     <div className="awards-rewards-container">
       <div className="awards-rewards-card">
-        <h2 className="awards-rewards-title">LUCKY DROW</h2>
+        <h2 className="awards-rewards-title">LUCKY DRAW</h2>
         
         <form onSubmit={handleSubmit}>
-          <div className="form-section-header">ADD LUCKY DROW WINNER</div>
+          <div className="form-section-header">ADD LUCKY DRAW WINNER</div>
           
           <div className="ar-row">
             <div className="ar-col">
@@ -77,7 +77,7 @@ const LuckyDrawSetting = () => {
 
           <div className="ar-row">
             <div className="ar-col">
-              <label className="ar-form-label">DROW DATE</label>
+              <label className="ar-form-label">DRAW DATE</label>
               <input type="date" name="drawDate" value={formData.drawDate} onChange={handleInputChange} className="ar-form-input" required />
             </div>
             <div className="ar-col">
