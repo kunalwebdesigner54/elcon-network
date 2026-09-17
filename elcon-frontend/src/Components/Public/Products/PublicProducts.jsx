@@ -37,7 +37,7 @@ const sliderSettings = {
   responsive: [
     { breakpoint: 1200, settings: { slidesToShow: 3 } },
     { breakpoint: 900, settings: { slidesToShow: 2 } },
-    { breakpoint: 560, settings: { slidesToShow: 1, centerMode: true, centerPadding: '30px' } },
+    { breakpoint: 560, settings: { slidesToShow: 1 } },
   ],
 };
 

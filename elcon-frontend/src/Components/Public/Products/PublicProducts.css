@@ -75,7 +75,8 @@
 }
 
 .pp-slider-wrap .slick-track {
-  display: flex;
+  display: flex !important;
+  margin-left: 0;
 }
 
 .pp-slider-wrap .slick-slide {
@@ -131,6 +132,12 @@
 
 .pp-slick-arrow-next {
   right: 0;
+}
+
+/* Hide default slick arrows */
+.pp-slider-wrap .slick-prev,
+.pp-slider-wrap .slick-next {
+  display: none !important;
 }
 
 /* ─── Product Card — No shadow, no cursor on card ─── */
