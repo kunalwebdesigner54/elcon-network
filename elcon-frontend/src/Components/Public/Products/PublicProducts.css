@@ -120,15 +120,7 @@
 }
 
 .pp-slick-arrow.slick-disabled {
-  opacity: 0.3;
-  cursor: default;
-  box-shadow: none;
-}
-
-.pp-slick-arrow.slick-disabled:hover {
-  transform: translateY(-50%);
-  background: rgb(255, 154, 60);
-  box-shadow: none;
+  display: none !important;
 }
 
 .pp-slick-arrow-prev {
