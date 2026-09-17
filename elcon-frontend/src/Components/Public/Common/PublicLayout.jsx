@@ -7,14 +7,7 @@ const navItems = [
   { label: 'About Us', to: '/about-us' },
   { label: 'Helping Process', to: '/helping-process' },
   { label: 'Our Activity', to: '/our-activity' },
-  {
-    label: 'Products',
-    dropdown: [
-      { label: 'Joining Product', to: '/products/joining' },
-      { label: 'Shopping Product', to: '/products/shopping' },
-      { label: 'Repurchase Product', to: '/products/repurchase' }
-    ]
-  },
+  { label: 'Product', to: '/product' },
   { label: 'Contact', to: '/contact' }
 ];
 

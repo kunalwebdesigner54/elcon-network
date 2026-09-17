@@ -1,84 +1,154 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getPublicProducts } from '../../../api/productsService';
 import { resolveProductImage } from '../../UserPanel/Product/productImages';
+import PublicPageHeader from '../Common/PublicPageHeader';
 import './PublicProducts.css';
 
-const PublicProducts = () => {
-  const { type } = useParams();
-  const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const SECTIONS = [
+  { key: 'joining', title: 'Joining Products' },
+  { key: 'shopping', title: 'Shopping Products' },
+  { key: 'repurchase', title: 'Repurchase Products' },
+];
 
-  // Capitalize title
-  const pageTitle = type ? `${type.charAt(0).toUpperCase() + type.slice(1)} Products` : 'Products';
+const ProductCarousel = ({ products, onProductClick }) => {
+  const trackRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateScrollState = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 5);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 5);
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const response = await getPublicProducts(type || 'joining');
-        const rawProducts = response.products || [];
-        const visibleProducts = rawProducts.filter(p => (p.status || '').toUpperCase() === 'SHOWING');
-        setProducts(visibleProducts);
-      } catch (error) {
-        console.error('Failed to fetch public products', error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
+    const el = trackRef.current;
+    if (!el) return;
+    updateScrollState();
+    el.addEventListener('scroll', updateScrollState, { passive: true });
+    window.addEventListener('resize', updateScrollState);
+    return () => {
+      el.removeEventListener('scroll', updateScrollState);
+      window.removeEventListener('resize', updateScrollState);
     };
-    fetchProducts();
-  }, [type]);
+  }, [products]);
 
-  const handleProductClick = (product) => {
-    // Redirect unauthenticated users to login if they try to click
+  const scroll = (dir) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const cardWidth = el.querySelector('.pp-card')?.offsetWidth || 280;
+    el.scrollBy({ left: dir * (cardWidth + 24), behavior: 'smooth' });
+  };
+
+  if (!products.length) {
+    return <div className="pp-empty">No products available in this category.</div>;
+  }
+
+  return (
+    <div className="pp-carousel-wrap">
+      {canScrollLeft && (
+        <button className="pp-carousel-btn pp-carousel-btn-left" onClick={() => scroll(-1)} aria-label="Scroll left">
+          <i className="fa fa-chevron-left"></i>
+        </button>
+      )}
+      <div className="pp-carousel-track" ref={trackRef}>
+        {products.map((product) => {
+          const imageUrl = resolveProductImage(product);
+          return (
+            <div key={product._id || product.productCode} className="pp-card" onClick={() => onProductClick(product)}>
+              <div className="pp-card-img-wrap">
+                {imageUrl ? (
+                  <img src={imageUrl} alt={product.productName || product.name} className="pp-card-img" loading="lazy" />
+                ) : (
+                  <div className="pp-card-no-img">No Image</div>
+                )}
+                {product.discount > 0 && (
+                  <span className="pp-card-badge">{product.discount}% OFF</span>
+                )}
+              </div>
+              <div className="pp-card-body">
+                <h4 className="pp-card-name">{product.productName || product.name}</h4>
+                <p className="pp-card-category">{product.category}</p>
+                <div className="pp-card-price-row">
+                  <span className="pp-card-price">₹{product.dpPrice || product.price}</span>
+                  {product.mrp > (product.dpPrice || product.price) && (
+                    <span className="pp-card-mrp">₹{product.mrp}</span>
+                  )}
+                </div>
+                <button className="pp-card-btn">View Details</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {canScrollRight && (
+        <button className="pp-carousel-btn pp-carousel-btn-right" onClick={() => scroll(1)} aria-label="Scroll right">
+          <i className="fa fa-chevron-right"></i>
+        </button>
+      )}
+    </div>
+  );
+};
+
+const PublicProducts = () => {
+  const navigate = useNavigate();
+  const [sections, setSections] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      setLoading(true);
+      const results = {};
+      await Promise.all(
+        SECTIONS.map(async (sec) => {
+          try {
+            const response = await getPublicProducts(sec.key);
+            const raw = response.products || [];
+            results[sec.key] = raw.filter((p) => (p.status || '').toUpperCase() === 'SHOWING');
+          } catch {
+            results[sec.key] = [];
+          }
+        })
+      );
+      setSections(results);
+      setLoading(false);
+    };
+    fetchAll();
+  }, []);
+
+  const handleProductClick = () => {
     navigate('/user-login', { state: { message: 'Please login to view product details or purchase.' } });
   };
 
   return (
-    <div className="public-products-page">
-      <div className="public-container">
-        <h1 className="public-products-title">{pageTitle}</h1>
-        <p className="public-products-subtitle">Explore our exclusive range of {pageTitle.toLowerCase()}.</p>
+    <div className="pp-page">
+      <PublicPageHeader title="OUR PRODUCTS" />
 
-        {loading ? (
-          <div className="public-products-loading">Loading products...</div>
-        ) : products.length === 0 ? (
-          <div className="public-products-empty">No products found for this category.</div>
-        ) : (
-          <div className="public-products-grid">
-            {products.map(product => {
-              const imageUrl = resolveProductImage(product);
+      <section className="pp-content">
+        <div className="public-container">
+          {loading ? (
+            <div className="pp-loading">
+              <div className="pp-spinner"></div>
+              <p>Loading products...</p>
+            </div>
+          ) : (
+            SECTIONS.map((sec) => {
+              const products = sections[sec.key] || [];
               return (
-                <div key={product.id || product.productCode} className="public-product-card" onClick={() => handleProductClick(product)}>
-                  <div className="public-product-image-wrap">
-                    {imageUrl ? (
-                      <img src={imageUrl} alt={product.productName || product.name} className="public-product-image" loading="lazy" />
-                    ) : (
-                      <div className="public-product-no-image">No Image</div>
-                    )}
-                    {product.discount > 0 && (
-                      <div className="public-product-badge">{product.discount}% OFF</div>
-                    )}
-                  </div>
-                  <div className="public-product-content">
-                    <h3 className="public-product-name">{product.productName || product.name}</h3>
-                    <p className="public-product-category">{product.category}</p>
-                    <div className="public-product-price-row">
-                      <span className="public-product-price">₹{product.dpPrice || product.price}</span>
-                      {product.mrp > (product.dpPrice || product.price) && (
-                        <span className="public-product-mrp">₹{product.mrp}</span>
-                      )}
-                    </div>
-                    <button className="public-product-btn">View Details</button>
-                  </div>
+                <div key={sec.key} className="pp-section">
+                  <h2 className="pp-section-title">
+                    <span className="pp-section-title-accent"></span>
+                    {sec.title}
+                  </h2>
+                  <ProductCarousel products={products} onProductClick={handleProductClick} />
                 </div>
               );
-            })}
-          </div>
-        )}
-      </div>
+            })
+          )}
+        </div>
+      </section>
     </div>
   );
 };
