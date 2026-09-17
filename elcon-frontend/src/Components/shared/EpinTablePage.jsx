@@ -201,8 +201,8 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                       <td>
                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                           {row.status === 'Unused' && (
-                            <button className="action-btn reject-btn" type="button" title="Block" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c', padding: '4px 12px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleAction(row.epin, 'block')}>
-                              <i className="fa-solid fa-ban" style={{ marginRight: '4px' }}></i> Block
+                            <button className="action-btn reject-btn" type="button" title="Block" style={{ background: '#fadbd8', color: '#e74c3c', border: '1px solid #e74c3c', padding: '6px 10px', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }} onClick={() => handleAction(row.epin, 'block')}>
+                              <i className="fa-solid fa-ban"></i>
                             </button>
                           )}
                           {row.status === 'Blocked' && (
