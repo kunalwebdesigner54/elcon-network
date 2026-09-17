@@ -229,7 +229,6 @@
 }
 
 .public-footer {
-	margin-top: 54px;
 	background: var(--darker);
 	border-top: 1px solid rgba(17, 17, 17, 0.06);
 }
