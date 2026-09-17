@@ -113,8 +113,10 @@
   display: none !important;
 }
 
-.pp-slick-arrow:hover {
-  background: rgb(230, 130, 40);
+.pp-slick-arrow:hover,
+.pp-slick-arrow:focus {
+  background: rgb(230, 130, 40) !important;
+  color: #fff !important;
   box-shadow: 0 6px 20px rgba(255, 154, 60, 0.5);
   transform: translateY(-50%) scale(1.08);
 }
