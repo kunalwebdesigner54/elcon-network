@@ -99,7 +99,7 @@ function RepurchaseProductsAdmin() {
             <button
               type="button"
               className="btn-primary admin-add-new-btn"
-              onClick={() => navigate('/products-package/Repurchase-Products/add-new')}
+              onClick={() => navigate('/products-package/repurchase-products/add-new')}
             >
               ADD NEW
             </button>

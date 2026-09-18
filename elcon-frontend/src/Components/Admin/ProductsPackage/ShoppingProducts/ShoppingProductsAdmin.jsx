@@ -142,7 +142,7 @@ function ShoppingProductsAdmin() {
               <button
                 type="button"
                 className="btn-primary admin-add-new-btn"
-                onClick={() => navigate('/products-package/Shopping-Products/add-new')}
+                onClick={() => navigate('/products-package/shopping-products/add-new')}
               >
               ADD NEW
               </button>
