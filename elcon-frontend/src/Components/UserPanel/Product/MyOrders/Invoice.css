@@ -18,11 +18,11 @@
   flex-direction: column;
   gap: 16px;
   
-  /* Force light theme variables for the invoice to override global dark theme */
-  --text-main: #1a1a1a;
-  --text-muted: #666666;
-  --darker: #f8f9fa;
-  --border-color: #e2e8f0;
+  /* Define dark theme variables for invoice */
+  --text-main: #ffffff;
+  --text-muted: #b0bec5;
+  --darker: rgba(255, 255, 255, 0.05);
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* ========== Paper/Invoice Styling ========== */
@@ -72,7 +72,7 @@
 .invoice-main-title {
   font-size: 20px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-main);
   letter-spacing: 0.5px;
 }
 
@@ -244,7 +244,7 @@
 }
 
 .invoice-summary-total .invoice-summary-label {
-  color: #1a1a1a;
+  color: var(--text-main);
   font-weight: 700;
 }
 
