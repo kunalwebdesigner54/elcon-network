@@ -246,8 +246,7 @@ function AddJoiningPackage() {
                   <input
                     name="category"
                     list="category-options"
-                    value={formData.category}
-                    onChange={handleInputChange}
+                    defaultValue={editProduct?.category || ""}
                     placeholder="Select or type new category"
                     required
                     style={{ flex: 1 }}
