@@ -351,7 +351,8 @@ function AddShoppingProducts() {
                   <textarea
                     name="description"
                     rows="5"
-                    defaultValue={product?.description || ""}
+                    defaultValue={(fullProductDetails || editProduct)?.description}
+                    placeholder="Joining package product details and description."
                     style={contentFieldStyle}
                   />
                 </label>
@@ -360,7 +361,8 @@ function AddShoppingProducts() {
                   <textarea
                     name="specifications"
                     rows="5"
-                    defaultValue={product?.specifications || ""}
+                    defaultValue={(fullProductDetails || editProduct)?.specifications}
+                    placeholder="Type: Product Listing&#10;Layout: Image gallery with specification table&#10;Theme: User panel responsive card design&#10;Interaction: Card click, tabs, and carousel controls"
                     style={contentFieldStyle}
                   />
                 </label>
@@ -369,7 +371,8 @@ function AddShoppingProducts() {
                   <textarea
                     name="features"
                     rows="5"
-                    defaultValue={product?.features || ""}
+                    defaultValue={(fullProductDetails || editProduct)?.features}
+                    placeholder="Responsive layout for desktop, tablet, and mobile screens.&#10;Tabbed content area that updates without changing the page.&#10;Image carousel with arrow controls for fast product preview.&#10;Clean CTA area that keeps the purchase flow simple."
                     style={contentFieldStyle}
                   />
                 </label>

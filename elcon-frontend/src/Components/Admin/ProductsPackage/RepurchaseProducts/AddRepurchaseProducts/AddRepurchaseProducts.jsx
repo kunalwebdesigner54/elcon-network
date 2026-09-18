@@ -348,32 +348,33 @@ function AddRepurchaseProducts() {
               <div style={contentGridStyle}>
                 <label className="admin-add-product-row">
                   <span>Description</span>
-                  <textarea
-                    name="description"
-                    rows="5"
-                    defaultValue={product?.description || ""}
-                    style={contentFieldStyle}
-                  />
+                    <textarea
+                      name="description"
+                      rows="5"
+                      defaultValue={(fullProductDetails || editProduct)?.description}
+                      placeholder="Joining package product details and description."
+                      style={contentFieldStyle}
+                    />
                 </label>
                 <label className="admin-add-product-row">
                   <span>Specifications</span>
-                  <textarea
-                    name="specifications"
-                    rows="5"
-                    defaultValue={product?.specifications || ""}
-                    style={contentFieldStyle}
-                  />
+                    <textarea
+                      name="specifications"
+                      rows="5"
+                      defaultValue={(fullProductDetails || editProduct)?.specifications}
+                      placeholder="Type: Product Listing&#10;Layout: Image gallery with specification table&#10;Theme: User panel responsive card design&#10;Interaction: Card click, tabs, and carousel controls"
+                      style={contentFieldStyle}
+                    />
                 </label>
                 <label className="admin-add-product-row">
                   <span>Features &amp; Benefits</span>
-                  <textarea
-                    name="features"
-                    rows="5"
-                    defaultValue={product?.features || ""}
-                    style={contentFieldStyle}
-                  />
-                </label>
-              </div>
+                    <textarea
+                      name="features"
+                      rows="5"
+                      defaultValue={(fullProductDetails || editProduct)?.features}
+                      placeholder="Responsive layout for desktop, tablet, and mobile screens.&#10;Tabbed content area that updates without changing the page.&#10;Image carousel with arrow controls for fast product preview.&#10;Clean CTA area that keeps the purchase flow simple."
+                      style={contentFieldStyle}
+                    /> </label> </div>
             </div>
           </div>
 

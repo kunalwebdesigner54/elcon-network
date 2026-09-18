@@ -343,30 +343,33 @@ function AddJoiningPackage() {
               <div style={contentGridStyle}>
                 <label className="admin-add-product-row">
                   <span>Description</span>
-                  <textarea
-                    name="description"
-                    rows="5"
-                    defaultValue={(fullProductDetails || editProduct)?.description || "Joining package product details and description."}
-                    style={contentFieldStyle}
-                  />
+                    <textarea
+                      name="description"
+                      rows="5"
+                      defaultValue={(fullProductDetails || editProduct)?.description}
+                      placeholder="Joining package product details and description."
+                      style={contentFieldStyle}
+                    />
                 </label>
                 <label className="admin-add-product-row">
                   <span>Specifications</span>
-                  <textarea
-                    name="specifications"
-                    rows="5"
-                    defaultValue={(fullProductDetails || editProduct)?.specifications || "Type: Product Listing\nLayout: Image gallery with specification table\nTheme: User panel responsive card design\nInteraction: Card click, tabs, and carousel controls"}
-                    style={contentFieldStyle}
-                  />
+                    <textarea
+                      name="specifications"
+                      rows="5"
+                      defaultValue={(fullProductDetails || editProduct)?.specifications}
+                      placeholder="Type: Product Listing&#10;Layout: Image gallery with specification table&#10;Theme: User panel responsive card design&#10;Interaction: Card click, tabs, and carousel controls"
+                      style={contentFieldStyle}
+                    />
                 </label>
                 <label className="admin-add-product-row">
                   <span>Features &amp; Benefits</span>
-                  <textarea
-                    name="features"
-                    rows="5"
-                    defaultValue={(fullProductDetails || editProduct)?.features || "Responsive layout for desktop, tablet, and mobile screens.\nTabbed content area that updates without changing the page.\nImage carousel with arrow controls for fast product preview.\nClean CTA area that keeps the purchase flow simple."}
-                    style={contentFieldStyle}
-                  />
+                    <textarea
+                      name="features"
+                      rows="5"
+                      defaultValue={(fullProductDetails || editProduct)?.features}
+                      placeholder="Responsive layout for desktop, tablet, and mobile screens.&#10;Tabbed content area that updates without changing the page.&#10;Image carousel with arrow controls for fast product preview.&#10;Clean CTA area that keeps the purchase flow simple."
+                      style={contentFieldStyle}
+                    />
                 </label>
               </div>
             </div>
