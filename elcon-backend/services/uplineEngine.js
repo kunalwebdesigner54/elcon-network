@@ -111,7 +111,7 @@ const getLogicalUplines = async (startMemberId, targetLogicalLevel, planType, st
         const donationsReceivedAtThisLevel = await Donation.countDocuments({
           toMemberId: currentMemberId,
           level: currentLogicalLevel,
-          status: { $in: ['APPROVED', 'COMPLETED'] }
+          status: { $ne: 'REJECTED' } // IMPORTANT: Count PENDING, WAITING, APPROVED, COMPLETED to prevent bypass bugs
         });
 
         const requiredSelfUpgrade = (donationsReceivedAtThisLevel >= 2) 
