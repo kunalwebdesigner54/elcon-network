@@ -20,7 +20,7 @@ function AddShoppingProducts() {
   const fetchCategories = async () => {
     try {
       const res = await getCategories();
-      setCategories(res || []);
+      setCategories(Array.isArray(res) ? res : []);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
     }
