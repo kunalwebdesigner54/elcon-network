@@ -242,15 +242,21 @@ function AddJoiningPackage() {
             <div className="admin-add-product-table" role="group" aria-label="basic-product-details">
               <label className="admin-add-product-row">
                 <span>Category</span>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '100%' }}>
-                  <input 
-                    name="category" 
-                    list="category-options" 
-                    defaultValue={editProduct?.category || ""} 
+                <div className="admin-add-category-input-wrapper">
+                  <input
+                    name="category"
+                    list="category-options"
+                    value={formData.category}
+                    onChange={handleInputChange}
                     placeholder="Select or type new category"
                     required
                     style={{ flex: 1 }}
                   />
+                  <datalist id="category-options">
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat.name} />
+                    ))}
+                  </datalist>
                   <button 
                     type="button" 
                     className="admin-add-category-btn"
