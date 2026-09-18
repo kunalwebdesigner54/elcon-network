@@ -43,14 +43,14 @@ function AddJoiningPackage() {
   const [fullProductDetails, setFullProductDetails] = useState(null);
 
   useEffect(() => {
-    if (isEditMode && editProduct?.id) {
+    if (isEditMode && (fullProductDetails || editProduct)?.id) {
       import('../../../../../api/productsService').then(({ getProductById }) => {
         getProductById(editProduct.id)
           .then(res => setFullProductDetails(res.product))
           .catch(err => console.error('Failed to fetch full product details', err));
       });
     }
-  }, [isEditMode, editProduct?.id]);
+  }, [isEditMode, (fullProductDetails || editProduct)?.id]);
 
   const handleAddCategory = async (e) => {
     e.preventDefault();
@@ -156,7 +156,7 @@ function AddJoiningPackage() {
       productCode: formData.get('productCode'),
       hsnCode: formData.get('hsnCode'),
       gst: formData.get('gst') || '18',
-      status: Number(formData.get('quantity')) <= 0 ? 'HIDDEN' : (editProduct?.status || 'SHOWING'),
+      status: Number(formData.get('quantity')) <= 0 ? 'HIDDEN' : ((fullProductDetails || editProduct)?.status || 'SHOWING'),
       mrp: formData.get('mrpPrice'),
       dpPrice: formData.get('dpPrice'),
       discount: formData.get('discount'),
@@ -172,7 +172,7 @@ function AddJoiningPackage() {
       specifications: formData.get('specifications'),
       features: formData.get('features'),
       quantity: formData.get('quantity') || '0',
-      brochurePdf: brochurePdf || editProduct?.brochurePdf || '',
+      brochurePdf: brochurePdf || (fullProductDetails || editProduct)?.brochurePdf || '',
     };
 
     if (images.length > 0) {
@@ -236,7 +236,7 @@ function AddJoiningPackage() {
     <section className="panel admin-add-product-panel">
       <h2 className="section-title admin-add-product-title">{isEditMode ? 'EDIT JOINING PACKAGE' : 'ADD JOINING PACKAGE'}</h2>
 
-      <form className="admin-add-product-card" onSubmit={handleSubmit}>
+      <form key={fullProductDetails ? 'loaded' : (isEditMode ? 'loading' : 'new')} className="admin-add-product-card" onSubmit={handleSubmit}>
         <div className="admin-add-product-grid">
           <div className="admin-add-product-left">
             <div className="admin-add-product-table" role="group" aria-label="basic-product-details">
@@ -246,7 +246,7 @@ function AddJoiningPackage() {
                   <input
                     name="category"
                     list="category-options"
-                    defaultValue={editProduct?.category || ""}
+                    defaultValue={(fullProductDetails || editProduct)?.category || ""}
                     placeholder="Select or type new category"
                     required
                     style={{ flex: 1 }}
@@ -273,23 +273,23 @@ function AddJoiningPackage() {
               </label>
               <label className="admin-add-product-row">
                 <span>Product Name</span>
-                <input name="productName" type="text" defaultValue={editProduct?.productName || "Elcon Calcium"} />
+                <input name="productName" type="text" defaultValue={(fullProductDetails || editProduct)?.productName || "Elcon Calcium"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Product Code</span>
-                <input name="productCode" type="text" defaultValue={editProduct?.productCode || "JP101"} />
+                <input name="productCode" type="text" defaultValue={(fullProductDetails || editProduct)?.productCode || "JP101"} />
               </label>
               <label className="admin-add-product-row">
                 <span>HSN Code</span>
-                <input name="hsnCode" type="text" defaultValue={editProduct?.hsnCode || "4440"} />
+                <input name="hsnCode" type="text" defaultValue={(fullProductDetails || editProduct)?.hsnCode || "4440"} />
               </label>
               <label className="admin-add-product-row">
                 <span>GST %</span>
-                <input name="gst" type="number" defaultValue={editProduct?.gst !== undefined ? editProduct.gst : "18"} />
+                <input name="gst" type="number" defaultValue={(fullProductDetails || editProduct)?.gst !== undefined ? editProduct.gst : "18"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Stock</span>
-                <input name="quantity" type="number" defaultValue={editProduct?.quantity ?? "200"} required />
+                <input name="quantity" type="number" defaultValue={(fullProductDetails || editProduct)?.quantity ?? "200"} required />
               </label>
               <div className="admin-add-product-row" style={{ alignItems: 'flex-start' }}>
                 <span>Product Images</span>
@@ -346,7 +346,7 @@ function AddJoiningPackage() {
                   <textarea
                     name="description"
                     rows="5"
-                    defaultValue={editProduct?.description || "Joining package product details and description."}
+                    defaultValue={(fullProductDetails || editProduct)?.description || "Joining package product details and description."}
                     style={contentFieldStyle}
                   />
                 </label>
@@ -355,7 +355,7 @@ function AddJoiningPackage() {
                   <textarea
                     name="specifications"
                     rows="5"
-                    defaultValue={editProduct?.specifications || "Type: Product Listing\nLayout: Image gallery with specification table\nTheme: User panel responsive card design\nInteraction: Card click, tabs, and carousel controls"}
+                    defaultValue={(fullProductDetails || editProduct)?.specifications || "Type: Product Listing\nLayout: Image gallery with specification table\nTheme: User panel responsive card design\nInteraction: Card click, tabs, and carousel controls"}
                     style={contentFieldStyle}
                   />
                 </label>
@@ -364,7 +364,7 @@ function AddJoiningPackage() {
                   <textarea
                     name="features"
                     rows="5"
-                    defaultValue={editProduct?.features || "Responsive layout for desktop, tablet, and mobile screens.\nTabbed content area that updates without changing the page.\nImage carousel with arrow controls for fast product preview.\nClean CTA area that keeps the purchase flow simple."}
+                    defaultValue={(fullProductDetails || editProduct)?.features || "Responsive layout for desktop, tablet, and mobile screens.\nTabbed content area that updates without changing the page.\nImage carousel with arrow controls for fast product preview.\nClean CTA area that keeps the purchase flow simple."}
                     style={contentFieldStyle}
                   />
                 </label>
@@ -376,47 +376,47 @@ function AddJoiningPackage() {
             <div className="admin-add-product-table" role="group" aria-label="pricing-product-details">
               <label className="admin-add-product-row">
                 <span>M.R.P Price</span>
-                <input name="mrpPrice" type="text" defaultValue={editProduct?.mrp ?? "375"} />
+                <input name="mrpPrice" type="text" defaultValue={(fullProductDetails || editProduct)?.mrp ?? "375"} />
               </label>
               <label className="admin-add-product-row">
                 <span>DP Price</span>
-                <input name="dpPrice" type="number" defaultValue={editProduct?.dpPrice ?? "350"} />
+                <input name="dpPrice" type="number" defaultValue={(fullProductDetails || editProduct)?.dpPrice ?? "350"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Coupon Discount</span>
-                <input name="discount" type="number" defaultValue={editProduct?.discount ?? "0"} />
+                <input name="discount" type="number" defaultValue={(fullProductDetails || editProduct)?.discount ?? "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Delivery Charge</span>
-                <input name="deliveryCharge" type="text" defaultValue={editProduct?.shipping ?? "free"} />
+                <input name="deliveryCharge" type="text" defaultValue={(fullProductDetails || editProduct)?.shipping ?? "free"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Level Point</span>
-                <input name="levelPoint" type="number" defaultValue={editProduct?.levelPlan ?? editProduct?.levelPoint ?? "200"} />
+                <input name="levelPoint" type="number" defaultValue={(fullProductDetails || editProduct)?.levelPlan ?? (fullProductDetails || editProduct)?.levelPoint ?? "200"} />
               </label>
               <label className="admin-add-product-row">
                 <span>B.V Point</span>
-                <input name="bvPoint" type="number" defaultValue={editProduct?.bvPoint ?? "0"} />
+                <input name="bvPoint" type="number" defaultValue={(fullProductDetails || editProduct)?.bvPoint ?? "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Reserve Amount</span>
-                <input name="reserveAmount" type="number" defaultValue={editProduct?.reserveAmount ?? "0"} />
+                <input name="reserveAmount" type="number" defaultValue={(fullProductDetails || editProduct)?.reserveAmount ?? "0"} />
               </label>
               <label className="admin-add-product-row">
                 <span>Size</span>
-                <input name="size" type="text" defaultValue={editProduct?.size || ""} placeholder="Optional (e.g. S,M,L)" />
+                <input name="size" type="text" defaultValue={(fullProductDetails || editProduct)?.size || ""} placeholder="Optional (e.g. S,M,L)" />
               </label>
               <label className="admin-add-product-row">
                 <span>Color</span>
-                <input name="color" type="text" defaultValue={editProduct?.color || ""} placeholder="Optional (e.g. Red,Blue)" />
+                <input name="color" type="text" defaultValue={(fullProductDetails || editProduct)?.color || ""} placeholder="Optional (e.g. Red,Blue)" />
               </label>
               <label className="admin-add-product-row">
                 <span>Weight</span>
-                <input name="weight" type="text" defaultValue={editProduct?.weight || ""} placeholder="Optional" />
+                <input name="weight" type="text" defaultValue={(fullProductDetails || editProduct)?.weight || ""} placeholder="Optional" />
               </label>
               <label className="admin-add-product-row">
                 <span>Dimension</span>
-                <input name="dimension" type="text" defaultValue={editProduct?.dimension || ""} placeholder="Optional" />
+                <input name="dimension" type="text" defaultValue={(fullProductDetails || editProduct)?.dimension || ""} placeholder="Optional" />
               </label>
             </div>
           </div>

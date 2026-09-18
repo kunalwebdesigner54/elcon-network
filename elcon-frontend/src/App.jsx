@@ -82,6 +82,7 @@ import Register from './Components/Public/Register/Register';
 import AllMembersList from './Components/Admin/Members/AllMembersList/AllMembersList';
 import MemberInformation from './Components/Admin/Members/MemberInformation/MemberInformation';
 import ReceivedHelp from './Components/UserPanel/Payment/PaymentRequest/ReceivedHelp';
+import ShippingLabel from './Components/Admin/ProductOrder/ShippingLabel';
 import TransactionHistory from './Components/UserPanel/Transactions/TransactionHistory/TransactionHistory';
 import AdminTransactionHistory from './Components/Admin/Transactions/TransactionHistory/TransactionHistory';
 import WelcomeLetter from './Components/UserPanel/PlanChartLetters/WelcomeLetter/WelcomeLetter';
@@ -212,6 +213,7 @@ function App() {
         <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
         <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
         <Route path="/invoice" element={<ProtectedRoute><InvoicePage /></ProtectedRoute>} />
+        <Route path="/shipping-label" element={<ProtectedRoute><ShippingLabel /></ProtectedRoute>} />
 
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<Home />} />

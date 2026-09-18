@@ -291,6 +291,7 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
                   <th>End Date</th>
                   <th>Invoice</th>
                   <th>Ship. Label</th>
+                  <th>Details</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -323,9 +324,22 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
                         Invoice
                       </button>
                     </td>
-                    <td className="admin-product-order-action-cell"><button type="button" className="admin-product-order-action-btn action-btn-ship">Ship</button></td>
+                    <td className="admin-product-order-action-cell">
+                      <button 
+                        type="button" 
+                        className="admin-product-order-action-btn action-btn-ship"
+                        onClick={() => {
+                          localStorage.setItem('shippingData', JSON.stringify(order));
+                          window.open(`/shipping-label?orderNo=${order.orderNo}`, 'ShippingLabel', 'width=600,height=800,scrollbars=yes');
+                        }}
+                      >
+                        Ship
+                      </button>
+                    </td>
                     <td className="admin-product-order-action-cell">
                       <button type="button" className="admin-product-order-action-link" onClick={() => handleViewDetails(order.orderNo)}>Details</button>
+                    </td>
+                    <td className="admin-product-order-action-cell">
                       {renderActions(order, handleStatusUpdate)}
                     </td>
                   </tr>
@@ -373,8 +387,8 @@ const OrderDetailsModal = ({ order, onClose, loading }) => {
   if (!order) return null;
 
   return (
-    <div className="admin-modal-overlay" onClick={onClose} style={{ zIndex: 1000 }}>
-      <div className="admin-modal" onClick={(e) => e.stopPropagation()} style={{ background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '16px', maxWidth: '900px', width: '95%', maxHeight: '85vh', overflow: 'auto' }}>
+    <div className="admin-modal-overlay" onClick={onClose} style={{ zIndex: 1000, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+      <div className="admin-modal" onClick={(e) => e.stopPropagation()} style={{ background: '#121a2f', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '16px', maxWidth: '900px', width: '95%', maxHeight: '85vh', overflow: 'auto', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
         <div className="admin-modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--glass-border)' }}>
           <h3 style={{ margin: 0, color: 'var(--primary)' }}>Order Details - {order.orderNo}</h3>
           <button type="button" className="admin-modal-close" onClick={onClose} style={{ fontSize: '24px', background: 'none', border: 'none', cursor: 'pointer', color: '#fff' }}>&times;</button>

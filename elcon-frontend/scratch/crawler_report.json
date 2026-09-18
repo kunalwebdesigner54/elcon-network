@@ -1,0 +1,986 @@
+[
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/admin/login",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/admin-login",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/admin/forgot-password",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/settings/admin-settings",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/sub-admins/manage",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/wallet-manage/admin-wallet-deposit",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/admin/setting/bank-account",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/admin/setting/plan-setting",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/admin/setting/terms-and-conditions",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "Admin",
+    "url": "http://localhost:3000/admin/dashboard",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/login",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/about-us",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/helping-process",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/our-activity",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/gallery",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/contact",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/registration",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/user-login",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/user",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/dashboard",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/my-profile/show-profile",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/profile/update-profile",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/my-profile/change-login-password",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/my-profile/update-trans-password",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/plan-chart-letters/business-plan-chart",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/plan-chart-letters/welcome-letter",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/plan-chart-letters/business-card",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/plan-chart-letters/bank-information",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/kyc-request",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/my-network/my-direct-network",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/my-network/network-explorer",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/my-network/downline-list",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-report/level-income",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-report/donations-income",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-report/Repurchase-income",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-report/Datewise-income",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-report/Daily-Payout-Report",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/donations/given-help",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/donations/recieved-help",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/donations/ReceivedHelp",
+    "status": "FAILED",
+    "isBlank": true
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/joining-package",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/shopping-products",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/my_cart",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/product_details",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/repurchase-products",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/my-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/coupon/discount-coupon",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/coupon/transaction-history",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/discount-wallet-statement",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/product-list",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/product-order",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product/delivery-status",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/generate-epin",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/used-epin",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/unused-epin",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/list-all-epin",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/transfer-epin",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/epin-transfer-history",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/deleted-epin",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin-franchise/epin-franchise-list",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/franchise-delivery-report",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-franchise/stock",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-franchise/sell",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-franchise/sales-report",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-franchise/verify-delivery",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/transactions/main-wallet",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/transactions/transaction-history",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/ticket-support",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/news-events",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/awards-rewards/qualifiers",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/awards-rewards/lucky-draw-winners",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/rank/my-rank",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/log-out",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/profile/my-profile",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/profile/change-password",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/profile/update-bank-details",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/team/direct-list",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/team/my-tree",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/team/my-team",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/payment/self-payment-history",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/payment/payment-request-history",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/payment/withdrawal-history",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/payment/complete-payment",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/payment/withdraw",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/deposit/history",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/deposit/add-funds",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income/level-income",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/support/create-ticket",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/sign-out",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/*",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/all-epin",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/transfer-history",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/epin-franchise",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin/epin-franchise/add-epin-franchise",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/members/kyc-request",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/members/all-members",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/members/all-member-performance",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/members/active-members",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/members/all-members-list",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/members/member-information",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/network-reports/network-explorer",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/network-reports/downline-list",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/network-reports/level-income-reports",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/network-reports/donation-report",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/network-reports/upgrade-reports",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-reports/level-income-reports",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-reports/repurchase-income-reports",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-reports/donation-report",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/income-report/Tds-Report",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/deposits/pending-deposits",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/deposits/approve-deposits",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/deposits/successful-deposits",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/deposits/rejected-deposits",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/deposits/all-deposits",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/coupon/discount-wallet-overview",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/coupon/discount-wallet-transaction",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/Joining-Package",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/Joining-Package/add-new",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/epin-packages",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/epin-packages/add-new",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/shopping-products",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/shopping-products/add-new",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/repurchase-products",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/repurchase-products/add-new",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/manage-categories",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/add-category",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/add-products",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/modify-product",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/products-package/rearrange-products",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/all-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/gst-report",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/gst-summary",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/pending-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/confirm-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/processing-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/dispatched-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/delivered-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/returned-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-order/cancelled-orders",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/discount-coupon/manage",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/transaction/main-wallet",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/withdrawals/all-request",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/withdrawals/approved-request",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/withdrawals/pending-request",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/withdrawals/reject-request",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/withdrawals/succeed-request",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/settings/level-plan",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/settings/manage-taxes-deduction",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/news-popup/add-new",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/news-popup/list-all",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/awards-rewards/setting",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/awards-rewards/lucky-draw",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/support/support-section",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/support/support-tickets",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin-franchise/create",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/epin-franchise/list",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/product-franchise/manage",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/users/joining-report",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/support/chat-integration",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/rank/rank-holders-list",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/last-login-date-time",
+    "status": "PASSED",
+    "isBlank": false
+  },
+  {
+    "context": "User",
+    "url": "http://localhost:3000/user/dashboard",
+    "status": "PASSED",
+    "isBlank": false
+  }
+]

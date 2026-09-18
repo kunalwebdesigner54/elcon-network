@@ -241,7 +241,7 @@ function AddRepurchaseProducts() {
     <section className="panel admin-add-product-panel">
       <h2 className="section-title admin-add-product-title">{isEditMode ? 'EDIT' : 'ADD'} REPURCHASE PRODUCTS</h2>
 
-      <form className="admin-add-product-card" onSubmit={handleSubmit}>
+      <form key={fullProductDetails ? 'loaded' : (isEditMode ? 'loading' : 'new')} className="admin-add-product-card" onSubmit={handleSubmit}>
         <div className="admin-add-product-grid">
           <div className="admin-add-product-left">
             <div className="admin-add-product-table" role="group" aria-label="basic-product-details">

@@ -1,0 +1,213 @@
+.shipping-label-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f6fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.shipping-label-loading {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.shipping-label-page {
+  background-color: #f5f6fa;
+  min-height: 100vh;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.shipping-label-card {
+  background-color: #fff;
+  width: 100%;
+  max-width: 500px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  color: #333;
+}
+
+.shipping-label-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #333;
+  padding: 20px;
+  background-color: #fdfdfd;
+}
+
+.shipping-label-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shipping-label-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.shipping-label-brand-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.shipping-label-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border: 2px solid #333;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.shipping-label-content {
+  padding: 20px;
+}
+
+.shipping-label-section {
+  margin-bottom: 20px;
+}
+
+.shipping-label-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.shipping-label-address-box {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 16px;
+  background-color: #fafafa;
+}
+
+.shipping-label-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.shipping-label-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #444;
+}
+
+.shipping-label-contact {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #ccc;
+  font-size: 0.95rem;
+}
+
+.shipping-label-label {
+  font-weight: 600;
+  color: #555;
+  margin-right: 4px;
+}
+
+.shipping-label-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.shipping-label-detail-item {
+  font-size: 0.95rem;
+}
+
+.shipping-label-footer {
+  border-top: 2px solid #333;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  background-color: #fdfdfd;
+}
+
+.shipping-label-barcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.shipping-label-barcode-text {
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+
+.shipping-label-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+}
+
+.shipping-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.shipping-btn-print {
+  background-color: #27ae60;
+  color: white;
+}
+
+.shipping-btn-print:hover {
+  background-color: #2ecc71;
+}
+
+.shipping-btn-close {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.shipping-btn-close:hover {
+  background-color: #c0392b;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background-color: white;
+  }
+  
+  .shipping-label-page {
+    background-color: white;
+    padding: 0;
+  }
+  
+  .shipping-label-card {
+    border: none;
+    box-shadow: none;
+    max-width: 100%;
+  }
+}

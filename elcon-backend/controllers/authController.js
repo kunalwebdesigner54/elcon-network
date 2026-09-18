@@ -192,7 +192,7 @@ exports.registerUser = async (req, res) => {
       }).lean();
 
       if (productDoc) {
-        expectedPackageAmount = Number(productDoc.mrp || productDoc.dpPrice || 350);
+        expectedPackageAmount = Number(productDoc.dpPrice || productDoc.mrp || 350);
         const isPriceMatch = epinCost === Number(productDoc.mrp) || epinCost === Number(productDoc.dpPrice);
         if (!isPriceMatch) {
           return res.status(400).json({
@@ -682,7 +682,7 @@ exports.getJoiningPackages = async (req, res) => {
     const products = await Product.find({ type: 'joining', status: 'SHOWING' }).sort({ mrp: 1 }).lean();
     products.forEach((prod) => {
       const name = prod.productName.trim();
-      const price = Number(prod.mrp || prod.dpPrice || 350);
+      const price = Number(prod.dpPrice || prod.mrp || 350);
       if (!seen.has(name.toLowerCase())) {
         seen.add(name.toLowerCase());
         list.push({ name, price, dpPrice: prod.dpPrice, mrp: prod.mrp, type: 'product' });
