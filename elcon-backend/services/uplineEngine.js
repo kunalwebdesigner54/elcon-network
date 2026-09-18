@@ -104,14 +104,26 @@ const getLogicalUplines = async (startMemberId, targetLogicalLevel, planType, st
           }
         }
       } else if (planType === 'DONATION') {
-        // Donation Plan logic
-        const requiredSelfUpgrade = currentLogicalLevel; // Self upgrade requirement always matches the logical slot level being checked
+        // Donation Plan logic:
+        // 1st & 2nd Donation -> Same Level Check
+        // 3rd Donation Onwards -> Same Level Check + Next Level Completion Check (capped at Level 10)
+        
+        const donationsReceivedAtThisLevel = await Donation.countDocuments({
+          toMemberId: currentMemberId,
+          level: currentLogicalLevel,
+          status: { $in: ['APPROVED', 'COMPLETED'] }
+        });
+
+        const requiredSelfUpgrade = (donationsReceivedAtThisLevel >= 2) 
+          ? Math.min(currentLogicalLevel + 1, 10) 
+          : currentLogicalLevel;
+
         const currentSelfUpgrade = await getActualCompletedLevel(currentMemberId);
         
         if (activeDirectsCount >= requiredDirects && currentSelfUpgrade >= requiredSelfUpgrade) {
           isEligible = true;
         } else {
-          failReason = `Condition failed. Directs [Has: ${activeDirectsCount}, Req: ${requiredDirects}]. Upgrade [Has: ${currentSelfUpgrade}, Req: ${requiredSelfUpgrade}].`;
+          failReason = `Condition failed. Directs [Has: ${activeDirectsCount}, Req: ${requiredDirects}]. Upgrade [Has: ${currentSelfUpgrade}, Req: ${requiredSelfUpgrade} (Received: ${donationsReceivedAtThisLevel})].`;
         }
       }
     }
