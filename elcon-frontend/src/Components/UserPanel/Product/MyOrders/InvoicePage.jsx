@@ -17,10 +17,16 @@ function InvoicePage() {
       if (storedData) {
         try {
           const data = JSON.parse(storedData);
-          setInvoiceData(data);
-          localStorage.removeItem('invoiceData');
-          setLoading(false);
-          return;
+          // Only use stored data if it has complete information (like items)
+          if (data && data.items !== undefined) {
+            setInvoiceData(data);
+            localStorage.removeItem('invoiceData');
+            setLoading(false);
+            return;
+          } else {
+            // Data is incomplete (e.g. from Admin summary), remove it and fetch full data
+            localStorage.removeItem('invoiceData');
+          }
         } catch (error) {
           localStorage.removeItem('invoiceData');
         }
