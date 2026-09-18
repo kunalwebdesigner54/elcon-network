@@ -43,14 +43,15 @@ function AddShoppingProducts() {
   const [fullProductDetails, setFullProductDetails] = useState(null);
 
   useEffect(() => {
-    if (isEditMode && editProduct?.id) {
+    const id = product?._id || product?.id || product?.productId || product?.productCode;
+    if (isEditMode && id) {
       import('../../../../../api/productsService').then(({ getProductById }) => {
-        getProductById(editProduct.id)
+        getProductById(id)
           .then(res => setFullProductDetails(res.product))
           .catch(err => console.error('Failed to fetch full product details', err));
       });
     }
-  }, [isEditMode, editProduct?.id]);
+  }, [isEditMode, product]);
 
   const handleAddCategory = async (e) => {
     e.preventDefault();
@@ -109,7 +110,7 @@ function AddShoppingProducts() {
 
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const selectedImages = imageInputs.filter((input) => input.files && input.files.length > 0);
-    const hasExistingImage = isEditMode && ((fullProductDetails || editProduct)?.imageKey || (fullProductDetails || editProduct)?.images?.length > 0);
+    const hasExistingImage = isEditMode && ((fullProductDetails || product)?.imageKey || (fullProductDetails || product)?.images?.length > 0);
 
     if (missingFields.length || (!hasExistingImage && selectedImages.length === 0)) {
       const alertParts = [];
@@ -178,7 +179,7 @@ function AddShoppingProducts() {
       payload.images = images;
       payload.imageKey = images[0];
     } else if (isEditMode) {
-      const sourceProduct = fullProductDetails || editProduct;
+      const sourceProduct = fullProductDetails || product;
       payload.images = sourceProduct?.images || [];
       payload.imageKey = sourceProduct?.imageKey || '';
     }
