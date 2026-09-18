@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './ShippingLabel.css';
-import { getOrderByNo } from '../../../../api/productsService';
-import elconLogo from '../../../../Assets/Pictures/dashbaord1.jpeg';
+import { getOrderByNo } from '../../../api/productsService';
+import elconLogo from '../../../Assets/Pictures/dashbaord1.jpeg';
 
 function ShippingLabel() {
   const [orderData, setOrderData] = useState(null);
