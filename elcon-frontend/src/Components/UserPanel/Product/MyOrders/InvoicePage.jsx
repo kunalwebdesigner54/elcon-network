@@ -135,12 +135,12 @@ function InvoicePage() {
                     <td className="invoice-text-center">{item.quantity}</td>
                     <td className="invoice-text-center">{Number(item.totalPrice || 0).toFixed(2)}</td>
                     <td className="invoice-text-center">
-                      {(items.length ? discount / items.length : 0).toFixed(2)}
+                      {Number(item.couponUsed !== undefined ? item.couponUsed : (items.length ? discount / items.length : 0)).toFixed(2)}
                     </td>
                     <td className="invoice-text-center">
                       {(
                         item.totalPrice -
-                        items.length ? discount / items.length : 0
+                        Number(item.couponUsed !== undefined ? item.couponUsed : (items.length ? discount / items.length : 0))
                       ).toFixed(2)}
                     </td>
                   </tr>

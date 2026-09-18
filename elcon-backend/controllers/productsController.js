@@ -728,6 +728,7 @@ exports.getOrderByNo = async (req, res) => {
           imageKey: item.imageKey,
           selectedSize: item.selectedSize || '',
           selectedColor: item.selectedColor || '',
+          couponUsed: item.couponUsed || 0,
         })),
       },
     });
