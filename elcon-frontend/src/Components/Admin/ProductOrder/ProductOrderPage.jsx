@@ -311,7 +311,18 @@ function ProductOrderPage({ title, statusFilter, renderActions }) {
                     <td><span className={`admin-product-order-status-badge ${badgeClass}`}>{statusFilter || order.orderStatus}</span></td>
                     <td>{order.startDate}</td>
                     <td>{order.endDate}</td>
-                    <td className="admin-product-order-action-cell"><button type="button" className="admin-product-order-action-btn action-btn-invoice">Invoice</button></td>
+                    <td className="admin-product-order-action-cell">
+                      <button 
+                        type="button" 
+                        className="admin-product-order-action-btn action-btn-invoice"
+                        onClick={() => {
+                          localStorage.setItem('invoiceData', JSON.stringify(order));
+                          window.open(`/invoice?orderNo=${order.orderNo}`, 'Invoice', 'width=900,height=600,scrollbars=yes');
+                        }}
+                      >
+                        Invoice
+                      </button>
+                    </td>
                     <td className="admin-product-order-action-cell"><button type="button" className="admin-product-order-action-btn action-btn-ship">Ship</button></td>
                     <td className="admin-product-order-action-cell">
                       <button type="button" className="admin-product-order-action-link" onClick={() => handleViewDetails(order.orderNo)}>Details</button>
