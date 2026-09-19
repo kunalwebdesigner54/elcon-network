@@ -291,6 +291,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 /* Ensure the page wrapper from React Router stretches */
