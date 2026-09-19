@@ -385,7 +385,7 @@ exports.getAllMembersList = async (req, res) => {
 
     const rows = users.map((user, index) => ({
       sNo: skip + index + 1,
-      sponsorId: user.role === 'admin' ? '---' : ((user.sponsorId && user.sponsorId !== adminMemberId) ? user.sponsorId : '---'),
+      sponsorId: user.role === 'admin' ? '---' : (user.sponsorId || '---'),
       memberId: user.memberId || '---',
       name: user.name || '---',
       mobile: user.contactNo || '---',
