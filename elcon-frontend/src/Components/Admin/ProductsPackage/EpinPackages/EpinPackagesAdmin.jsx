@@ -7,6 +7,9 @@ function EpinPackagesAdmin() {
   const navigate = useNavigate();
   const [packages, setPackages] = useState([]);
 
+  const [editingId, setEditingId] = useState(null);
+  const [editFormData, setEditFormData] = useState({ packageName: '', price: '' });
+
   useEffect(() => {
     const loadPackages = async () => {
       try {
@@ -57,6 +60,30 @@ function EpinPackagesAdmin() {
     }
   };
 
+  const handleEditClick = (pkg) => {
+    setEditingId(pkg._id);
+    setEditFormData({ packageName: pkg.packageName, price: pkg.price });
+  };
+
+  const handleEditChange = (e) => {
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+  };
+
+  const handleEditSave = async () => {
+    try {
+      await updateEpinPackage(editingId, { packageName: editFormData.packageName, price: editFormData.price });
+      setEditingId(null);
+      const response = await getEpinPackages();
+      setPackages(response.packages || []);
+    } catch (error) {
+      alert(error.response?.data?.message || error.message || "Failed to update package.");
+    }
+  };
+
+  const handleEditCancel = () => {
+    setEditingId(null);
+  };
+
   return (
     <div>
       <section className="panel admin-products-panel">
@@ -95,8 +122,37 @@ function EpinPackagesAdmin() {
                 packages.map((pkg, index) => (
                   <tr key={pkg._id}>
                     <td>{index + 1}</td>
-                    <td>{pkg.packageName}</td>
-                    <td>{pkg.price}</td>
+                    
+                    {editingId === pkg._id ? (
+                      <>
+                        <td>
+                          <input 
+                            type="text" 
+                            name="packageName" 
+                            value={editFormData.packageName} 
+                            onChange={handleEditChange} 
+                            className="text-input" 
+                            style={{ padding: '4px', maxWidth: '150px' }}
+                          />
+                        </td>
+                        <td>
+                          <input 
+                            type="number" 
+                            name="price" 
+                            value={editFormData.price} 
+                            onChange={handleEditChange} 
+                            className="text-input" 
+                            style={{ padding: '4px', maxWidth: '100px' }}
+                          />
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td>{pkg.packageName}</td>
+                        <td>{pkg.price}</td>
+                      </>
+                    )}
+
                     <td>
                       <button
                         className={`status-btn ${pkg.isActive ? 'showing-btn' : 'hiden-btn'}`}
@@ -106,14 +162,18 @@ function EpinPackagesAdmin() {
                       </button>
                     </td>
                     <td>
-                      <div className="action-buttons">
-                        <button
-                          className="action-btn delete-btn"
-                          title="Delete"
-                          onClick={() => handleDelete(pkg._id)}
-                        >
-                          🗑️
-                        </button>
+                      <div className="action-buttons" style={{ display: 'flex', gap: '8px' }}>
+                        {editingId === pkg._id ? (
+                          <>
+                            <button className="action-btn" onClick={handleEditSave} title="Save" style={{ background: '#4CAF50' }}>💾</button>
+                            <button className="action-btn delete-btn" onClick={handleEditCancel} title="Cancel">❌</button>
+                          </>
+                        ) : (
+                          <>
+                            <button className="action-btn" onClick={() => handleEditClick(pkg)} title="Edit" style={{ background: '#ff9800' }}>✏️</button>
+                            <button className="action-btn delete-btn" onClick={() => handleDelete(pkg._id)} title="Delete">🗑️</button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
