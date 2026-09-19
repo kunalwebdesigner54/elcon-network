@@ -13,9 +13,16 @@
 
 .user-dashboard1-member-dashboard-root {
   margin: 0 auto;
-  padding: 0 12px 0;
+  padding: 0;
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: 100%;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .user-dashboard1-member-dashboard-root::before {
