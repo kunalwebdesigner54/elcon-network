@@ -163,7 +163,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
             <thead>
               {isTransferHistory ? (
                 <tr>
-                  <th>#</th><th>Transfer Date</th><th>ePin</th><th>From Member</th><th>To Member</th><th>Amount</th><th>Status</th>
+                  <th>#</th><th>Date</th><th>Transaction ID</th><th>Type</th><th>E-Pin</th><th>From</th><th>To</th><th>Value</th><th>Status</th>
                 </tr>
               ) : (
                 <tr>
@@ -173,16 +173,18 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={isTransferHistory ? 7 : 11}>Loading...</td></tr>
+                <tr><td colSpan={isTransferHistory ? 9 : 11}>Loading...</td></tr>
               ) : visibleRows.length ? visibleRows.map((row, index) => (
                 isTransferHistory ? (
                   <tr key={row.epin || row.id}>
                     <td>{index + 1}</td>
                     <td>{row.transferDate}</td>
+                    <td>{row.transactionId || '-'}</td>
+                    <td>{row.type || 'Transfer'}</td>
                     <td>{row.epin}</td>
                     <td>{row.fromMember}</td>
                     <td>{row.toMember}</td>
-                    <td>{row.amount}</td>
+                    <td>₹{row.amount}</td>
                     <td><span className={`epin-chip ${statusClass(row.status)}`}>{row.status}</span></td>
                   </tr>
                 ) : (
@@ -217,7 +219,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                   </tr>
                 )
               )) : (
-                <tr><td colSpan={isTransferHistory ? 7 : 11}>No Record Found</td></tr>
+                <tr><td colSpan={isTransferHistory ? 9 : 11}>No Record Found</td></tr>
               )}
             </tbody>
           </table>

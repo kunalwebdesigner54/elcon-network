@@ -216,7 +216,6 @@ exports.getEpinSummary = async (req, res) => {
         { currentOwner: { $in: identifiers } },
         { usedBy: { $in: identifiers } },
         { deletedBy: { $in: identifiers } },
-        { generatedBy: { $in: identifiers } },
       ];
     }
 
@@ -237,9 +236,12 @@ exports.generateEpins = async (req, res) => {
   try {
     const globalSettingsDoc = await SiteSetting.findOne({ settingKey: 'global-settings' }).lean();
     const globalSettings = globalSettingsDoc ? globalSettingsDoc.data : {};
-    
-    if (globalSettings.ePinGenerationEnabled === false) {
-      return res.status(403).json({ success: false, message: 'e-Pin generation is currently disabled by the administrator' });
+    const isAdminReq = isAdmin(req);
+    if (isAdminReq && globalSettings.adminEpinGenerationEnabled === false) {
+      return res.status(403).json({ success: false, message: 'Admin e-Pin generation is currently disabled by the administrator' });
+    }
+    if (!isAdminReq && globalSettings.memberEpinGenerationEnabled === false) {
+      return res.status(403).json({ success: false, message: 'Member e-Pin generation is currently disabled by the administrator' });
     }
 
     const qty = Math.max(1, Number(req.body.qty || req.body.numberOfEpins || 1));
@@ -421,7 +423,7 @@ exports.getTransferHistory = async (req, res) => {
   try {
     const transfers = await EpinTransfer.find().sort({ createdAt: -1 });
     if (isAdmin(req)) {
-      res.json({ success: true, transfers: transfers.map((doc, index) => ({ id: index + 1, epin: doc.epinNo, fromMember: doc.fromMember, toMember: doc.toMember, transferDate: formatDate(doc.createdAt), amount: Number(doc.amount).toFixed(2), status: doc.status })) });
+      res.json({ success: true, transfers: transfers.map((doc, index) => ({ id: index + 1, transactionId: 'EPT' + doc._id.toString().slice(-6).toUpperCase(), type: 'E-Pin Transfer', epin: doc.epinNo, fromMember: doc.fromMember, toMember: doc.toMember, transferDate: formatDate(doc.createdAt), amount: Number(doc.amount).toFixed(2), status: doc.status === 'Success' ? 'Completed' : doc.status })) });
       return;
     }
 
@@ -431,8 +433,21 @@ exports.getTransferHistory = async (req, res) => {
     }
 
     const rows = transfers
-      .filter((doc) => identifiers.includes(doc.fromMember) || identifiers.includes(doc.toMember))
-      .map((doc, index) => ({ id: index + 1, epin: doc.epinNo, fromMember: doc.fromMember, toMember: doc.toMember, transferDate: formatDate(doc.createdAt), amount: Number(doc.amount).toFixed(2), status: doc.status }));
+      .filter((transfer) => identifiers.includes(transfer.fromMember) || identifiers.includes(transfer.toMember))
+      .map((doc, index) => {
+        const isSender = identifiers.includes(doc.fromMember);
+        return {
+          id: index + 1,
+          transactionId: 'EPT' + doc._id.toString().slice(-6).toUpperCase(),
+          type: isSender ? 'Transfer Out' : 'Transfer In',
+          epin: doc.epinNo,
+          fromMember: doc.fromMember,
+          toMember: doc.toMember,
+          transferDate: formatDate(doc.createdAt),
+          amount: Number(doc.amount).toFixed(2),
+          status: isSender ? 'Transferred' : 'Received'
+        };
+      });
 
     res.json({ success: true, transfers: rows });
   } catch (error) {

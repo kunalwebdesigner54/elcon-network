@@ -67,21 +67,6 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
     });
   });
 
-  if (scope === 'admin') {
-    const epins = await Epin.find(dateFilter).sort({ createdAt: -1 }).skip(skip).limit(limit);
-    epins.forEach((epin) => {
-      rows.push({
-        dateTime: formatDateTime(epin.createdAt),
-        transactionId: epin.epinNo,
-        memberId: epin.generatedBy,
-        description: 'EPIN GENERATION',
-        credit: 0,
-        debit: Number(epin.cost || 0),
-        createdAt: epin.createdAt,
-      });
-    });
-  }
-
   const walletTransactions = await WalletTransaction.find({ 
     approvalStatus: 'Approved',
     ...dateFilter
@@ -96,7 +81,6 @@ const buildTransactionRows = async (scope, memberIdentifiers = [], includeAudit 
         /^ADMIN CHARGE \(Level \d+\)$/.test(desc) ||
         /^PRODUCT PURCHASE(?: REVERSED)? - /.test(desc) ||
         /^WITHDRAWAL (DEBIT|REVERSED) - /.test(desc) ||
-        /^EPIN GENERATION - /.test(desc) ||
         /^DONATION (DEBIT|CREDIT) - /.test(desc)
       )
     ) {

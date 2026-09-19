@@ -351,7 +351,7 @@ function AddRepurchaseProducts() {
                     <textarea
                       name="description"
                       rows="5"
-                      defaultValue={(fullProductDetails || editProduct)?.description}
+                      defaultValue={(fullProductDetails || product)?.description}
                       placeholder="Joining package product details and description."
                       style={contentFieldStyle}
                     />
@@ -361,7 +361,7 @@ function AddRepurchaseProducts() {
                     <textarea
                       name="specifications"
                       rows="5"
-                      defaultValue={(fullProductDetails || editProduct)?.specifications}
+                      defaultValue={(fullProductDetails || product)?.specifications}
                       placeholder="Type: Product Listing&#10;Layout: Image gallery with specification table&#10;Theme: User panel responsive card design&#10;Interaction: Card click, tabs, and carousel controls"
                       style={contentFieldStyle}
                     />
@@ -371,7 +371,7 @@ function AddRepurchaseProducts() {
                     <textarea
                       name="features"
                       rows="5"
-                      defaultValue={(fullProductDetails || editProduct)?.features}
+                      defaultValue={(fullProductDetails || product)?.features}
                       placeholder="Responsive layout for desktop, tablet, and mobile screens.&#10;Tabbed content area that updates without changing the page.&#10;Image carousel with arrow controls for fast product preview.&#10;Clean CTA area that keeps the purchase flow simple."
                       style={contentFieldStyle}
                     /> </label> </div>

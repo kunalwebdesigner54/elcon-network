@@ -120,6 +120,15 @@ const defaultGlobalSettings = {
   registrationEnabled: true,
   defaultCouponAmount: 1000,
   couponDistributionEnabled: false,
+  memberEpinGenerationEnabled: true,
+  adminEpinGenerationEnabled: true,
+  epinTransferEnabled: true,
+  epinExpiryEnabled: false,
+  autoEpinGeneration: false,
+  walletSource: 'E-Wallet',
+  enableOTP: true,
+  dailyGenerationLimit: 10,
+  minWalletBalance: 500,
 };
 
 exports.getGlobalSettings = async (req, res) => {
