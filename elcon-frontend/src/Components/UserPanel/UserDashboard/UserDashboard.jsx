@@ -119,18 +119,66 @@ function MemberDashboard() {
   return (
     <div className="user-dashboard-shell">
       <main className="user-dashboard1-member-dashboard-root">
+        {/* Top Profile Card */}
+        <section className="user-dashboard1-member-dashboard-header">
+          <div className="user-dashboard1-member-dashboard-profile-card">
+            <div className="user-dashboard1-member-dashboard-profile-info">
+              <div className="user-dashboard1-member-dashboard-profile-name">{memberInfo?.name || 'Member Name'}</div>
+              <div className="user-dashboard1-member-dashboard-profile-meta">MEMBER ID : {memberInfo?.memberId || '---'} | REGISTER DATE : {memberInfo?.registeredAt ? formatDate(memberInfo.registeredAt) : '---'}</div>
+            </div>
+          </div>
+          <div className="user-dashboard1-member-dashboard-actions">
+            <button className="user-dashboard1-member-dashboard-action-btn user-dashboard1-member-dashboard-buy">UPGRADE ID</button>
+            <button
+              className="user-dashboard1-member-dashboard-action-btn user-dashboard1-member-dashboard-join"
+              onClick={() => {
+                const mid = memberInfo?.memberId;
+                if (!mid) return;
+                navigate(`/registration?ref=${encodeURIComponent(mid)}`);
+              }}
+            >
+              JOIN NOW
+            </button>
+            <button
+              className="user-dashboard1-member-dashboard-action-btn user-dashboard1-member-dashboard-share"
+              onClick={async () => {
+                const mid = memberInfo?.memberId;
+                if (!mid) return;
+                const url = `${window.location.origin}/registration?ref=${encodeURIComponent(mid)}`;
+                const title = 'Join me on Elcon';
+                const text = `Join me using my member ID ${mid} — Register here:`;
+                if (navigator.share) {
+                  try { await navigator.share({ title, text, url }); return; } catch (err) {}
+                }
+                try {
+                  await navigator.clipboard.writeText(url);
+                  const wa = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+                  window.open(wa, '_blank', 'noopener,noreferrer');
+                  alert('Share link copied to clipboard. WhatsApp share opened.');
+                } catch (err) {
+                  const mailto = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + ' ' + url)}`;
+                  window.open(mailto, '_blank', 'noopener,noreferrer');
+                }
+              }}
+            >
+              SHARE LINK
+            </button>
+          </div>
+        </section>
 
-        <div className="user-dashboard-news-bar" role="status" aria-live="polite">
-          <span className="user-dashboard-news-label"> NEWS</span>
-          <div className="user-dashboard-news-track">
-            <div className="user-dashboard-news-marquee">
+        {/* News Bar */}
+        <div className="user-dashboard-news-bar-new">
+          <div className="news-label-new">News</div>
+          <div className="news-marquee-new">
+            <marquee>
               {newsList.length > 0 
                 ? newsList.map(n => n.title + (n.description ? ` - ${n.description}` : '')).join('  |  ') 
                 : 'KYC is mandatory! Complete your KYC to receive payouts.'}
-            </div>
+            </marquee>
           </div>
         </div>
 
+        {/* Pending Package Alert */}
         {memberInfo?.joiningPackageDeliveryStatus === 'Pending' && memberInfo?.joiningPackageDeliveryCode && (
           <div style={{ background: '#fff3cd', border: '1px solid #ffeeba', color: '#856404', padding: '15px 20px', borderRadius: '8px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
@@ -143,127 +191,110 @@ function MemberDashboard() {
           </div>
         )}
 
-        <section className="user-dashboard1-member-dashboard-header">
-          <div className="user-dashboard1-member-dashboard-profile-card">
-            <div className="user-dashboard1-member-dashboard-profile-info">
-              <div className="user-dashboard1-member-dashboard-profile-name">{memberInfo?.name || 'Member Name'}</div>
-              <div className="user-dashboard1-member-dashboard-profile-meta">MEMBER ID : {memberInfo?.memberId || '---'} | REGISTER DATE : {memberInfo?.registeredAt ? formatDate(memberInfo.registeredAt) : '---'}</div>
-            </div>
+        <div className="dashboard-main-layout-grid">
+          {/* Left Column */}
+          <div className="dashboard-left-col">
+            <section className="user-dashboard1-member-dashboard-table-section" style={{ marginTop: 0 }}>
+              <div className="user-dashboard1-member-dashboard-table-tabs" role="tablist" aria-label="Earner Categories">
+                {leaderboardTabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === tab.key}
+                    className={`user-dashboard1-member-dashboard-tab-btn ${activeTab === tab.key ? 'user-dashboard1-member-dashboard-tab-btn-active' : ''}`}
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+              <div className="table-wrap">
+                <table className="data-table" style={{ fontSize: '12px' }}>
+                  <thead>
+                    <tr>
+                      <th>S.NO</th>
+                      <th>MEMBER ID</th>
+                      <th>MEMBER NAME</th>
+                      <th>AMOUNT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activeTab === 'rewards' ? (
+                      <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Rewards coming soon</td></tr>
+                    ) : loadingTopEarners ? (
+                      <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Loading...</td></tr>
+                    ) : topEarners.length > 0 ? (
+                      topEarners.map((row, idx) => (
+                        <tr key={`${idx}-${row.memberId}`}>
+                          <td>{idx + 1}</td>
+                          <td>{row.memberId || '---'}</td>
+                          <td>{row.name || '---'}</td>
+                          <td>₹ {Number(row.amount || 0).toLocaleString('en-IN')}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>No data available</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            
+            <div className="layout-empty-box large-box"></div>
+            <div className="layout-empty-box small-box"></div>
+            <div className="layout-empty-box large-box"></div>
           </div>
-          <div className="user-dashboard1-member-dashboard-actions">
-            <button className="user-dashboard1-member-dashboard-action-btn user-dashboard1-member-dashboard-buy">Buy Product</button>
-            <button
-              className="user-dashboard1-member-dashboard-action-btn user-dashboard1-member-dashboard-join"
-              onClick={() => {
-                const mid = memberInfo?.memberId;
-                if (!mid) return;
-                navigate(`/registration?ref=${encodeURIComponent(mid)}`);
-              }}
-            >
-              Join Now
-            </button>
-            <button
-              className="user-dashboard1-member-dashboard-action-btn user-dashboard1-member-dashboard-share"
-              onClick={async () => {
-                const mid = memberInfo?.memberId;
-                if (!mid) return;
-                const url = `${window.location.origin}/registration?ref=${encodeURIComponent(mid)}`;
-                const title = 'Join me on Elcon';
-                const text = `Join me using my member ID ${mid} — Register here:`;
 
-                if (navigator.share) {
-                  try {
-                    await navigator.share({ title, text, url });
-                    return;
-                  } catch (err) {
-                    // fallthrough to copy
-                  }
-                }
-
-                try {
-                  await navigator.clipboard.writeText(url);
-                  // open whatsapp share as a convenient fallback
-                  const wa = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
-                  window.open(wa, '_blank', 'noopener,noreferrer');
-                  alert('Share link copied to clipboard. WhatsApp share opened.');
-                } catch (err) {
-                  // final fallback: open mailto
-                  const mailto = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + ' ' + url)}`;
-                  window.open(mailto, '_blank', 'noopener,noreferrer');
-                }
-              }}
-            >
-              Share Link
-            </button>
-          </div>
-        </section>
-
-        <div className="user-dashboard1-member-dashboard-stats-grid">
-          {stats.map((stat) => (
-            <div className="user-dashboard1-member-dashboard-stat-card" key={stat.label}>
-              <div className="user-dashboard1-member-dashboard-stat-content">
-                <div className="user-dashboard1-member-dashboard-stat-label">{stat.label}</div>
-                <div className="user-dashboard1-member-dashboard-stat-value">{stat.value}</div>
+          {/* Right Column */}
+          <div className="dashboard-right-col">
+            <div className="small-summary-cards-grid">
+              <div className="small-summary-card">
+                <div className="card-color-indicator bg-green"></div>
+                <div className="card-info">
+                  <div className="card-val">{memberInfo?.totalTeam || '1,50,000'}</div>
+                  <div className="card-line"></div>
+                </div>
+                <div className="card-circle"></div>
+              </div>
+              <div className="small-summary-card">
+                <div className="card-color-indicator bg-pink"></div>
+                <div className="card-info">
+                  <div className="card-val">{memberInfo?.referralsCount || '1,25,000'}</div>
+                  <div className="card-line"></div>
+                </div>
+                <div className="card-circle"></div>
+              </div>
+              <div className="small-summary-card">
+                <div className="card-color-indicator bg-orange"></div>
+                <div className="card-info">
+                  <div className="card-val">{memberInfo?.levelIncome || '12,000'}</div>
+                  <div className="card-line"></div>
+                </div>
+                <div className="card-circle"></div>
+              </div>
+              <div className="small-summary-card">
+                <div className="card-color-indicator bg-cyan"></div>
+                <div className="card-info">
+                  <div className="card-val">{memberInfo?.repurchaseIncome || '10,000'}</div>
+                  <div className="card-line"></div>
+                </div>
+                <div className="card-circle"></div>
               </div>
             </div>
-          ))}
+
+            <div className="layout-empty-box medium-box" style={{ marginTop: '20px' }}></div>
+            
+            <div className="dashboard-hotkeys-grid">
+              <button className="hotkey-btn bg-cyan">UPGRADE NOW</button>
+              <button className="hotkey-btn bg-yellow">RECEIVED HELP</button>
+              <button className="hotkey-btn bg-pink">DONATION REPORT</button>
+              <button className="hotkey-btn bg-orange">GIVEN HELP</button>
+            </div>
+
+            <div className="layout-empty-box large-box" style={{ marginTop: '20px' }}></div>
+          </div>
         </div>
-
-        <section className="user-dashboard1-member-dashboard-table-section">
-          <div className="user-dashboard1-member-dashboard-table-title">🏆 {leaderboardTabs.find((tab) => tab.key === activeTab)?.title || 'Top Earner'}</div>
-          <div className="user-dashboard1-member-dashboard-table-tabs" role="tablist" aria-label="Earner Categories">
-            {leaderboardTabs.map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                role="tab"
-                aria-selected={activeTab === tab.key}
-                className={`user-dashboard1-member-dashboard-tab-btn ${activeTab === tab.key ? 'user-dashboard1-member-dashboard-tab-btn-active' : ''}`}
-                onClick={() => setActiveTab(tab.key)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          <div className="table-wrap">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>S.NO</th>
-                  <th>MEMBER ID</th>
-                  <th>MEMBER NAME</th>
-                  <th>AMOUNT</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activeTab === 'rewards' ? (
-                  <tr>
-                    <td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Rewards coming soon</td>
-                  </tr>
-                ) : loadingTopEarners ? (
-                  <tr>
-                    <td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Loading...</td>
-                  </tr>
-                ) : topEarners.length > 0 ? (
-                  topEarners.map((row, idx) => (
-                    <tr key={`${idx}-${row.memberId}`}>
-                      <td>{idx + 1}</td>
-                      <td>{row.memberId || '---'}</td>
-                      <td>{row.name || '---'}</td>
-                      <td>₹ {Number(row.amount || 0).toLocaleString('en-IN')}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>No data available</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-
 
         <div className="user-dashboard-bottom-spacer" />
       </main>
