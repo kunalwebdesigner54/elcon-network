@@ -240,10 +240,6 @@ function MemberDashboard() {
                 </table>
               </div>
             </section>
-            
-            <div className="layout-empty-box large-box"></div>
-            <div className="layout-empty-box small-box"></div>
-            <div className="layout-empty-box large-box"></div>
           </div>
 
           {/* Right Column */}
@@ -282,8 +278,6 @@ function MemberDashboard() {
                 <div className="card-circle"></div>
               </div>
             </div>
-
-            <div className="layout-empty-box medium-box" style={{ marginTop: '20px' }}></div>
             
             <div className="dashboard-hotkeys-grid">
               <button className="hotkey-btn bg-cyan">UPGRADE NOW</button>
@@ -291,8 +285,6 @@ function MemberDashboard() {
               <button className="hotkey-btn bg-pink">DONATION REPORT</button>
               <button className="hotkey-btn bg-orange">GIVEN HELP</button>
             </div>
-
-            <div className="layout-empty-box large-box" style={{ marginTop: '20px' }}></div>
           </div>
         </div>
 
