@@ -264,9 +264,6 @@ function App() {
           <Route path="product/repurchase-products" element={<RepurchaseProducts />} />
           <Route path="product/my-orders" element={<MyOrders />} />
           <Route path="product/my-orders/details/:orderNo" element={<OrderDetails />} />
-          <Route path="coupon/discount-coupon" element={<DiscountCoupon />} />
-          <Route path="coupon/transaction-history" element={<CouponTransactionHistory />} />
-          <Route path="discount-wallet-statement" element={<DiscountWalletStatement />} />
           <Route path="product/product-list" element={<JoiningPackage />} />
           <Route path="product/product-order" element={<ShoppingProducts />} />
           <Route path="product/delivery-status" element={<UserBlankPage />} />
