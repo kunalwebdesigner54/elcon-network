@@ -48,7 +48,7 @@ function AdminDashboard({ metrics }) {
 				</p>
 
 				{metrics ? (
-					<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+					<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
 						<div style={{ padding: 12, background: 'rgba(255,255,255,0.04)', borderRadius: 8 }}>
 							<div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>Total Users</div>
 							<div style={{ fontSize: 20, fontWeight: 700 }}>{metrics.totalUsers}</div>

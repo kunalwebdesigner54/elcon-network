@@ -289,3 +289,15 @@
   background: #90caf9;
   cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+  .settings-tabs {
+    flex-wrap: wrap;
+  }
+  .settings-tabs button {
+    flex: 1 1 100%;
+  }
+  .toggles-grid {
+    grid-template-columns: 1fr;
+  }
+}

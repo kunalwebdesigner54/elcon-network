@@ -61,6 +61,7 @@ function UserLogin() {
 							placeholder="Enter Member ID or Email"
 							value={loginId}
 							onChange={(event) => setLoginId(event.target.value)}
+							required
 						/>
 						<label>Password</label>
 						<input
@@ -68,6 +69,7 @@ function UserLogin() {
 							placeholder="Enter Password"
 							value={password}
 							onChange={(event) => setPassword(event.target.value)}
+							required
 						/>
 						<button type="submit" disabled={loading}>
 							{loading ? 'Logging in...' : 'Login Now'}

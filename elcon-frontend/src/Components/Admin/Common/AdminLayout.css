@@ -970,6 +970,9 @@
 }
 
 @media (max-width: 768px) {
+  .topbar-center {
+    display: none;
+  }
   .page-container {
     padding: 14px;
   }
