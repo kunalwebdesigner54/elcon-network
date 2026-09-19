@@ -620,12 +620,21 @@
   color: #fff;
   overflow: hidden;
   padding: 0 15px;
+  display: flex;
+  align-items: center;
+}
+.news-marquee-new marquee {
+  margin: 0;
+  vertical-align: middle;
 }
 
 .dashboard-main-layout-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+}
+.dashboard-left-col, .dashboard-right-col {
+  min-width: 0;
 }
 
 @media (max-width: 992px) {
