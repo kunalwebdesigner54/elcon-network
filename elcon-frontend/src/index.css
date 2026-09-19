@@ -396,8 +396,10 @@ select option {
 	border: 1px solid var(--glass-border) !important;
 }
 
-.public-root input::placeholder, .public-root textarea::placeholder {
-	color: var(--text-muted) !important;
+.public-root input::placeholder, .public-root textarea::placeholder,
+.admin-root input::placeholder, .admin-root textarea::placeholder,
+.user-root input::placeholder, .user-root textarea::placeholder {
+	color: rgba(255, 255, 255, 0.4) !important;
 }
 
 .public-root select option {
