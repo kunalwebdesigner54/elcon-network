@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EpinFranchiseList.css';
 import { deleteEpinFranchise, getEpinFranchises, updateEpinFranchise } from '../../../../api/managementService';
-import EpinSummaryCards from '../../../shared/EpinSummaryCards';
 
 function AdminEpinFranchiseList() {
   const navigate = useNavigate();
@@ -55,7 +54,6 @@ function AdminEpinFranchiseList() {
   return (
     <>
       <h1 className="page-title">ePin Franchise</h1>
-      <EpinSummaryCards />
       <section className="panel admin-epin-franchise-panel">
         <h2 className="section-title admin-epin-franchise-title">ADD E-PIN FRANCHISE</h2>
 
