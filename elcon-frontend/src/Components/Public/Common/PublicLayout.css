@@ -834,11 +834,11 @@ main,
   }
 
   .public-nav {
-    display: none;
+    display: none !important;
   }
 
   .public-auth-btns {
-    display: none;
+    display: none !important;
   }
 
   .public-menu-btn {
