@@ -195,17 +195,18 @@
 }
 
 .admin-main {
-  flex: 1;
+  width: calc(100% - 280px);
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 100vh;
   margin-left: 280px;
-  transition: margin-left 0.3s ease;
+  transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
 .admin-root.sidebar-collapsed .admin-main {
   margin-left: 0;
+  width: 100%;
 }
 
 .topbar {
