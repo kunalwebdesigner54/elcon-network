@@ -593,8 +593,6 @@
   }
 }
 
-}
-
 @media (prefers-reduced-motion: reduce) {
   .user-dashboard-news-marquee {
     animation: none;
