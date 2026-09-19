@@ -31,7 +31,7 @@ export default function EpinSummaryCards() {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginBottom: '25px' }}>
       <div style={{ background: '#22c55e', color: '#fff', padding: '20px', borderRadius: '8px', flex: '1', minWidth: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-        <h4 style={{ margin: '0 0 10px 0', fontSize: '1rem', fontWeight: '600' }}>Total Generated E-pins</h4>
+        <h4 style={{ margin: '0 0 10px 0', fontSize: '1rem', fontWeight: '600' }}>Total E-pins</h4>
         <div style={{ fontSize: '1.8rem', fontWeight: 'bold', alignSelf: 'flex-end' }}>
           {loading ? '...' : summary.total}
         </div>
@@ -52,7 +52,7 @@ export default function EpinSummaryCards() {
       </div>
 
       <div style={{ background: '#a855f7', color: '#fff', padding: '20px', borderRadius: '8px', flex: '1', minWidth: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-        <h4 style={{ margin: '0 0 10px 0', fontSize: '1rem', fontWeight: '600' }}>Total Block E-pins</h4>
+        <h4 style={{ margin: '0 0 10px 0', fontSize: '1rem', fontWeight: '600' }}>Transfer E-pins</h4>
         <div style={{ fontSize: '1.8rem', fontWeight: 'bold', alignSelf: 'flex-end' }}>
           {loading ? '...' : summary.blocked}
         </div>

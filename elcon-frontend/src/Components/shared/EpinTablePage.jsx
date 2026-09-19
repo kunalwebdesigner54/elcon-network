@@ -130,6 +130,13 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
     await loadRows();
   };
 
+  const maskEpin = (epin) => {
+    if (!epin || epin.length <= 9) return epin;
+    const start = epin.substring(0, 5);
+    const end = epin.substring(epin.length - 4);
+    return `${start}***${end}`;
+  };
+
   return (
     <div>
       <h1 className="page-title">{title}</h1>
@@ -181,7 +188,7 @@ export default function EpinTablePage({ title, heading, statusFilter, mode, show
                     <td>{row.transferDate}</td>
                     <td>{row.transactionId || '-'}</td>
                     <td>{row.type || 'Transfer'}</td>
-                    <td>{row.epin}</td>
+                    <td>{maskEpin(row.epin)}</td>
                     <td>{row.fromMember}</td>
                     <td>{row.toMember}</td>
                     <td>₹{row.amount}</td>
