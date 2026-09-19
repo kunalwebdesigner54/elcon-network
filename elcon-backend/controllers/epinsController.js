@@ -581,11 +581,9 @@ exports.updatePackage = async (req, res) => {
 
 exports.deletePackage = async (req, res) => {
   try {
-    const pkg = await EpinPackage.findById(req.params.id);
+    const pkg = await EpinPackage.findByIdAndDelete(req.params.id);
     if (!pkg) return res.status(404).json({ success: false, message: 'Package not found' });
 
-    pkg.isActive = false;
-    await pkg.save();
     res.json({ success: true, message: 'Package removed' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
