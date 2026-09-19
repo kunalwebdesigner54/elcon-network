@@ -191,10 +191,7 @@ function MemberDashboard() {
           </div>
         )}
 
-        <div className="dashboard-main-layout-grid">
-          {/* Left Column */}
-          <div className="dashboard-left-col">
-            <section className="user-dashboard1-member-dashboard-table-section" style={{ marginTop: 0 }}>
+            <section className="user-dashboard1-member-dashboard-table-section" style={{ marginTop: 0, marginBottom: '20px' }}>
               <div className="user-dashboard1-member-dashboard-table-tabs" role="tablist" aria-label="Earner Categories">
                 {leaderboardTabs.map((tab) => (
                   <button
@@ -240,10 +237,7 @@ function MemberDashboard() {
                 </table>
               </div>
             </section>
-          </div>
 
-          {/* Right Column */}
-          <div className="dashboard-right-col">
             <div className="small-summary-cards-grid">
               <div className="small-summary-card">
                 <div className="card-color-indicator bg-green"></div>
@@ -285,8 +279,6 @@ function MemberDashboard() {
               <button className="hotkey-btn bg-pink">DONATION REPORT</button>
               <button className="hotkey-btn bg-orange">GIVEN HELP</button>
             </div>
-          </div>
-        </div>
 
         <div className="user-dashboard-bottom-spacer" />
       </main>
