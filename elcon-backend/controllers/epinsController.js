@@ -552,7 +552,7 @@ exports.createPackage = async (req, res) => {
     const pkg = await EpinPackage.create({ packageName: packageName.trim(), price: Number(price) });
     res.status(201).json({ success: true, package: pkg });
   } catch (error) {
-    if (error.code === 11000) {
+    if (error.code === 11000 || (error.message && error.message.includes('E11000'))) {
       return res.status(400).json({ success: false, message: 'A package with this name already exists. Please choose a different name.' });
     }
     res.status(500).json({ success: false, message: error.message });
@@ -572,7 +572,7 @@ exports.updatePackage = async (req, res) => {
     await pkg.save();
     res.json({ success: true, package: pkg });
   } catch (error) {
-    if (error.code === 11000) {
+    if (error.code === 11000 || (error.message && error.message.includes('E11000'))) {
       return res.status(400).json({ success: false, message: 'A package with this name already exists. Please choose a different name.' });
     }
     res.status(500).json({ success: false, message: error.message });
