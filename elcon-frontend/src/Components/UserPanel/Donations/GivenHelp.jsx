@@ -238,7 +238,7 @@ const GivenHelp = () => {
             ) : targetData.isActiveDonation ? (
               // Pending active donation view
               <div style={{ background: "#fff3cd", color: "#856404", padding: "20px", borderRadius: "8px", border: "1px solid #ffeeba", textAlign: "center", marginBottom: "20px" }}>
-                <h3 style={{ margin: "0 0 10px 0" }}>Donation Pending Approval</h3>
+                <h3 style={{ margin: "0 0 10px 0", color: "#e65100" }}>Donation Pending Approval</h3>
                 <p style={{ margin: "0 0 5px 0" }}>Your donation of <b>₹{targetData.amount?.toLocaleString("en-IN")}</b> for Level <b>{targetData.level}</b> to <b>{targetData.toName}</b> is currently <b>{targetData.status?.replace(/_/g, ' ')}</b>.</p>
                 <p style={{ margin: 0 }}>Please wait for the receiver to approve it. Once approved, you will be upgraded to Level {targetData.level}.</p>
               </div>

@@ -165,13 +165,21 @@ function EpinPackagesAdmin() {
                       <div className="action-buttons" style={{ display: 'flex', gap: '8px' }}>
                         {editingId === pkg._id ? (
                           <>
-                            <button className="action-btn" onClick={handleEditSave} title="Save" style={{ background: '#4CAF50' }}>💾</button>
-                            <button className="action-btn delete-btn" onClick={handleEditCancel} title="Cancel">❌</button>
+                            <button className="action-btn" onClick={handleEditSave} title="Save" style={{ background: '#4CAF50' }}>
+                              <i className="fa fa-save"></i>
+                            </button>
+                            <button className="action-btn delete-btn" onClick={handleEditCancel} title="Cancel">
+                              <i className="fa fa-times"></i>
+                            </button>
                           </>
                         ) : (
                           <>
-                            <button className="action-btn" onClick={() => handleEditClick(pkg)} title="Edit" style={{ background: '#ff9800' }}>✏️</button>
-                            <button className="action-btn delete-btn" onClick={() => handleDelete(pkg._id)} title="Delete">🗑️</button>
+                            <button className="action-btn" onClick={() => handleEditClick(pkg)} title="Edit" style={{ background: '#ff9800' }}>
+                              <i className="fa fa-edit"></i>
+                            </button>
+                            <button className="action-btn delete-btn" onClick={() => handleDelete(pkg._id)} title="Delete">
+                              <i className="fa fa-trash"></i>
+                            </button>
                           </>
                         )}
                       </div>

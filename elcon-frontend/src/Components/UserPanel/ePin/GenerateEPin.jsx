@@ -27,6 +27,7 @@ const GenerateEPin = () => {
   const [memberNameLoading, setMemberNameLoading] = useState(false);
   const [memberNameError, setMemberNameError] = useState('');
   const [generatedEpins, setGeneratedEpins] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchBalanceAndPackages = async () => {
@@ -129,7 +130,10 @@ const GenerateEPin = () => {
       showFlash('error', 'Please select a package.');
       return;
     }
+    if (submitting) return;
+
     try {
+      setSubmitting(true);
       const res = await generateEpins({ 
         epinName: form.epinName, 
         generatedBy: form.generatedForId, 
@@ -164,6 +168,8 @@ const GenerateEPin = () => {
       }
     } catch (error) {
       showFlash('error', error.response?.data?.message || "Failed to generate E-Pin");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -296,7 +302,9 @@ const GenerateEPin = () => {
           </div>
 
           <div style={{ paddingTop: '8px' }}>
-            <button className="buyepin-btn-blue" type="submit" style={{ width: '100%', justifyContent: 'center' }}>SUBMIT</button>
+            <button className="buyepin-btn-blue" type="submit" disabled={submitting} style={{ width: '100%', justifyContent: 'center', opacity: submitting ? 0.7 : 1, cursor: submitting ? 'not-allowed' : 'pointer' }}>
+              {submitting ? 'GENERATING...' : 'SUBMIT'}
+            </button>
           </div>
 
         </form>

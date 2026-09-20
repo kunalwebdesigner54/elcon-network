@@ -88,8 +88,8 @@ function GenerateEPin() {
           <input className="text-input" type="number" min="1" placeholder="Required no.of ePin" name="qty" value={form.qty} onChange={handleChange} />
 
           <div className="epin-generate-actions" style={{ gridColumn: '1 / -1', display: 'flex', gap: '10px', marginTop: '10px' }}>
-            <button type="button" className="btn-danger" onClick={() => setForm({ epinName: 'Activation', generatedBy: defaultGeneratedBy, qty: '1', cost: '10' })}>Reset</button>
-            <button type="submit" className="btn-success">Generate</button>
+            <button type="button" className="btn-danger" onClick={() => setForm({ epinName: 'Activation', generatedBy: defaultGeneratedBy, qty: '1', cost: '10' })} disabled={submitting}>Reset</button>
+            <button type="submit" className="btn-success" disabled={submitting}>{submitting ? 'Generating...' : 'Generate'}</button>
           </div>
         </form>
       </div>

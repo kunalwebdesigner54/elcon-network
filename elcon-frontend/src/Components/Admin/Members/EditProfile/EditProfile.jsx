@@ -15,7 +15,8 @@ function EditProfile() {
     name: '',
     email: '',
     contactNo: '',
-    city: '',
+    aadharNo: '',
+    panNo: '',
     password: '',
     transPassword: '',
     accountStatus: 'ACTIVE'
@@ -31,12 +32,13 @@ function EditProfile() {
       setError('');
       const response = await getMemberProfile(memberId);
       if (response.success && response.data) {
-        const { name, email, contactNo, city, plainPassword, plainTransactionPassword, accountStatus } = response.data;
+        const { name, email, contactNo, aadharNo, panNo, plainPassword, plainTransactionPassword, accountStatus } = response.data;
         setForm({
           name: name || '',
           email: email || '',
           contactNo: contactNo || '',
-          city: city || '',
+          aadharNo: aadharNo || '',
+          panNo: panNo || '',
           password: plainPassword || '',
           transPassword: plainTransactionPassword || '',
           accountStatus: accountStatus || 'ACTIVE'
@@ -62,7 +64,12 @@ function EditProfile() {
       setSubmitting(true);
       setError('');
       setSuccessMessage('');
-      const response = await updateMemberProfile(memberId, form);
+      
+      const payload = { ...form };
+      if (payload.aadharNo === '') payload.aadharNo = null;
+      if (payload.panNo === '') payload.panNo = null;
+
+      const response = await updateMemberProfile(memberId, payload);
       if (response.success) {
         setSuccessMessage('Profile updated successfully!');
         setTimeout(() => navigate('/members/all-members-list'), 1500);
@@ -100,8 +107,12 @@ function EditProfile() {
             <input className="text-input" name="contactNo" value={form.contactNo} onChange={handleChange} style={{ width: '100%', padding: '8px' }} required />
           </div>
           <div>
-            <label className="field-label" style={{ color: 'white' }}>City</label>
-            <input className="text-input" name="city" value={form.city} onChange={handleChange} style={{ width: '100%', padding: '8px' }} />
+            <label className="field-label" style={{ color: 'white' }}>Aadhar No</label>
+            <input className="text-input" name="aadharNo" value={form.aadharNo} onChange={handleChange} style={{ width: '100%', padding: '8px' }} />
+          </div>
+          <div>
+            <label className="field-label" style={{ color: 'white' }}>PAN No</label>
+            <input className="text-input" name="panNo" value={form.panNo} onChange={handleChange} style={{ width: '100%', padding: '8px' }} />
           </div>
           <div>
             <label className="field-label" style={{ color: 'white' }}>Login Password</label>
