@@ -114,10 +114,12 @@ function UpdateProfile() {
 
   if (loading) {
     return (
+      <div>
+      <h1 className="user-page-title">Update Profile</h1>
       <section className="public-page">
         <div className="public-container">
           <div className="register-card">
-            <h2 className="register-title">Update Profile</h2>
+            
             <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>
           </div>
         </div>
@@ -223,6 +225,8 @@ function UpdateProfile() {
         </div>
       </div>
     </section>
+  
+    </div>
   );
 }
 

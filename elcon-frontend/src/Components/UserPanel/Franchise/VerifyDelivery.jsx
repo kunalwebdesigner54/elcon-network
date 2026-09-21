@@ -55,10 +55,12 @@ function VerifyDelivery() {
   };
 
   return (
-    <div className="user-panel-page">
+    <div>
+      <h1 className="user-page-title">Verify Product Delivery</h1>
+      <div className="user-panel-page">
       <div className="user-panel-card">
         <div className="user-panel-card-header">
-          <h2 className="user-panel-card-title">Verify Product Delivery</h2>
+          
         </div>
         <div className="user-panel-card-body">
           {error && <div className="alert alert-danger" style={{ padding: '15px', background: '#ffebee', color: '#c62828', borderRadius: '4px', marginBottom: '20px' }}>{error}</div>}
@@ -158,6 +160,7 @@ function VerifyDelivery() {
 
         </div>
       </div>
+    </div>
     </div>
   );
 }

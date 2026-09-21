@@ -141,9 +141,15 @@ function AddRepurchaseProducts() {
     const formData = new FormData(form);
     const imageInputs = Array.from(form.querySelectorAll('input[type="file"][accept="image/*"]'));
     const images = [];
-    for (const input of imageInputs) {
+    const sourceProductForImages = fullProductDetails || (typeof product !== 'undefined' ? product : (typeof editProduct !== 'undefined' ? editProduct : null));
+    const existingImages = isEditMode ? (sourceProductForImages?.images || []) : [];
+    
+    for (let i = 0; i < imageInputs.length; i++) {
+      const input = imageInputs[i];
       if (input.files && input.files.length > 0) {
         images.push(await readFileAsDataUrl(input.files[0]));
+      } else if (isEditMode && existingImages[i]) {
+        images.push(existingImages[i]);
       }
     }
 
@@ -179,9 +185,8 @@ function AddRepurchaseProducts() {
         payload.images = images;
         payload.imageKey = images[0];
       } else if (isEditMode) {
-        const sourceProduct = fullProductDetails || product;
-        payload.images = sourceProduct?.images || [];
-        payload.imageKey = sourceProduct?.imageKey || '';
+        payload.images = [];
+        payload.imageKey = '';
       }
 
     if (brochurePdf) {

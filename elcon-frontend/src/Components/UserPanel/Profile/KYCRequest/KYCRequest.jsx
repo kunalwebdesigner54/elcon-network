@@ -97,9 +97,11 @@ function KYCRequest() {
 
   return (
     <div>
+      <h1 className="user-page-title">KYC Verification</h1>
+      <div>
       <div className="panel" style={{ borderRadius: '28px', padding: '24px' }}>
         <div className="kyc-request-wrap">
-          <h2 className="kyc-request-title">KYC Verification</h2>
+          
 
           <form className="kyc-request-form" onSubmit={handleSubmit}>
             <label className="kyc-label" htmlFor="bankName">Bank Name</label>
@@ -238,6 +240,8 @@ function KYCRequest() {
           </form>
         </div>
       </div>
+    </div>
+  
     </div>
   );
 }

@@ -80,8 +80,10 @@ function ShoppingProducts() {
   };
 
   return (
-    <div className="user-product-page">
-      <h2 className="page-heading">Shopping Products</h2>
+    <div>
+      <h1 className="user-page-title">Shopping Products</h1>
+      <div className="user-product-page">
+      
       <div className="user-panel user-product-panel">
 
         <div className="product-filter-wrapper" style={{ background: 'var(--panel-bg, #0B132B)', padding: '15px', borderRadius: '12px', marginBottom: '20px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
@@ -197,6 +199,8 @@ function ShoppingProducts() {
           })}
         </div>
       </div>
+    </div>
+  
     </div>
   );
 }

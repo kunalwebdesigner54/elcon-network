@@ -112,9 +112,11 @@ const Withdraw = () => {
   };
 
   return (
-    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div>
+      <h1 className="user-page-title">Withdraw</h1>
+      <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column' }}>
       <div className="withdraw-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 className="buyepin-title" style={{ margin: 0, paddingLeft: 0, borderLeft: 'none' }}>Withdraw</h1>
+        
       </div>
       
       <div className="buyepin-single-card" style={{ flexGrow: 1, padding: '36px 32px' }}>
@@ -339,6 +341,8 @@ const Withdraw = () => {
         </div>
       </div>
     </div>
+    </div>
+  
     </div>
   );
 };

@@ -101,9 +101,11 @@ function DiscountWalletStatement() {
   };
 
   return (
-    <div className="discount-wallet-statement-page">
+    <div>
+      <h1 className="user-page-title">Discount Wallet Statement</h1>
+      <div className="discount-wallet-statement-page">
       <section className="discount-wallet-statement-panel">
-        <h2 className="discount-wallet-statement-heading">Discount Wallet Statement</h2>
+        
 
         <div className="stats-row">
           <div className="stat-card card-green">
@@ -252,6 +254,8 @@ function DiscountWalletStatement() {
               </div>
         </div>
       </section>
+    </div>
+  
     </div>
   );
 }

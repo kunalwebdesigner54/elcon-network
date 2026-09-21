@@ -29,10 +29,12 @@ function WelcomeLetter() {
     .join(', ') || '---';
 
   return (
-    <section className="welcome-letter-page">
+    <div>
+      <h1 className="user-page-title">Congratulation !</h1>
+      <section className="welcome-letter-page">
       <article className="welcome-letter-sheet" aria-label="welcome-letter-sheet">
         <div className="welcome-letter-frame">
-          <h2 className="welcome-letter-title" style={{ color: '#000' }}>CONGRATULATION !</h2>
+          
 
           <p className="welcome-letter-joining-date">
             <strong>Joining Date :</strong> {joinDateStr}
@@ -115,6 +117,8 @@ function WelcomeLetter() {
         Print
       </button>
     </section>
+  
+    </div>
   );
 }
 

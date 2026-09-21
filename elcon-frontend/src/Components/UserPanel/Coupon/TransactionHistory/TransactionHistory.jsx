@@ -27,9 +27,11 @@ function TransactionHistory() {
   };
 
   return (
-    <div className="user-product-page">
+    <div>
+      <h1 className="user-page-title">Coupon Transaction History</h1>
+      <div className="user-product-page">
       <div className="user-panel">
-        <h2 className="discount-coupon-heading" style={{ marginBottom: '20px' }}>COUPON TRANSACTION HISTORY</h2>
+        
         
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         
@@ -78,6 +80,8 @@ function TransactionHistory() {
           </table>
         </div>
       </div>
+    </div>
+  
     </div>
   );
 }

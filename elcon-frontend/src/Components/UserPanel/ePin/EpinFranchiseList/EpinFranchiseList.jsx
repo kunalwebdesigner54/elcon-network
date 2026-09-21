@@ -65,8 +65,10 @@ function EpinFranchiseList() {
   }, [search, city, franchiseItems]);
 
   return (
-    <div className="franchise-list-page">
-      <h1 className="page-title">Franchise List</h1>
+    <div>
+      <h1 className="user-page-title">Franchise List</h1>
+      <div className="franchise-list-page">
+      
       <section className="panel franchise-list-panel">
         <h2 className="section-title franchise-list-title">E-PIN FRANCHISE LIST</h2>
 
@@ -139,6 +141,8 @@ function EpinFranchiseList() {
           )}
         </div>
       </section>
+    </div>
+  
     </div>
   );
 }

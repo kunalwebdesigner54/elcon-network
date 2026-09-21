@@ -134,9 +134,11 @@ function AddDepositFunds() {
   };
 
   return (
-    <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div>
+      <h1 className="user-page-title">Fund Deposit</h1>
+      <div className="buyepin-container" style={{ display: 'flex', flexDirection: 'column' }}>
       <div className="withdraw-header deposit-funds-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 className="buyepin-title" style={{ margin: 0, paddingLeft: 0, borderLeft: 'none', fontSize: '26px', fontWeight: '700' }}>Fund Deposit</h1>
+        
         <button type="button" className="deposit-history-link" onClick={() => navigate('/user/deposit/history')}>
           <i className="fa-solid fa-clock-rotate-left" style={{ marginRight: '8px' }}></i> Deposit History
         </button>
@@ -339,6 +341,8 @@ function AddDepositFunds() {
           </div>
         </div>
       </div>
+    </div>
+  
     </div>
   );
 }

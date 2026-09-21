@@ -150,8 +150,9 @@
 
 .data-table th,
 .product-spec-table th {
-  width: 42%;
-  min-width: 130px;
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 24px;
   color: var(--primary-light) !important;
   font-weight: 600 !important;
   background: rgba(11, 18, 33, 0.8) !important;
@@ -400,7 +401,7 @@
   .product-tab-list,
   .product-spec-table th,
   .product-spec-table td {
-    font-size: 10px;
+    font-size: 13px;
   }
 }
 

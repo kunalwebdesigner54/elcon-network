@@ -31,9 +31,11 @@ function ShowProfile() {
 
   if (loading) {
     return (
+      <div>
+      <h1 className="user-page-title">My Profile</h1>
       <section className="public-page">
         <div className="public-container">
-          <h2 className="register-title" style={{ marginBottom: 24 }}>My Profile</h2>
+          
           <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>
         </div>
       </section>
@@ -160,6 +162,8 @@ function ShowProfile() {
         </div>
       </div>
     </section>
+  
+    </div>
   );
 }
 

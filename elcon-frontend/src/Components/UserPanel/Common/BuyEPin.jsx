@@ -66,8 +66,10 @@ function BuyEPin() {
   ];
 
   return (
-    <div className="buyepin-container">
-      <h1 className="buyepin-title">Buy ePin</h1>
+    <div>
+      <h1 className="user-page-title">Buy ePin</h1>
+      <div className="buyepin-container">
+      
       <div className="buyepin-panel">
         <form className="buyepin-form-grid" onSubmit={handleSubmit}>
           <div className="buyepin-section buyepin-single-card">
@@ -243,6 +245,8 @@ function BuyEPin() {
           </div>
         </form>
       </div>
+    </div>
+  
     </div>
   );
 }

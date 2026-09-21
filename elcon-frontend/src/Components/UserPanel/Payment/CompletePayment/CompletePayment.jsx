@@ -113,9 +113,11 @@ const CompletePayment = () => {
   };
 
   return (
-    <div className="complete-payment-wrapper">
+    <div>
+      <h1 className="user-page-title">Complete Payment</h1>
+      <div className="complete-payment-wrapper">
       <div className="payment-header">
-        <h2>Complete Payment</h2>
+        
       </div>
 
       <div className="payment-container">
@@ -246,6 +248,8 @@ const CompletePayment = () => {
           </div>
         </div>
       </div>
+    </div>
+  
     </div>
   );
 };

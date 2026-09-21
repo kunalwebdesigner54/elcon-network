@@ -88,8 +88,10 @@ function UserMyRank() {
   const nextProgressPercentage = nextRank.targetEarning > 0 ? (currentEarning / nextRank.targetEarning) * 100 : 0;
 
   return (
-    <div className="user-rank-container">
-      <h1 className="user-rank-page-title">My Rank</h1>
+    <div>
+      <h1 className="user-page-title">My Rank</h1>
+      <div className="user-rank-container">
+      
 
       <div className="user-rank-panel">
         {/* Left Section - Rank Progression */}
@@ -296,6 +298,8 @@ function UserMyRank() {
         
         
       </div>
+    </div>
+  
     </div>
   );
 }

@@ -72,7 +72,9 @@ function DiscountCoupon() {
     }
   };
   return (
-    <div className="discount-coupon-page user-product-page">
+    <div>
+      <h1 className="user-page-title">Discount Coupon</h1>
+      <div className="discount-coupon-page user-product-page">
       <div className="user-panel discount-coupon-shell">
         {error && <div style={{ color: '#e74c3c', marginBottom: '14px' }}>{error}</div>}
         {loading && <div style={{ color: '#666', marginBottom: '14px' }}>Loading coupons...</div>}
@@ -80,7 +82,7 @@ function DiscountCoupon() {
         {!loading && (
           <>
             <section className="discount-coupon-card-section">
-              <h2 className="discount-coupon-heading">DISCOUNT COUPON</h2>
+              
               <div className="discount-coupon-cards">
                 {couponCards.map((coupon) => (
                   <article key={coupon.id} className={`coupon-card ${coupon.themeClass}`}>
@@ -161,6 +163,8 @@ function DiscountCoupon() {
           </>
         )}
       </div>
+    </div>
+  
     </div>
   );
 }

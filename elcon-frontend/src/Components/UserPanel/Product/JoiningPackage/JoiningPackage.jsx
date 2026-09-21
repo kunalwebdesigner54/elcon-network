@@ -52,8 +52,10 @@ function JoiningPackage() {
   };
 
   return (
-    <div className="user-product-page">
-      <h2 className="page-heading">Joining Package</h2>
+    <div>
+      <h1 className="user-page-title">Joining Package</h1>
+      <div className="user-product-page">
+      
       <div className="user-panel user-product-panel">
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px', width: '100%' }}>
@@ -149,6 +151,8 @@ function JoiningPackage() {
           </>
         )}
       </div>
+    </div>
+  
     </div>
   );
 }
