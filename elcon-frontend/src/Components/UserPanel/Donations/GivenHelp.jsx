@@ -56,13 +56,24 @@ const GivenHelp = () => {
     const load = async () => {
       try {
         setLoading(true);
-        // Fetch full profile to get current unlockLevel
-        const res = await apiClient.get("/auth/me");
-        const user = res.data.data;
+        
+        // Always fetch donation history, let it run in background
+        fetchDonationHistory();
+
+        // Fire independent requests in parallel
+        const [authRes, statusRes, planRes] = await Promise.allSettled([
+          apiClient.get("/auth/me"),
+          getMyStatus(),
+          apiClient.get('/settings/plan')
+        ]);
+
+        if (authRes.status === 'rejected') throw authRes.reason;
+        if (statusRes.status === 'rejected') throw statusRes.reason;
+
+        const user = authRes.value.data.data;
         setCurrentUser(user);
 
-        const statusRes = await getMyStatus();
-        const { currentLevel, nextLevel: next, activeDonation } = statusRes.data;
+        const { currentLevel, nextLevel: next, activeDonation } = statusRes.value.data;
         // Update user's unlock level in state to match actual backend logic for the UI dots
         user.unlockLevel = currentLevel;
 
@@ -75,6 +86,7 @@ const GivenHelp = () => {
         setNextLevel(next);
         setSelectedLevel(next);
 
+        // Fetch target data which depends on 'next'
         if (activeDonation) {
           setTargetData({ isActiveDonation: true, ...activeDonation });
         } else {
@@ -82,22 +94,19 @@ const GivenHelp = () => {
           setTargetData(target.data);
         }
 
-        try {
-          const planRes = await apiClient.get('/settings/plan');
-          if (planRes.data && planRes.data.planSetting && planRes.data.planSetting.donationIncome) {
-            const dynamicAmounts = { ...donationAmounts };
-            planRes.data.planSetting.donationIncome.forEach((amt, idx) => {
-              const val = parseFloat(amt);
-              if (!isNaN(val)) dynamicAmounts[idx + 1] = val;
+        if (planRes.status === 'fulfilled') {
+          const planData = planRes.value.data;
+          if (planData && planData.planSetting && planData.planSetting.donationIncome) {
+            setDonationAmounts(prev => {
+              const dynamicAmounts = { ...prev };
+              planData.planSetting.donationIncome.forEach((amt, idx) => {
+                const val = parseFloat(amt);
+                if (!isNaN(val)) dynamicAmounts[idx + 1] = val;
+              });
+              return dynamicAmounts;
             });
-            setDonationAmounts(dynamicAmounts);
           }
-        } catch (planErr) {
-          console.error("Could not fetch plan settings for donation amounts", planErr);
         }
-
-        // Always fetch donation history to allow viewing past donations
-        fetchDonationHistory();
       } catch (err) {
         setError(err?.response?.data?.message || "Failed to load donation details.");
       } finally {
