@@ -304,46 +304,18 @@ function AddRepurchaseProducts() {
               <div className="admin-add-product-row" style={{ alignItems: 'flex-start' }}>
                 <span>Product Images</span>
                 <div style={imageUploadGridStyle}>
-                  <label className="admin-add-product-row">
-                    <span>Image 1</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 2</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 3</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 4</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 5</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 6</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 7</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 8</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 9</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
-                  <label className="admin-add-product-row">
-                    <span>Image 10</span>
-                    <input type="file" accept="image/*" style={imageUploadFieldStyle} />
-                  </label>
+                  {Array.from({ length: 10 }, (_, i) => {
+                    const existingImg = isEditMode ? ((fullProductDetails || product || editProduct)?.images || [])[i] : null;
+                    return (
+                      <div key={i} className="admin-add-product-row" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '6px' }}>
+                        <span>Image {i + 1}</span>
+                        {existingImg && (
+                          <img src={existingImg} alt={`Existing image ${i + 1}`} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px', border: '1px solid var(--glass-border)' }} />
+                        )}
+                        <input type="file" accept="image/*" style={imageUploadFieldStyle} />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div className="admin-add-product-row" style={{ alignItems: 'flex-start', marginTop: '14px' }}>
