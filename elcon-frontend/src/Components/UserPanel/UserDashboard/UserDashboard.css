@@ -485,7 +485,7 @@
 
 @media (max-width: 480px) {
   .user-dashboard1-member-dashboard-stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: 1fr !important;
   }
 
   .user-dashboard-shell {
@@ -580,7 +580,7 @@
 
 @media (max-width: 360px) {
   .user-dashboard1-member-dashboard-stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: 1fr !important;
   }
 
   .user-dashboard1-member-dashboard-root {
@@ -826,7 +826,7 @@
 
 @media (max-width: 768px) {
   .income-summary-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 10px;
   }
   .income-summary-card {
@@ -924,3 +924,11 @@
   justify-content: center;
 }
 
+@media (max-width: 480px) {
+  .custom-boxes-container {
+    grid-template-columns: 1fr;
+  }
+  .small-summary-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
