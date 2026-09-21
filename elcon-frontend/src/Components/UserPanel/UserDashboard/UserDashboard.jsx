@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../Common/UserLayout.css';
 import './UserDashboard.css';
 import { getUserDashboard, getTopEarners } from '../../../api/dashboardService';
@@ -181,6 +181,49 @@ function MemberDashboard() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Shortcut Boxes Section */}
+        <div className="income-summary-grid" style={{ marginTop: '15px' }}>
+          <Link to="/user/donations/recieved-help" className="income-summary-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+            <div className="income-card-content">
+              <div className="income-card-label" style={{ fontWeight: '600' }}>Received Help</div>
+              <div className="income-card-value" style={{ fontSize: '14px', marginTop: '6px', color: '#00cec9' }}>View Details <i className="fas fa-arrow-right" style={{marginLeft: '4px'}}></i></div>
+            </div>
+            <div className="income-card-icon" style={{ color: '#00cec9', borderColor: '#00cec940', backgroundColor: '#00cec915' }}>
+              <i className="fas fa-hand-holding-usd"></i>
+            </div>
+          </Link>
+
+          <Link to="/user/donations/given-help" className="income-summary-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+            <div className="income-card-content">
+              <div className="income-card-label" style={{ fontWeight: '600' }}>Given Help</div>
+              <div className="income-card-value" style={{ fontSize: '14px', marginTop: '6px', color: '#e84393' }}>View Details <i className="fas fa-arrow-right" style={{marginLeft: '4px'}}></i></div>
+            </div>
+            <div className="income-card-icon" style={{ color: '#e84393', borderColor: '#e8439340', backgroundColor: '#e8439315' }}>
+              <i className="fas fa-hand-holding-heart"></i>
+            </div>
+          </Link>
+
+          <Link to="/user/income-report/donations-income" className="income-summary-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+            <div className="income-card-content">
+              <div className="income-card-label" style={{ fontWeight: '600' }}>Donation Report</div>
+              <div className="income-card-value" style={{ fontSize: '14px', marginTop: '6px', color: '#f39c12' }}>View Details <i className="fas fa-arrow-right" style={{marginLeft: '4px'}}></i></div>
+            </div>
+            <div className="income-card-icon" style={{ color: '#f39c12', borderColor: '#f39c1240', backgroundColor: '#f39c1215' }}>
+              <i className="fas fa-file-invoice-dollar"></i>
+            </div>
+          </Link>
+
+          <div className="income-summary-card" style={{ cursor: 'pointer' }}>
+            <div className="income-card-content">
+              <div className="income-card-label" style={{ fontWeight: '600' }}>Daily Income</div>
+              <div className="income-card-value" style={{ fontSize: '14px', marginTop: '6px', color: '#3498db' }}>Coming Soon</div>
+            </div>
+            <div className="income-card-icon" style={{ color: '#3498db', borderColor: '#3498db40', backgroundColor: '#3498db15' }}>
+              <i className="fas fa-calendar-day"></i>
+            </div>
+          </div>
         </div>
 
         {/* News Bar */}
