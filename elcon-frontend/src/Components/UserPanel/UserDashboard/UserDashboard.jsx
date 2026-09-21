@@ -184,44 +184,56 @@ function MemberDashboard() {
         </div>
 
         {/* Shortcut Boxes Section */}
-        <div className="income-summary-grid" style={{ marginTop: '15px' }}>
-          <Link to="/user/donations/recieved-help" className="income-summary-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
-            <div className="income-card-content">
-              <div className="income-card-label" style={{ fontWeight: '600' }}>Received Help</div>
-              <div className="income-card-value" style={{ fontSize: '14px', marginTop: '6px', color: '#00cec9' }}>View Details <i className="fas fa-arrow-right" style={{marginLeft: '4px'}}></i></div>
+        <div className="custom-boxes-container">
+          <Link to="/user/donations/recieved-help" className="custom-box-new">
+            <div className="custom-box-left">
+              <div className="custom-box-indicator" style={{ backgroundColor: '#2ecc71' }}></div>
+              <div className="custom-box-content">
+                <div className="custom-box-value">{memberInfo?.receivedHelp || '0'}</div>
+                <div className="custom-box-label">Received Help</div>
+              </div>
             </div>
-            <div className="income-card-icon" style={{ color: '#00cec9', borderColor: '#00cec940', backgroundColor: '#00cec915' }}>
-              <i className="fas fa-hand-holding-usd"></i>
-            </div>
-          </Link>
-
-          <Link to="/user/donations/given-help" className="income-summary-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
-            <div className="income-card-content">
-              <div className="income-card-label" style={{ fontWeight: '600' }}>Given Help</div>
-              <div className="income-card-value" style={{ fontSize: '14px', marginTop: '6px', color: '#e84393' }}>View Details <i className="fas fa-arrow-right" style={{marginLeft: '4px'}}></i></div>
-            </div>
-            <div className="income-card-icon" style={{ color: '#e84393', borderColor: '#e8439340', backgroundColor: '#e8439315' }}>
-              <i className="fas fa-hand-holding-heart"></i>
+            <div className="custom-box-right">
+              <i className="fas fa-circle-notch"></i>
             </div>
           </Link>
 
-          <Link to="/user/income-report/donations-income" className="income-summary-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
-            <div className="income-card-content">
-              <div className="income-card-label" style={{ fontWeight: '600' }}>Donation Report</div>
-              <div className="income-card-value" style={{ fontSize: '14px', marginTop: '6px', color: '#f39c12' }}>View Details <i className="fas fa-arrow-right" style={{marginLeft: '4px'}}></i></div>
+          <Link to="/user/donations/given-help" className="custom-box-new">
+            <div className="custom-box-left">
+              <div className="custom-box-indicator" style={{ backgroundColor: '#e83e8c' }}></div>
+              <div className="custom-box-content">
+                <div className="custom-box-value">{memberInfo?.givenHelp || '0'}</div>
+                <div className="custom-box-label">Given Help</div>
+              </div>
             </div>
-            <div className="income-card-icon" style={{ color: '#f39c12', borderColor: '#f39c1240', backgroundColor: '#f39c1215' }}>
-              <i className="fas fa-file-invoice-dollar"></i>
+            <div className="custom-box-right">
+              <i className="fas fa-circle-notch"></i>
             </div>
           </Link>
 
-          <div className="income-summary-card" style={{ cursor: 'pointer' }}>
-            <div className="income-card-content">
-              <div className="income-card-label" style={{ fontWeight: '600' }}>Daily Income</div>
-              <div className="income-card-value" style={{ fontSize: '14px', marginTop: '6px', color: '#3498db' }}>Coming Soon</div>
+          <Link to="/user/income-report/donations-income" className="custom-box-new">
+            <div className="custom-box-left">
+              <div className="custom-box-indicator" style={{ backgroundColor: '#fd7e14' }}></div>
+              <div className="custom-box-content">
+                <div className="custom-box-value">---</div>
+                <div className="custom-box-label">Donation Report</div>
+              </div>
             </div>
-            <div className="income-card-icon" style={{ color: '#3498db', borderColor: '#3498db40', backgroundColor: '#3498db15' }}>
-              <i className="fas fa-calendar-day"></i>
+            <div className="custom-box-right">
+              <i className="fas fa-circle-notch"></i>
+            </div>
+          </Link>
+
+          <div className="custom-box-new" style={{ cursor: 'pointer' }}>
+            <div className="custom-box-left">
+              <div className="custom-box-indicator" style={{ backgroundColor: '#0dcaf0' }}></div>
+              <div className="custom-box-content">
+                <div className="custom-box-value">₹ 0</div>
+                <div className="custom-box-label">Daily Income</div>
+              </div>
+            </div>
+            <div className="custom-box-right">
+              <i className="fas fa-circle-notch"></i>
             </div>
           </div>
         </div>
