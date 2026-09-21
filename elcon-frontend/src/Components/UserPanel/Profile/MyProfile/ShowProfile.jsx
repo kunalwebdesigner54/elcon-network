@@ -39,6 +39,7 @@ function ShowProfile() {
           <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>
         </div>
       </section>
+      </div>
     );
   }
 
@@ -162,9 +163,9 @@ function ShowProfile() {
         </div>
       </div>
     </section>
-  
-    </div>
   );
 }
 
 export default ShowProfile;
+
+

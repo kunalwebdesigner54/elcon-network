@@ -89,24 +89,24 @@ function MemberDashboard() {
 
   // Build stats array with real data where available
   const stats = [
-    { label: 'Total Earning', value: memberInfo?.totalEarning || '---' },
-    { label: 'Last Month Income', value: memberInfo?.lastMonthIncome || '---' },
-    { label: 'Pending Help', value: memberInfo?.pendingHelp || '---' },
-    { label: 'Given Help', value: memberInfo?.givenHelp || '---' },
-    { label: 'Received Help', value: memberInfo?.receivedHelp || '---' },
-    { label: "Yesterday's Received Help", value: memberInfo?.yesterdayReceivedHelp || '---' },
-    { label: 'Level Income', value: memberInfo?.levelIncome || '---' },
-    { label: "Yesterday's Level Income", value: memberInfo?.yesterdayLevelIncome || '---' },
-    { label: 'Repurchase Income', value: memberInfo?.repurchaseIncome || '---' },
-    { label: "Yesterday's Repurchase Income", value: memberInfo?.yesterdayRepurchaseIncome || '---' },
-    { label: 'Total L + R Income', value: memberInfo?.totalLRIncome || '---' },
-    { label: "Yesterday's Total Income", value: memberInfo?.yesterdayTotalIncome || '---' },
-    { label: 'Total Team', value: memberInfo?.totalTeam || '---' },
-    { label: "Yesterday's Joining", value: memberInfo?.yesterdayJoining || '---' },
-    { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '---' },
-    { label: 'My Directs', value: memberInfo?.referralsCount || 0 },
-    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '---' },
-    { label: 'Rank', value: memberInfo?.rank || '---' }
+    { label: 'Total Earning', value: memberInfo?.totalEarning || '---', icon: 'fa-wallet', color: '#00e5ff' },
+    { label: 'Last Month Income', value: memberInfo?.lastMonthIncome || '---', icon: 'fa-calendar-check', color: '#2ecc71' },
+    { label: 'Pending Help', value: memberInfo?.pendingHelp || '---', icon: 'fa-clock', color: '#f39c12' },
+    { label: 'Given Help', value: memberInfo?.givenHelp || '---', icon: 'fa-hand-holding-heart', color: '#e84393' },
+    { label: 'Received Help', value: memberInfo?.receivedHelp || '---', icon: 'fa-hand-holding-usd', color: '#00cec9' },
+    { label: "Yesterday's Received Help", value: memberInfo?.yesterdayReceivedHelp || '---', icon: 'fa-history', color: '#3498db' },
+    { label: 'Level Income', value: memberInfo?.levelIncome || '---', icon: 'fa-sitemap', color: '#9b59b6' },
+    { label: "Yesterday's Level Income", value: memberInfo?.yesterdayLevelIncome || '---', icon: 'fa-level-up-alt', color: '#e67e22' },
+    { label: 'Repurchase Income', value: memberInfo?.repurchaseIncome || '---', icon: 'fa-shopping-cart', color: '#1abc9c' },
+    { label: "Yesterday's Repurchase Income", value: memberInfo?.yesterdayRepurchaseIncome || '---', icon: 'fa-shopping-bag', color: '#27ae60' },
+    { label: 'Total L + R Income', value: memberInfo?.totalLRIncome || '---', icon: 'fa-exchange-alt', color: '#f1c40f' },
+    { label: "Yesterday's Total Income", value: memberInfo?.yesterdayTotalIncome || '---', icon: 'fa-money-bill-wave', color: '#e74c3c' },
+    { label: 'Total Team', value: memberInfo?.totalTeam || '---', icon: 'fa-users', color: '#00e5ff' },
+    { label: "Yesterday's Joining", value: memberInfo?.yesterdayJoining || '---', icon: 'fa-user-plus', color: '#2ecc71' },
+    { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '---', icon: 'fa-unlock', color: '#f39c12' },
+    { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393' },
+    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '---', icon: 'fa-arrow-circle-up', color: '#3498db' },
+    { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f' }
   ];
 
   const leaderboardTabs = [
@@ -165,6 +165,23 @@ function MemberDashboard() {
             </button>
           </div>
         </section>
+
+        {/* Income Summary Cards */}
+        <div className="income-summary-grid">
+          {stats.map((stat, idx) => (
+            <div className="income-summary-card" key={idx}>
+              <div className="income-card-content">
+                <div className="income-card-label">{stat.label}</div>
+                <div className="income-card-value">
+                  {String(stat.value).includes('₹') || isNaN(stat.value) || stat.value === '---' ? stat.value : `₹ ${Number(stat.value).toLocaleString('en-IN')}`}
+                </div>
+              </div>
+              <div className="income-card-icon" style={{ color: stat.color, borderColor: `${stat.color}40`, backgroundColor: `${stat.color}15` }}>
+                <i className={`fas ${stat.icon}`}></i>
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* News Bar */}
         <div className="user-dashboard-news-bar-new">
@@ -237,41 +254,6 @@ function MemberDashboard() {
                 </table>
               </div>
             </section>
-
-            <div className="small-summary-cards-grid">
-              <div className="small-summary-card">
-                <div className="card-color-indicator bg-green"></div>
-                <div className="card-info">
-                  <div className="card-val">{memberInfo?.totalTeam || '1,50,000'}</div>
-                  <div className="card-line"></div>
-                </div>
-                <div className="card-circle"></div>
-              </div>
-              <div className="small-summary-card">
-                <div className="card-color-indicator bg-pink"></div>
-                <div className="card-info">
-                  <div className="card-val">{memberInfo?.referralsCount || '1,25,000'}</div>
-                  <div className="card-line"></div>
-                </div>
-                <div className="card-circle"></div>
-              </div>
-              <div className="small-summary-card">
-                <div className="card-color-indicator bg-orange"></div>
-                <div className="card-info">
-                  <div className="card-val">{memberInfo?.levelIncome || '12,000'}</div>
-                  <div className="card-line"></div>
-                </div>
-                <div className="card-circle"></div>
-              </div>
-              <div className="small-summary-card">
-                <div className="card-color-indicator bg-cyan"></div>
-                <div className="card-info">
-                  <div className="card-val">{memberInfo?.repurchaseIncome || '10,000'}</div>
-                  <div className="card-line"></div>
-                </div>
-                <div className="card-circle"></div>
-              </div>
-            </div>
             
             <div className="dashboard-hotkeys-grid">
               <button className="hotkey-btn bg-cyan">UPGRADE NOW</button>

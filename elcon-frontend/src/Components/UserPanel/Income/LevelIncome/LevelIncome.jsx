@@ -117,119 +117,6 @@ function LevelIncome() {
     
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) pages.push(<span key="dots2" className="page-btn">...</span>);
-
-  const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  
-  const [filters, setFilters] = useState({
-    levelNo: '',
-    levelId: '',
-    startDate: '',
-    endDate: '',
-    limit: '10'
-  });
-  const [globalTotalAmount, setGlobalTotalAmount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalEntries, setTotalEntries] = useState(0);
-
-  const fetchReports = () => {
-    setLoading(true);
-    setError('');
-    
-    const params = {
-      page: currentPage,
-      limit: filters.limit,
-      levelNo: filters.levelNo,
-      levelId: filters.levelId,
-      startDate: filters.startDate,
-      endDate: filters.endDate
-    };
-
-    getLevelIncomeReports(params)
-      .then((response) => {
-        let rowsData = [];
-        if (Array.isArray(response)) rowsData = response;
-        else if (response && Array.isArray(response.data)) rowsData = response.data;
-        else if (response && response.data && Array.isArray(response.data.data)) rowsData = response.data.data;
-        else if (response && Array.isArray(response.records)) rowsData = response.records;
-        
-        setRows(rowsData);
-        
-        const totalAmt = response?.globalTotalAmount ?? response?.data?.globalTotalAmount ?? 0;
-        setGlobalTotalAmount(totalAmt);
-        
-        const paginationData = response?.pagination || response?.data?.pagination;
-        if (paginationData) {
-          setTotalPages(paginationData.pages || 1);
-          setTotalEntries(paginationData.total || rowsData.length);
-        } else {
-          setTotalEntries(rowsData.length);
-        }
-      })
-      .catch((loadError) => setError(loadError?.response?.data?.message || 'Failed to load level income.'))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchReports();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSearch = () => {
-    if (currentPage === 1) {
-      fetchReports();
-    } else {
-      setCurrentPage(1);
-    }
-  };
-
-  const handleReset = () => {
-    setFilters({
-      levelNo: '',
-      levelId: '',
-      startDate: '',
-      endDate: '',
-      limit: '10'
-    });
-    if (currentPage === 1) {
-      setTimeout(fetchReports, 0);
-    } else {
-      setCurrentPage(1);
-    }
-  };
-
-  const renderPagination = () => {
-    const pages = [];
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, currentPage + 2);
-    
-    if (startPage > 1) {
-      pages.push(<button key="1" type="button" onClick={() => setCurrentPage(1)} className="page-btn">1</button>);
-      if (startPage > 2) pages.push(<span key="dots1" className="page-btn">...</span>);
-    }
-    
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(
-        <button 
-          key={i} 
-          type="button"
-          onClick={() => setCurrentPage(i)} 
-          className={`page-btn ${currentPage === i ? 'active-page' : ''}`}
-        >
-          {i}
-        </button>
-      );
-    }
-    
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) pages.push(<span key="dots2" className="page-btn">...</span>);
       pages.push(<button key={totalPages} type="button" onClick={() => setCurrentPage(totalPages)} className="page-btn">{totalPages}</button>);
     }
     
@@ -238,11 +125,11 @@ function LevelIncome() {
 
   return (
     <div>
-      <h1 className="user-page-title">Level Income</h1>
-      <div className="level-income-page">
-        <section className="level-income-panel">
+    <h1 className="user-page-title">Level Income</h1>
+    <div className="level-income-page">
+      <section className="level-income-panel">
 
-          <div className="level-income-toolbar">
+        <div className="level-income-toolbar">
           <div className="level-income-filter-row">
             <select 
               className="level-income-filter-input" 
@@ -376,7 +263,7 @@ function LevelIncome() {
               </div>
         </div>
       </section>
-      </div>
+    </div>
     </div>
   );
 }

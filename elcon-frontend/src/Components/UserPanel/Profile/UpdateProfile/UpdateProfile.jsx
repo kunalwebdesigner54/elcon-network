@@ -124,6 +124,7 @@ function UpdateProfile() {
           </div>
         </div>
       </section>
+      </div>
     );
   }
 
@@ -225,9 +226,9 @@ function UpdateProfile() {
         </div>
       </div>
     </section>
-  
-    </div>
   );
 }
 
 export default UpdateProfile;
+
+
