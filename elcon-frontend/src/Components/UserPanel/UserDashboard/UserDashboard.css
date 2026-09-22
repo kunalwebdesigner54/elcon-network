@@ -779,6 +779,13 @@
   flex-direction: column;
 }
 
+.income-card-left {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
 .income-card-label {
   font-size: 15px;
   color: #fff;
@@ -787,6 +794,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
 .income-card-value {

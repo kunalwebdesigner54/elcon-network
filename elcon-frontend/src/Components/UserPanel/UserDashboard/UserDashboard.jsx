@@ -178,10 +178,10 @@ function MemberDashboard() {
             <div className="income-summary-card" key={idx}>
               <div className="income-card-main-content">
                 <div className="income-card-left">
-                  <div className="income-card-label">{stat.label}</div>
                   <div className="income-card-value">
                     {String(stat.value).includes('₹') || isNaN(stat.value) || stat.value === '---' ? stat.value : `₹ ${Number(stat.value).toLocaleString('en-IN')}`}
                   </div>
+                  <div className="income-card-label">{stat.label}</div>
                 </div>
                 <div className="income-card-icon" style={{ color: stat.color, borderColor: stat.color }}>
                   <i className={`fas ${stat.icon}`}></i>
