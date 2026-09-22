@@ -186,7 +186,10 @@ function MemberDashboard() {
                 <div className="income-card-icon" style={{ color: stat.color, borderColor: stat.color }}>
                   <i className={`fas ${stat.icon}`}></i>
                 </div>
-            </div>
+                <div className="income-card-recent">
+                  {`Recent ${stat.label} ₹ ${Number(stat.value || 0).toLocaleString('en-IN')}`}
+                </div>
+              </div>
           ))}
         </div>
 
