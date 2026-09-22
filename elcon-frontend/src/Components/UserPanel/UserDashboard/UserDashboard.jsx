@@ -89,30 +89,24 @@ function MemberDashboard() {
 
   // Build stats array with real data where available
   const stats = [
-    { 
-      label: 'Total Income', 
-      value: memberInfo?.totalEarning || '0', 
-      icon: 'fa-wallet', 
-      color: '#00e5ff'
-    },
-    { 
-      label: 'Received Help', 
-      value: memberInfo?.receivedHelp || '0', 
-      icon: 'fa-hand-holding-usd', 
-      color: '#00cec9'
-    },
-    { 
-      label: 'Level Income', 
-      value: memberInfo?.levelIncome || '0', 
-      icon: 'fa-sitemap', 
-      color: '#9b59b6'
-    },
-    { 
-      label: 'Repurchase Income', 
-      value: memberInfo?.repurchaseIncome || '0', 
-      icon: 'fa-wallet', 
-      color: '#00cec9'
-    }
+    { label: 'Total Earning', value: memberInfo?.totalEarning || '---', icon: 'fa-wallet', color: '#00e5ff' },
+    { label: 'Last Month Income', value: memberInfo?.lastMonthIncome || '---', icon: 'fa-calendar-check', color: '#2ecc71' },
+    { label: 'Pending Help', value: memberInfo?.pendingHelp || '---', icon: 'fa-clock', color: '#f39c12' },
+    { label: 'Given Help', value: memberInfo?.givenHelp || '---', icon: 'fa-hand-holding-heart', color: '#e84393' },
+    { label: 'Received Help', value: memberInfo?.receivedHelp || '---', icon: 'fa-hand-holding-usd', color: '#00cec9' },
+    { label: "Yesterday's Received Help", value: memberInfo?.yesterdayReceivedHelp || '---', icon: 'fa-history', color: '#3498db' },
+    { label: 'Level Income', value: memberInfo?.levelIncome || '---', icon: 'fa-sitemap', color: '#9b59b6' },
+    { label: "Yesterday's Level Income", value: memberInfo?.yesterdayLevelIncome || '---', icon: 'fa-level-up-alt', color: '#e67e22' },
+    { label: 'Repurchase Income', value: memberInfo?.repurchaseIncome || '---', icon: 'fa-shopping-cart', color: '#1abc9c' },
+    { label: "Yesterday's Repurchase Income", value: memberInfo?.yesterdayRepurchaseIncome || '---', icon: 'fa-shopping-bag', color: '#27ae60' },
+    { label: 'Total L + R Income', value: memberInfo?.totalLRIncome || '---', icon: 'fa-exchange-alt', color: '#f1c40f' },
+    { label: "Yesterday's Total Income", value: memberInfo?.yesterdayTotalIncome || '---', icon: 'fa-money-bill-wave', color: '#e74c3c' },
+    { label: 'Total Team', value: memberInfo?.totalTeam || '---', icon: 'fa-users', color: '#00e5ff' },
+    { label: "Yesterday's Joining", value: memberInfo?.yesterdayJoining || '---', icon: 'fa-user-plus', color: '#2ecc71' },
+    { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '---', icon: 'fa-unlock', color: '#f39c12' },
+    { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393' },
+    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '---', icon: 'fa-arrow-circle-up', color: '#3498db' },
+    { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f' }
   ];
 
   const leaderboardTabs = [
@@ -176,20 +170,16 @@ function MemberDashboard() {
         <div className="income-summary-grid">
           {stats.map((stat, idx) => (
             <div className="income-summary-card" key={idx}>
-              <div className="income-card-main-content">
-                <div className="income-card-left">
-                  <div className="income-card-value">
-                    {String(stat.value).includes('₹') || isNaN(stat.value) || stat.value === '---' ? stat.value : `₹ ${Number(stat.value).toLocaleString('en-IN')}`}
-                  </div>
-                  <div className="income-card-label">{stat.label}</div>
-                </div>
-                <div className="income-card-icon" style={{ color: stat.color, borderColor: stat.color }}>
-                  <i className={`fas ${stat.icon}`}></i>
-                </div>
-                <div className="income-card-recent">
-                  {`Recent ${stat.label} ₹ ${Number(stat.value || 0).toLocaleString('en-IN')}`}
+              <div className="income-card-content">
+                <div className="income-card-label">{stat.label}</div>
+                <div className="income-card-value">
+                  {String(stat.value).includes('₹') || isNaN(stat.value) || stat.value === '---' ? stat.value : `₹ ${Number(stat.value).toLocaleString('en-IN')}`}
                 </div>
               </div>
+              <div className="income-card-icon" style={{ color: stat.color, borderColor: `${stat.color}40`, backgroundColor: `${stat.color}15` }}>
+                <i className={`fas ${stat.icon}`}></i>
+              </div>
+            </div>
           ))}
         </div>
 
@@ -206,7 +196,6 @@ function MemberDashboard() {
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
             </div>
-            <div className="custom-box-recent">{`Recent Recieved Help ₹ ${Number(memberInfo?.receivedHelp || 0).toLocaleString('en-IN')}`}</div>
           </Link>
 
           <Link to="/user/donations/given-help" className="custom-box-new">
@@ -220,7 +209,6 @@ function MemberDashboard() {
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
             </div>
-            <div className="custom-box-recent">{`Recent given Help ₹ ${Number(memberInfo?.givenHelp || 0).toLocaleString('en-IN')}`}</div>
           </Link>
 
           <Link to="/user/income-report/donations-income" className="custom-box-new">

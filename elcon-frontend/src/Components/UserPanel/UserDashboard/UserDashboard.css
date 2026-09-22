@@ -744,100 +744,111 @@
 /* INCOME SUMMARY CARDS */
 .income-summary-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 15px;
   margin-bottom: 20px;
 }
 
 .income-summary-card {
   position: relative;
-  background: #23273d;
+  background: var(--bg-card, rgba(20, 25, 30, 0.8));
   border-radius: 8px;
-  padding: 18px 20px 14px;
+  padding: 20px;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-left: 3px solid #00cec9;
   overflow: hidden;
 }
 
-.income-summary-card:nth-child(3) {
-  border-left-color: #9b59b6;
+/* Glowing corner accents */
+.income-summary-card::before,
+.income-summary-card::after {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 2px;
+  background: var(--primary, #00e5ff);
+  box-shadow: 0 0 8px var(--primary, #00e5ff);
+}
+.income-summary-card::before {
+  top: 0;
+  left: 10px;
+}
+.income-summary-card::after {
+  bottom: 0;
+  right: 10px;
 }
 
-.income-card-main-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-}
-
-.income-card-left {
+.income-card-content {
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
-  min-width: 0;
 }
 
 .income-card-label {
-  font-size: 15px;
-  color: #fff;
-  margin-bottom: 5px;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-shrink: 0;
+  font-size: 14px;
+  color: var(--text-muted, #a0a0a0);
+  margin-bottom: 8px;
+  text-transform: capitalize;
 }
 
 .income-card-value {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
   color: #fff;
-  white-space: nowrap;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.income-card-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+  font-weight: 600;
 }
 
 .income-card-icon {
   width: 45px;
   height: 45px;
-  border-radius: 4px;
-  border: 1px solid var(--primary, #00e5ff);
-  background: transparent;
+  border-radius: 8px;
+  background: rgba(0, 229, 255, 0.1);
   color: var(--primary, #00e5ff);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
+  border: 1px solid rgba(0, 229, 255, 0.2);
 }
 
-.income-card-subtext {
-  font-size: 11px;
-  color: #8b95a5;
-  text-align: right;
-  margin-top: 5px;
-  width: 100%;
-}
-
-.income-summary-card {
-  position: relative;
-}
-
-.income-card-recent {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  font-size: 12px;
-  color: #8b95a5;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .income-summary-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .income-summary-card {
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .income-card-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  .income-card-label {
+    font-size: 12px;
+    max-width: 80%;
+  }
+  .income-card-value {
+    font-size: 18px;
+    margin-top: 5px;
   }
 }
 
@@ -852,7 +863,6 @@
 }
 
 .custom-box-new {
-  position: relative;
   background: #111424;
   border: 1px solid #1f2544;
   border-radius: 8px;
@@ -894,7 +904,6 @@
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 4px;
   min-width: 60px;
-  white-space: nowrap;
 }
 
 .custom-box-label {
@@ -903,19 +912,6 @@
   text-transform: uppercase;
   margin-top: 6px;
   font-weight: 600;
-  white-space: nowrap;
-}
-
-.custom-box-recent {
-  position: absolute;
-  right: 52px;
-  bottom: 8px;
-  font-size: 11px;
-  color: #8b95a5;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 70px);
 }
 
 .custom-box-right {
