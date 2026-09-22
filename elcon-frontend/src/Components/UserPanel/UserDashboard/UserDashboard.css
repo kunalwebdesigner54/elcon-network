@@ -771,13 +771,15 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 12px;
   width: 100%;
+  min-width: 0;
 }
 
 .income-card-left {
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -793,15 +795,19 @@
 }
 
 .income-card-value {
-  font-size: 26px;
+  font-size: clamp(18px, 5.5vw, 26px);
   font-weight: 800;
   color: #fff;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .income-card-icon {
   width: 45px;
   height: 45px;
+  flex: 0 0 auto;
   border-radius: 4px;
   border: 1px solid var(--primary, #00e5ff);
   background: transparent;
@@ -825,14 +831,18 @@
 }
 
 .income-card-recent {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  font-size: 12px;
+  position: static;
+  font-size: 11px;
+  line-height: 1.4;
   color: #8b95a5;
+  text-align: right;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -856,10 +866,12 @@
   background: #111424;
   border: 1px solid #1f2544;
   border-radius: 8px;
-  padding: 15px 20px;
+  padding: 15px 20px 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -873,7 +885,9 @@
 .custom-box-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .custom-box-indicator {
@@ -885,16 +899,20 @@
 .custom-box-content {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .custom-box-value {
   color: #fff;
-  font-size: 20px;
+  font-size: clamp(16px, 5vw, 20px);
   font-weight: 700;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 4px;
-  min-width: 60px;
+  min-width: 0;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .custom-box-label {
@@ -904,23 +922,28 @@
   margin-top: 6px;
   font-weight: 600;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .custom-box-recent {
   position: absolute;
-  right: 52px;
+  right: 12px;
   bottom: 8px;
+  left: 12px;
   font-size: 11px;
+  line-height: 1.4;
   color: #8b95a5;
+  text-align: right;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: calc(100% - 70px);
 }
 
 .custom-box-right {
   width: 32px;
   height: 32px;
+  flex: 0 0 auto;
   border: 2px dashed rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   display: flex;
@@ -934,5 +957,32 @@
   }
   .small-summary-cards-grid {
     grid-template-columns: 1fr;
+  }
+
+  .custom-box-new {
+    padding: 12px 14px 28px;
+    gap: 10px;
+  }
+
+  .custom-box-left {
+    gap: 10px;
+  }
+
+  .custom-box-recent {
+    right: 10px;
+    left: 10px;
+    font-size: 10px;
+  }
+
+  .income-card-recent {
+    font-size: 10px;
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .custom-box-recent,
+  .income-card-recent {
+    font-size: 9px;
   }
 }

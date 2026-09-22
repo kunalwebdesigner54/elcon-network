@@ -88,28 +88,43 @@ function MemberDashboard() {
   }, [activeTab]);
 
   // Build stats array with real data where available
+  const parseAmount = (v) => {
+    if (v === null || v === undefined || v === '') return 0;
+    if (typeof v === 'number') return v;
+    const n = Number(String(v).replace(/[^0-9.-]/g, ''));
+    return isNaN(n) ? 0 : n;
+  };
+  const formatINR = (v) => `\u20B9 ${parseAmount(v).toLocaleString('en-IN')}`;
   const stats = [
-    { 
-      label: 'Total Income', 
-      value: memberInfo?.totalEarning || '0', 
-      icon: 'fa-wallet', 
+    {
+      label: 'Total Income',
+      value: memberInfo?.totalEarning || '0',
+      recentLabel: 'Recent Total Income',
+      recentValue: memberInfo?.yesterdayTotalIncome ?? memberInfo?.totalEarning ?? '0',
+      icon: 'fa-wallet',
       color: '#00e5ff'
     },
-    { 
-      label: 'Received Help', 
-      value: memberInfo?.receivedHelp || '0', 
-      icon: 'fa-hand-holding-usd', 
+    {
+      label: 'Received Help',
+      value: memberInfo?.receivedHelp || '0',
+      recentLabel: 'Recent Received Help',
+      recentValue: memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? '0',
+      icon: 'fa-hand-holding-usd',
       color: '#00cec9'
     },
-    { 
-      label: 'Level Income', 
-      value: memberInfo?.levelIncome || '0', 
-      icon: 'fa-sitemap', 
+    {
+      label: 'Level Income',
+      value: memberInfo?.levelIncome || '0',
+      recentLabel: 'Recent Level Income',
+      recentValue: memberInfo?.yesterdayLevelIncome ?? memberInfo?.levelIncome ?? '0',
+      icon: 'fa-sitemap',
       color: '#9b59b6'
     },
-    { 
-      label: 'Repurchase Income', 
-      value: memberInfo?.repurchaseIncome || '0', 
+    {
+      label: 'Repurchase Income',
+      value: memberInfo?.repurchaseIncome || '0',
+      recentLabel: 'Recent Repurchase Income',
+      recentValue: memberInfo?.yesterdayRepurchaseIncome ?? memberInfo?.repurchaseIncome ?? '0', 
       icon: 'fa-wallet', 
       color: '#00cec9'
     }
@@ -186,10 +201,11 @@ function MemberDashboard() {
                 <div className="income-card-icon" style={{ color: stat.color, borderColor: stat.color }}>
                   <i className={`fas ${stat.icon}`}></i>
                 </div>
-                <div className="income-card-recent">
-                  {`Recent ${stat.label} ₹ ${Number(stat.value || 0).toLocaleString('en-IN')}`}
+                <div className="income-card-recent" title={`${stat.recentLabel} ${formatINR(stat.recentValue)}`}>
+                  {`${stat.recentLabel} ${formatINR(stat.recentValue)}`}
                 </div>
               </div>
+            </div>
           ))}
         </div>
 
@@ -206,7 +222,7 @@ function MemberDashboard() {
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
             </div>
-            <div className="custom-box-recent">{`Recent Recieved Help ₹ ${Number(memberInfo?.receivedHelp || 0).toLocaleString('en-IN')}`}</div>
+            <div className="custom-box-recent" title={`Recent Received Help ${formatINR(memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? 0)}`}>{`Recent Received Help ${formatINR(memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? 0)}`}</div>
           </Link>
 
           <Link to="/user/donations/given-help" className="custom-box-new">
@@ -220,7 +236,7 @@ function MemberDashboard() {
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
             </div>
-            <div className="custom-box-recent">{`Recent given Help ₹ ${Number(memberInfo?.givenHelp || 0).toLocaleString('en-IN')}`}</div>
+            <div className="custom-box-recent" title={`Recent Given Help ${formatINR(memberInfo?.yesterdayGivenHelp ?? memberInfo?.givenHelp ?? 0)}`}>{`Recent Given Help ${formatINR(memberInfo?.yesterdayGivenHelp ?? memberInfo?.givenHelp ?? 0)}`}</div>
           </Link>
 
           <Link to="/user/income-report/donations-income" className="custom-box-new">
@@ -247,6 +263,7 @@ function MemberDashboard() {
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
             </div>
+            <div className="custom-box-recent" title={`Recent Repurchase Income ${formatINR(memberInfo?.yesterdayRepurchaseIncome ?? memberInfo?.repurchaseIncome ?? 0)}`}>{`Recent Repurchase Income ${formatINR(memberInfo?.yesterdayRepurchaseIncome ?? memberInfo?.repurchaseIncome ?? 0)}`}</div>
           </div>
         </div>
 
