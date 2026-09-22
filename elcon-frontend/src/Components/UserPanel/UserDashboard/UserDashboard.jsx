@@ -206,6 +206,7 @@ function MemberDashboard() {
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
             </div>
+            <div className="custom-box-recent">{`Recent Recieved Help ₹ ${Number(memberInfo?.receivedHelp || 0).toLocaleString('en-IN')}`}</div>
           </Link>
 
           <Link to="/user/donations/given-help" className="custom-box-new">
@@ -219,6 +220,7 @@ function MemberDashboard() {
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
             </div>
+            <div className="custom-box-recent">{`Recent given Help ₹ ${Number(memberInfo?.givenHelp || 0).toLocaleString('en-IN')}`}</div>
           </Link>
 
           <Link to="/user/income-report/donations-income" className="custom-box-new">

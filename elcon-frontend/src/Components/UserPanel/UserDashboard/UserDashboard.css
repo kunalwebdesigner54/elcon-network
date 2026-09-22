@@ -852,6 +852,7 @@
 }
 
 .custom-box-new {
+  position: relative;
   background: #111424;
   border: 1px solid #1f2544;
   border-radius: 8px;
@@ -893,6 +894,7 @@
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 4px;
   min-width: 60px;
+  white-space: nowrap;
 }
 
 .custom-box-label {
@@ -901,6 +903,19 @@
   text-transform: uppercase;
   margin-top: 6px;
   font-weight: 600;
+  white-space: nowrap;
+}
+
+.custom-box-recent {
+  position: absolute;
+  right: 20px;
+  bottom: 8px;
+  font-size: 11px;
+  color: #8b95a5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 60px);
 }
 
 .custom-box-right {
