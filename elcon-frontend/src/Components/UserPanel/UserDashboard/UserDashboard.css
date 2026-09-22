@@ -908,14 +908,14 @@
 
 .custom-box-recent {
   position: absolute;
-  right: 20px;
+  right: 52px;
   bottom: 8px;
   font-size: 11px;
   color: #8b95a5;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: calc(100% - 60px);
+  max-width: calc(100% - 70px);
 }
 
 .custom-box-right {
