@@ -439,26 +439,9 @@ exports.getMyDonations = async (req, res) => {
     const directsMap = {};
     directCounts.forEach(c => { directsMap[c._id] = c.count; });
 
-    const allUsers = await User.find({}, 'memberId sponsorId').lean();
-    const sponsorMap = {};
-    allUsers.forEach((u) => { sponsorMap[u.memberId] = u.sponsorId; });
-
+    const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId levelDepth').lean();
     const levelDepthMap = {};
-    const computeDepth = (memberId) => {
-      if (levelDepthMap[memberId] !== undefined) return levelDepthMap[memberId];
-      let depth = 1;
-      let current = memberId;
-      const visited = new Set();
-      while (sponsorMap[current] && !visited.has(sponsorMap[current])) {
-        visited.add(current);
-        depth++;
-        current = sponsorMap[current];
-        if (levelDepthMap[current] !== undefined) { depth += levelDepthMap[current] - 1; break; }
-      }
-      levelDepthMap[memberId] = depth;
-      return depth;
-    };
-    uniqueMemberIds.forEach((id) => { computeDepth(id); });
+    users.forEach(u => { levelDepthMap[u.memberId] = u.levelDepth || 0; });
 
     const mapRow = (d, type) => ({
       sNo: 0,
