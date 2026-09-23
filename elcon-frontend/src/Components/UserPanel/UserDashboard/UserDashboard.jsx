@@ -359,7 +359,7 @@ function MemberDashboard() {
                       ) : loadingTopEarners ? (
                         <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Loading...</td></tr>
                       ) : topEarners.length > 0 ? (
-                        (showAllTopEarners ? topEarners : topEarners.slice(0, 5)).map((row, idx) => (
+                        (showAllTopEarners ? topEarners : topEarners.slice(0, 3)).map((row, idx) => (
                           <tr key={`${idx}-${row.memberId}`}>
                             <td>{idx + 1}</td>
                             <td>{row.memberId || '---'}</td>
@@ -372,7 +372,7 @@ function MemberDashboard() {
                       )}
                     </tbody>
                   </table>
-                  {topEarners.length > 5 && activeTab !== 'rewards' && (
+                  {topEarners.length > 3 && activeTab !== 'rewards' && (
                     <div style={{ textAlign: 'center', marginTop: '15px' }}>
                       <button 
                         onClick={() => setShowAllTopEarners(!showAllTopEarners)}

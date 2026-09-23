@@ -152,13 +152,32 @@ exports.userDashboard = async (req, res) => {
     }
 
     // Calculate Pending Help theoretically from un-upgraded downlines at each depth
-    let totalPendingHelp = 0;
-    levelProgress.forEach(lp => {
-      const pendingCount = lp.total - lp.upgraded;
-      if (pendingCount > 0 && donationAmounts[lp.level]) {
-        totalPendingHelp += pendingCount * donationAmounts[lp.level];
-      }
+    // NEW REQUIREMENT: Only calculate if the downline's IMMEDIATE next upgrade is this depth.
+    let totalExpectedPendingHelp = 0;
+    let pendingDepth = 1;
+    let pendingNodes = childrenMap.get(user.memberId) || [];
+    while (pendingNodes.length > 0 && pendingDepth <= 10) {
+      const nextNodes = [];
+      pendingNodes.forEach(node => {
+        if ((node.unlockLevel || 0) === pendingDepth - 1) {
+          totalExpectedPendingHelp += donationAmounts[pendingDepth] || 0;
+        }
+        const children = childrenMap.get(node.memberId) || [];
+        nextNodes.push(...children);
+      });
+      pendingNodes = nextNodes;
+      pendingDepth++;
+    }
+
+    let totalPendingHelp = totalExpectedPendingHelp;
+
+    const pendingDonations = await Donation.find({
+      toMemberId: user.memberId,
+      status: { $in: ['WAITING_FOR_RECEIVER_CONFIRMATION', 'PENDING'] }
     });
+    const pendingDonationsTotal = pendingDonations.reduce((s, d) => s + (d.amount || 0), 0);
+    totalPendingHelp += pendingDonationsTotal;
+
 
     const totalLevelIncome = (levelIncomeSent || []).reduce((s, d) => s + d.amount, 0);
     const yesterdayLevelInc = (yestLevelIncomeList || []).reduce((s, d) => s + d.amount, 0);

@@ -91,8 +91,8 @@ exports.getExpectedPendingHelp = async (req, res) => {
       const nextLevelNodes = [];
 
       currentLevelNodes.forEach(node => {
-        // If node hasn't upgraded to the current depth level
-        if ((node.unlockLevel || 0) < currentDepth) {
+        // If node's immediate next upgrade is the current depth level
+        if ((node.unlockLevel || 0) === currentDepth - 1) {
           expectedPendingHelpList.push({
             memberId: node.memberId,
             name: node.name,
