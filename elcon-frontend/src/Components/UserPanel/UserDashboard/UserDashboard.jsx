@@ -108,7 +108,9 @@ function MemberDashboard() {
     { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '0', icon: 'fa-unlock', color: '#f39c12', isCurrency: false },
     { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393', isCurrency: false },
     { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '0', icon: 'fa-arrow-circle-up', color: '#3498db', isCurrency: false },
-    { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f', isCurrency: false }
+    { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f', isCurrency: false },
+    { label: 'Wallet Balance', value: memberInfo?.walletBalance || 0, icon: 'fa-wallet', color: '#2ecc71', isCurrency: true },
+    { label: 'Coupon Balance', value: memberInfo?.couponWalletBalance || 0, icon: 'fa-ticket-alt', color: '#9b59b6', isCurrency: true }
   ];
 
   const leaderboardTabs = [

@@ -184,6 +184,7 @@ exports.userDashboard = async (req, res) => {
         unlockLevel: upgradeLevel,
         upgradedLevel: upgradeLevel,
         walletBalance: fmt(user.walletBalance || 0),
+        couponWalletBalance: fmt(user.couponWalletBalance || 0),
         rank: user.rank || '---',
         joiningPackageDeliveryStatus: user.joiningPackageDeliveryStatus || 'Pending',
         joiningPackageDeliveryCode: user.joiningPackageDeliveryCode || '',
