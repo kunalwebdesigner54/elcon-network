@@ -307,54 +307,55 @@ function MemberDashboard() {
             );
           })}
         </section>
-
-        <section className="user-dashboard1-member-dashboard-table-section" style={{ marginTop: 0, marginBottom: '20px' }}>
-          <div className="user-dashboard1-member-dashboard-table-tabs" role="tablist" aria-label="Earner Categories">
-                {leaderboardTabs.map((tab) => (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    role="tab"
-                    aria-selected={activeTab === tab.key}
-                    className={`user-dashboard1-member-dashboard-tab-btn ${activeTab === tab.key ? 'user-dashboard1-member-dashboard-tab-btn-active' : ''}`}
-                    onClick={() => setActiveTab(tab.key)}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-              <div className="table-wrap">
-                <table className="data-table" style={{ fontSize: '12px' }}>
-                  <thead>
-                    <tr>
-                      <th>S.NO</th>
-                      <th>MEMBER ID</th>
-                      <th>MEMBER NAME</th>
-                      <th>AMOUNT</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {activeTab === 'rewards' ? (
-                      <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Rewards coming soon</td></tr>
-                    ) : loadingTopEarners ? (
-                      <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Loading...</td></tr>
-                    ) : topEarners.length > 0 ? (
-                      topEarners.map((row, idx) => (
-                        <tr key={`${idx}-${row.memberId}`}>
-                          <td>{idx + 1}</td>
-                          <td>{row.memberId || '---'}</td>
-                          <td>{row.name || '---'}</td>
-                          <td>₹ {Number(row.amount || 0).toLocaleString('en-IN')}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>No data available</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-            
+        {memberInfo?.showTopEarners !== false && (
+          <section className="user-dashboard1-member-dashboard-table-section" style={{ marginTop: 0, marginBottom: '20px' }}>
+            <div className="user-dashboard1-member-dashboard-table-tabs" role="tablist" aria-label="Earner Categories">
+                  {leaderboardTabs.map((tab) => (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === tab.key}
+                      className={`user-dashboard1-member-dashboard-tab-btn ${activeTab === tab.key ? 'user-dashboard1-member-dashboard-tab-btn-active' : ''}`}
+                      onClick={() => setActiveTab(tab.key)}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="table-wrap">
+                  <table className="data-table" style={{ fontSize: '12px' }}>
+                    <thead>
+                      <tr>
+                        <th>S.NO</th>
+                        <th>MEMBER ID</th>
+                        <th>MEMBER NAME</th>
+                        <th>AMOUNT</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activeTab === 'rewards' ? (
+                        <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Rewards coming soon</td></tr>
+                      ) : loadingTopEarners ? (
+                        <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Loading...</td></tr>
+                      ) : topEarners.length > 0 ? (
+                        topEarners.map((row, idx) => (
+                          <tr key={`${idx}-${row.memberId}`}>
+                            <td>{idx + 1}</td>
+                            <td>{row.memberId || '---'}</td>
+                            <td>{row.name || '---'}</td>
+                            <td>₹ {Number(row.amount || 0).toLocaleString('en-IN')}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>No data available</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+        )}
+        
             <div className="dashboard-hotkeys-grid">
               <button className="hotkey-btn bg-cyan">UPGRADE NOW</button>
               <button className="hotkey-btn bg-yellow">RECEIVED HELP</button>

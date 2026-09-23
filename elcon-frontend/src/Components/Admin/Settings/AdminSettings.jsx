@@ -5,7 +5,7 @@ import { changeAdminPasswords, getGlobalSettings, updateGlobalSettings } from ".
 
 function AdminSettings() {
   const [activeTab, setActiveTab] = useState('login'); // 'login', 'transaction', or 'global'
-  const [globalSettings, setGlobalSettings] = useState({ registrationEnabled: true, memberEpinGenerationEnabled: true, adminEpinGenerationEnabled: true });
+  const [globalSettings, setGlobalSettings] = useState({ registrationEnabled: true, memberEpinGenerationEnabled: true, adminEpinGenerationEnabled: true, showTopEarners: true });
   const [formData, setFormData] = useState({
     oldPassword: '',
     newPassword: '',
@@ -183,7 +183,7 @@ function AdminSettings() {
             <form onSubmit={handleGlobalSettingsUpdate}>
               <div className="settings-card">
                 <div className="settings-card-header">
-                  Global E-Pin Settings
+                  General System Settings
                 </div>
                 <div className="settings-card-body">
                   <div className="toggles-grid">
@@ -271,6 +271,23 @@ function AdminSettings() {
                         </span>
                       </div>
                       <p className="toggle-desc">Generate Pins automatically after payment</p>
+                    </div>
+
+                    <div className="toggle-item">
+                      <h4>Show Top Earners</h4>
+                      <div className="toggle-switch-container">
+                        <label className="toggle-label">
+                          <input type="checkbox" checked={globalSettings.showTopEarners !== false} onChange={(e) => setGlobalSettings({ ...globalSettings, showTopEarners: e.target.checked })} />
+                          <span className="toggle-slider">
+                            <span className="toggle-text toggle-text-on">ON</span>
+                            <span className="toggle-text toggle-text-off">OFF</span>
+                          </span>
+                        </label>
+                        <span className={`status-badge ${globalSettings.showTopEarners !== false ? 'enabled' : 'disabled'}`}>
+                          {globalSettings.showTopEarners !== false ? 'Shown' : 'Hidden'}
+                        </span>
+                      </div>
+                      <p className="toggle-desc">Display Top Earners on Member Dashboard</p>
                     </div>
 
                   </div>

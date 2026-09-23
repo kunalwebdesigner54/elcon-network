@@ -129,6 +129,7 @@ const defaultGlobalSettings = {
   enableOTP: true,
   dailyGenerationLimit: 10,
   minWalletBalance: 500,
+  showTopEarners: true,
 };
 
 exports.getGlobalSettings = async (req, res) => {

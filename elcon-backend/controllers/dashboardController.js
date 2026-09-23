@@ -4,6 +4,7 @@ const Epin = require('../models/Epin');
 const Order = require('../models/Order');
 const LevelIncome = require('../models/LevelIncome');
 const RepurchaseIncome = require('../models/RepurchaseIncome');
+const SiteSetting = require('../models/SiteSetting');
 const { getTeamStats } = require('../services/teamService');
 const { getActualCompletedLevel } = require('../services/uplineEngine');
 
@@ -107,7 +108,7 @@ exports.userDashboard = async (req, res) => {
     const endOfYesterday = new Date(yesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    const [donationsSent, donationsReceived, yesterdayReceived, yesterdayGiven, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel, pendingDonations] = await Promise.all([
+    const [donationsSent, donationsReceived, yesterdayReceived, yesterdayGiven, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel, pendingDonations, globalSettingsDoc] = await Promise.all([
       Donation.find({ fromMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({ toMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({
@@ -133,6 +134,7 @@ exports.userDashboard = async (req, res) => {
       }),
       getActualCompletedLevel(memberId),
       Donation.find({ toMemberId: memberId, status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] } }),
+      SiteSetting.findOne({ settingKey: 'global-settings' }),
     ]);
 
     const totalGivenHelp = donationsSent.reduce((s, d) => s + d.amount, 0);
@@ -146,6 +148,8 @@ exports.userDashboard = async (req, res) => {
     const totalRepurchaseIncome = (repurchaseIncomeList || []).reduce((s, d) => s + d.amount, 0);
     const yesterdayRepurchaseInc = (yestRepurchaseIncomeList || []).reduce((s, d) => s + d.amount, 0);
     const yesterdayLRIncome = yesterdayLevelInc + yesterdayRepurchaseInc;
+    
+    const showTopEarners = globalSettingsDoc?.data?.showTopEarners !== false;
 
     const fmt = (n) => `₹ ${n.toLocaleString('en-IN')}`;
 
@@ -184,6 +188,7 @@ exports.userDashboard = async (req, res) => {
         joiningPackageDeliveryStatus: user.joiningPackageDeliveryStatus || 'Pending',
         joiningPackageDeliveryCode: user.joiningPackageDeliveryCode || '',
         levelProgress,
+        showTopEarners,
       },
     });
   } catch (error) {
