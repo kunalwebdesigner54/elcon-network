@@ -279,24 +279,25 @@ function MemberDashboard() {
           <h3 className="level-progress-title">
             Upgrade Level Progress
           </h3>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(level => {
-            const requiredDirects = level;
-            const currentDirects = Math.min(memberInfo?.referralsCount || 0, requiredDirects);
-            const percent = Math.floor((currentDirects / requiredDirects) * 100);
+          {(memberInfo?.levelProgress || Array.from({ length: 10 }, (_, i) => ({ level: i + 1, total: 0, upgraded: 0 }))).map(data => {
+            const level = data.level;
+            const totalMembers = data.total;
+            const upgradedMembers = data.upgraded;
+            const percent = totalMembers > 0 ? Math.floor((upgradedMembers / totalMembers) * 100) : 0;
             
             return (
               <div className="level-progress-row" key={level}>
                 <div className="level-progress-details">
                   <div className="level-progress-header">
                     <span>Level {level} Progress</span>
-                    <strong>{currentDirects} / {requiredDirects}</strong>
+                    <strong>{upgradedMembers} / {totalMembers}</strong>
                   </div>
                   <div className="level-progress-bar-bg">
                     <div 
                       className="level-progress-bar-fill" 
                       style={{ 
                         width: `${percent}%`, 
-                        backgroundColor: percent === 100 ? '#2ecc71' : (percent > 0 ? '#00e5ff' : 'transparent') 
+                        backgroundColor: percent === 100 && totalMembers > 0 ? '#2ecc71' : (percent > 0 ? '#00e5ff' : 'transparent') 
                       }}
                     ></div>
                   </div>

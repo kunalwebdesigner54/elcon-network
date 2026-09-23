@@ -62,6 +62,38 @@ exports.userDashboard = async (req, res) => {
     const referralsCount = teamStats.directCount;
     const totalTeamCount = teamStats.totalTeamCount;
 
+    // Calculate Level Progress (Depth-based downline and their unlock levels)
+    const descendants = teamStats.descendants || [];
+    const childrenMap = new Map();
+    descendants.forEach(d => {
+      const sp = String(d.sponsorId || '').trim();
+      if (!childrenMap.has(sp)) childrenMap.set(sp, []);
+      childrenMap.get(sp).push(d);
+    });
+
+    const levelProgress = Array.from({ length: 10 }, (_, i) => ({ level: i + 1, total: 0, upgraded: 0 }));
+    let currentLevelNodes = childrenMap.get(user.memberId) || [];
+    let currentDepth = 1;
+
+    while (currentLevelNodes.length > 0 && currentDepth <= 10) {
+      const nextLevelNodes = [];
+      const levelIndex = currentDepth - 1;
+
+      currentLevelNodes.forEach(node => {
+        levelProgress[levelIndex].total += 1;
+        if ((node.unlockLevel || 0) >= currentDepth) {
+          levelProgress[levelIndex].upgraded += 1;
+        }
+
+        const children = childrenMap.get(node.memberId) || [];
+        nextLevelNodes.push(...children);
+      });
+
+      currentLevelNodes = nextLevelNodes;
+      currentDepth++;
+    }
+
+
     const recentReferrals = await User.find({ sponsorId: user.memberId })
       .select('memberId name contactNo createdAt')
       .sort({ createdAt: -1 })
@@ -151,6 +183,7 @@ exports.userDashboard = async (req, res) => {
         rank: user.rank || '---',
         joiningPackageDeliveryStatus: user.joiningPackageDeliveryStatus || 'Pending',
         joiningPackageDeliveryCode: user.joiningPackageDeliveryCode || '',
+        levelProgress,
       },
     });
   } catch (error) {
