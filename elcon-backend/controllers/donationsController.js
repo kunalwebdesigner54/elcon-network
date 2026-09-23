@@ -430,7 +430,12 @@ exports.getMyDonations = async (req, res) => {
     const sent = await Donation.find({ fromMemberId: memberId }).sort({ createdAt: -1 }).lean();
     const received = await Donation.find({ toMemberId: memberId }).sort({ createdAt: -1 }).lean();
 
-    const uniqueMemberIds = [...new Set([...sent.map(d => d.fromMemberId), ...received.map(d => d.fromMemberId)])];
+    const uniqueMemberIds = [...new Set([
+      ...sent.map(d => d.fromMemberId),
+      ...sent.map(d => d.toMemberId),
+      ...received.map(d => d.fromMemberId),
+      ...received.map(d => d.toMemberId)
+    ])];
     const User = require('../models/User');
     const directCounts = await User.aggregate([
       { $match: { sponsorId: { $in: uniqueMemberIds } } },
@@ -448,7 +453,9 @@ exports.getMyDonations = async (req, res) => {
       donationId: d.donationId,
       type,
       level: d.level,
-      levelDepth: levelDepthMap[d.fromMemberId] ?? 0,
+      levelDepth: (levelDepthMap[d.fromMemberId] || 0) - (levelDepthMap[d.toMemberId] || 0) > 0 
+        ? (levelDepthMap[d.fromMemberId] || 0) - (levelDepthMap[d.toMemberId] || 0) 
+        : d.level,
       amount: d.amount,
       fromMemberId: d.fromMemberId,
       fromName: d.fromName,
@@ -502,7 +509,10 @@ exports.getAllDonations = async (req, res) => {
 
     const donations = await Donation.find(filter).sort({ createdAt: -1 }).lean();
 
-    const uniqueMemberIds = [...new Set(donations.map(d => d.fromMemberId))];
+    const uniqueMemberIds = [...new Set([
+      ...donations.map(d => d.fromMemberId),
+      ...donations.map(d => d.toMemberId)
+    ])];
     const User = require('../models/User');
 
     // Get directs
@@ -535,7 +545,9 @@ exports.getAllDonations = async (req, res) => {
       utrNumber: d.utrNumber || '---',
       remark: d.remark || '---',
       directs: directsMap[d.fromMemberId] || 0,
-      levelDepth: levelDepthMap[d.fromMemberId] || 0,
+      levelDepth: (levelDepthMap[d.fromMemberId] || 0) - (levelDepthMap[d.toMemberId] || 0) > 0 
+        ? (levelDepthMap[d.fromMemberId] || 0) - (levelDepthMap[d.toMemberId] || 0) 
+        : d.level,
     }));
 
     const totalAmount = donations.filter(d => ['APPROVED', 'COMPLETED'].includes(d.status)).reduce((s, d) => s + d.amount, 0);
