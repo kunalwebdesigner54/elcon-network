@@ -108,7 +108,7 @@ exports.userDashboard = async (req, res) => {
     const endOfYesterday = new Date(yesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    const [donationsSent, donationsReceived, yesterdayReceived, yesterdayGiven, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel, pendingDonations, globalSettingsDoc] = await Promise.all([
+    const [donationsSent, donationsReceived, yesterdayReceived, yesterdayGiven, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel, planSettingDoc, globalSettingsDoc] = await Promise.all([
       Donation.find({ fromMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({ toMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({
@@ -133,7 +133,7 @@ exports.userDashboard = async (req, res) => {
         createdAt: { $gte: yesterday, $lte: endOfYesterday },
       }),
       getActualCompletedLevel(memberId),
-      Donation.find({ toMemberId: memberId, status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] } }),
+      SiteSetting.findOne({ settingKey: 'plan-setting' }),
       SiteSetting.findOne({ settingKey: 'global-settings' }),
     ]);
 
@@ -141,7 +141,24 @@ exports.userDashboard = async (req, res) => {
     const totalReceivedHelp = donationsReceived.reduce((s, d) => s + d.amount, 0);
     const yesterdayReceivedHelp = yesterdayReceived.reduce((s, d) => s + d.amount, 0);
     const yesterdayGivenHelp = (yesterdayGiven || []).reduce((s, d) => s + d.amount, 0);
-    const totalPendingHelp = (pendingDonations || []).reduce((s, d) => s + d.amount, 0);
+    
+    // Dynamic Donation Amounts
+    let donationAmounts = { 1: 300, 2: 1000, 3: 2000, 4: 4000, 5: 8000, 6: 16000, 7: 32000, 8: 64000, 9: 128000, 10: 256000 };
+    if (planSettingDoc?.data?.donationIncome) {
+      planSettingDoc.data.donationIncome.forEach((amt, index) => {
+        const parsed = parseFloat(amt);
+        if (!isNaN(parsed)) donationAmounts[index + 1] = parsed;
+      });
+    }
+
+    // Calculate Pending Help theoretically from un-upgraded downlines at each depth
+    let totalPendingHelp = 0;
+    levelProgress.forEach(lp => {
+      const pendingCount = lp.total - lp.upgraded;
+      if (pendingCount > 0 && donationAmounts[lp.level]) {
+        totalPendingHelp += pendingCount * donationAmounts[lp.level];
+      }
+    });
 
     const totalLevelIncome = (levelIncomeSent || []).reduce((s, d) => s + d.amount, 0);
     const yesterdayLevelInc = (yestLevelIncomeList || []).reduce((s, d) => s + d.amount, 0);
