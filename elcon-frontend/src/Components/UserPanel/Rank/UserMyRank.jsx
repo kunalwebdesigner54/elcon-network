@@ -123,7 +123,7 @@ function UserMyRank() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <div className="user-rank-circle" style={{
-                      width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #00FF87 0%, #60EFFF 100%)', 
+                      width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #2af598 0%, #009efd 100%)', 
                       display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', marginRight: '15px'
                     }}>
                       {index + 1}
