@@ -192,6 +192,12 @@
 }
 
 @media (max-width: 768px) {
+  .discount-wallet-statement-page {
+    padding: 15px 0px;
+  }
+  .discount-wallet-statement-panel {
+    padding: 15px 15px;
+  }
   .stats-row {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
