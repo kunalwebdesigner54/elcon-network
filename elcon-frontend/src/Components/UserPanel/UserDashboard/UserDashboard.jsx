@@ -274,8 +274,56 @@ function MemberDashboard() {
           </div>
         )}
 
-            <section className="user-dashboard1-member-dashboard-table-section" style={{ marginTop: 0, marginBottom: '20px' }}>
-              <div className="user-dashboard1-member-dashboard-table-tabs" role="tablist" aria-label="Earner Categories">
+        {/* Level Progress Report */}
+        <section className="level-progress-container">
+          <h3 className="level-progress-title">
+            <i className="fas fa-chart-line" style={{ color: '#00e5ff' }}></i> Upgrade Level Progress
+          </h3>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(level => {
+            const requiredDirects = level;
+            const currentDirects = Math.min(memberInfo?.referralsCount || 0, requiredDirects);
+            const percent = Math.floor((currentDirects / requiredDirects) * 100);
+            
+            let iconClass = 'fa-medal';
+            let iconColor = '#f1c40f'; // Gold
+            
+            if (percent === 100) {
+              iconColor = '#2ecc71'; // Green
+            } else if (percent === 0) {
+              iconClass = 'fa-lock';
+              iconColor = '#7f8c8d'; // Grey
+            } else {
+              iconColor = '#e67e22'; // Bronze/Orange
+            }
+
+            return (
+              <div className="level-progress-row" key={level}>
+                <div className="level-progress-icon" style={{ color: iconColor }}>
+                  <i className={`fas ${iconClass}`}></i>
+                </div>
+                <div className="level-progress-details">
+                  <div className="level-progress-header">
+                    <span>Level {level} Progress</span>
+                    <strong>{currentDirects} / {requiredDirects}</strong>
+                  </div>
+                  <div className="level-progress-bar-bg">
+                    <div 
+                      className="level-progress-bar-fill" 
+                      style={{ 
+                        width: `${percent}%`, 
+                        backgroundColor: percent === 100 ? '#2ecc71' : (percent > 0 ? '#00e5ff' : 'transparent') 
+                      }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="level-progress-percentage">{percent}%</div>
+              </div>
+            );
+          })}
+        </section>
+
+        <section className="user-dashboard1-member-dashboard-table-section" style={{ marginTop: 0, marginBottom: '20px' }}>
+          <div className="user-dashboard1-member-dashboard-table-tabs" role="tablist" aria-label="Earner Categories">
                 {leaderboardTabs.map((tab) => (
                   <button
                     key={tab.key}
