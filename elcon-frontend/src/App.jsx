@@ -257,6 +257,8 @@ function App() {
           <Route path="donations/recieved-help" element={<ReceivedHelp />} />
           <Route path="donations/ReceivedHelp" element={<ReceivedHelp />} />
 
+          <Route path="coupon/discount-wallet-statement" element={<DiscountWalletStatement />} />
+
           <Route path="product/joining-package" element={<JoiningPackage />} />
           <Route path="product/shopping-products" element={<ShoppingProducts />} />
           <Route path="product/my_cart" element={<MyCart />} />

@@ -45,6 +45,13 @@ const menuItems = [
     ]
   },
   {
+    key: 'coupon',
+    label: 'Coupon',
+    children: [
+      { label: 'Discount Wallet Statement', to: '/user/coupon/discount-wallet-statement' }
+    ]
+  },
+  {
     key: 'product',
     label: 'Products',
     children: [
