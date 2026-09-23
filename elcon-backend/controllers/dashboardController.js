@@ -75,7 +75,7 @@ exports.userDashboard = async (req, res) => {
     const endOfYesterday = new Date(yesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    const [donationsSent, donationsReceived, yesterdayReceived, yesterdayGiven, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel] = await Promise.all([
+    const [donationsSent, donationsReceived, yesterdayReceived, yesterdayGiven, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel, pendingDonations] = await Promise.all([
       Donation.find({ fromMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({ toMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({
@@ -100,12 +100,14 @@ exports.userDashboard = async (req, res) => {
         createdAt: { $gte: yesterday, $lte: endOfYesterday },
       }),
       getActualCompletedLevel(memberId),
+      Donation.find({ toMemberId: memberId, status: { $in: ['PENDING', 'WAITING_FOR_RECEIVER_CONFIRMATION'] } }),
     ]);
 
     const totalGivenHelp = donationsSent.reduce((s, d) => s + d.amount, 0);
     const totalReceivedHelp = donationsReceived.reduce((s, d) => s + d.amount, 0);
     const yesterdayReceivedHelp = yesterdayReceived.reduce((s, d) => s + d.amount, 0);
     const yesterdayGivenHelp = (yesterdayGiven || []).reduce((s, d) => s + d.amount, 0);
+    const totalPendingHelp = (pendingDonations || []).reduce((s, d) => s + d.amount, 0);
 
     const totalLevelIncome = (levelIncomeSent || []).reduce((s, d) => s + d.amount, 0);
     const yesterdayLevelInc = (yestLevelIncomeList || []).reduce((s, d) => s + d.amount, 0);
@@ -129,7 +131,7 @@ exports.userDashboard = async (req, res) => {
         recentReferrals,
         totalEarning: fmt(totalReceivedHelp),
         lastMonthIncome: fmt(0),
-        pendingHelp: fmt(0),
+        pendingHelp: fmt(totalPendingHelp),
         givenHelp: fmt(totalGivenHelp),
         receivedHelp: fmt(totalReceivedHelp),
         yesterdayReceivedHelp: fmt(yesterdayReceivedHelp),
@@ -324,6 +326,7 @@ exports.getTopEarners = async (req, res) => {
           totalIncome: { $sum: '$amount' }
         }
       },
+      { $match: { _id: { $ne: 'admin' } } },
       { $sort: { totalIncome: -1 } },
       { $limit: 100 },
       {
