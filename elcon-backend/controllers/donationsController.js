@@ -439,11 +439,19 @@ exports.getMyDonations = async (req, res) => {
     const directsMap = {};
     directCounts.forEach(c => { directsMap[c._id] = c.count; });
 
+    const levelDepths = await User.find(
+      { memberId: { $in: uniqueMemberIds } },
+      'memberId levelDepth'
+    ).lean();
+    const levelDepthMap = {};
+    levelDepths.forEach((u) => { levelDepthMap[u.memberId] = u.levelDepth ?? 0; });
+
     const mapRow = (d, type) => ({
       sNo: 0,
       donationId: d.donationId,
       type,
       level: d.level,
+      levelDepth: levelDepthMap[d.fromMemberId] ?? 0,
       amount: d.amount,
       fromMemberId: d.fromMemberId,
       fromName: d.fromName,

@@ -295,7 +295,7 @@ const ReceivedHelp = () => {
                         <td>{row.memberId}</td>
                         <td>{row.name}</td>
                         <td>{row.directs || 0}</td>
-                        <td>{row.rank}</td>
+                        <td>{row.levelDepth}</td>
                         <td style={{ color: '#27ae60', fontWeight: 'bold' }}>₹ {row.amount?.toLocaleString('en-IN')}</td>
                         <td>Level {row.rank}</td>
                         <td>{row.requestDate}</td>
