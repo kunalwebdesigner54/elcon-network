@@ -790,7 +790,7 @@
 }
 
 .income-card-label {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-muted, #a0a0a0);
   margin-bottom: 8px;
   text-transform: capitalize;
@@ -868,7 +868,7 @@
     font-size: 14px;
   }
   .income-card-label {
-    font-size: 11px;
+    font-size: 14px;
     max-width: 100%;
     white-space: nowrap !important;
   }
