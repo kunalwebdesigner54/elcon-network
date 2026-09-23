@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './DiscountWalletTransaction.css';
+import { getAdminDiscountWalletTransactions, getAdminDiscountWalletOverview } from '../../../../api/managementService';
 
 function DiscountWalletTransaction() {
-  const totalPages = 1;
+  const [data, setData] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [totalEntries, setTotalEntries] = useState(0);
 
-  const [page, setPage] = React.useState(1);
+  const [stats, setStats] = useState({
+    totalMembers: 0,
+    totalDiscountIssued: 0,
+    totalUsedDiscount: 0,
+    totalUnusedDiscount: 0
+  });
 
   const [filters, setFilters] = useState({
     transactionType: '',
@@ -15,70 +25,72 @@ function DiscountWalletTransaction() {
     pageSize: '10'
   });
 
-  const dummyData = [
-    {
-      sno: 1,
-      txnId: 'DWT250005',
-      memberId: 'EL845458',
-      memberName: 'AMRUTA SHIRKE',
-      transactionType: 'REWARD CREDIT',
-      credit: '1000',
-      debit: '-',
-      balance: '1000',
-      transactionDate: '04-09-2026 11:40:14 PM',
-      reference: 'DON278728'
-    },
-    {
-      sno: 2,
-      txnId: 'DWT250004',
-      memberId: 'EL456566',
-      memberName: 'SONALI SHIRKE',
-      transactionType: 'DISCOUNT USED',
-      credit: '0',
-      debit: '300',
-      balance: '700',
-      transactionDate: '03-09-2026 11:40:14 PM',
-      reference: 'ORD434314'
-    },
-    {
-      sno: 3,
-      txnId: 'DWT250003',
-      memberId: 'EL879879',
-      memberName: 'RAJANI PATIL',
-      transactionType: 'DISCOUNT USED',
-      credit: '0',
-      debit: '200',
-      balance: '800',
-      transactionDate: '01-09-2026 11:40:14 PM',
-      reference: 'ORD330040'
-    },
-    {
-      sno: 4,
-      txnId: 'DWT250002',
-      memberId: 'EL234355',
-      memberName: 'POOJA KUTE',
-      transactionType: 'DISCOUNT USED',
-      credit: '0',
-      debit: '500',
-      balance: '500',
-      transactionDate: '28-08-2026 11:40:14 PM',
-      reference: 'ORD334996'
-    },
-    {
-      sno: 5,
-      txnId: 'DWT250001',
-      memberId: 'EI654354',
-      memberName: 'ARJUN DHADGE',
-      transactionType: 'REWARD CREDIT',
-      credit: '1000',
-      debit: '0',
-      balance: '1000',
-      transactionDate: '27-08-2026 11:40:14 PM',
-      reference: 'ORD334835'
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        page,
+        limit: filters.pageSize,
+        transactionType: filters.transactionType,
+        memberId: filters.memberId,
+        reference: filters.reference,
+        fromDate: filters.fromDate,
+        toDate: filters.toDate
+      };
+      
+      const [txRes, overviewRes] = await Promise.all([
+        getAdminDiscountWalletTransactions(params),
+        getAdminDiscountWalletOverview({ page: 1, limit: 1 })
+      ]);
+
+      if (txRes.success) {
+        setData(txRes.data || []);
+        setTotalPages(txRes.totalPages || 1);
+        setTotalEntries(txRes.total || 0);
+      } else {
+        setData([]);
+      }
+
+      if (overviewRes.success && overviewRes.stats) {
+        setStats(overviewRes.stats);
+      }
+    } catch (error) {
+      console.error("Failed to fetch transaction data", error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, filters.pageSize]);
+
+  const handleSearch = () => {
+    setPage(1);
+    fetchData();
+  };
+
+  const handleReset = () => {
+    setFilters({
+      transactionType: '',
+      memberId: '',
+      reference: '',
+      fromDate: '',
+      toDate: '',
+      pageSize: '10'
+    });
+    setPage(1);
+    setTimeout(fetchData, 0);
+  };
 
   const updateFilter = (key) => (event) => setFilters((previous) => ({ ...previous, [key]: event.target.value }));
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
 
   return (
     <div className="discount-wallet-page">
@@ -88,19 +100,19 @@ function DiscountWalletTransaction() {
         <div className="stats-row">
           <div className="stat-card card-green">
             <div className="stat-title">Total<br />Members</div>
-            <div className="stat-value">500</div>
+            <div className="stat-value">{stats.totalMembers}</div>
           </div>
           <div className="stat-card card-blue">
             <div className="stat-title">Total Discount<br />Issued</div>
-            <div className="stat-value">500000</div>
+            <div className="stat-value">{stats.totalDiscountIssued}</div>
           </div>
           <div className="stat-card card-pink">
             <div className="stat-title">Total used<br />Discount</div>
-            <div className="stat-value">225000</div>
+            <div className="stat-value">{stats.totalUsedDiscount}</div>
           </div>
           <div className="stat-card card-orange">
             <div className="stat-title">Total un-used<br />Discount</div>
-            <div className="stat-value">275000</div>
+            <div className="stat-value">{stats.totalUnusedDiscount}</div>
           </div>
         </div>
 
@@ -125,14 +137,14 @@ function DiscountWalletTransaction() {
               onChange={updateFilter('reference')} 
             />
             <input 
-              type="text"
+              type="date"
               className="discount-wallet-filter-input" 
               placeholder="DD-MM-YYYY" 
               value={filters.fromDate} 
               onChange={updateFilter('fromDate')} 
             />
             <input 
-              type="text"
+              type="date"
               className="discount-wallet-filter-input" 
               placeholder="DD-MM-YYYY" 
               value={filters.toDate} 
@@ -149,8 +161,8 @@ function DiscountWalletTransaction() {
             </select>
             
             <div className="filter-buttons">
-              <button type="button" className="btn-primary search-btn">SEARCH</button>
-              <button type="button" className="btn-outline reset-btn">RESET</button>
+              <button type="button" className="btn-primary search-btn" onClick={handleSearch} disabled={loading}>SEARCH</button>
+              <button type="button" className="btn-outline reset-btn" onClick={handleReset} disabled={loading}>RESET</button>
               <button type="button" className="btn-outline excel-btn">Excel</button>
               <button type="button" className="btn-outline pdf-btn">PDF</button>
             </div>
@@ -174,27 +186,37 @@ function DiscountWalletTransaction() {
               </tr>
             </thead>
             <tbody>
-              {dummyData.map((row) => (
-                <tr key={row.sno}>
-                  <td>{row.sno}</td>
-                  <td>{row.txnId}</td>
-                  <td>{row.memberId}</td>
-                  <td>{row.memberName}</td>
-                  <td>{row.transactionType}</td>
-                  <td>{row.credit}</td>
-                  <td>{row.debit}</td>
-                  <td>{row.balance}</td>
-                  <td>{row.transactionDate}</td>
-                  <td>{row.reference}</td>
+              {loading ? (
+                <tr>
+                  <td colSpan="10" style={{ textAlign: 'center', padding: '20px' }}>Loading...</td>
                 </tr>
-              ))}
+              ) : data.length > 0 ? (
+                data.map((row, index) => (
+                  <tr key={row._id || index}>
+                    <td>{(page - 1) * parseInt(filters.pageSize, 10) + index + 1}</td>
+                    <td>{row.transactionId || '-'}</td>
+                    <td>{row.memberId}</td>
+                    <td>{row.memberName}</td>
+                    <td>{row.transactionType}</td>
+                    <td>{row.credit}</td>
+                    <td>{row.debit}</td>
+                    <td>{row.balance}</td>
+                    <td>{new Date(row.createdAt).toLocaleString('en-GB')}</td>
+                    <td>{row.reference || '-'}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="10" style={{ textAlign: 'center', padding: '20px' }}>No Data Found</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         <div className="table-footer">
           <div className="total-entries">
-            Total Entries : {dummyData.length}
+            Total Entries : {totalEntries}
           </div>
           <div className="pagination">
                 <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>

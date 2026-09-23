@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const WalletTransaction = require('../models/WalletTransaction');
+const DiscountWalletTransaction = require('../models/DiscountWalletTransaction');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { createDiscountWalletTransaction } = require('../utils/walletHelper');
@@ -175,6 +176,154 @@ exports.manageDiscountCoupon = async (req, res) => {
   } catch (error) {
     console.error('manageDiscountCoupon error:', error);
     res.status(500).json({ success: false, message: 'Server error managing discount coupons' });
+  }
+};
+
+/**
+ * @desc    Get Discount Wallet Overview for Admin
+ * @route   GET /api/admin-controls/discount-wallet/overview
+ * @access  Private/Admin
+ */
+exports.getDiscountWalletOverview = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    const { memberId, donationStatus, fromDate, toDate } = req.query;
+
+    const match = { role: 'user' };
+    if (memberId) match.memberId = new RegExp(memberId, 'i');
+    if (donationStatus) match.accountStatus = donationStatus;
+
+    if (fromDate || toDate) {
+      match.createdAt = {};
+      if (fromDate) match.createdAt.$gte = new Date(fromDate);
+      if (toDate) {
+        const to = new Date(toDate);
+        to.setHours(23, 59, 59, 999);
+        match.createdAt.$lte = to;
+      }
+    }
+
+    const totalUsers = await User.countDocuments(match);
+    const users = await User.find(match)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select('memberId name accountStatus couponWalletBalance discountCouponBalance createdAt');
+
+    // For aggregate totals
+    const totalMembers = await User.countDocuments({ role: 'user' });
+    
+    const [totalsResult] = await DiscountWalletTransaction.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalIssued: { $sum: '$credit' },
+          totalUsed: { $sum: '$debit' }
+        }
+      }
+    ]);
+    const totalDiscountIssued = totalsResult?.totalIssued || 0;
+    const totalUsedDiscount = totalsResult?.totalUsed || 0;
+    const totalUnusedDiscount = totalDiscountIssued - totalUsedDiscount;
+
+    // Get stats for paginated users
+    const userMemberIds = users.map(u => u.memberId);
+    const userTransactions = await DiscountWalletTransaction.aggregate([
+      { $match: { memberId: { $in: userMemberIds } } },
+      { $sort: { createdAt: 1 } },
+      {
+        $group: {
+          _id: '$memberId',
+          creditGiven: { $sum: '$credit' },
+          usedAmount: { $sum: '$debit' },
+          lastTransactionDate: { $last: '$createdAt' }
+        }
+      }
+    ]);
+
+    const txMap = {};
+    userTransactions.forEach(tx => {
+      txMap[tx._id] = tx;
+    });
+
+    const data = users.map(user => {
+      const tx = txMap[user.memberId] || { creditGiven: 0, usedAmount: 0, lastTransactionDate: null };
+      const balance = (user.couponWalletBalance || 0) + (user.discountCouponBalance || 0);
+      return {
+        memberId: user.memberId,
+        memberName: user.name,
+        donationStatus: user.accountStatus, // Mapped to donation status in frontend
+        creditGiven: tx.creditGiven,
+        usedAmount: tx.usedAmount,
+        availableBalance: balance,
+        transactionDate: tx.lastTransactionDate
+      };
+    });
+
+    res.json({
+      success: true,
+      data,
+      total: totalUsers,
+      totalPages: Math.ceil(totalUsers / limit),
+      stats: {
+        totalMembers,
+        totalDiscountIssued,
+        totalUsedDiscount,
+        totalUnusedDiscount
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * @desc    Get Discount Wallet Transactions for Admin
+ * @route   GET /api/admin-controls/discount-wallet/transactions
+ * @access  Private/Admin
+ */
+exports.getAdminDiscountWalletTransactions = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    const { memberId, transactionType, reference, fromDate, toDate } = req.query;
+
+    const match = {};
+    if (memberId) match.memberId = new RegExp(memberId, 'i');
+    if (transactionType) match.transactionType = new RegExp(transactionType, 'i');
+    if (reference) match.reference = new RegExp(reference, 'i');
+
+    if (fromDate || toDate) {
+      match.createdAt = {};
+      if (fromDate) match.createdAt.$gte = new Date(fromDate);
+      if (toDate) {
+        const to = new Date(toDate);
+        to.setHours(23, 59, 59, 999);
+        match.createdAt.$lte = to;
+      }
+    }
+
+    const total = await DiscountWalletTransaction.countDocuments(match);
+    const transactions = await DiscountWalletTransaction.find(match)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      success: true,
+      data: transactions,
+      total,
+      totalPages: Math.ceil(total / limit)
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

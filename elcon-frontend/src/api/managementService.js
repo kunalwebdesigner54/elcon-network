@@ -166,6 +166,16 @@ export const manageDiscountCoupon = async (payload) => {
   return response.data;
 };
 
+export const getAdminDiscountWalletOverview = async (params = {}) => {
+  const response = await apiClient.get('/admin-controls/discount-wallet/overview', { params });
+  return response.data;
+};
+
+export const getAdminDiscountWalletTransactions = async (params = {}) => {
+  const response = await apiClient.get('/admin-controls/discount-wallet/transactions', { params });
+  return response.data;
+};
+
 export const manageWalletBalance = async (payload) => {
   const response = await apiClient.post('/admin-controls/wallet-balance', payload);
   return response.data;

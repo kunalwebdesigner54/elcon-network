@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './DiscountWalletOverview.css';
+import { getAdminDiscountWalletOverview } from '../../../../api/managementService';
 
 function DiscountWalletOverview() {
-  const totalPages = 1;
-
-  const [page, setPage] = React.useState(1);
+  const [data, setData] = useState([]);
+  const [stats, setStats] = useState({
+    totalMembers: 0,
+    totalDiscountIssued: 0,
+    totalUsedDiscount: 0,
+    totalUnusedDiscount: 0
+  });
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [totalEntries, setTotalEntries] = useState(0);
 
   const [filters, setFilters] = useState({
     memberId: '',
@@ -14,60 +23,64 @@ function DiscountWalletOverview() {
     pageSize: '10'
   });
 
-  const dummyData = [
-    {
-      sno: 1,
-      memberId: 'EL045458',
-      memberName: 'AMRUTA SHIRKE',
-      donationStatus: 'COMPLETED',
-      creditGiven: '1000.00',
-      usedAmount: '200.00',
-      availableBalance: '800.00',
-      transactionDate: '04-09-2026 11:40:14 PM'
-    },
-    {
-      sno: 2,
-      memberId: 'EL456568',
-      memberName: 'SONALI SHIRKE',
-      donationStatus: 'COMPLETED',
-      creditGiven: '1000.00',
-      usedAmount: '500.00',
-      availableBalance: '500.00',
-      transactionDate: '03-09-2026 11:40:14 PM'
-    },
-    {
-      sno: 3,
-      memberId: 'EL879879',
-      memberName: 'RAJANI PATIL',
-      donationStatus: 'COMPLETED',
-      creditGiven: '1000.00',
-      usedAmount: '300.00',
-      availableBalance: '700.00',
-      transactionDate: '01-09-2026 11:40:14 PM'
-    },
-    {
-      sno: 4,
-      memberId: 'EL234355',
-      memberName: 'POOJA KUMBHAR',
-      donationStatus: 'PENDING',
-      creditGiven: '0',
-      usedAmount: '0',
-      availableBalance: '0',
-      transactionDate: '-'
-    },
-    {
-      sno: 5,
-      memberId: 'EI654354',
-      memberName: 'ARJUN DHADGE',
-      donationStatus: 'PENDING',
-      creditGiven: '0',
-      usedAmount: '0',
-      availableBalance: '0',
-      transactionDate: '-'
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        page,
+        limit: filters.pageSize,
+        memberId: filters.memberId,
+        donationStatus: filters.donationStatus,
+        fromDate: filters.fromDate,
+        toDate: filters.toDate
+      };
+      const res = await getAdminDiscountWalletOverview(params);
+      if (res.success) {
+        setData(res.data || []);
+        setTotalPages(res.totalPages || 1);
+        setTotalEntries(res.total || 0);
+        if (res.stats) {
+          setStats(res.stats);
+        }
+      } else {
+        setData([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch overview data", error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, filters.pageSize]);
+
+  const handleSearch = () => {
+    setPage(1);
+    fetchData();
+  };
+
+  const handleReset = () => {
+    setFilters({
+      memberId: '',
+      donationStatus: '',
+      fromDate: '',
+      toDate: '',
+      pageSize: '10'
+    });
+    setPage(1);
+    setTimeout(fetchData, 0);
+  };
 
   const updateFilter = (key) => (event) => setFilters((previous) => ({ ...previous, [key]: event.target.value }));
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
 
   return (
     <div className="discount-wallet-overview-page">
@@ -77,19 +90,19 @@ function DiscountWalletOverview() {
         <div className="stats-row">
           <div className="stat-card card-green">
             <div className="stat-title">Total<br />Members</div>
-            <div className="stat-value">500</div>
+            <div className="stat-value">{stats.totalMembers}</div>
           </div>
           <div className="stat-card card-blue">
             <div className="stat-title">Total Discount<br />Issued</div>
-            <div className="stat-value">500000</div>
+            <div className="stat-value">{stats.totalDiscountIssued}</div>
           </div>
           <div className="stat-card card-orange">
             <div className="stat-title">Total used<br />Discount</div>
-            <div className="stat-value">225000</div>
+            <div className="stat-value">{stats.totalUsedDiscount}</div>
           </div>
           <div className="stat-card card-purple">
             <div className="stat-title">Total un-used<br />Discount</div>
-            <div className="stat-value">275000</div>
+            <div className="stat-value">{stats.totalUnusedDiscount}</div>
           </div>
         </div>
 
@@ -107,18 +120,18 @@ function DiscountWalletOverview() {
               onChange={updateFilter('donationStatus')}
             >
               <option value="">DONATION STATUS</option>
-              <option value="COMPLETED">COMPLETED</option>
-              <option value="PENDING">PENDING</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="IN-ACTIVE">IN-ACTIVE</option>
             </select>
             <input 
-              type="text"
+              type="date"
               className="discount-wallet-overview-filter-input" 
               placeholder="DD-MM-YYYY" 
               value={filters.fromDate} 
               onChange={updateFilter('fromDate')} 
             />
             <input 
-              type="text"
+              type="date"
               className="discount-wallet-overview-filter-input" 
               placeholder="DD-MM-YYYY" 
               value={filters.toDate} 
@@ -135,8 +148,8 @@ function DiscountWalletOverview() {
             </select>
             
             <div className="filter-buttons">
-              <button type="button" className="btn-primary search-btn">SEARCH</button>
-              <button type="button" className="btn-outline reset-btn">RESET</button>
+              <button type="button" className="btn-primary search-btn" onClick={handleSearch} disabled={loading}>SEARCH</button>
+              <button type="button" className="btn-outline reset-btn" onClick={handleReset} disabled={loading}>RESET</button>
               <button type="button" className="btn-outline excel-btn">Excel</button>
               <button type="button" className="btn-outline pdf-btn">PDF</button>
             </div>
@@ -158,25 +171,37 @@ function DiscountWalletOverview() {
               </tr>
             </thead>
             <tbody>
-              {dummyData.map((row) => (
-                <tr key={row.sno}>
-                  <td>{row.sno}</td>
-                  <td>{row.memberId}</td>
-                  <td>{row.memberName}</td>
-                  <td>{row.donationStatus}</td>
-                  <td>{row.creditGiven}</td>
-                  <td>{row.usedAmount}</td>
-                  <td>{row.availableBalance}</td>
-                  <td>{row.transactionDate}</td>
+              {loading ? (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>Loading...</td>
                 </tr>
-              ))}
+              ) : data.length > 0 ? (
+                data.map((row, index) => (
+                  <tr key={index}>
+                    <td>{(page - 1) * parseInt(filters.pageSize, 10) + index + 1}</td>
+                    <td>{row.memberId}</td>
+                    <td>{row.memberName}</td>
+                    <td className={row.donationStatus === 'ACTIVE' ? 'status-completed' : 'status-pending'}>
+                      {row.donationStatus}
+                    </td>
+                    <td>{row.creditGiven}</td>
+                    <td>{row.usedAmount}</td>
+                    <td>{row.availableBalance}</td>
+                    <td>{row.transactionDate ? new Date(row.transactionDate).toLocaleString('en-GB') : '-'}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>No Data Found</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         <div className="table-footer">
           <div className="total-entries">
-            Total Entries : {dummyData.length}
+            Total Entries : {totalEntries}
           </div>
           <div className="pagination">
                 <button className="page-btn" onClick={() => handlePageChange(1)} disabled={page === 1}>&lt;&lt;</button>
