@@ -162,28 +162,28 @@
 
 .user-rank-badge {
   display: inline-block;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
   color: #fff;
   padding: 10px 24px;
   border-radius: 30px;
   font-weight: 700;
   font-size: 20px;
   margin: 12px 0;
-  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .user-rank-next-badge {
   display: inline-block;
-  background: var(--gradient-secondary);
+  background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
   color: #fff;
   padding: 10px 24px;
   border-radius: 30px;
   font-weight: 700;
   font-size: 20px;
   margin: 12px 0;
-  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 126, 95, 0.4);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -231,18 +231,18 @@
 
 .user-rank-progress-fill {
   height: 100%;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
   border-radius: 4px;
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 114, 255, 0.5);
 }
 
 .user-rank-next-progress-fill {
   height: 100%;
-  background: var(--gradient-secondary);
+  background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
   border-radius: 4px;
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+  box-shadow: 0 0 10px rgba(255, 126, 95, 0.5);
 }
 
 .user-rank-progress-text {
