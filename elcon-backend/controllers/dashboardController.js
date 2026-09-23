@@ -75,11 +75,16 @@ exports.userDashboard = async (req, res) => {
     const endOfYesterday = new Date(yesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    const [donationsSent, donationsReceived, yesterdayReceived, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel] = await Promise.all([
+    const [donationsSent, donationsReceived, yesterdayReceived, yesterdayGiven, levelIncomeSent, yestLevelIncomeList, repurchaseIncomeList, yestRepurchaseIncomeList, upgradeLevel] = await Promise.all([
       Donation.find({ fromMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({ toMemberId: memberId, status: { $in: ['APPROVED', 'COMPLETED'] } }),
       Donation.find({
         toMemberId: memberId,
+        status: { $in: ['APPROVED', 'COMPLETED'] },
+        createdAt: { $gte: yesterday, $lte: endOfYesterday },
+      }),
+      Donation.find({
+        fromMemberId: memberId,
         status: { $in: ['APPROVED', 'COMPLETED'] },
         createdAt: { $gte: yesterday, $lte: endOfYesterday },
       }),
@@ -100,11 +105,13 @@ exports.userDashboard = async (req, res) => {
     const totalGivenHelp = donationsSent.reduce((s, d) => s + d.amount, 0);
     const totalReceivedHelp = donationsReceived.reduce((s, d) => s + d.amount, 0);
     const yesterdayReceivedHelp = yesterdayReceived.reduce((s, d) => s + d.amount, 0);
+    const yesterdayGivenHelp = (yesterdayGiven || []).reduce((s, d) => s + d.amount, 0);
 
     const totalLevelIncome = (levelIncomeSent || []).reduce((s, d) => s + d.amount, 0);
     const yesterdayLevelInc = (yestLevelIncomeList || []).reduce((s, d) => s + d.amount, 0);
     const totalRepurchaseIncome = (repurchaseIncomeList || []).reduce((s, d) => s + d.amount, 0);
     const yesterdayRepurchaseInc = (yestRepurchaseIncomeList || []).reduce((s, d) => s + d.amount, 0);
+    const yesterdayLRIncome = yesterdayLevelInc + yesterdayRepurchaseInc;
 
     const fmt = (n) => `₹ ${n.toLocaleString('en-IN')}`;
 
@@ -126,12 +133,14 @@ exports.userDashboard = async (req, res) => {
         givenHelp: fmt(totalGivenHelp),
         receivedHelp: fmt(totalReceivedHelp),
         yesterdayReceivedHelp: fmt(yesterdayReceivedHelp),
+        yesterdayGivenHelp: fmt(yesterdayGivenHelp),
         levelIncome: fmt(totalLevelIncome),
         yesterdayLevelIncome: fmt(yesterdayLevelInc),
         repurchaseIncome: fmt(totalRepurchaseIncome),
         yesterdayRepurchaseIncome: fmt(yesterdayRepurchaseInc),
         totalLRIncome: fmt(totalLevelIncome + totalRepurchaseIncome),
         yesterdayTotalIncome: fmt(yesterdayReceivedHelp + yesterdayLevelInc + yesterdayRepurchaseInc),
+        yesterdayLRIncome: fmt(yesterdayLRIncome),
         totalTeam: totalTeamCount,
         yesterdayJoining: 0,
         unlockLevel: upgradeLevel,

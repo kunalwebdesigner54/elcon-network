@@ -87,22 +87,29 @@ function MemberDashboard() {
     return () => (mounted = false);
   }, [activeTab]);
 
+  const formatAmount = (value) => {
+    if (value === null || value === undefined || value === '' || value === '---') return '---';
+    if (typeof value === 'string' && value.includes('₹')) return value;
+    const amount = Number(String(value).replace(/[^0-9.-]/g, ''));
+    return `₹ ${Number.isFinite(amount) ? amount.toLocaleString('en-IN') : '0'}`;
+  };
+
   // Build stats array with real data where available
   const stats = [
-    { label: 'Total Earning', value: memberInfo?.totalEarning || '---', icon: 'fa-wallet', color: '#00e5ff' },
+    { label: 'Total Earning', value: memberInfo?.totalEarning || '---', recentLabel: 'Recent Total Income', recentValue: memberInfo?.yesterdayTotalIncome ?? memberInfo?.totalEarning ?? '---', icon: 'fa-wallet', color: '#00e5ff' },
     { label: 'Last Month Income', value: memberInfo?.lastMonthIncome || '---', icon: 'fa-calendar-check', color: '#2ecc71' },
     { label: 'Pending Help', value: memberInfo?.pendingHelp || '---', icon: 'fa-clock', color: '#f39c12' },
-    { label: 'Given Help', value: memberInfo?.givenHelp || '---', icon: 'fa-hand-holding-heart', color: '#e84393' },
-    { label: 'Received Help', value: memberInfo?.receivedHelp || '---', icon: 'fa-hand-holding-usd', color: '#00cec9' },
-    { label: "Yesterday's Received Help", value: memberInfo?.yesterdayReceivedHelp || '---', icon: 'fa-history', color: '#3498db' },
-    { label: 'Level Income', value: memberInfo?.levelIncome || '---', icon: 'fa-sitemap', color: '#9b59b6' },
-    { label: "Yesterday's Level Income", value: memberInfo?.yesterdayLevelIncome || '---', icon: 'fa-level-up-alt', color: '#e67e22' },
-    { label: 'Repurchase Income', value: memberInfo?.repurchaseIncome || '---', icon: 'fa-shopping-cart', color: '#1abc9c' },
-    { label: "Yesterday's Repurchase Income", value: memberInfo?.yesterdayRepurchaseIncome || '---', icon: 'fa-shopping-bag', color: '#27ae60' },
-    { label: 'Total L + R Income', value: memberInfo?.totalLRIncome || '---', icon: 'fa-exchange-alt', color: '#f1c40f' },
-    { label: "Yesterday's Total Income", value: memberInfo?.yesterdayTotalIncome || '---', icon: 'fa-money-bill-wave', color: '#e74c3c' },
+    { label: 'Given Help', value: memberInfo?.givenHelp || '---', recentLabel: 'Recent Given Help', recentValue: memberInfo?.yesterdayGivenHelp ?? memberInfo?.givenHelp ?? '---', icon: 'fa-hand-holding-heart', color: '#e84393' },
+    { label: 'Received Help', value: memberInfo?.receivedHelp || '---', recentLabel: 'Recent Received Help', recentValue: memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? '---', icon: 'fa-hand-holding-usd', color: '#00cec9' },
+    { label: 'Recent Received Help', value: memberInfo?.yesterdayReceivedHelp || '---', icon: 'fa-history', color: '#3498db' },
+    { label: 'Level Income', value: memberInfo?.levelIncome || '---', recentLabel: 'Recent Level Income', recentValue: memberInfo?.yesterdayLevelIncome ?? memberInfo?.levelIncome ?? '---', icon: 'fa-sitemap', color: '#9b59b6' },
+    { label: 'Recent Level Income', value: memberInfo?.yesterdayLevelIncome || '---', icon: 'fa-level-up-alt', color: '#e67e22' },
+    { label: 'Repurchase Income', value: memberInfo?.repurchaseIncome || '---', recentLabel: 'Recent Repurchase Income', recentValue: memberInfo?.yesterdayRepurchaseIncome ?? memberInfo?.repurchaseIncome ?? '---', icon: 'fa-shopping-cart', color: '#1abc9c' },
+    { label: 'Recent Repurchase Income', value: memberInfo?.yesterdayRepurchaseIncome || '---', icon: 'fa-shopping-bag', color: '#27ae60' },
+    { label: 'Total L + R Income', value: memberInfo?.totalLRIncome || '---', recentLabel: 'Recent L + R Income', recentValue: memberInfo?.yesterdayLRIncome ?? memberInfo?.totalLRIncome ?? '---', icon: 'fa-exchange-alt', color: '#f1c40f' },
+    { label: 'Recent Total Income', value: memberInfo?.yesterdayTotalIncome || '---', icon: 'fa-money-bill-wave', color: '#e74c3c' },
     { label: 'Total Team', value: memberInfo?.totalTeam || '---', icon: 'fa-users', color: '#00e5ff' },
-    { label: "Yesterday's Joining", value: memberInfo?.yesterdayJoining || '---', icon: 'fa-user-plus', color: '#2ecc71' },
+    { label: 'Recent Joining', value: memberInfo?.yesterdayJoining ?? '---', icon: 'fa-user-plus', color: '#2ecc71' },
     { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '---', icon: 'fa-unlock', color: '#f39c12' },
     { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393' },
     { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '---', icon: 'fa-arrow-circle-up', color: '#3498db' },
@@ -171,14 +178,17 @@ function MemberDashboard() {
           {stats.map((stat, idx) => (
             <div className="income-summary-card" key={idx}>
               <div className="income-card-content">
-                <div className="income-card-label">{stat.label}</div>
-                <div className="income-card-value">
-                  {String(stat.value).includes('₹') || isNaN(stat.value) || stat.value === '---' ? stat.value : `₹ ${Number(stat.value).toLocaleString('en-IN')}`}
-                </div>
+                <div className="income-card-label" title={stat.label}>{stat.label}</div>
+                <div className="income-card-value" title={formatAmount(stat.value)}>{formatAmount(stat.value)}</div>
               </div>
               <div className="income-card-icon" style={{ color: stat.color, borderColor: `${stat.color}40`, backgroundColor: `${stat.color}15` }}>
                 <i className={`fas ${stat.icon}`}></i>
               </div>
+              {stat.recentLabel && (
+                <div className="income-card-recent" title={`${stat.recentLabel} ${formatAmount(stat.recentValue)}`}>
+                  {`${stat.recentLabel} ${formatAmount(stat.recentValue)}`}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -196,6 +206,9 @@ function MemberDashboard() {
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
             </div>
+            <div className="custom-box-recent" title={`Recent Received Help ${formatAmount(memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? 0)}`}>
+              {`Recent Received Help ${formatAmount(memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? 0)}`}
+            </div>
           </Link>
 
           <Link to="/user/donations/given-help" className="custom-box-new">
@@ -208,6 +221,9 @@ function MemberDashboard() {
             </div>
             <div className="custom-box-right">
               <i className="fas fa-circle-notch"></i>
+            </div>
+            <div className="custom-box-recent" title={`Recent Given Help ${formatAmount(memberInfo?.yesterdayGivenHelp ?? memberInfo?.givenHelp ?? 0)}`}>
+              {`Recent Given Help ${formatAmount(memberInfo?.yesterdayGivenHelp ?? memberInfo?.givenHelp ?? 0)}`}
             </div>
           </Link>
 
