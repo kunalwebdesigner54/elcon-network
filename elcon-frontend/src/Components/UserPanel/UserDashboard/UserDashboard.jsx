@@ -104,11 +104,11 @@ function MemberDashboard() {
     { label: 'Level Income', value: memberInfo?.levelIncome || '---', recentLabel: 'Recent Level Income', recentValue: memberInfo?.yesterdayLevelIncome ?? memberInfo?.levelIncome ?? '---', icon: 'fa-sitemap', color: '#9b59b6' },
     { label: 'Repurchase Income', value: memberInfo?.repurchaseIncome || '---', recentLabel: 'Recent Repurchase Income', recentValue: memberInfo?.yesterdayRepurchaseIncome ?? memberInfo?.repurchaseIncome ?? '---', icon: 'fa-shopping-cart', color: '#1abc9c' },
     { label: 'Total L + R Income', value: memberInfo?.totalLRIncome || '---', recentLabel: 'Recent L + R Income', recentValue: memberInfo?.yesterdayLRIncome ?? memberInfo?.totalLRIncome ?? '---', icon: 'fa-exchange-alt', color: '#f1c40f' },
-    { label: 'Total Team', value: memberInfo?.totalTeam || '---', recentLabel: 'Recent Joining', recentValue: memberInfo?.yesterdayJoining ?? '---', icon: 'fa-users', color: '#00e5ff' },
-    { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '---', icon: 'fa-unlock', color: '#f39c12' },
-    { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393' },
-    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '---', icon: 'fa-arrow-circle-up', color: '#3498db' },
-    { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f' }
+    { label: 'Total Team', value: memberInfo?.totalTeam || '0', recentLabel: 'Recent Joining', recentValue: memberInfo?.yesterdayJoining || '0', icon: 'fa-users', color: '#00e5ff', isCurrency: false },
+    { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '0', icon: 'fa-unlock', color: '#f39c12', isCurrency: false },
+    { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393', isCurrency: false },
+    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '0', icon: 'fa-arrow-circle-up', color: '#3498db', isCurrency: false },
+    { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f', isCurrency: false }
   ];
 
   const leaderboardTabs = [
@@ -174,14 +174,16 @@ function MemberDashboard() {
             <div className="income-summary-card" key={idx}>
               <div className="income-card-content">
                 <div className="income-card-label" title={stat.label}>{stat.label}</div>
-                <div className="income-card-value" title={formatAmount(stat.value)}>{formatAmount(stat.value)}</div>
+                <div className="income-card-value" title={stat.isCurrency === false ? stat.value : formatAmount(stat.value)}>
+                  {stat.isCurrency === false ? stat.value : formatAmount(stat.value)}
+                </div>
               </div>
               <div className="income-card-icon" style={{ color: stat.color, borderColor: `${stat.color}40`, backgroundColor: `${stat.color}15` }}>
                 <i className={`fas ${stat.icon}`}></i>
               </div>
               {stat.recentLabel && (
-                <div className="income-card-recent" title={`${stat.recentLabel} ${formatAmount(stat.recentValue)}`}>
-                  {`${stat.recentLabel} ${formatAmount(stat.recentValue)}`}
+                <div className="income-card-recent" title={`${stat.recentLabel} ${stat.isCurrency === false ? stat.recentValue : formatAmount(stat.recentValue)}`}>
+                  {`${stat.recentLabel} ${stat.isCurrency === false ? stat.recentValue : formatAmount(stat.recentValue)}`}
                 </div>
               )}
             </div>
