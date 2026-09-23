@@ -868,8 +868,9 @@
     font-size: 14px;
   }
   .income-card-label {
-    font-size: 12px;
+    font-size: 11px;
     max-width: 100%;
+    white-space: nowrap !important;
   }
   .income-card-value {
     font-size: 18px;
