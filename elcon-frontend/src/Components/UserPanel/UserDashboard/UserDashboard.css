@@ -289,10 +289,22 @@
   transform: translateY(-1px);
 }
 
-.user-dashboard1-member-dashboard-buy,
-.user-dashboard1-member-dashboard-join,
+.user-dashboard1-member-dashboard-buy {
+  background: linear-gradient(135deg, #374151, #111827) !important;
+  color: #ffffff !important;
+  border: 1px solid #4b5563 !important;
+}
+
+.user-dashboard1-member-dashboard-join {
+  background: linear-gradient(135deg, #1e3a8a, #172554) !important;
+  color: #ffffff !important;
+  border: 1px solid #3b82f6 !important;
+}
+
 .user-dashboard1-member-dashboard-share {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, #f3f4f6, #d1d5db) !important;
+  color: #111827 !important;
+  border: 1px solid #9ca3af !important;
 }
 
 .user-dashboard1-member-dashboard-stats-grid {
