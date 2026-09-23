@@ -126,7 +126,7 @@ const ProductDetails = () => {
     const productImages = getProductImages(product);
 
     if (productImages.length) {
-      return productImages.slice(0, 5);
+      return productImages;
     }
 
     return [
@@ -135,7 +135,7 @@ const ProductDetails = () => {
       fallbackThree,
       fallbackFour,
       fallbackFive
-    ].filter(Boolean).slice(0, 5);
+    ].filter(Boolean);
   }, [product]);
 
   const stockStatus = useMemo(() => {
