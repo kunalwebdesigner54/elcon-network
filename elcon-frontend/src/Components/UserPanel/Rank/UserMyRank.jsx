@@ -130,10 +130,27 @@ function UserMyRank() {
                     </div>
                      <div className="user-rank-info" style={{ display: 'flex', flexDirection: 'column' }}>
                        <span className="user-rank-item-earning" style={{ fontSize: '12px', color: '#00f2fe' }}>Target: {formatCurrency(rank.targetEarning)}</span>
-                       <span className="user-rank-item-name" style={{ fontWeight: 'bold', fontSize: '14px' }}>{rank.name}</span>
+                       <span className="user-rank-item-name" style={{ display: 'none' }}>{rank.name}</span>
                      </div>
                   </div>
-                  <div style={{ color: '#00f2fe', fontSize: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', color: '#00f2fe', fontSize: '12px' }}>
+                    <span className="user-rank-item-name-right" style={{ 
+                      fontWeight: 'bold', 
+                      fontSize: '14px', 
+                      marginRight: '10px', 
+                      textTransform: 'uppercase',
+                      color: rank.name === 'STARTER' ? '#b0c4de' :
+                             rank.name === 'ACHIEVER' ? '#87ceeb' :
+                             rank.name === 'STAR' ? '#f1c40f' :
+                             rank.name === 'BRONZE' ? '#cd7f32' :
+                             rank.name === 'SILVER' ? '#c0c0c0' :
+                             rank.name === 'GOLD' ? '#ffd700' :
+                             rank.name === 'PLATINUM' ? '#e5e4e2' :
+                             rank.name === 'EMERALD' ? '#50c878' :
+                             rank.name === 'DIAMOND' ? '#00e5ff' :
+                             rank.name === 'CROWN DIAMOND' ? '#d8a0f0' : '#ffffff',
+                      textShadow: '0 0 5px rgba(0,0,0,0.5)'
+                    }}>{rank.name}</span>
                     {expandedRank === index ? '▼' : '▶'}
                   </div>
                 </div>
