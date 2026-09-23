@@ -13,6 +13,7 @@ function MemberDashboard() {
   const [loadingTopEarners, setLoadingTopEarners] = useState(false);
   const [newsList, setNewsList] = useState([]);
   const [activePopup, setActivePopup] = useState(null);
+  const [showAllTopEarners, setShowAllTopEarners] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -333,7 +334,10 @@ function MemberDashboard() {
                       role="tab"
                       aria-selected={activeTab === tab.key}
                       className={`user-dashboard1-member-dashboard-tab-btn ${activeTab === tab.key ? 'user-dashboard1-member-dashboard-tab-btn-active' : ''}`}
-                      onClick={() => setActiveTab(tab.key)}
+                      onClick={() => {
+                        setActiveTab(tab.key);
+                        setShowAllTopEarners(false);
+                      }}
                     >
                       {tab.label}
                     </button>
@@ -355,7 +359,7 @@ function MemberDashboard() {
                       ) : loadingTopEarners ? (
                         <tr><td colSpan="4" style={{ textAlign: 'center', color: '#999' }}>Loading...</td></tr>
                       ) : topEarners.length > 0 ? (
-                        topEarners.map((row, idx) => (
+                        (showAllTopEarners ? topEarners : topEarners.slice(0, 5)).map((row, idx) => (
                           <tr key={`${idx}-${row.memberId}`}>
                             <td>{idx + 1}</td>
                             <td>{row.memberId || '---'}</td>
@@ -368,6 +372,25 @@ function MemberDashboard() {
                       )}
                     </tbody>
                   </table>
+                  {topEarners.length > 5 && activeTab !== 'rewards' && (
+                    <div style={{ textAlign: 'center', marginTop: '15px' }}>
+                      <button 
+                        onClick={() => setShowAllTopEarners(!showAllTopEarners)}
+                        style={{
+                          background: 'linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '8px 20px',
+                          borderRadius: '20px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          boxShadow: '0 4px 15px rgba(0, 114, 255, 0.3)'
+                        }}
+                      >
+                        {showAllTopEarners ? 'View Less' : 'View Full List'}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </section>
         )}
