@@ -1036,14 +1036,15 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 400;
   color: var(--text-muted);
 }
 
 .level-progress-header strong {
   color: var(--text-main);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .level-progress-bar-bg {
