@@ -289,22 +289,16 @@
   transform: translateY(-1px);
 }
 
-.user-dashboard1-member-dashboard-buy {
-  background: linear-gradient(135deg, #374151, #111827) !important;
-  color: #ffffff !important;
-  border: 1px solid #4b5563 !important;
-}
-
-.user-dashboard1-member-dashboard-join {
-  background: linear-gradient(135deg, #1e3a8a, #172554) !important;
-  color: #ffffff !important;
-  border: 1px solid #3b82f6 !important;
-}
-
+.user-dashboard1-member-dashboard-buy,
+.user-dashboard1-member-dashboard-join,
 .user-dashboard1-member-dashboard-share {
-  background: linear-gradient(135deg, #f3f4f6, #d1d5db) !important;
-  color: #111827 !important;
-  border: 1px solid #9ca3af !important;
+  background: linear-gradient(to bottom, #fdfdfd 0%, #d4d4d4 48%, #b5b5b5 50%, #d1d1d1 100%) !important;
+  border: 2px solid #ffffff !important;
+  color: #333333 !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 2px 3px rgba(255,255,255,0.9) !important;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.7) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.5px;
 }
 
 .user-dashboard1-member-dashboard-stats-grid {
