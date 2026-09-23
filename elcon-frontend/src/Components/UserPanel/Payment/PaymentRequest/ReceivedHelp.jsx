@@ -44,6 +44,7 @@ const ReceivedHelp = () => {
         name: donation.fromName || 'N/A',
         amount: donation.amount || 0,
         rank: donation.level || '-',
+        levelDepth: donation.levelDepth || 0,
         directs: donation.directs || 0,
         requestDate: donation.dateRaw ? new Date(donation.dateRaw).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : (donation.date || '-'),
         dateRaw: donation.dateRaw,
