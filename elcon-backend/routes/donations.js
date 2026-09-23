@@ -9,6 +9,7 @@ const {
   getAllDonations,
   getDonationStats,
   getMyStatus,
+  getExpectedPendingHelp,
 } = require('../controllers/donationsController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -22,6 +23,9 @@ router.get('/stats', getDonationStats);
 
 // GET /api/donations/my-status
 router.get('/my-status', getMyStatus);
+
+// GET /api/donations/pending-expected — expected pending help from downline
+router.get('/pending-expected', getExpectedPendingHelp);
 
 // GET /api/donations/my  — logged-in user's sent & received donations
 router.get('/my', getMyDonations);

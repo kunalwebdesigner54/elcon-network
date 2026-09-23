@@ -22,6 +22,10 @@ export const getMyDonations = () =>
 export const getMyStatus = () =>
   apiClient.get('/donations/my-status').then((r) => r.data);
 
+// Expected pending help from downline
+export const getExpectedPendingHelp = () =>
+  apiClient.get('/donations/pending-expected').then((r) => r.data);
+
 // Donation stats (admin or user scoped)
 export const getDonationStats = () =>
   apiClient.get('/donations/stats').then((r) => r.data);

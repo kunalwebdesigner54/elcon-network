@@ -35,6 +35,7 @@ const generateDonationId = () => {
 const { formatDate, formatDateOnly } = require('../utils/dateFormatter');
 
 const { getLogicalUplines, getActualCompletedLevel } = require('../services/uplineEngine');
+const { getTeamStats } = require('../services/teamService');
 
 /**
  * Uses the Central Upline Engine to find the single eligible receiver for the targetLevel donation.
@@ -58,6 +59,64 @@ const findEligibleUpline = async (startMemberId, targetLevel) => {
   }
   
   return { upline, skipped };
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/donations/pending-expected — what pending help is expected from downline
+// ─────────────────────────────────────────────────────────────────────────────
+exports.getExpectedPendingHelp = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId).select('memberId');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const teamStats = await getTeamStats(user.memberId);
+    const descendants = teamStats.descendants || [];
+    
+    const childrenMap = new Map();
+    descendants.forEach(d => {
+      const sp = String(d.sponsorId || '').trim();
+      if (!childrenMap.has(sp)) childrenMap.set(sp, []);
+      childrenMap.get(sp).push(d);
+    });
+
+    const DONATION_AMOUNTS = await getDynamicDonationAmounts();
+    let currentLevelNodes = childrenMap.get(user.memberId) || [];
+    let currentDepth = 1;
+    const expectedPendingHelpList = [];
+
+    while (currentLevelNodes.length > 0 && currentDepth <= 10) {
+      const nextLevelNodes = [];
+
+      currentLevelNodes.forEach(node => {
+        // If node hasn't upgraded to the current depth level
+        if ((node.unlockLevel || 0) < currentDepth) {
+          expectedPendingHelpList.push({
+            memberId: node.memberId,
+            name: node.name,
+            level: currentDepth,
+            amount: DONATION_AMOUNTS[currentDepth],
+            reason: 'Pending Upgrade'
+          });
+        }
+
+        const children = childrenMap.get(node.memberId) || [];
+        nextLevelNodes.push(...children);
+      });
+
+      currentLevelNodes = nextLevelNodes;
+      currentDepth++;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: expectedPendingHelpList
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching expected pending help', error: error.message });
+  }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

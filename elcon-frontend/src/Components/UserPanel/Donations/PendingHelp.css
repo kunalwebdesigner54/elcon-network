@@ -1,0 +1,96 @@
+.pending-help-container {
+  padding: 1.5rem;
+  background: #0f1525;
+  min-height: 100vh;
+  color: #fff;
+}
+
+.pending-help-header {
+  margin-bottom: 2rem;
+}
+
+.pending-help-header h2 {
+  font-size: 1.5rem;
+  color: #00e5ff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pending-help-table-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.pending-help-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.pending-help-table th,
+.pending-help-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pending-help-table th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  color: #a0aec0;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.pending-help-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.pending-help-table td {
+  font-size: 0.9rem;
+  color: #e2e8f0;
+}
+
+.amount-badge {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.level-badge {
+  background: rgba(255, 255, 255, 0.1);
+  color: #00e5ff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+.no-data {
+  padding: 3rem;
+  text-align: center;
+  color: #a0aec0;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .pending-help-container {
+    padding: 1rem;
+  }
+}

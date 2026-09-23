@@ -63,6 +63,7 @@ import UserMyTree from './Components/UserPanel/Team/MyTree/MyTree';
 import MyTeam from './Components/UserPanel/Team/MyTeam/MyTeam';
 import SelfPaymentHistory from './Components/UserPanel/Payment/SelfPaymentHistory/SelfPaymentHistory';
 import GivenHelp from './Components/UserPanel/Donations/GivenHelp';
+import PendingHelp from './Components/UserPanel/Donations/PendingHelp';
 import PaymentRequestHistory from './Components/UserPanel/Payment/PaymentRequestHistory/PaymentRequestHistory';
 import DepositHistory from './Components/UserPanel/Payment/DepositHistory/DepositHistory';
 import UserLevelIncome from './Components/UserPanel/Income/LevelIncome/LevelIncome';
@@ -254,6 +255,7 @@ function App() {
           <Route path="income-report/Daily-Payout-Report" element={<UserDailyPayoutReport />} />
 
           <Route path="donations/given-help" element={<GivenHelp />} />
+          <Route path="donations/pending-help" element={<PendingHelp />} />
           <Route path="donations/recieved-help" element={<ReceivedHelp />} />
           <Route path="donations/ReceivedHelp" element={<ReceivedHelp />} />
 

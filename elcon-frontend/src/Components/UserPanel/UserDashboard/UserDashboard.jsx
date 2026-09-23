@@ -98,7 +98,7 @@ function MemberDashboard() {
   const stats = [
     { label: 'Total Earning', value: memberInfo?.totalEarning || '---', recentLabel: 'Recent Total Income', recentValue: memberInfo?.yesterdayTotalIncome ?? memberInfo?.totalEarning ?? '---', icon: 'fa-wallet', color: '#00e5ff' },
     { label: 'Last Month Income', value: memberInfo?.lastMonthIncome || '---', icon: 'fa-calendar-check', color: '#2ecc71' },
-    { label: 'Pending Help', value: memberInfo?.pendingHelp || '---', icon: 'fa-clock', color: '#f39c12' },
+    { label: 'Pending Help', value: memberInfo?.pendingHelp || '---', icon: 'fa-clock', color: '#f39c12', linkTo: '/user/donations/pending-help' },
     { label: 'Given Help', value: memberInfo?.givenHelp || '---', recentLabel: 'Recent Given Help', recentValue: memberInfo?.yesterdayGivenHelp ?? memberInfo?.givenHelp ?? '---', icon: 'fa-hand-holding-heart', color: '#e84393' },
     { label: 'Received Help', value: memberInfo?.receivedHelp || '---', recentLabel: 'Recent Received Help', recentValue: memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? '---', icon: 'fa-hand-holding-usd', color: '#00cec9' },
     { label: 'Level Income', value: memberInfo?.levelIncome || '---', recentLabel: 'Recent Level Income', recentValue: memberInfo?.yesterdayLevelIncome ?? memberInfo?.levelIncome ?? '---', icon: 'fa-sitemap', color: '#9b59b6' },
@@ -172,24 +172,36 @@ function MemberDashboard() {
 
         {/* Income Summary Cards */}
         <div className="income-summary-grid">
-          {stats.map((stat, idx) => (
-            <div className="income-summary-card" key={idx}>
-              <div className="income-card-content">
-                <div className="income-card-label" title={stat.label}>{stat.label}</div>
-                <div className="income-card-value" title={stat.isCurrency === false ? stat.value : formatAmount(stat.value)}>
-                  {stat.isCurrency === false ? stat.value : formatAmount(stat.value)}
+          {stats.map((stat, idx) => {
+            const cardContent = (
+              <div className="income-summary-card" key={idx}>
+                <div className="income-card-content">
+                  <div className="income-card-label" title={stat.label}>{stat.label}</div>
+                  <div className="income-card-value" title={stat.isCurrency === false ? stat.value : formatAmount(stat.value)}>
+                    {stat.isCurrency === false ? stat.value : formatAmount(stat.value)}
+                  </div>
                 </div>
-              </div>
-              <div className="income-card-icon" style={{ color: stat.color, borderColor: `${stat.color}40`, backgroundColor: `${stat.color}15` }}>
-                <i className={`fas ${stat.icon}`}></i>
-              </div>
-              {stat.recentLabel && (
-                <div className="income-card-recent" title={`${stat.recentLabel} ${stat.isCurrency === false ? stat.recentValue : formatAmount(stat.recentValue)}`}>
-                  {`${stat.recentLabel} ${stat.isCurrency === false ? stat.recentValue : formatAmount(stat.recentValue)}`}
+                <div className="income-card-icon" style={{ color: stat.color, borderColor: `${stat.color}40`, backgroundColor: `${stat.color}15` }}>
+                  <i className={`fas ${stat.icon}`}></i>
                 </div>
-              )}
-            </div>
-          ))}
+                {stat.recentLabel && (
+                  <div className="income-card-recent" title={`${stat.recentLabel} ${stat.isCurrency === false ? stat.recentValue : formatAmount(stat.recentValue)}`}>
+                    {`${stat.recentLabel} ${stat.isCurrency === false ? stat.recentValue : formatAmount(stat.recentValue)}`}
+                  </div>
+                )}
+              </div>
+            );
+
+            return stat.linkTo ? (
+              <Link to={stat.linkTo} key={idx} style={{ textDecoration: 'none' }}>
+                {cardContent}
+              </Link>
+            ) : (
+              <React.Fragment key={idx}>
+                {cardContent}
+              </React.Fragment>
+            );
+          })}
         </div>
 
         {/* Shortcut Boxes Section */}
