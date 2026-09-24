@@ -25,6 +25,11 @@
 	font-size: 14px;
 }
 
+.user-login-card input::placeholder {
+	color: #777777;
+	opacity: 1; /* Firefox reset */
+}
+
 .user-login-card button {
 	border: 0;
 	background: #ff8900;
