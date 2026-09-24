@@ -164,22 +164,23 @@ export default function ListAll(){
             <div className="swal2-html-container" style={{ textAlign: 'left', marginTop: '15px' }}>
               <form onSubmit={handleEditSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '13px', marginBottom: '3px', color: '#94a3b8', fontWeight: '500' }}>Type</label>
+                  <select className="swal2-select" name="type" value={editForm.type} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '42px', fontSize: '14px', padding: '0 12px', boxSizing: 'border-box' }}>
+                    <option value="Select">Select</option>
+                    <option value="News and Event">News and Event</option>
+                    <option value="Popup">Popup</option>
+                  </select>
+                </div>
+
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <label style={{ fontSize: '13px', marginBottom: '3px', color: '#94a3b8', fontWeight: '500' }}>Type</label>
-                    <select className="swal2-select" name="type" value={editForm.type} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '36px', fontSize: '14px', padding: '0 10px', boxSizing: 'border-box' }}>
-                      <option value="Select">Select</option>
-                      <option value="News and Event">News and Event</option>
-                      <option value="Popup">Popup</option>
-                    </select>
-                  </div>
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <label style={{ fontSize: '13px', marginBottom: '3px', color: '#94a3b8', fontWeight: '500' }}>Publish Date</label>
-                    <input className="swal2-input" type="date" name="publishDate" value={editForm.publishDate} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '36px', fontSize: '14px', boxSizing: 'border-box' }} />
+                    <input className="swal2-input" type="date" name="publishDate" value={editForm.publishDate} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '40px', fontSize: '14px', boxSizing: 'border-box' }} />
                   </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <label style={{ fontSize: '13px', marginBottom: '3px', color: '#94a3b8', fontWeight: '500' }}>Upto Date</label>
-                    <input className="swal2-input" type="date" name="uptoDate" value={editForm.uptoDate} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '36px', fontSize: '14px', boxSizing: 'border-box' }} />
+                    <input className="swal2-input" type="date" name="uptoDate" value={editForm.uptoDate} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '40px', fontSize: '14px', boxSizing: 'border-box' }} />
                   </div>
                 </div>
 
@@ -203,7 +204,7 @@ export default function ListAll(){
 
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <label style={{ fontSize: '13px', marginBottom: '3px', color: '#94a3b8', fontWeight: '500' }}>Title</label>
-                  <input className="swal2-input" type="text" name="title" value={editForm.title} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '36px', fontSize: '14px', boxSizing: 'border-box' }} />
+                  <input className="swal2-input" type="text" name="title" value={editForm.title} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '40px', fontSize: '14px', boxSizing: 'border-box' }} />
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
