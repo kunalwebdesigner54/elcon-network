@@ -200,7 +200,7 @@ function UserMyRank() {
           </div>
 
           <div className="user-rank-next-card">
-            <h3 className="user-rank-card-title">TARGET INCOME</h3>
+            <h3 className="user-rank-card-title">NEXT RANK</h3>
             <div className="user-rank-next-badge">
               {nextRank.name}
             </div>

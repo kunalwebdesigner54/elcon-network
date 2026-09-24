@@ -420,6 +420,7 @@
 
   .user-rank-progression-section {
     max-height: 400px;
+    min-height: auto;
   }
 
   .user-rank-progression-list {
