@@ -51,11 +51,17 @@ export default function ListAll(){
   };
 
   const handleTogglePopup = async (id, currentValue) => {
+    const newValue = !currentValue;
+    // Optimistic UI update
+    setItems(prevItems => prevItems.map(item => item.id === id ? { ...item, showAsPopup: newValue } : item));
+    
     try {
-      await updateNewsPopup(id, { showAsPopup: !currentValue });
-      fetchItems();
+      await updateNewsPopup(id, { showAsPopup: newValue });
       toast.success('Updated successfully');
+      // No need to fetchItems immediately, it will just re-render unnecessarily, but we can do it in background if needed
     } catch (error) {
+      // Revert on error
+      setItems(prevItems => prevItems.map(item => item.id === id ? { ...item, showAsPopup: currentValue } : item));
       toast.error(error.message || "Failed to update item");
     }
   };
