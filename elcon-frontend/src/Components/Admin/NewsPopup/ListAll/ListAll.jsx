@@ -6,9 +6,9 @@ import { getNewsPopupList, deleteNewsPopup, updateNewsPopup } from '../../../../
 
 import { Link } from 'react-router-dom';
 
-const RowActions = ({ id, onDelete }) => (
+const RowActions = ({ id, onEdit, onDelete }) => (
   <div className="np-actions">
-    <Link to={`/admin/news-popup/edit/${id}`} className="np-btn np-edit">✎</Link>
+    <button className="np-btn np-edit" onClick={() => onEdit(id)}>✎</button>
     <button className="np-btn np-delete" onClick={() => onDelete(id)}>🗑</button>
   </div>
 )
@@ -16,6 +16,9 @@ const RowActions = ({ id, onDelete }) => (
 export default function ListAll(){
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const fetchItems = async () => {
     try {
@@ -47,6 +50,46 @@ export default function ListAll(){
       fetchItems();
     } catch (error) {
       Swal.fire("Error", error.message || "Failed to delete item", "error");
+    }
+  };
+
+  const handleEditClick = (id) => {
+    const item = items.find(i => i.id === id || i._id === id);
+    if (item) {
+      setEditForm({
+        type: item.type || 'News and Event',
+        publishDate: item.publishDate ? item.publishDate.split('T')[0] : '',
+        uptoDate: item.uptoDate ? item.uptoDate.split('T')[0] : '',
+        status: item.status || 'Published',
+        displayOn: item.displayOn || 'Member panel',
+        title: item.title || '',
+        description: item.description || ''
+      });
+      setEditingId(id);
+    }
+  };
+
+  const handleEditChange = (event) => {
+    const { name, value } = event.target;
+    setEditForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditSubmit = async (event) => {
+    event.preventDefault();
+    if (!editForm.title || !editForm.description) {
+      return Swal.fire("Error", "Title and Description are required", "error");
+    }
+    setIsUpdating(true);
+    try {
+      await updateNewsPopup(editingId, editForm);
+      Swal.fire("Success", "Successfully updated!", "success");
+      setEditingId(null);
+      setEditForm(null);
+      fetchItems();
+    } catch (error) {
+      Swal.fire("Error", error.message || "Failed to save.", "error");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -107,12 +150,71 @@ export default function ListAll(){
                 <td data-label="Publish Date">{item.publishDate}</td>
                 <td data-label="Upto Date">{item.uptoDate}</td>
                 <td data-label="Status"><span className="np-badge np-published">{item.status}</span></td>
-                <td data-label="Action"><RowActions id={item.id} onDelete={handleDelete}/></td>
+                <td data-label="Action"><RowActions id={item.id || item._id} onEdit={handleEditClick} onDelete={handleDelete}/></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {editingId && editForm && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto', position: 'relative' }}>
+            <button onClick={() => setEditingId(null)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', fontSize: '20px', cursor: 'pointer' }}>&times;</button>
+            <h3 style={{ margin: '0 0 20px 0', fontSize: '20px', fontWeight: 'bold' }}>Edit Event</h3>
+            
+            <form className="np-form" onSubmit={handleEditSubmit}>
+              <div className="np-row">
+                <label>Type</label>
+                <select className="select-input" name="type" value={editForm.type} onChange={handleEditChange}><option>Select</option><option>News and Event</option><option>Popup</option></select>
+              </div>
+
+              <div className="np-row two">
+                <div>
+                  <label>Publish Date</label>
+                  <input className="text-input" type="date" name="publishDate" value={editForm.publishDate} onChange={handleEditChange} />
+                </div>
+                <div>
+                  <label>Upto Date</label>
+                  <input className="text-input" type="date" name="uptoDate" value={editForm.uptoDate} onChange={handleEditChange} />
+                </div>
+              </div>
+
+              <div className="np-row">
+                <label>Publish Status</label>
+                <div className="np-radio">
+                  <label><input type="radio" name="status" value="Published" checked={editForm.status === 'Published'} onChange={handleEditChange}/> Publish Now</label>
+                  <label><input type="radio" name="status" value="Draft" checked={editForm.status === 'Draft'} onChange={handleEditChange}/> Save as Draft</label>
+                </div>
+              </div>
+
+              <div className="np-row">
+                <label>Display on</label>
+                <div className="np-radio">
+                  <label><input type="radio" name="displayOn" value="Member panel" checked={editForm.displayOn === 'Member panel'} onChange={handleEditChange}/> Member panel</label>
+                  <label><input type="radio" name="displayOn" value="Website" checked={editForm.displayOn === 'Website'} onChange={handleEditChange}/> Website</label>
+                  <label><input type="radio" name="displayOn" value="All" checked={editForm.displayOn === 'All'} onChange={handleEditChange}/> All</label>
+                </div>
+              </div>
+
+              <div className="np-row">
+                <label>Title</label>
+                <input className="text-input" type="text" name="title" value={editForm.title} onChange={handleEditChange} />
+              </div>
+
+              <div className="np-row">
+                <label>Description</label>
+                <textarea className="text-input" rows="4" name="description" value={editForm.description} onChange={handleEditChange}/>
+              </div>
+
+              <div className="btn-row" style={{ marginTop: '20px' }}>
+                <button type="button" className="btn-danger" onClick={() => setEditingId(null)}>Cancel</button>
+                <button type="submit" className="btn-primary" disabled={isUpdating}>{isUpdating ? 'Saving...' : 'Save'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
