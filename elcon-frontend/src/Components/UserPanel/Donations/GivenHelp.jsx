@@ -56,10 +56,7 @@ const GivenHelp = () => {
     const load = async () => {
       try {
         setLoading(true);
-        
-        // Always fetch donation history, let it run in background
-        fetchDonationHistory();
-
+        // History is deferred to after loading finishes
         // Fire independent requests in parallel
         const [authRes, statusRes, planRes] = await Promise.allSettled([
           apiClient.get("/auth/me"),
@@ -111,6 +108,10 @@ const GivenHelp = () => {
         setError(err?.response?.data?.message || "Failed to load donation details.");
       } finally {
         setLoading(false);
+        // Defer history fetching to run after main UI renders, reducing DB/network congestion
+        setTimeout(() => {
+          fetchDonationHistory();
+        }, 500);
       }
     };
     load();
