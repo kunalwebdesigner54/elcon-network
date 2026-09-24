@@ -416,6 +416,7 @@ function App() {
           <Route path="admin/setting/terms-and-conditions" element={<AdminTermsAndConditions />} />
 
           <Route path="news-popup/add-new" element={<NewsAdd />} />
+          <Route path="news-popup/edit/:id" element={<NewsAdd />} />
           <Route path="news-popup/list-all" element={<NewsList />} />
 
           <Route path="awards-rewards/setting" element={<AwardsRewardsSetting />} />

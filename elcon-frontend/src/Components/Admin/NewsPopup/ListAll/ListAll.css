@@ -71,13 +71,15 @@
   padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 .np-edit {
   background: var(--primary);
   color: #fff;
 }
 .np-delete {
-  background: var(--accent);
+  background: #ff4d4f;
   color: #fff;
 }
 

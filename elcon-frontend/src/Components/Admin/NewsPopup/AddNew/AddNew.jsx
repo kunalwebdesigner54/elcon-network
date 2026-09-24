@@ -1,13 +1,42 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './AddNew.css';
-import { createNewsPopup } from '../../../../api/managementService';
+import { createNewsPopup, getNewsPopupList, updateNewsPopup } from '../../../../api/managementService';
 
 export default function AddNew(){
+  const { id } = useParams();
+  const isEditMode = !!id;
   const navigate = useNavigate();
   const [form, setForm] = useState({ type: 'News and Event', publishDate: '', uptoDate: '', status: 'Published', displayOn: 'Member panel', title: '', description: '' });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchItem = async () => {
+        try {
+          const res = await getNewsPopupList();
+          if (res.items) {
+            const item = res.items.find((i) => i.id === id || i._id === id);
+            if (item) {
+              setForm({
+                type: item.type || 'News and Event',
+                publishDate: item.publishDate ? item.publishDate.split('T')[0] : '',
+                uptoDate: item.uptoDate ? item.uptoDate.split('T')[0] : '',
+                status: item.status || 'Published',
+                displayOn: item.displayOn || 'Member panel',
+                title: item.title || '',
+                description: item.description || ''
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch item", error);
+        }
+      };
+      fetchItem();
+    }
+  }, [id, isEditMode]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -22,11 +51,16 @@ export default function AddNew(){
     
     setLoading(true);
     try {
-      await createNewsPopup(form);
-      await Swal.fire("Success", "Successfully added!", "success");
+      if (isEditMode) {
+        await updateNewsPopup(id, form);
+        await Swal.fire("Success", "Successfully updated!", "success");
+      } else {
+        await createNewsPopup(form);
+        await Swal.fire("Success", "Successfully added!", "success");
+      }
       navigate('/admin/news-popup/list-all');
     } catch (error) {
-      Swal.fire("Error", error.message || "Failed to add.", "error");
+      Swal.fire("Error", error.message || "Failed to save.", "error");
     } finally {
       setLoading(false);
     }
@@ -34,7 +68,7 @@ export default function AddNew(){
 
   return (
     <div className="np-add container">
-      <h2 className="np-title">Events - Add</h2>
+      <h2 className="np-title">{isEditMode ? 'Events - Edit' : 'Events - Add'}</h2>
       <div className="np-form-wrap">
         <form className="np-form" onSubmit={handleSubmit}>
           <div className="np-row">

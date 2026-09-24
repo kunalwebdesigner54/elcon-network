@@ -4,9 +4,11 @@ import { toast } from 'react-toastify';
 import './ListAll.css';
 import { getNewsPopupList, deleteNewsPopup, updateNewsPopup } from '../../../../api/managementService';
 
+import { Link } from 'react-router-dom';
+
 const RowActions = ({ id, onDelete }) => (
   <div className="np-actions">
-    <button className="np-btn np-edit">✎</button>
+    <Link to={`/admin/news-popup/edit/${id}`} className="np-btn np-edit">✎</Link>
     <button className="np-btn np-delete" onClick={() => onDelete(id)}>🗑</button>
   </div>
 )
@@ -34,8 +36,6 @@ export default function ListAll(){
       text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
       confirmButtonText: 'Yes, delete it!'
     });
     
