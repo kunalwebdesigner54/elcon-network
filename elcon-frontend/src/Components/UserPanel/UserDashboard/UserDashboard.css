@@ -992,7 +992,36 @@
 
 @media (max-width: 480px) {
   .custom-boxes-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .custom-box-new {
+    padding: 12px 10px 24px;
+    gap: 6px;
+  }
+  .custom-box-value {
+    font-size: 15px;
+  }
+  .custom-box-label {
+    font-size: 9px;
+  }
+  .custom-box-indicator {
+    width: 10px;
+    height: 10px;
+  }
+  .custom-box-left {
+    gap: 6px;
+  }
+  .custom-box-right {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+  }
+  .custom-box-recent {
+    font-size: 9px;
+    right: 8px;
+    bottom: 6px;
+    max-width: calc(100% - 40px);
   }
   .small-summary-cards-grid {
     grid-template-columns: 1fr;
