@@ -1,15 +1,28 @@
 .public-root {
 	position: relative;
 	overflow-x: clip;
-	background: var(--bg-darkest, #FFFFFF);
-	color: var(--text-main, #1F2937);
+	
+	/* Light Theme Overrides for Public Pages Only */
+	--bg-darkest: #FFFFFF;
+	--bg-dark: #F3F4F6;
+	--bg-card: #FFFFFF;
+	--bg-card-hover: #F9FAFB;
+	--glass-border: rgba(0, 0, 0, 0.1);
+	--glass-border-light: rgba(0, 0, 0, 0.15);
+	--glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+	--text-main: #1F2937;
+	--text-muted: #6B7280; 
+	--text-dark: #111827;
+
+	background: var(--bg-darkest);
+	color: var(--text-main);
 	--public-primary: #0ea5e9;
 	--public-primary-dark: #0284c7;
 	--public-secondary: #00D4AA;
 	--public-accent: #FF6B6B;
-	--public-text: var(--text-main, #1F2937);
+	--public-text: var(--text-main);
 	--public-text-light: #1F2937;
-	--public-muted: var(--text-muted, #6B7280);
+	--public-muted: var(--text-muted);
 	--public-bg: transparent;
 	--card-bg: #FFFFFF;
 	--public-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
