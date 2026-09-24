@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import './ListAll.css';
-import { getNewsPopupList, deleteNewsPopup } from '../../../../api/managementService';
+import { getNewsPopupList, deleteNewsPopup, updateNewsPopup } from '../../../../api/managementService';
 
 const RowActions = ({ id, onDelete }) => (
   <div className="np-actions">
@@ -49,6 +49,16 @@ export default function ListAll(){
     }
   };
 
+  const handleTogglePopup = async (id, currentValue) => {
+    try {
+      await updateNewsPopup(id, { showAsPopup: !currentValue });
+      fetchItems();
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Updated successfully', showConfirmButton: false, timer: 1500 });
+    } catch (error) {
+      Swal.fire("Error", error.message || "Failed to update item", "error");
+    }
+  };
+
   return (
     <div className="np-page container">
       <h2 className="np-title">News & Popup List</h2>
@@ -66,6 +76,7 @@ export default function ListAll(){
               <th>Title</th>
               <th>Type</th>
               <th>Display on</th>
+              <th>Show as Popup</th>
               <th>Publish Date</th>
               <th>Upto Date</th>
               <th>Status</th>
@@ -79,6 +90,13 @@ export default function ListAll(){
                 <td data-label="Title">{item.title}</td>
                 <td data-label="Type">{item.type}</td>
                 <td data-label="Display on">{item.displayOn}</td>
+                <td data-label="Show as Popup">
+                  <input 
+                    type="checkbox" 
+                    checked={item.showAsPopup || false} 
+                    onChange={() => handleTogglePopup(item.id, item.showAsPopup)}
+                  />
+                </td>
                 <td data-label="Publish Date">{item.publishDate}</td>
                 <td data-label="Upto Date">{item.uptoDate}</td>
                 <td data-label="Status"><span className="np-badge np-published">{item.status}</span></td>

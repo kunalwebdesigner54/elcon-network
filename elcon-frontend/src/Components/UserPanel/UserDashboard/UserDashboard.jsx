@@ -46,8 +46,7 @@ function MemberDashboard() {
           );
           
           setNewsList(published.filter(i => i.type === 'News and Event' || i.type === 'News'));
-          
-          const popups = published.filter(i => i.type === 'Popup' || i.type === 'News and Event');
+          const popups = published.filter(i => i.showAsPopup === true);
           if (popups.length > 0) {
             // Show the most recent item as popup, only once per session
             const latestPopup = popups[0];

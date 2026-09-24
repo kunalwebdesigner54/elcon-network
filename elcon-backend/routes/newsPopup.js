@@ -4,11 +4,9 @@ const { getNewsPopupList, createNewsPopup, updateNewsPopup, deleteNewsPopup } = 
 
 const router = express.Router();
 
-router.use(protect);
-
-router.get('/', authorize('admin'), getNewsPopupList);
-router.post('/', authorize('admin'), createNewsPopup);
-router.put('/:newsId', authorize('admin'), updateNewsPopup);
-router.delete('/:newsId', authorize('admin'), deleteNewsPopup);
+router.get('/', getNewsPopupList);
+router.post('/', protect, authorize('admin'), createNewsPopup);
+router.put('/:newsId', protect, authorize('admin'), updateNewsPopup);
+router.delete('/:newsId', protect, authorize('admin'), deleteNewsPopup);
 
 module.exports = router;

@@ -98,7 +98,7 @@ function PublicLayout() {
             (item.displayOn === 'Website' || item.displayOn === 'All')
           );
           
-          const popups = published.filter(i => i.type === 'Popup' || i.type === 'News and Event');
+          const popups = published.filter(i => i.showAsPopup === true);
           if (popups.length > 0) {
             const latestPopup = popups[0];
             const popupKey = `seen_public_popup_${latestPopup._id || latestPopup.id}`;
