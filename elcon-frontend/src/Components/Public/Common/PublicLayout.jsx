@@ -93,10 +93,7 @@ function PublicLayout() {
       try {
         const response = await getNewsPopupList();
         if (mounted && response && response.items) {
-          const published = response.items.filter(item => 
-            item.status === 'Published' && 
-            (item.displayOn === 'Website' || item.displayOn === 'All')
-          );
+          const published = response.items.filter(item => item.status === 'Published');
           
           const popups = published.filter(i => i.showAsPopup === true);
           if (popups.length > 0) {

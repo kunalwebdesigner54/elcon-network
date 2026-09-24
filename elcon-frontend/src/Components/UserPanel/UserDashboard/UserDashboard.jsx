@@ -39,13 +39,16 @@ function MemberDashboard() {
       try {
         const response = await getNewsPopupList();
         if (mounted && response && response.items) {
-          // Filter out drafts and items not meant for Member panel
-          const published = response.items.filter(item => 
-            item.status === 'Published' && 
-            (item.displayOn === 'Member panel' || item.displayOn === 'All')
-          );
+          const published = response.items.filter(item => item.status === 'Published');
           
-          setNewsList(published.filter(i => i.type === 'News and Event' || i.type === 'News'));
+          // Only show news that are meant for Member panel
+          const memberNews = published.filter(item => 
+            (item.displayOn === 'Member panel' || item.displayOn === 'All') &&
+            (item.type === 'News and Event' || item.type === 'News')
+          );
+          setNewsList(memberNews);
+
+          // Popups show everywhere if showAsPopup is true
           const popups = published.filter(i => i.showAsPopup === true);
           if (popups.length > 0) {
             // Show the most recent item as popup on every refresh using SweetAlert2
