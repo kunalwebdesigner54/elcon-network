@@ -362,3 +362,44 @@
     display: none;
   }
 }
+
+/* Distinct Colors for the 3 Step Cards */
+
+/* Card 1: Register */
+.home-steps-row .step-aura:nth-child(1) .step-card {
+  background: #eff6ff; /* Light Blue */
+  border-bottom: 4px solid #3b82f6;
+}
+.home-steps-row .step-aura:nth-child(1) .step-icon-container {
+  background: #3b82f6;
+}
+.home-steps-row .step-aura:nth-child(1) .step-card-title,
+.home-steps-row .step-aura:nth-child(1) .step-desc {
+  color: #1e3a8a;
+}
+
+/* Card 2: Invite Friends */
+.home-steps-row .step-aura:nth-child(2) .step-card {
+  background: #fffbeb; /* Light Amber */
+  border-bottom: 4px solid #f59e0b;
+}
+.home-steps-row .step-aura:nth-child(2) .step-icon-container {
+  background: #f59e0b;
+}
+.home-steps-row .step-aura:nth-child(2) .step-card-title,
+.home-steps-row .step-aura:nth-child(2) .step-desc {
+  color: #78350f;
+}
+
+/* Card 3: Success */
+.home-steps-row .step-aura:nth-child(3) .step-card {
+  background: #f0fdf4; /* Light Green */
+  border-bottom: 4px solid #22c55e;
+}
+.home-steps-row .step-aura:nth-child(3) .step-icon-container {
+  background: #22c55e;
+}
+.home-steps-row .step-aura:nth-child(3) .step-card-title,
+.home-steps-row .step-aura:nth-child(3) .step-desc {
+  color: #14532d;
+}

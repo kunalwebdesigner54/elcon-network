@@ -90,7 +90,7 @@ function Home() {
                   </div>
                   <h2 className="step-card-title">Register</h2>
                 </div>
-                <p className="step-desc" style={{ color: '#d1d5db', fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
+                <p className="step-desc" style={{ fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
                   Choose your favorite plan and join with profit steps.
                 </p>
               </div>
@@ -111,7 +111,7 @@ function Home() {
                   </div>
                   <h2 className="step-card-title">Invite Friends</h2>
                 </div>
-                <p className="step-desc" style={{ color: '#d1d5db', fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
+                <p className="step-desc" style={{ fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
                   Expand your plan and earn money with your friends.
                 </p>
               </div>
@@ -131,7 +131,7 @@ function Home() {
                   </div>
                   <h2 className="step-card-title">Success</h2>
                 </div>
-                <p className="step-desc" style={{ color: '#d1d5db', fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
+                <p className="step-desc" style={{ fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
                   Get rewards with successful milestone achievement.
                 </p>
               </div>
