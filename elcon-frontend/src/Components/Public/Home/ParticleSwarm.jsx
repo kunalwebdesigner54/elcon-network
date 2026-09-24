@@ -108,14 +108,14 @@ export default function ParticleSwarm() {
           context.beginPath();
           context.moveTo(a.x, a.y);
           context.lineTo(b.x, b.y);
-          context.strokeStyle = `rgba(216, 180, 254, ${opacity})`;
+          context.strokeStyle = `rgba(14, 165, 233, ${opacity * 0.5})`;
           context.lineWidth = 1;
           context.stroke();
         }
       }
 
       particles.forEach((particle, index) => {
-        const color = index % 3 === 0 ? '147, 197, 253' : '255, 255, 255';
+        const color = index % 3 === 0 ? '14, 165, 233' : '31, 41, 55';
         context.beginPath();
         context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
         context.fillStyle = `rgba(${color}, ${particle.opacity})`;

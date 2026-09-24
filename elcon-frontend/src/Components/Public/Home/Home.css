@@ -29,7 +29,7 @@
 }
 
 .home-banner-content {
-  color: #fff;
+  color: var(--public-text);
 }
 
 .home-banner-img-wrap {
