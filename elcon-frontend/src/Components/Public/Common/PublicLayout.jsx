@@ -78,6 +78,7 @@ function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activePopup, setActivePopup] = useState(null);
+  const [isPopupClosing, setIsPopupClosing] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,12 +101,7 @@ function PublicLayout() {
           
           const popups = published.filter(i => i.showAsPopup === true);
           if (popups.length > 0) {
-            const latestPopup = popups[0];
-            const popupKey = `seen_public_popup_${latestPopup._id || latestPopup.id}`;
-            if (!sessionStorage.getItem(popupKey)) {
-              setActivePopup(latestPopup);
-              sessionStorage.setItem(popupKey, 'true');
-            }
+            setActivePopup(popups[0]);
           }
         }
       } catch (error) {
@@ -314,10 +310,31 @@ function PublicLayout() {
       <div className="public-copyright">Copyright © 2026 Elcon Network. All Rights Reserved.</div>
       
       {activePopup && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ background: '#ffffff', border: '1px solid #e1e1e1', borderRadius: '12px', padding: '24px', maxWidth: '500px', width: '90%', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+        <div style={{ 
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+          backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', 
+          justifyContent: 'center', alignItems: 'center',
+          animation: isPopupClosing ? 'fadeOut 0.3s forwards' : 'fadeIn 0.3s forwards'
+        }}>
+          <style>
+            {`
+              @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+              @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+              @keyframes scaleDown { from { transform: scale(1); opacity: 1; } to { transform: scale(0.8); opacity: 0; } }
+            `}
+          </style>
+          <div style={{ 
+            background: '#ffffff', border: '1px solid #e1e1e1', borderRadius: '12px', 
+            padding: '24px', maxWidth: '500px', width: '90%', position: 'relative', 
+            boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+            animation: isPopupClosing ? 'scaleDown 0.3s forwards' : 'scaleUp 0.3s forwards'
+          }}>
             <button 
-              onClick={() => setActivePopup(null)} 
+              onClick={() => {
+                setIsPopupClosing(true);
+                setTimeout(() => { setActivePopup(null); setIsPopupClosing(false); }, 300);
+              }} 
               style={{ position: 'absolute', top: '10px', right: '15px', background: 'transparent', border: 'none', color: '#111', fontSize: '24px', cursor: 'pointer' }}
             >&times;</button>
             <h3 style={{ color: '#111', marginTop: 0, marginBottom: '16px', fontSize: '20px' }}>{activePopup.title}</h3>
