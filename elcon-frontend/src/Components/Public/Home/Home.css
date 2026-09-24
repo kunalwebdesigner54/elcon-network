@@ -195,7 +195,7 @@
   object-fit: cover;
   border-radius: 8px;
   filter: none;
-  box-shadow: var(--public-shadow);
+  box-shadow: none;
 }
 
 .home-feature-text h2 {

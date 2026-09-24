@@ -36,6 +36,11 @@
 	font-family: 'Poppins', sans-serif;
 }
 
+.public-root img {
+	box-shadow: none !important;
+	filter: none !important;
+}
+
 .public-container {
 	width: min(1240px, calc(100% - 32px));
 	margin: 0 auto;
