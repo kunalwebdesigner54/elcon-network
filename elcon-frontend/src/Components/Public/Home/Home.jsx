@@ -4,7 +4,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './Home.css';
 import ParticleSwarm from './ParticleSwarm';
-import GridGallery from './GridGallery';
+
 import Services from './Services';
 import ProductsSection from './ProductsSection';
 import LatestNews from './LatestNews';
@@ -159,18 +159,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Gallery Section */}
-      <section className="home-gallery-section">
-        <div className="public-container">
-          <div className="home-gallery-header">
-            <h2>Gallery</h2>
-            <p>A glimpse into our successful events and growing community.</p>
-          </div>
-        </div>
-        <div style={{ marginTop: '50px' }}>
-          <GridGallery />
-        </div>
-      </section>
 
       {/* Services Section */}
       <Services />
