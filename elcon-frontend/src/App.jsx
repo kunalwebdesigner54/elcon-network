@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import RepurchaseProductsAdmin from './Components/Admin/ProductsPackage/RepurchaseProducts/RepurchaseProductsAdmin';
 import PublicProducts from './Components/Public/Products/PublicProducts';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
@@ -207,6 +209,7 @@ function App() {
   }, []);
   return (
     <BrowserRouter>
+      <ToastContainer />
       <Routes>
         <Route path="/login" element={<UserLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />

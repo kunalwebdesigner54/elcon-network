@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 import './ListAll.css';
 import { getNewsPopupList, deleteNewsPopup, updateNewsPopup } from '../../../../api/managementService';
 
@@ -53,9 +54,9 @@ export default function ListAll(){
     try {
       await updateNewsPopup(id, { showAsPopup: !currentValue });
       fetchItems();
-      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Updated successfully', showConfirmButton: false, timer: 1500 });
+      toast.success('Updated successfully');
     } catch (error) {
-      Swal.fire("Error", error.message || "Failed to update item", "error");
+      toast.error(error.message || "Failed to update item");
     }
   };
 
@@ -73,10 +74,10 @@ export default function ListAll(){
           <thead>
             <tr>
               <th>#</th>
+              <th>Show as Popup</th>
               <th>Title</th>
               <th>Type</th>
               <th>Display on</th>
-              <th>Show as Popup</th>
               <th>Publish Date</th>
               <th>Upto Date</th>
               <th>Status</th>
@@ -87,9 +88,6 @@ export default function ListAll(){
             {items.map((item, index) => (
               <tr key={item.id}>
                 <td data-label="#">{index + 1}</td>
-                <td data-label="Title">{item.title}</td>
-                <td data-label="Type">{item.type}</td>
-                <td data-label="Display on">{item.displayOn}</td>
                 <td data-label="Show as Popup">
                   <input 
                     type="checkbox" 
@@ -97,6 +95,9 @@ export default function ListAll(){
                     onChange={() => handleTogglePopup(item.id, item.showAsPopup)}
                   />
                 </td>
+                <td data-label="Title">{item.title}</td>
+                <td data-label="Type">{item.type}</td>
+                <td data-label="Display on">{item.displayOn}</td>
                 <td data-label="Publish Date">{item.publishDate}</td>
                 <td data-label="Upto Date">{item.uptoDate}</td>
                 <td data-label="Status"><span className="np-badge np-published">{item.status}</span></td>
