@@ -29,7 +29,7 @@ function PublicLayout() {
     <div className={`public-root ${isMenuOpen ? 'public-menu-open' : 'public-menu-closed'}`}>
 
       <header className={`public-header ${scrolled ? 'scrolled' : ''}`}>
-        <div className="public-container public-header-inner">
+        <div className="public-header-inner">
           <NavLink to="/" className="public-logo-wrap">
             <div className="public-logo-mark">ELCON</div>
             <div className="public-logo-text">Elcon Network</div>
