@@ -76,23 +76,17 @@ const getLogicalUplines = async (startMemberId, targetLogicalLevel, planType, st
     } else if (isAdmin) {
       isEligible = true; // Admin gets it unconditionally
     } else {
-      // 1. Calculate strictly active direct count
-      let activeDirectsCount = await User.countDocuments({
-        sponsorId: currentMemberId,
-        accountStatus: 'ACTIVE'
-      });
-      
       // If the candidate is the direct sponsor of the person making the payment, 
       // and the person making the payment is NOT active yet (e.g., paying Level 1),
       // we must count them as 1 direct towards this qualification!
-      if (startUser.sponsorId === currentMemberId && startUser.accountStatus !== 'ACTIVE') {
-        activeDirectsCount += 1;
-      }
       
       const requiredDirects = currentLogicalLevel; // Direct requirement always matches the logical slot level being checked
       
       if (planType === 'LEVEL_INCOME') {
         // Level Income logic
+        let activeDirectsCount = await User.countDocuments({ sponsorId: currentMemberId, accountStatus: 'ACTIVE' });
+        if (startUser.sponsorId === currentMemberId && startUser.accountStatus !== 'ACTIVE') activeDirectsCount += 1;
+        
         if (currentLogicalLevel === 1) {
           // Sponsor auto-qualifies for level 1 (even though payout is 0, it consumes the slot)
           isEligible = true;
@@ -105,20 +99,21 @@ const getLogicalUplines = async (startMemberId, targetLogicalLevel, planType, st
         }
       } else if (planType === 'DONATION') {
         // Donation Plan logic:
-        // 1st & 2nd Donation -> Same Level Check
-        // 3rd Donation Onwards -> Same Level Check + Next Level Completion Check (capped at Level 10)
+        // Run all DB checks concurrently to optimize traversal speed
+        const [activeDirectsCountBase, donationsReceivedAtThisLevel, currentSelfUpgrade] = await Promise.all([
+          User.countDocuments({ sponsorId: currentMemberId, accountStatus: 'ACTIVE' }),
+          Donation.countDocuments({ toMemberId: currentMemberId, level: currentLogicalLevel, status: { $ne: 'REJECTED' } }),
+          getActualCompletedLevel(currentMemberId)
+        ]);
         
-        const donationsReceivedAtThisLevel = await Donation.countDocuments({
-          toMemberId: currentMemberId,
-          level: currentLogicalLevel,
-          status: { $ne: 'REJECTED' } // IMPORTANT: Count PENDING, WAITING, APPROVED, COMPLETED to prevent bypass bugs
-        });
-
+        let activeDirectsCount = activeDirectsCountBase;
+        if (startUser.sponsorId === currentMemberId && startUser.accountStatus !== 'ACTIVE') {
+          activeDirectsCount += 1;
+        }
+        
         const requiredSelfUpgrade = (donationsReceivedAtThisLevel >= 2) 
           ? Math.min(currentLogicalLevel + 1, 10) 
           : currentLogicalLevel;
-
-        const currentSelfUpgrade = await getActualCompletedLevel(currentMemberId);
         
         if (activeDirectsCount >= requiredDirects && currentSelfUpgrade >= requiredSelfUpgrade) {
           isEligible = true;
