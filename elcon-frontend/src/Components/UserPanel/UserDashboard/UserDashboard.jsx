@@ -100,18 +100,18 @@ function MemberDashboard() {
     { label: 'Total Earning', value: memberInfo?.totalEarning || '---', recentLabel: 'Recent Total Income', recentValue: memberInfo?.yesterdayTotalIncome ?? memberInfo?.totalEarning ?? '---', icon: 'fa-wallet', color: '#00e5ff' },
     { label: 'Last Month Income', value: memberInfo?.lastMonthIncome || '---', icon: 'fa-calendar-check', color: '#2ecc71' },
     { label: 'Pending Help', value: memberInfo?.pendingHelp || '---', icon: 'fa-clock', color: '#f39c12', linkTo: '/user/donations/pending-help' },
-    { label: 'Given Help', value: memberInfo?.givenHelp || '---', recentLabel: 'Recent Given Help', recentValue: memberInfo?.yesterdayGivenHelp ?? memberInfo?.givenHelp ?? '---', icon: 'fa-hand-holding-heart', color: '#e84393' },
-    { label: 'Received Help', value: memberInfo?.receivedHelp || '---', recentLabel: 'Recent Received Help', recentValue: memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? '---', icon: 'fa-hand-holding-usd', color: '#00cec9' },
-    { label: 'Level Income', value: memberInfo?.levelIncome || '---', recentLabel: 'Recent Level Income', recentValue: memberInfo?.yesterdayLevelIncome ?? memberInfo?.levelIncome ?? '---', icon: 'fa-sitemap', color: '#9b59b6' },
-    { label: 'Repurchase Income', value: memberInfo?.repurchaseIncome || '---', recentLabel: 'Recent Repurchase Income', recentValue: memberInfo?.yesterdayRepurchaseIncome ?? memberInfo?.repurchaseIncome ?? '---', icon: 'fa-shopping-cart', color: '#1abc9c' },
+    { label: 'Given Help', value: memberInfo?.givenHelp || '---', recentLabel: 'Recent Given Help', recentValue: memberInfo?.yesterdayGivenHelp ?? memberInfo?.givenHelp ?? '---', icon: 'fa-hand-holding-heart', color: '#e84393', linkTo: '/user/donations/given-help' },
+    { label: 'Received Help', value: memberInfo?.receivedHelp || '---', recentLabel: 'Recent Received Help', recentValue: memberInfo?.yesterdayReceivedHelp ?? memberInfo?.receivedHelp ?? '---', icon: 'fa-hand-holding-usd', color: '#00cec9', linkTo: '/user/donations/recieved-help' },
+    { label: 'Level Income', value: memberInfo?.levelIncome || '---', recentLabel: 'Recent Level Income', recentValue: memberInfo?.yesterdayLevelIncome ?? memberInfo?.levelIncome ?? '---', icon: 'fa-sitemap', color: '#9b59b6', linkTo: '/user/income-report/level-income' },
+    { label: 'Repurchase Income', value: memberInfo?.repurchaseIncome || '---', recentLabel: 'Recent Repurchase Income', recentValue: memberInfo?.yesterdayRepurchaseIncome ?? memberInfo?.repurchaseIncome ?? '---', icon: 'fa-shopping-cart', color: '#1abc9c', linkTo: '/user/income-report/Repurchase-income' },
     { label: 'Total L + R Income', value: memberInfo?.totalLRIncome || '---', recentLabel: 'Recent L + R Income', recentValue: memberInfo?.yesterdayLRIncome ?? memberInfo?.totalLRIncome ?? '---', icon: 'fa-exchange-alt', color: '#f1c40f' },
-    { label: 'Total Team', value: memberInfo?.totalTeam || '0', recentLabel: 'Recent Joining', recentValue: memberInfo?.yesterdayJoining || '0', icon: 'fa-users', color: '#00e5ff', isCurrency: false },
+    { label: 'Total Team', value: memberInfo?.totalTeam || '0', recentLabel: 'Recent Joining', recentValue: memberInfo?.yesterdayJoining || '0', icon: 'fa-users', color: '#00e5ff', isCurrency: false, linkTo: '/user/team/my-team' },
     { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '0', icon: 'fa-unlock', color: '#f39c12', isCurrency: false },
-    { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393', isCurrency: false },
+    { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393', isCurrency: false, linkTo: '/user/team/direct-list' },
     { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '0', icon: 'fa-arrow-circle-up', color: '#3498db', isCurrency: false },
-    { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f', isCurrency: false },
-    { label: 'Wallet Balance', value: memberInfo?.walletBalance || 0, icon: 'fa-wallet', color: '#2ecc71', isCurrency: true },
-    { label: 'Coupon Balance', value: memberInfo?.couponWalletBalance || 0, icon: 'fa-ticket-alt', color: '#9b59b6', isCurrency: true }
+    { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f', isCurrency: false, linkTo: '/user/rank/my-rank' },
+    { label: 'Wallet Balance', value: memberInfo?.walletBalance || 0, icon: 'fa-wallet', color: '#2ecc71', isCurrency: true, linkTo: '/user/transactions/transaction-history' },
+    { label: 'Coupon Balance', value: memberInfo?.couponWalletBalance || 0, icon: 'fa-ticket-alt', color: '#9b59b6', isCurrency: true, linkTo: '/user/coupon/discount-wallet-statement' }
   ];
 
   const leaderboardTabs = [
