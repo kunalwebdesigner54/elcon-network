@@ -158,60 +158,65 @@ export default function ListAll(){
       </div>
 
       {editingId && editForm && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto', position: 'relative' }}>
-            <button onClick={() => setEditingId(null)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', fontSize: '20px', cursor: 'pointer' }}>&times;</button>
-            <h3 style={{ margin: '0 0 20px 0', fontSize: '20px', fontWeight: 'bold' }}>Edit Event</h3>
-            
-            <form className="np-form" onSubmit={handleEditSubmit}>
-              <div className="np-row">
-                <label>Type</label>
-                <select className="select-input" name="type" value={editForm.type} onChange={handleEditChange}><option>Select</option><option>News and Event</option><option>Popup</option></select>
-              </div>
-
-              <div className="np-row two">
-                <div>
-                  <label>Publish Date</label>
-                  <input className="text-input" type="date" name="publishDate" value={editForm.publishDate} onChange={handleEditChange} />
+        <div className="swal2-container swal2-center swal2-backdrop-show" style={{ overflowY: 'auto', zIndex: 9999 }}>
+          <div className="swal2-popup swal2-modal swal2-show" style={{ display: 'grid', width: '550px', maxWidth: '95%', padding: '28px 24px' }}>
+            <h2 className="swal2-title">Edit News / Popup</h2>
+            <div className="swal2-html-container" style={{ textAlign: 'left', marginTop: '20px' }}>
+              <form onSubmit={handleEditSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '13px', marginBottom: '5px', color: '#94a3b8', fontWeight: '500' }}>Type</label>
+                  <select className="swal2-select" name="type" value={editForm.type} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '40px', fontSize: '14px', padding: '0 10px' }}>
+                    <option value="Select">Select</option>
+                    <option value="News and Event">News and Event</option>
+                    <option value="Popup">Popup</option>
+                  </select>
                 </div>
-                <div>
-                  <label>Upto Date</label>
-                  <input className="text-input" type="date" name="uptoDate" value={editForm.uptoDate} onChange={handleEditChange} />
+
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <label style={{ fontSize: '13px', marginBottom: '5px', color: '#94a3b8', fontWeight: '500' }}>Publish Date</label>
+                    <input className="swal2-input" type="date" name="publishDate" value={editForm.publishDate} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '40px', fontSize: '14px' }} />
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <label style={{ fontSize: '13px', marginBottom: '5px', color: '#94a3b8', fontWeight: '500' }}>Upto Date</label>
+                    <input className="swal2-input" type="date" name="uptoDate" value={editForm.uptoDate} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '40px', fontSize: '14px' }} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="np-row">
-                <label>Publish Status</label>
-                <div className="np-radio">
-                  <label><input type="radio" name="status" value="Published" checked={editForm.status === 'Published'} onChange={handleEditChange}/> Publish Now</label>
-                  <label><input type="radio" name="status" value="Draft" checked={editForm.status === 'Draft'} onChange={handleEditChange}/> Save as Draft</label>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '13px', marginBottom: '5px', color: '#94a3b8', fontWeight: '500' }}>Publish Status</label>
+                  <div style={{ display: 'flex', gap: '15px', color: '#f8fafc', fontSize: '14px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}><input type="radio" name="status" value="Published" checked={editForm.status === 'Published'} onChange={handleEditChange}/> Publish Now</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}><input type="radio" name="status" value="Draft" checked={editForm.status === 'Draft'} onChange={handleEditChange}/> Save as Draft</label>
+                  </div>
                 </div>
-              </div>
 
-              <div className="np-row">
-                <label>Display on</label>
-                <div className="np-radio">
-                  <label><input type="radio" name="displayOn" value="Member panel" checked={editForm.displayOn === 'Member panel'} onChange={handleEditChange}/> Member panel</label>
-                  <label><input type="radio" name="displayOn" value="Website" checked={editForm.displayOn === 'Website'} onChange={handleEditChange}/> Website</label>
-                  <label><input type="radio" name="displayOn" value="All" checked={editForm.displayOn === 'All'} onChange={handleEditChange}/> All</label>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '13px', marginBottom: '5px', color: '#94a3b8', fontWeight: '500' }}>Display on</label>
+                  <div style={{ display: 'flex', gap: '15px', color: '#f8fafc', fontSize: '14px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}><input type="radio" name="displayOn" value="Member panel" checked={editForm.displayOn === 'Member panel'} onChange={handleEditChange}/> Member panel</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}><input type="radio" name="displayOn" value="Website" checked={editForm.displayOn === 'Website'} onChange={handleEditChange}/> Website</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}><input type="radio" name="displayOn" value="All" checked={editForm.displayOn === 'All'} onChange={handleEditChange}/> All</label>
+                  </div>
                 </div>
-              </div>
 
-              <div className="np-row">
-                <label>Title</label>
-                <input className="text-input" type="text" name="title" value={editForm.title} onChange={handleEditChange} />
-              </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '13px', marginBottom: '5px', color: '#94a3b8', fontWeight: '500' }}>Title</label>
+                  <input className="swal2-input" type="text" name="title" value={editForm.title} onChange={handleEditChange} style={{ margin: 0, width: '100%', height: '40px', fontSize: '14px' }} />
+                </div>
 
-              <div className="np-row">
-                <label>Description</label>
-                <textarea className="text-input" rows="4" name="description" value={editForm.description} onChange={handleEditChange}/>
-              </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '13px', marginBottom: '5px', color: '#94a3b8', fontWeight: '500' }}>Description</label>
+                  <textarea className="swal2-textarea" rows="3" name="description" value={editForm.description} onChange={handleEditChange} style={{ margin: 0, width: '100%', fontSize: '14px', padding: '10px' }}/>
+                </div>
 
-              <div className="btn-row" style={{ marginTop: '20px' }}>
-                <button type="button" className="btn-danger" onClick={() => setEditingId(null)}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isUpdating}>{isUpdating ? 'Saving...' : 'Save'}</button>
-              </div>
-            </form>
+                <div className="swal2-actions" style={{ marginTop: '25px', display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                  <button type="submit" className="swal2-confirm swal2-styled" disabled={isUpdating} style={{ display: 'inline-flex' }}>{isUpdating ? 'Saving...' : 'Save Changes'}</button>
+                  <button type="button" className="swal2-cancel swal2-styled" onClick={() => setEditingId(null)} style={{ display: 'inline-flex' }}>Cancel</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
