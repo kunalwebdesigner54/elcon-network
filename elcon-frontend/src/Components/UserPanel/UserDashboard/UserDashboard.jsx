@@ -394,13 +394,6 @@ function MemberDashboard() {
                 </div>
               </section>
         )}
-        
-            <div className="dashboard-hotkeys-grid">
-              <button className="hotkey-btn bg-cyan">UPGRADE NOW</button>
-              <button className="hotkey-btn bg-yellow">RECEIVED HELP</button>
-              <button className="hotkey-btn bg-pink">DONATION REPORT</button>
-              <button className="hotkey-btn bg-orange">GIVEN HELP</button>
-            </div>
 
         <div className="user-dashboard-bottom-spacer" />
       </main>
