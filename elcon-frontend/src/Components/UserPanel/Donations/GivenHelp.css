@@ -186,8 +186,11 @@
 }
 @media (max-width: 900px) {
   .given-help-container {
-    max-width: 98vw;
-    padding: 10px 2vw;
+    width: 94%;
+    max-width: 94%;
+    padding: 16px;
+    margin: 16px auto;
+    box-sizing: border-box;
   }
   .rank-steps {
     margin-top: 18px;
@@ -274,9 +277,11 @@
 
 @media (max-width: 600px) {
   .given-help-history-section {
-    max-width: 98vw;
-    padding: 10px 2vw;
+    width: 94%;
+    max-width: 94%;
+    padding: 16px;
     margin: 16px auto 24px;
+    box-sizing: border-box;
   }
 }
 
