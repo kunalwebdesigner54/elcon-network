@@ -4,6 +4,16 @@ import './PublicLayout.css';
 
 const navItems = [
   { label: 'Home', to: '/' },
+  {
+    label: 'Products',
+    dropdown: [
+      { label: 'Grocery', to: '/products/grocery' },
+      { label: 'Health & Wellness', to: '/products/health' },
+      { label: 'Personal Care', to: '/products/personal-care' },
+      { label: 'Product Details Page', to: '/product-details' },
+      { label: 'View All Products', to: '/product' }
+    ]
+  },
   { 
     label: 'NGO', 
     dropdown: [
@@ -29,16 +39,6 @@ const navItems = [
   {
     label: 'Business',
     dropdown: [
-      {
-        label: 'Products',
-        dropdown: [
-          { label: 'Grocery', to: '/products/grocery' },
-          { label: 'Health & Wellness', to: '/products/health' },
-          { label: 'Personal Care', to: '/products/personal-care' },
-          { label: 'View All Products', to: '/product' }
-        ]
-      },
-      { label: 'Product Details Page', to: '/product-details' },
       { label: 'Join Business', to: '/join-business' },
       { label: 'How MLM Works', to: '/how-mlm-works' },
       { label: 'Income Plan', to: '/income-plan' },
