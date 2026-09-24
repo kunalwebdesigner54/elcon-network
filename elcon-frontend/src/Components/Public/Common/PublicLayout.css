@@ -247,8 +247,8 @@
 }
 
 .public-footer {
-	background: #f9fafb;
-	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	background: #0f172a;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .public-footer-grid {
@@ -263,12 +263,13 @@
 	font-family: 'Poppins', 'Inter', sans-serif;
 	font-size: 14px;
 	letter-spacing: -0.01em;
+	color: #ffffff;
 }
 
 .public-footer-brand p,
 .public-footer-text {
 	margin: 0 0 10px;
-	color: var(--text-muted);
+	color: #cbd5e1;
 	font-size: 14px;
 	line-height: 1.6;
 }
@@ -280,12 +281,12 @@
 .public-footer-link {
 	display: block;
 	padding: 5px 0;
-	color: var(--text-muted);
+	color: #cbd5e1;
 	font-size: 14px;
 }
 
 .public-footer-link:hover {
-	color: #e21f26;
+	color: #ffffff;
 }
 
 .public-footer-socials,
@@ -765,9 +766,9 @@ main,
 }
 
 .public-footer {
-	background: rgba(0, 0, 0, 0.3);
-	border-top: 1px solid var(--glass-border);
-	color: var(--text-muted);
+	background: #0f172a;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	color: #cbd5e1;
 	padding: 80px 0 40px;
 }
 
@@ -800,7 +801,7 @@ main,
 .public-footer p {
   margin: 0 0 10px;
   font-size: 14px;
-  color: #fff;
+  color: #cbd5e1;
 }
 
 .public-contact-item {
