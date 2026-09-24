@@ -4,11 +4,73 @@ import './PublicLayout.css';
 
 const navItems = [
   { label: 'Home', to: '/' },
-  { label: 'About Us', to: '/about-us' },
-  { label: 'Helping Process', to: '/helping-process' },
-  { label: 'Our Activity', to: '/our-activity' },
-  { label: 'Product', to: '/product' },
-  { label: 'Contact', to: '/contact' }
+  { 
+    label: 'NGO', 
+    dropdown: [
+      { label: 'About NGO', to: '/about-us' },
+      { label: 'Mission & Vision', to: '/mission-vision' },
+      { 
+        label: 'Projects', 
+        dropdown: [
+          { label: 'Education Program', to: '/projects/education' },
+          { label: 'Health Camp', to: '/projects/health' },
+          { label: 'Environment Drive', to: '/projects/environment' }
+        ]
+      },
+      { label: 'Impact Stories', to: '/impact-stories' },
+      { label: 'Gallery', to: '/gallery' },
+      { label: 'Donate', to: '/donate' },
+      { label: 'Volunteer', to: '/volunteer' },
+      { label: 'Helping Process', to: '/helping-process' },
+      { label: 'Our Activity', to: '/our-activity' },
+      { label: 'Legal & Registration', to: '/legal-registration' }
+    ]
+  },
+  {
+    label: 'Business',
+    dropdown: [
+      {
+        label: 'Products',
+        dropdown: [
+          { label: 'Grocery', to: '/products/grocery' },
+          { label: 'Health & Wellness', to: '/products/health' },
+          { label: 'Personal Care', to: '/products/personal-care' },
+          { label: 'View All Products', to: '/product' }
+        ]
+      },
+      { label: 'Product Details Page', to: '/product-details' },
+      { label: 'Join Business', to: '/join-business' },
+      { label: 'How MLM Works', to: '/how-mlm-works' },
+      { label: 'Income Plan', to: '/income-plan' },
+      { label: 'Training Videos', to: '/training-videos' },
+      { label: 'Login / Register', to: '/user-login' }
+    ]
+  },
+  {
+    label: 'About Us',
+    dropdown: [
+      { label: 'Founder Message', to: '/founder-message' },
+      { label: 'Our Team', to: '/our-team' },
+      { label: 'Testimonials', to: '/testimonials' }
+    ]
+  },
+  {
+    label: 'Contact Us',
+    dropdown: [
+      { label: 'Contact Form', to: '/contact' },
+      { label: 'Location Map', to: '/location-map' },
+      { label: 'Support', to: '/support' }
+    ]
+  },
+  {
+    label: 'Legal',
+    dropdown: [
+      { label: 'Privacy Policy', to: '/privacy-policy' },
+      { label: 'Terms & Conditions', to: '/terms-conditions' },
+      { label: 'Refund Policy', to: '/refund-policy' },
+      { label: 'Disclaimer', to: '/disclaimer' }
+    ]
+  }
 ];
 
 function PublicLayout() {
@@ -24,6 +86,61 @@ function PublicLayout() {
   }, []);
 
   const closeMenu = () => setIsMenuOpen(false);
+
+  const renderDesktopNav = (items, isDropdownItem = false) => {
+    return items.map((item) => {
+      if (item.dropdown) {
+        return (
+          <div key={item.label} className={isDropdownItem ? "public-nav-dropdown public-nav-dropdown-nested" : "public-nav-dropdown"}>
+            <span className={isDropdownItem ? "public-dropdown-item public-nav-dropdown-toggle" : "public-nav-link public-nav-dropdown-toggle"}>
+              {item.label} <span className="dropdown-arrow">{isDropdownItem ? '▶' : '▼'}</span>
+            </span>
+            <div className="public-dropdown-menu">
+              {renderDesktopNav(item.dropdown, true)}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <NavLink
+          key={item.label}
+          to={item.to || '#'}
+          className={({ isActive }) => `${isDropdownItem ? 'public-dropdown-item' : 'public-nav-link'} ${isActive ? 'active' : ''}`}
+          end={item.to === '/'}
+        >
+          {item.label}
+        </NavLink>
+      );
+    });
+  };
+
+  const renderMobileNav = (items, depth = 0) => {
+    return items.map((item) => {
+      if (item.dropdown) {
+        return (
+          <div key={item.label} className="public-mobile-dropdown">
+            <div className="public-mobile-dropdown-title" style={{ paddingLeft: depth > 0 ? `${20 + (depth * 15)}px` : '20px' }}>
+              {item.label}
+            </div>
+            {renderMobileNav(item.dropdown, depth + 1)}
+          </div>
+        );
+      }
+      return (
+        <NavLink
+          key={`mobile-${item.label}`}
+          to={item.to || '#'}
+          className={({ isActive }) => `public-mobile-link ${isActive ? 'active' : ''}`}
+          style={{ paddingLeft: depth > 0 ? `${20 + (depth * 15)}px` : '20px' }}
+          end={item.to === '/'}
+          onClick={closeMenu}
+        >
+          {item.label}
+        </NavLink>
+      );
+    });
+  };
 
   return (
     <div className={`public-root ${isMenuOpen ? 'public-menu-open' : 'public-menu-closed'}`}>
@@ -45,39 +162,7 @@ function PublicLayout() {
           </button>
 
           <nav className="public-nav">
-            {navItems.map((item) => {
-              if (item.dropdown) {
-                return (
-                  <div key={item.label} className="public-nav-dropdown">
-                    <span className="public-nav-link public-nav-dropdown-toggle">
-                      {item.label} <span className="dropdown-arrow">▼</span>
-                    </span>
-                    <div className="public-dropdown-menu">
-                      {item.dropdown.map(dropItem => (
-                        <NavLink
-                          key={dropItem.to}
-                          to={dropItem.to}
-                          className={({ isActive }) => `public-dropdown-item ${isActive ? 'active' : ''}`}
-                        >
-                          {dropItem.label}
-                        </NavLink>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
-              
-              return (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) => `public-nav-link ${isActive ? 'active' : ''}`}
-                  end={item.to === '/'}
-                >
-                  {item.label}
-                </NavLink>
-              );
-            })}
+            {renderDesktopNav(navItems)}
           </nav>
 
           <div className="public-auth-btns">
@@ -93,36 +178,7 @@ function PublicLayout() {
 
       <aside className="public-mobile-sidebar">
         <nav className="public-mobile-nav">
-          {navItems.map((item) => {
-            if (item.dropdown) {
-              return (
-                <div key={item.label} className="public-mobile-dropdown">
-                  <div className="public-mobile-dropdown-title">{item.label}</div>
-                  {item.dropdown.map(dropItem => (
-                    <NavLink
-                      key={`mobile-${dropItem.to}`}
-                      to={dropItem.to}
-                      className={({ isActive }) => `public-mobile-link public-mobile-sublink ${isActive ? 'active' : ''}`}
-                      onClick={closeMenu}
-                    >
-                      {dropItem.label}
-                    </NavLink>
-                  ))}
-                </div>
-              );
-            }
-            return (
-              <NavLink
-                key={`mobile-${item.to}`}
-                to={item.to}
-                className={({ isActive }) => `public-mobile-link ${isActive ? 'active' : ''}`}
-                end={item.to === '/'}
-                onClick={closeMenu}
-              >
-                {item.label}
-              </NavLink>
-            );
-          })}
+          {renderMobileNav(navItems)}
         </nav>
 
         <div className="public-mobile-auth">
