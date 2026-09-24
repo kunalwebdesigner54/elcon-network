@@ -108,7 +108,7 @@ function MemberDashboard() {
     { label: 'Total Team', value: memberInfo?.totalTeam || '0', recentLabel: 'Recent Joining', recentValue: memberInfo?.yesterdayJoining || '0', icon: 'fa-users', color: '#00e5ff', isCurrency: false, linkTo: '/user/team/my-team' },
     { label: 'Unlock Level', value: memberInfo?.unlockLevel ?? '0', icon: 'fa-unlock', color: '#f39c12', isCurrency: false },
     { label: 'My Directs', value: memberInfo?.referralsCount || 0, icon: 'fa-user-friends', color: '#e84393', isCurrency: false, linkTo: '/user/team/direct-list' },
-    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '0', icon: 'fa-arrow-circle-up', color: '#3498db', isCurrency: false },
+    { label: 'Upgraded Level', value: memberInfo?.upgradedLevel ?? '0', icon: 'fa-arrow-circle-up', color: '#3498db', isCurrency: false, linkTo: '/user/donations/given-help' },
     { label: 'Rank', value: memberInfo?.rank || '---', icon: 'fa-medal', color: '#f1c40f', isCurrency: false, linkTo: '/user/rank/my-rank' },
     { label: 'Wallet Balance', value: memberInfo?.walletBalance || 0, icon: 'fa-wallet', color: '#2ecc71', isCurrency: true, linkTo: '/user/transactions/transaction-history' },
     { label: 'Coupon Balance', value: memberInfo?.couponWalletBalance || 0, icon: 'fa-ticket-alt', color: '#9b59b6', isCurrency: true, linkTo: '/user/coupon/discount-wallet-statement' }
