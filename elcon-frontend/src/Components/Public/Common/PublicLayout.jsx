@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import { getNewsPopupList } from '../../../api/managementService';
 import './PublicLayout.css';
 
 const navItems = [
@@ -76,6 +77,7 @@ const navItems = [
 function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activePopup, setActivePopup] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,6 +85,36 @@ function PublicLayout() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchNewsPopups = async () => {
+      try {
+        const response = await getNewsPopupList();
+        if (mounted && response && response.items) {
+          const published = response.items.filter(item => 
+            item.status === 'Published' && 
+            (item.displayOn === 'Website' || item.displayOn === 'All')
+          );
+          
+          const popups = published.filter(i => i.type === 'Popup' || i.type === 'News and Event');
+          if (popups.length > 0) {
+            const latestPopup = popups[0];
+            const popupKey = `seen_public_popup_${latestPopup._id || latestPopup.id}`;
+            if (!sessionStorage.getItem(popupKey)) {
+              setActivePopup(latestPopup);
+              sessionStorage.setItem(popupKey, 'true');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch public popups:', error);
+      }
+    };
+    
+    fetchNewsPopups();
+    return () => { mounted = false; };
   }, []);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -280,6 +312,19 @@ function PublicLayout() {
         </div>
       </footer>
       <div className="public-copyright">Copyright © 2026 Elcon Network. All Rights Reserved.</div>
+      
+      {activePopup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ background: '#ffffff', border: '1px solid #e1e1e1', borderRadius: '12px', padding: '24px', maxWidth: '500px', width: '90%', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+            <button 
+              onClick={() => setActivePopup(null)} 
+              style={{ position: 'absolute', top: '10px', right: '15px', background: 'transparent', border: 'none', color: '#111', fontSize: '24px', cursor: 'pointer' }}
+            >&times;</button>
+            <h3 style={{ color: '#111', marginTop: 0, marginBottom: '16px', fontSize: '20px' }}>{activePopup.title}</h3>
+            <p style={{ color: '#444', lineHeight: 1.6, whiteSpace: 'pre-wrap', margin: 0 }}>{activePopup.description}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
