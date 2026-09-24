@@ -8,7 +8,7 @@ export default function AddNew(){
   const { id } = useParams();
   const isEditMode = !!id;
   const navigate = useNavigate();
-  const [form, setForm] = useState({ type: 'News and Event', publishDate: '', uptoDate: '', status: 'Published', displayOn: 'Member panel', title: '', description: '' });
+  const [form, setForm] = useState({ type: 'News and Event', publishDate: '', uptoDate: '', status: 'Published', displayOn: 'Member panel', title: '', description: '', images: [] });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,8 @@ export default function AddNew(){
                 status: item.status || 'Published',
                 displayOn: item.displayOn || 'Member panel',
                 title: item.title || '',
-                description: item.description || ''
+                description: item.description || '',
+                images: item.images || []
               });
             }
           }
@@ -41,6 +42,28 @@ export default function AddNew(){
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length > 5) {
+      return Swal.fire("Warning", "You can upload a maximum of 5 images.", "warning");
+    }
+    const promises = files.slice(0, 5).map((file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    });
+    try {
+      const base64Images = await Promise.all(promises);
+      setForm((prev) => ({ ...prev, images: base64Images }));
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Failed to read image files.", "error");
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -112,6 +135,21 @@ export default function AddNew(){
           <div className="np-row">
             <label>Description</label>
             <textarea className="text-input" rows="6" name="description" value={form.description} onChange={handleChange}/>
+          </div>
+
+          <div className="np-row">
+            <label>Images (Max 5)</label>
+            <input type="file" multiple accept="image/*" onChange={handleImageChange} className="text-input" style={{ paddingTop: '8px' }} />
+            {form.images && form.images.length > 0 && (
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                {form.images.map((img, idx) => (
+                  <div key={idx} style={{ position: 'relative' }}>
+                    <img src={img} alt={`Preview ${idx + 1}`} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #ccc' }} />
+                    <button type="button" onClick={() => setForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&times;</button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="btn-row">

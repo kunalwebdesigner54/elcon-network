@@ -98,13 +98,39 @@ function PublicLayout() {
           const popups = published.filter(i => i.showAsPopup === true);
           if (popups.length > 0) {
             const latestPopup = popups[0];
+            let htmlContent = `<p style="margin: 0;">${latestPopup.description}</p>`;
+            if (latestPopup.images && latestPopup.images.length > 0) {
+              const slidesHTML = latestPopup.images.map((img) => `<img src="${img}" style="width: 100%; max-height: 300px; object-fit: contain; flex-shrink: 0; scroll-snap-align: start;" />`).join('');
+              htmlContent += `
+                <div id="popup-slideshow" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin-top: 15px; border-radius: 8px; scrollbar-width: none;">
+                  ${slidesHTML}
+                </div>
+              `;
+            }
+            
+            let slideInterval;
             Swal.fire({
               title: latestPopup.title,
-              text: latestPopup.description,
-              icon: 'info',
+              html: htmlContent,
+              icon: (latestPopup.images && latestPopup.images.length > 0) ? undefined : 'info',
               confirmButtonText: 'Close',
               customClass: {
                 popup: 'swal2-popup'
+              },
+              didOpen: () => {
+                if (latestPopup.images && latestPopup.images.length > 1) {
+                  const container = document.getElementById('popup-slideshow');
+                  let currentIndex = 0;
+                  slideInterval = setInterval(() => {
+                    if (container) {
+                      currentIndex = (currentIndex + 1) % latestPopup.images.length;
+                      container.scrollTo({ left: container.offsetWidth * currentIndex, behavior: 'smooth' });
+                    }
+                  }, 3000);
+                }
+              },
+              willClose: () => {
+                if (slideInterval) clearInterval(slideInterval);
               }
             });
           }

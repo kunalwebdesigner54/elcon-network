@@ -10,6 +10,7 @@ const newsPopupSchema = new mongoose.Schema(
     uptoDate: { type: String, required: true, trim: true },
     status: { type: String, enum: ['Published', 'Draft'], default: 'Published' },
     showAsPopup: { type: Boolean, default: false },
+    images: { type: [String], default: [] }
   },
   { timestamps: true }
 );

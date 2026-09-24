@@ -63,7 +63,8 @@ export default function ListAll(){
         status: item.status || 'Published',
         displayOn: item.displayOn || 'Member panel',
         title: item.title || '',
-        description: item.description || ''
+        description: item.description || '',
+        images: item.images || []
       });
       setEditingId(id);
     }
@@ -210,6 +211,31 @@ export default function ListAll(){
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <label style={{ fontSize: '13px', marginBottom: '3px', color: '#94a3b8', fontWeight: '500' }}>Description</label>
                   <textarea className="swal2-textarea" rows="2" name="description" value={editForm.description} onChange={handleEditChange} style={{ margin: 0, width: '100%', fontSize: '14px', padding: '8px 10px', boxSizing: 'border-box' }}/>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <label style={{ fontSize: '13px', marginBottom: '3px', color: '#94a3b8', fontWeight: '500' }}>Images (Max 5)</label>
+                  <input type="file" multiple accept="image/*" onChange={async (e) => {
+                    const files = Array.from(e.target.files);
+                    if (files.length > 5) return Swal.fire("Warning", "You can upload a maximum of 5 images.", "warning");
+                    const base64Images = await Promise.all(files.slice(0, 5).map(f => new Promise((resolve, reject) => {
+                      const reader = new FileReader();
+                      reader.readAsDataURL(f);
+                      reader.onload = () => resolve(reader.result);
+                      reader.onerror = reject;
+                    })));
+                    setEditForm(prev => ({ ...prev, images: base64Images }));
+                  }} className="swal2-input" style={{ margin: 0, width: '100%', height: '40px', fontSize: '13px', boxSizing: 'border-box', paddingTop: '8px' }} />
+                  {editForm.images && editForm.images.length > 0 && (
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                      {editForm.images.map((img, idx) => (
+                        <div key={idx} style={{ position: 'relative' }}>
+                          <img src={img} alt={`Preview ${idx + 1}`} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }} />
+                          <button type="button" onClick={() => setEditForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '18px', height: '18px', cursor: 'pointer', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&times;</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="swal2-actions" style={{ marginTop: '15px', display: 'flex', justifyContent: 'center', gap: '15px' }}>
