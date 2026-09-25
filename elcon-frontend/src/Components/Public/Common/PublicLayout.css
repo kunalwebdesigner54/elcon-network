@@ -851,7 +851,7 @@ main,
     grid-template-columns: 1fr auto;
     justify-items: stretch;
     align-items: center;
-    padding: 10px 0;
+    padding: 10px 30px;
   }
 
   .public-nav {
@@ -1094,11 +1094,13 @@ main,
 
 .public-mobile-dropdown-title {
     padding: 12px 20px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    font-weight: 700;
+    color: #111827;
     text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 1px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 5px;
 }
 
 .public-mobile-sublink {
