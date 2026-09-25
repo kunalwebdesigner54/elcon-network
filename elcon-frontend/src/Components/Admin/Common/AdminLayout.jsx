@@ -130,6 +130,7 @@ const menuItems = [
       { label: 'Manage Taxes & Deduction', to: '/settings/manage-taxes-deduction' },
       { label: 'Bank Account', to: '/admin/setting/bank-account' },
       { label: 'Plan Setting', to: '/admin/setting/plan-setting' },
+      { label: 'Website Branding', to: '/admin/setting/website-branding' },
       { label: 'Terms and Conditions', to: '/admin/setting/terms-and-conditions' },
       { label: 'Admin Settings', to: '/settings/admin-settings' },
       { label: 'Manage Sub-Admins', to: '/sub-admins/manage' }

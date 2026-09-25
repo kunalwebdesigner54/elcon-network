@@ -67,13 +67,13 @@ function AboutUs() {
           <h2 className="activities-title" style={{ textAlign: 'center', marginBottom: '40px', fontSize: '32px', color: '#1e293b' }}>OUR ACTIVITY</h2>
           <div className="activities-grid">
             {activities.map((activity, index) => (
-              <div key={index} className="activity-card" style={{ display: 'flex', gap: '20px', marginBottom: '30px', background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', alignItems: 'center', flexDirection: index % 2 !== 0 ? 'row-reverse' : 'row' }}>
-                <div className="activity-image-wrapper" style={{ flex: '0 0 40%' }}>
-                  <img src={activity.image} alt={activity.title} style={{ width: '100%', height: '250px', objectFit: 'cover', borderRadius: '8px', backgroundColor: '#f1f5f9' }} />
+              <div key={index} className={`activity-card ${index % 2 !== 0 ? 'reverse' : ''}`}>
+                <div className="activity-image-wrapper">
+                  <img src={activity.image} alt={activity.title} />
                 </div>
-                <div className="activity-text" style={{ flex: '1' }}>
-                  <h3 style={{ fontSize: '24px', marginBottom: '15px', color: '#0f172a' }}>{activity.title}</h3>
-                  <p style={{ fontSize: '16px', lineHeight: '1.6', color: '#475569' }}>{activity.description}</p>
+                <div className="activity-text">
+                  <h3>{activity.title}</h3>
+                  <p>{activity.description}</p>
                 </div>
               </div>
             ))}

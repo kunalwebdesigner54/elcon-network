@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { getNewsPopupList } from '../../../api/managementService';
+import { getNewsPopupList, getBranding } from '../../../api/managementService';
 import Swal from 'sweetalert2';
 import './PublicLayout.css';
 
@@ -78,12 +78,20 @@ const navItems = [
 function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [brandingLogo, setBrandingLogo] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
+    
+    getBranding().then(res => {
+      if (res && res.branding && res.branding.logo) {
+        setBrandingLogo(res.branding.logo);
+      }
+    }).catch(console.error);
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -207,8 +215,14 @@ function PublicLayout() {
       <header className={`public-header ${scrolled ? 'scrolled' : ''}`}>
         <div className="public-header-inner">
           <NavLink to="/" className="public-logo-wrap">
-            <div className="public-logo-mark">ELCON</div>
-            <div className="public-logo-text">Elcon Network</div>
+            {brandingLogo ? (
+              <img src={brandingLogo} alt="Elcon Network Logo" style={{ maxHeight: '50px', objectFit: 'contain' }} />
+            ) : (
+              <>
+                <div className="public-logo-mark">ELCON</div>
+                <div className="public-logo-text">Elcon Network</div>
+              </>
+            )}
           </NavLink>
 
           <button
@@ -283,8 +297,14 @@ function PublicLayout() {
         <div className="public-container public-footer-grid">
           <div>
             <NavLink to="/" className="public-logo-wrap" style={{ display: 'flex', marginBottom: '20px' }}>
-              <div className="public-logo-mark">ELCON</div>
-              <div className="public-logo-text">Elcon Network</div>
+              {brandingLogo ? (
+                <img src={brandingLogo} alt="Elcon Network Logo" style={{ maxHeight: '50px', objectFit: 'contain' }} />
+              ) : (
+                <>
+                  <div className="public-logo-mark">ELCON</div>
+                  <div className="public-logo-text">Elcon Network</div>
+                </>
+              )}
             </NavLink>
             <p style={{ lineHeight: '1.7', color: '#c8d4de' }}>
               Elcon Network is a premier platform dedicated to empowering individuals through a transparent and robust network. 

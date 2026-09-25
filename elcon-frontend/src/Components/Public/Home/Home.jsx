@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -8,16 +8,28 @@ import ParticleSwarm from './ParticleSwarm';
 import Services from './Services';
 import ProductsSection from './ProductsSection';
 import LatestNews from './LatestNews';
+import { getBranding } from '../../../api/managementService';
 
 function Home() {
   const bannerRef = useRef(null);
+  const [brandingBanners, setBrandingBanners] = useState([]);
 
-  const sliderImages = [
+  useEffect(() => {
+    getBranding().then(res => {
+      if (res && res.branding && res.branding.banners && res.branding.banners.length > 0) {
+        setBrandingBanners(res.branding.banners);
+      }
+    }).catch(console.error);
+  }, []);
+
+  const defaultSliderImages = [
     '/feature-bg.jpg',
     '/gallery-bg.jpg',
     '/grow-bg.jpg',
     '/sparkle-bg.jpg'
   ];
+
+  const sliderImages = brandingBanners.length > 0 ? brandingBanners : defaultSliderImages;
 
   const sliderSettings = {
     dots: false,

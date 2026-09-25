@@ -125,6 +125,7 @@ import AddDepositFunds from './Components/UserPanel/Payment/AddDepositFunds/AddD
 import Withdraw from './Components/UserPanel/Payment/Withdraw/Withdraw';
 import BankAccount from './Components/Admin/Setting/BankAccount/BankAccount';
 import PlanSetting from './Components/Admin/Setting/PlanSetting/PlanSetting';
+import WebsiteBranding from './Components/Admin/Setting/WebsiteBranding/WebsiteBranding';
 import AdminTermsAndConditions from './Components/Admin/Setting/TermsAndConditions/TermsAndConditions';
 
 import UserDatewiseIncome from './Components/UserPanel/Income/DatewiseIncome/DatewiseIncome';
@@ -413,6 +414,7 @@ function App() {
           <Route path="settings/manage-taxes-deduction" element={<AdminBlankPage />} />
           <Route path="admin/setting/bank-account" element={<BankAccount />} />
           <Route path="admin/setting/plan-setting" element={<PlanSetting />} />
+          <Route path="admin/setting/website-branding" element={<WebsiteBranding />} />
           <Route path="admin/setting/terms-and-conditions" element={<AdminTermsAndConditions />} />
 
           <Route path="news-popup/add-new" element={<NewsAdd />} />

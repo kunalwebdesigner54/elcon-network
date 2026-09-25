@@ -156,3 +156,33 @@ exports.updateGlobalSettings = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+const defaultBranding = {
+  logo: '',
+  banners: []
+};
+
+exports.getBranding = async (req, res) => {
+  try {
+    let setting = await SiteSetting.findOne({ settingKey: 'website-branding' });
+    if (!setting) {
+      setting = await SiteSetting.create({ settingKey: 'website-branding', data: defaultBranding });
+    }
+    res.json({ success: true, branding: setting?.data || defaultBranding });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.updateBranding = async (req, res) => {
+  try {
+    const setting = await SiteSetting.findOneAndUpdate(
+      { settingKey: 'website-branding' },
+      { data: { ...defaultBranding, ...(req.body || {}) } },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    res.json({ success: true, branding: setting.data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

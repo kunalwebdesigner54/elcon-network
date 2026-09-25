@@ -302,3 +302,18 @@ export const confirmProductDelivery = async (payload) => {
   const response = await apiClient.post('/product-franchise/confirm-delivery', payload);
   return response.data;
 };
+
+let cachedBranding = null;
+
+export const getBranding = async () => {
+  if (cachedBranding) return cachedBranding;
+  const response = await apiClient.get('/settings/branding');
+  cachedBranding = response.data;
+  return response.data;
+};
+
+export const updateBranding = async (payload) => {
+  const response = await apiClient.put('/settings/branding', payload);
+  cachedBranding = null; // Invalidate cache
+  return response.data;
+};
