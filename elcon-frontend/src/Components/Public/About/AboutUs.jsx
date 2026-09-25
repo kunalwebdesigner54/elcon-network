@@ -37,7 +37,7 @@ const activities = [
 function AboutUs() {
   return (
     <div>
-      <PublicPageHeader title="Organization Information" />
+      <PublicPageHeader title="Elcon Foundation" />
       <section className="public-page about-section-bg">
         <div className="public-container about-content-wrapper">
           <div className="about-image-side">
