@@ -514,7 +514,8 @@ main,
 
 /* Header Styles */
 .public-header {
-  background: transparent;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   position: fixed;
   width: 100%;
   top: 0;
@@ -523,8 +524,7 @@ main,
 }
 
 .public-header.scrolled {
-  background-color: #ffffff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .public-header-inner {
@@ -534,12 +534,6 @@ main,
   justify-content: space-between;
   width: 100%;
   padding: 0 25px;
-}
-
-.public-header.scrolled .public-logo-text,
-.public-header.scrolled .public-nav-link,
-.public-header.scrolled .public-menu-btn {
-  color: #1F2937;
 }
 
 .public-logo-wrap {
@@ -562,7 +556,7 @@ main,
 }
 
 .public-logo-text {
-  color: #ffffff;
+  color: #1F2937;
   font-weight: 800;
   font-size: 20px;
   line-height: 1;
@@ -589,7 +583,7 @@ main,
 .public-nav-link {
 	text-decoration: none;
 	text-transform: none; /* Reference uses normal case */
-	color: #ffffff;
+	color: #1F2937;
 	font-size: 15px;
 	font-weight: 600;
 	opacity: 0.9;
