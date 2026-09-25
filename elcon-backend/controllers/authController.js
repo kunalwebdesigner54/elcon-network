@@ -165,62 +165,68 @@ exports.registerUser = async (req, res) => {
     let foundEpin = null;
     let epinCost = 0;
 
-    if (epin && String(epin).trim() !== '') {
-      foundEpin = await Epin.findOne({ epinNo: String(epin).trim() });
-      if (!foundEpin) {
-        return res.status(404).json({
-          success: false,
-          message: 'E-Pin not found. Please provide a valid E-Pin or leave blank to register without E-Pin.',
-          code: 'EPIN_NOT_FOUND',
-        });
-      }
+    if (!epin || String(epin).trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'E-Pin is required for registration.',
+        code: 'EPIN_REQUIRED',
+      });
+    }
 
-      if (foundEpin.status !== 'Unused') {
+    foundEpin = await Epin.findOne({ epinNo: String(epin).trim() });
+    if (!foundEpin) {
+      return res.status(404).json({
+        success: false,
+        message: 'E-Pin not found. Please provide a valid E-Pin.',
+        code: 'EPIN_NOT_FOUND',
+      });
+    }
+
+    if (foundEpin.status !== 'Unused') {
+      return res.status(400).json({
+        success: false,
+        message: `E-Pin is already ${foundEpin.status.toLowerCase()}. Only unused E-Pins can be used for registration.`,
+        code: 'EPIN_INVALID',
+      });
+    }
+
+    epinCost = Number(foundEpin.cost || 0);
+    let expectedPackageAmount = 350;
+
+    const productDoc = await Product.findOne({
+      type: 'joining',
+      productName: new RegExp(`^${joiningPackage.trim()}$`, 'i'),
+    }).lean();
+
+    if (productDoc) {
+      expectedPackageAmount = Number(productDoc.dpPrice || productDoc.mrp || 350);
+      const isPriceMatch = epinCost === Number(productDoc.mrp) || epinCost === Number(productDoc.dpPrice);
+      if (!isPriceMatch) {
         return res.status(400).json({
           success: false,
-          message: `E-Pin is already ${foundEpin.status.toLowerCase()}. Only unused E-Pins can be used for registration.`,
-          code: 'EPIN_INVALID',
+          message: `E-Pin amount (₹${epinCost}) does not match selected Package amount (₹${expectedPackageAmount}). Package and E-Pin amount must match to complete registration.`,
+          code: 'EPIN_AMOUNT_MISMATCH',
+          packageAmount: expectedPackageAmount,
+          epinCost,
         });
       }
-
-      epinCost = Number(foundEpin.cost || 0);
-      let expectedPackageAmount = 350;
-
-      const productDoc = await Product.findOne({
-        type: 'joining',
-        productName: new RegExp(`^${joiningPackage.trim()}$`, 'i'),
+    } else {
+      const epinPkgDoc = await EpinPackage.findOne({
+        packageName: new RegExp(`^${joiningPackage.trim()}$`, 'i'),
       }).lean();
 
-      if (productDoc) {
-        expectedPackageAmount = Number(productDoc.dpPrice || productDoc.mrp || 350);
-        const isPriceMatch = epinCost === Number(productDoc.mrp) || epinCost === Number(productDoc.dpPrice);
-        if (!isPriceMatch) {
-          return res.status(400).json({
-            success: false,
-            message: `E-Pin amount (₹${epinCost}) does not match selected Package amount (₹${expectedPackageAmount}). Package and E-Pin amount must match to complete registration.`,
-            code: 'EPIN_AMOUNT_MISMATCH',
-            packageAmount: expectedPackageAmount,
-            epinCost,
-          });
-        }
-      } else {
-        const epinPkgDoc = await EpinPackage.findOne({
-          packageName: new RegExp(`^${joiningPackage.trim()}$`, 'i'),
-        }).lean();
+      if (epinPkgDoc) {
+        expectedPackageAmount = Number(epinPkgDoc.price || 0);
+      }
 
-        if (epinPkgDoc) {
-          expectedPackageAmount = Number(epinPkgDoc.price || 0);
-        }
-
-        if (epinCost !== expectedPackageAmount) {
-          return res.status(400).json({
-            success: false,
-            message: `E-Pin amount (₹${epinCost}) does not match selected Package amount (₹${expectedPackageAmount}). Package and E-Pin amount must match to complete registration.`,
-            code: 'EPIN_AMOUNT_MISMATCH',
-            packageAmount: expectedPackageAmount,
-            epinCost,
-          });
-        }
+      if (epinCost !== expectedPackageAmount) {
+        return res.status(400).json({
+          success: false,
+          message: `E-Pin amount (₹${epinCost}) does not match selected Package amount (₹${expectedPackageAmount}). Package and E-Pin amount must match to complete registration.`,
+          code: 'EPIN_AMOUNT_MISMATCH',
+          packageAmount: expectedPackageAmount,
+          epinCost,
+        });
       }
     }
 
