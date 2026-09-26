@@ -219,7 +219,7 @@ function PublicLayout() {
               <img src={brandingLogo} alt="Elcon Network Logo" style={{ maxHeight: '50px', objectFit: 'contain' }} />
             ) : (
               <>
-                <div className="public-logo-mark">ELCON</div>
+                <img src="/favicon.jpeg" alt="Elcon Network Logo" style={{ maxHeight: '50px', objectFit: 'contain', marginRight: '10px', borderRadius: '4px' }} />
                 <div className="public-logo-text">Elcon Network</div>
               </>
             )}
@@ -301,7 +301,7 @@ function PublicLayout() {
                 <img src={brandingLogo} alt="Elcon Network Logo" style={{ maxHeight: '50px', objectFit: 'contain' }} />
               ) : (
                 <>
-                  <div className="public-logo-mark">ELCON</div>
+                  <img src="/favicon.jpeg" alt="Elcon Network Logo" style={{ maxHeight: '50px', objectFit: 'contain', marginRight: '10px', borderRadius: '4px' }} />
                   <div className="public-logo-text">Elcon Network</div>
                 </>
               )}
