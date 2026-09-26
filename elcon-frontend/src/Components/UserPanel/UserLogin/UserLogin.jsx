@@ -74,9 +74,6 @@ function UserLogin() {
 						<button type="submit" disabled={loading}>
 							{loading ? 'Logging in...' : 'Login Now'}
 						</button>
-						<button type="button" onClick={() => navigate('/admin/login')}>
-							Login Admin 
-						</button>
 						<p>
 							Not a member? <span onClick={() => navigate('/registration')}>Create a new account</span>
 						</p>
