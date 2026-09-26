@@ -54,6 +54,14 @@ function Home() {
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+  if (loadingBanners) {
+    return (
+      <div className="initial-loader-wrapper" style={{ zIndex: 99999, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: '#ffffff', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="initial-loader"></div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <section className="home-banner">
