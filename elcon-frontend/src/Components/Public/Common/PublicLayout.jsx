@@ -79,6 +79,7 @@ function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [brandingLogo, setBrandingLogo] = useState(null);
+  const [logoLoading, setLogoLoading] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -90,7 +91,9 @@ function PublicLayout() {
       if (res && res.branding && res.branding.logo) {
         setBrandingLogo(res.branding.logo);
       }
-    }).catch(console.error);
+    }).catch(console.error).finally(() => {
+      setLogoLoading(false);
+    });
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -215,7 +218,9 @@ function PublicLayout() {
       <header className={`public-header ${scrolled ? 'scrolled' : ''}`}>
         <div className="public-header-inner">
           <NavLink to="/" className="public-logo-wrap">
-            {brandingLogo ? (
+            {logoLoading ? (
+              <div style={{ height: '50px', width: '100px' }} />
+            ) : brandingLogo ? (
               <img src={brandingLogo} alt="Elcon Network Logo" style={{ maxHeight: '50px', objectFit: 'contain' }} />
             ) : (
               <>
@@ -297,7 +302,9 @@ function PublicLayout() {
         <div className="public-container public-footer-grid">
           <div>
             <NavLink to="/" className="public-logo-wrap" style={{ display: 'flex', marginBottom: '20px' }}>
-              {brandingLogo ? (
+              {logoLoading ? (
+                <div style={{ height: '50px', width: '100px' }} />
+              ) : brandingLogo ? (
                 <img src={brandingLogo} alt="Elcon Network Logo" style={{ maxHeight: '50px', objectFit: 'contain' }} />
               ) : (
                 <>
