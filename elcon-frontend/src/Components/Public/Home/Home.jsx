@@ -13,13 +13,15 @@ import { getBranding } from '../../../api/managementService';
 function Home() {
   const bannerRef = useRef(null);
   const [brandingBanners, setBrandingBanners] = useState([]);
+  const [loadingBanners, setLoadingBanners] = useState(true);
 
   useEffect(() => {
     getBranding().then(res => {
       if (res && res.branding && res.branding.banners && res.branding.banners.length > 0) {
         setBrandingBanners(res.branding.banners);
       }
-    }).catch(console.error);
+    }).catch(console.error)
+      .finally(() => setLoadingBanners(false));
   }, []);
 
   const defaultSliderImages = [
@@ -29,7 +31,7 @@ function Home() {
     '/sparkle-bg.jpg'
   ];
 
-  const sliderImages = brandingBanners.length > 0 ? brandingBanners : defaultSliderImages;
+  const sliderImages = loadingBanners ? [] : (brandingBanners.length > 0 ? brandingBanners : defaultSliderImages);
 
   const sliderSettings = {
     dots: false,
@@ -56,16 +58,18 @@ function Home() {
     <div>
       <section className="home-banner">
         <div className="home-banner-slider-wrap">
-          <Slider {...sliderSettings}>
-            {sliderImages.map((img, index) => (
-              <div key={index} className="home-banner-slide-item">
-                <div
-                  className="home-banner-slide-bg"
-                  style={{ backgroundImage: `url(${img})` }}
-                />
-              </div>
-            ))}
-          </Slider>
+          {sliderImages.length > 0 && (
+            <Slider {...sliderSettings}>
+              {sliderImages.map((img, index) => (
+                <div key={index} className="home-banner-slide-item">
+                  <div
+                    className="home-banner-slide-bg"
+                    style={{ backgroundImage: `url(${img})` }}
+                  />
+                </div>
+              ))}
+            </Slider>
+          )}
         </div>
         <div className="home-banner-overlay" />
         <div className="home-banner-particles-wrap">
