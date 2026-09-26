@@ -247,6 +247,10 @@
     height: 450px !important;
   }
 
+  .home-steps-section {
+    padding: 40px 0 !important;
+  }
+
   .home-steps-row {
     grid-template-columns: 1fr;
     max-width: 400px;
