@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { getToken } from '../utils/auth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const isProd = import.meta.env.MODE === 'production';
+const defaultApiUrl = isProd ? '/api' : 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || defaultApiUrl;
 
 export const getLevelIncomeReports = async (params) => {
   const token = getToken();
