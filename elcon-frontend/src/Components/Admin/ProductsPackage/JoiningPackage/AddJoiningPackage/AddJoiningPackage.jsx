@@ -300,7 +300,7 @@ function AddJoiningPackage() {
                 <span>Product Images</span>
                 <div style={imageUploadGridStyle}>
                   {Array.from({ length: 10 }, (_, i) => {
-                    const existingImg = isEditMode ? ((fullProductDetails || product || editProduct)?.images || [])[i] : null;
+                    const existingImg = isEditMode ? ((fullProductDetails || editProduct)?.images || [])[i] : null;
                     return (
                       <div key={i} className="admin-add-product-row" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '6px' }}>
                         <span>Image {i + 1}</span>
