@@ -304,8 +304,6 @@
   height: 100%;
   background-size: cover;
   background-position: center;
-  /* Keep imagery visible, while allowing the white banner copy to remain readable. */
-  filter: brightness(0.82) saturate(0.92);
 }
 
 .home-banner-slide-item {
@@ -313,13 +311,7 @@
 }
 
 .home-banner-slide-item::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(4, 8, 20, 0.44) 0%, rgba(8, 12, 31, 0.28) 52%, rgba(4, 8, 20, 0.42) 100%),
-    rgba(5, 10, 24, 0.12);
-  pointer-events: none;
+  display: none;
 }
 
 /* Slick Arrows */
