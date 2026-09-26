@@ -72,8 +72,8 @@
 }
 
 .register-field select option {
-  color: #1a1a2e;
-  background: var(--theme-dark-blue);
+  color: #000000;
+  background: #ffffff;
 }
 
 .register-field textarea {
