@@ -242,6 +242,10 @@
 }
 
 @media (max-width: 760px) {
+  .home-banner {
+    min-height: 450px;
+  }
+
   .home-steps-row {
     grid-template-columns: 1fr;
     max-width: 400px;
@@ -255,6 +259,22 @@
 
   .home-banner-title {
     font-size: 32px;
+  }
+
+  .home-banner-slider-wrap .slick-prev,
+  .home-banner-slider-wrap .slick-next {
+    top: auto !important;
+    bottom: 20px;
+    transform: none !important;
+  }
+
+  .home-banner-slider-wrap .slick-prev {
+    left: calc(50% - 60px);
+  }
+
+  .home-banner-slider-wrap .slick-next {
+    right: auto;
+    left: calc(50% + 10px);
   }
 }
 
