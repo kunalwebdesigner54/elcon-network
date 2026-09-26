@@ -243,7 +243,8 @@
 
 @media (max-width: 760px) {
   .home-banner {
-    min-height: 450px;
+    min-height: 450px !important;
+    height: 450px !important;
   }
 
   .home-steps-row {
@@ -264,17 +265,17 @@
   .home-banner-slider-wrap .slick-prev,
   .home-banner-slider-wrap .slick-next {
     top: auto !important;
-    bottom: 20px;
+    bottom: 20px !important;
     transform: none !important;
   }
 
   .home-banner-slider-wrap .slick-prev {
-    left: calc(50% - 60px);
+    left: calc(50% - 60px) !important;
   }
 
   .home-banner-slider-wrap .slick-next {
-    right: auto;
-    left: calc(50% + 10px);
+    right: auto !important;
+    left: calc(50% + 10px) !important;
   }
 }
 
