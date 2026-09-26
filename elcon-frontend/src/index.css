@@ -182,7 +182,7 @@ select option {
 }
 
 .btn-secondary {
-	background: #FF9A3C !important;
+	background: #38bdf8 !important;
 	color: #fff !important;
 	border: none !important;
 	padding: 10px 24px;
@@ -199,14 +199,14 @@ select option {
 }
 
 .btn-secondary:hover {
-	background: #e8851f !important;
+	background: #0ea5e9 !important;
 	transform: translateY(-2px);
 	box-shadow: none !important;
 }
 
 .btn-secondary:active,
 .btn-secondary.active {
-	background: #e8851f !important;
+	background: #0ea5e9 !important;
 	color: #fff !important;
 	border: none !important;
 }
