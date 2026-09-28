@@ -37,7 +37,7 @@ const ProductSection = ({ title, products, onProductClick, windowWidth }) => {
 
   const sliderSettings = {
     dots: false,
-    infinite: true,
+    infinite: products.length > getSlidesToShow(),
     speed: 500,
     slidesToShow: getSlidesToShow(),
     slidesToScroll: 1,
