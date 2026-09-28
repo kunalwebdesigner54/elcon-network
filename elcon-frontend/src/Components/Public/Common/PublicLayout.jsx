@@ -9,10 +9,10 @@ const navItems = [
   {
     label: 'Products',
     dropdown: [
-      { label: 'Grocery', to: '/products/grocery' },
-      { label: 'Health & Wellness', to: '/products/health' },
-      { label: 'Personal Care', to: '/products/personal-care' },
-      { label: 'Product Details Page', to: '/product-details' },
+      { label: 'Grocery', to: '#' },
+      { label: 'Health & Wellness', to: '#' },
+      { label: 'Personal Care', to: '#' },
+      { label: 'Product Details Page', to: '#' },
       { label: 'View All Products', to: '/product' }
     ]
   },
@@ -20,57 +20,57 @@ const navItems = [
     label: 'NGO', 
     dropdown: [
       { label: 'About NGO', to: '/about-us' },
-      { label: 'Mission & Vision', to: '/mission-vision' },
+      { label: 'Mission & Vision', to: '#' },
       { 
         label: 'Projects', 
         dropdown: [
-          { label: 'Education Program', to: '/projects/education' },
-          { label: 'Health Camp', to: '/projects/health' },
-          { label: 'Environment Drive', to: '/projects/environment' }
+          { label: 'Education Program', to: '#' },
+          { label: 'Health Camp', to: '#' },
+          { label: 'Environment Drive', to: '#' }
         ]
       },
-      { label: 'Impact Stories', to: '/impact-stories' },
+      { label: 'Impact Stories', to: '#' },
       { label: 'Gallery', to: '/gallery' },
-      { label: 'Donate', to: '/donate' },
-      { label: 'Volunteer', to: '/volunteer' },
+      { label: 'Donate', to: '#' },
+      { label: 'Volunteer', to: '#' },
       { label: 'Helping Process', to: '/helping-process' },
       { label: 'Our Activity', to: '/our-activity' },
-      { label: 'Legal & Registration', to: '/legal-registration' }
+      { label: 'Legal & Registration', to: '#' }
     ]
   },
   {
     label: 'Business',
     dropdown: [
-      { label: 'Join Business', to: '/join-business' },
-      { label: 'How MLM Works', to: '/how-mlm-works' },
-      { label: 'Income Plan', to: '/income-plan' },
-      { label: 'Training Videos', to: '/training-videos' },
+      { label: 'Join Business', to: '#' },
+      { label: 'How MLM Works', to: '#' },
+      { label: 'Income Plan', to: '#' },
+      { label: 'Training Videos', to: '#' },
       { label: 'Login / Register', to: '/user-login' }
     ]
   },
   {
     label: 'About Us',
     dropdown: [
-      { label: 'Founder Message', to: '/founder-message' },
-      { label: 'Our Team', to: '/our-team' },
-      { label: 'Testimonials', to: '/testimonials' }
+      { label: 'Founder Message', to: '#' },
+      { label: 'Our Team', to: '#' },
+      { label: 'Testimonials', to: '#' }
     ]
   },
   {
     label: 'Contact Us',
     dropdown: [
       { label: 'Contact Form', to: '/contact' },
-      { label: 'Location Map', to: '/location-map' },
-      { label: 'Support', to: '/support' }
+      { label: 'Location Map', to: '#' },
+      { label: 'Support', to: '#' }
     ]
   },
   {
     label: 'Legal',
     dropdown: [
-      { label: 'Privacy Policy', to: '/privacy-policy' },
-      { label: 'Terms & Conditions', to: '/terms-conditions' },
-      { label: 'Refund Policy', to: '/refund-policy' },
-      { label: 'Disclaimer', to: '/disclaimer' }
+      { label: 'Privacy Policy', to: '#' },
+      { label: 'Terms & Conditions', to: '#' },
+      { label: 'Refund Policy', to: '#' },
+      { label: 'Disclaimer', to: '#' }
     ]
   }
 ];
