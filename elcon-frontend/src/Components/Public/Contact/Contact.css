@@ -12,7 +12,7 @@
 .contact-transparent-form h2 {
   margin: 80px 0 30px;
   text-transform: uppercase;
-  color: #fff;
+  color: #333;
   font-size: 28px;
   text-align: center;
 }
@@ -31,7 +31,7 @@
 }
 
 .contact-transparent-form .public-form-field label {
-  color: #fff;
+  color: #333;
   font-weight: 500;
   margin-bottom: 8px;
   display: block;
@@ -39,9 +39,9 @@
 
 .contact-transparent-form input,
 .contact-transparent-form textarea {
-  background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  color: #fff !important;
+  background: #fff !important;
+  border: 1px solid #ccc !important;
+  color: #333 !important;
   border-radius: 8px;
   width: 100%;
   padding: 12px 15px;
@@ -49,7 +49,7 @@
 
 .contact-transparent-form input::placeholder,
 .contact-transparent-form textarea::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: #888;
 }
 
 .contact-transparent-form input {
@@ -64,7 +64,7 @@
 .contact-transparent-form input:focus,
 .contact-transparent-form textarea:focus {
   outline: none;
-  border-color: #fff !important;
+  border-color: var(--public-primary) !important;
 }
 
 .contact-full-row {

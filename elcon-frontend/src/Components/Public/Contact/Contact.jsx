@@ -42,7 +42,7 @@ function Contact() {
                     <h2 className="step-card-title">Phone</h2>
                   </div>
                   <p className="step-desc" style={{ color: '#d1d5db', fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
-                    +91 8290777222
+                    0000000
                   </p>
                 </div>
               </div>
@@ -60,7 +60,7 @@ function Contact() {
                     <h2 className="step-card-title">Address</h2>
                   </div>
                   <p className="step-desc" style={{ color: '#d1d5db', fontSize: '15px', lineHeight: '1.6', margin: '14px 0 0', flex: 1 }}>
-                    123 Elcon Street, New Delhi, India
+                    Maharashtra India
                   </p>
                 </div>
               </div>
