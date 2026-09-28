@@ -316,26 +316,34 @@
 
 /* Slick Arrows */
 .home-banner-slider-wrap .slick-prev,
-.home-banner-slider-wrap .slick-next {
+.home-banner-slider-wrap .slick-next,
+.home-banner-slider-wrap .slick-prev:hover,
+.home-banner-slider-wrap .slick-next:hover,
+.home-banner-slider-wrap .slick-prev:focus,
+.home-banner-slider-wrap .slick-next:focus {
   z-index: 20;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 .home-banner-slider-wrap .slick-prev {
-  left: 30px;
+  left: 20px;
 }
 .home-banner-slider-wrap .slick-next {
-  right: 30px;
+  right: 20px;
 }
 .home-banner-slider-wrap .slick-prev:before,
 .home-banner-slider-wrap .slick-next:before {
   font-family: "Font Awesome 6 Free", sans-serif !important;
   font-weight: 900 !important;
-  font-size: 40px !important;
-  opacity: 1 !important;
-  color: #38bdf8 !important;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+  font-size: 20px !important;
+  opacity: 0.3 !important;
+  color: #a3a3a3 !important;
+  text-shadow: none !important;
   cursor: pointer;
 }
 .home-banner-slider-wrap .slick-prev:before {

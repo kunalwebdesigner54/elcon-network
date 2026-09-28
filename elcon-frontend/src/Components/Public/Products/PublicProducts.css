@@ -49,7 +49,7 @@
   gap: 12px;
   font-size: 24px;
   font-weight: 700;
-  color: #fff;
+  color: #1e293b;
   margin-bottom: 28px;
   letter-spacing: 0.3px;
 }
@@ -87,25 +87,25 @@
   height: 100%;
 }
 
-/* ─── Slick Custom Arrows — Orange Circle ─── */
+/* ─── Slick Custom Arrows — Light Gray ─── */
 .pp-slick-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  width: 44px;
-  height: 44px;
+  width: 24px;
+  height: 24px;
   border-radius: 50% !important;
   border: none;
-  background: rgb(255, 154, 60);
-  color: #fff;
-  font-size: 16px;
+  background: transparent !important;
+  color: rgba(163, 163, 163, 0.5) !important;
+  font-size: 14px;
   cursor: pointer;
   display: flex !important;
   align-items: center;
   justify-content: center;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 15px rgba(255, 154, 60, 0.35);
+  box-shadow: none !important;
 }
 
 .pp-slick-arrow::before {
@@ -114,10 +114,10 @@
 
 .pp-slick-arrow:hover,
 .pp-slick-arrow:focus {
-  background: rgb(230, 130, 40) !important;
-  color: #fff !important;
-  box-shadow: 0 6px 20px rgba(255, 154, 60, 0.5);
-  transform: translateY(-50%) scale(1.08);
+  background: transparent !important;
+  color: rgba(163, 163, 163, 0.8) !important;
+  box-shadow: none !important;
+  transform: translateY(-50%);
 }
 
 .pp-slick-arrow.slick-disabled {
