@@ -176,7 +176,7 @@ function PublicLayout() {
         <NavLink
           key={item.label}
           to={item.to || '#'}
-          className={({ isActive }) => `${isDropdownItem ? 'public-dropdown-item' : 'public-nav-link'} ${isActive ? 'active' : ''}`}
+          className={({ isActive }) => `${isDropdownItem ? 'public-dropdown-item' : 'public-nav-link'} ${isActive && item.to !== '#' ? 'active' : ''}`}
           end={item.to === '/'}
         >
           {item.label}
@@ -201,7 +201,7 @@ function PublicLayout() {
         <NavLink
           key={`mobile-${item.label}`}
           to={item.to || '#'}
-          className={({ isActive }) => `public-mobile-link ${isActive ? 'active' : ''}`}
+          className={({ isActive }) => `public-mobile-link ${isActive && item.to !== '#' ? 'active' : ''}`}
           style={{ paddingLeft: depth > 0 ? `${20 + (depth * 15)}px` : '20px' }}
           end={item.to === '/'}
           onClick={closeMenu}
