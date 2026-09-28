@@ -172,12 +172,21 @@ function Home() {
             <img src="/about-img.png" alt="Grow Your Network" className="home-feature-img" />
           </div>
           <div className="home-feature-text">
-            <h2>Grow Your Network</h2>
+            <h2>Welcome to Elcon Network</h2>
             <p>
-              Experience the best platform to expand your connections and build a solid foundation for your financial goals. Our intuitive tools make it simple to monitor progress, invite others, and earn regular rewards.
+              <strong>Elcon Network</strong> is a direct selling company committed to providing high-quality lifestyle products for everyday use directly to consumers.
             </p>
             <p style={{ marginTop: '15px' }}>
-              We provide you with all the necessary resources and community support to help you scale faster. Whether you are a beginner or a seasoned professional, our system is designed to seamlessly integrate into your daily workflow, unlocking new opportunities for limitless growth and success. Join us today and take the first step towards a brighter financial future!
+              Our customers are at the heart of our business. Through our network of trained distributors and leaders, we ensure quality products, excellent service, and valuable business opportunities for our members.
+            </p>
+            <p style={{ marginTop: '15px' }}>
+              In addition to product distribution, Elcon Network offers eligible members the opportunity to build a customer base, promote products, and earn income in accordance with the company's policies and compensation plan.
+            </p>
+            <p style={{ marginTop: '15px' }}>
+              We are dedicated to delivering <strong>quality, trust, transparency, and customer satisfaction</strong> while creating opportunities for personal and business growth.
+            </p>
+            <p style={{ marginTop: '15px', fontStyle: 'italic', fontWeight: 'bold' }}>
+              Elcon Network – Building Trust, Creating Opportunities.
             </p>
           </div>
         </div>
