@@ -509,15 +509,13 @@ exports.getMyDonations = async (req, res) => {
 
     const mapRow = (d, type) => {
       const donorDepth = levelDepthMap[d.fromMemberId] || 0;
-      const receiverDepth = levelDepthMap[d.toMemberId] || 0;
-      const relativeDepth = Math.max(0, donorDepth - receiverDepth);
 
       return {
         sNo: 0,
         donationId: d.donationId,
         type,
         level: d.level,
-        levelDepth: relativeDepth,
+        levelDepth: donorDepth,
         amount: d.amount,
         fromMemberId: d.fromMemberId,
         fromName: d.fromName,
