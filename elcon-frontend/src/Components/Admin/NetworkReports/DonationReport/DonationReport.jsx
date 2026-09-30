@@ -6,8 +6,9 @@ import FlashMessage from '../../../shared/FlashMessage/FlashMessage';
 import './DonationReport.css';
 
 const exportColumns = [
-  'S.No', 'Donor Member ID', 'Donor Member Name', 'Receiver Member ID', 'Receiver Member Name', 'Amount (₹)',
-  'Upgrade', 'Directs', 'Level Depth', 'Request Date', 'Approve Date', 'Transaction ID', 'UTR Number', 'Status', 'Skipped IDs'
+  '#', 'Receiver Member ID', 'Receiver Name', 'Doner Member ID', 'Doner Member Name',
+  'Directs', 'Level Depth', 'Amount (₹)', 'Upgrade', 'Request Date', 'Approve Date',
+  'Transaction ID', 'UTR Number', 'Status', 'Skipped IDs'
 ];
 
 const rankLabels = {
@@ -166,8 +167,8 @@ function DonationReport() {
   };
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
-    row.srNo, row.donorMemberId, row.donorMemberName, row.receiverMemberId, row.receiverMemberName,
-    row.amount, row.rank, row.directs, row.levelDepth, row.requestDate, row.approveDate,
+    row.srNo, row.receiverMemberId, row.receiverMemberName, row.donorMemberId, row.donorMemberName,
+    row.directs, row.levelDepth, row.amount, row.rank, row.requestDate, row.approveDate,
     row.transactionId, row.paymentProof, row.status,
     row.skippedMembers && row.skippedMembers.length > 0 ? (row.skippedMembers[0].memberId || row.skippedMembers[0]) : '---'
   ]));
@@ -291,15 +292,15 @@ function DonationReport() {
               <table className="data-table" style={{ minWidth: '1680px' }}>
                 <thead>
                   <tr>
-                    <th>S.NO</th>
-                    <th>DONAR MID</th>
-                    <th>DONAR MEMBER NAME</th>
+                    <th>#</th>
                     <th>RECEIVER MID</th>
-                    <th>RECEIVER MEMBER NAME</th>
-                    <th>AMOUNT (₹)</th>
-                    <th>UPGRADE</th>
+                    <th>RECEIVER NAME</th>
+                    <th>DONER MID</th>
+                    <th>DONER MEMBER NAME</th>
                     <th>DIRECTS</th>
                     <th>LEVEL DEPTH</th>
+                    <th>AMOUNT (₹)</th>
+                    <th>UPGRADE</th>
                     <th>REQUEST DATE</th>
                     <th>APPROVE DATE</th>
                     <th>TRANSACTION ID</th>
@@ -313,14 +314,14 @@ function DonationReport() {
                   {visibleRows.map((row) => (
                     <tr key={row.srNo}>
                       <td>{row.srNo}</td>
-                      <td>{row.donorMemberId}</td>
-                      <td>{row.donorMemberName}</td>
                       <td>{row.receiverMemberId}</td>
                       <td>{row.receiverMemberName}</td>
-                      <td>{row.amount}</td>
-                      <td>{row.rank}</td>
+                      <td>{row.donorMemberId}</td>
+                      <td>{row.donorMemberName}</td>
                       <td>{row.directs}</td>
                       <td>{row.levelDepth}</td>
+                      <td>{row.amount}</td>
+                      <td>{row.rank}</td>
                       <td>{row.requestDate}</td>
                       <td>{row.approveDate}</td>
                       <td>{row.transactionId}</td>
