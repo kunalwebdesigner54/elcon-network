@@ -114,7 +114,7 @@ function Dashboard() {
 
 						let customClass = '';
 						let hideIcon = false;
-						if (stat.label === 'Total Discount Issued') {
+						if (stat.label === 'Total Issued Coupons') {
 							customClass = 'discount-issued-card';
 							hideIcon = true;
 						} else if (stat.label === 'Total used Discount') {

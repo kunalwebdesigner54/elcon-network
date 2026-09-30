@@ -340,10 +340,10 @@ exports.adminFullDashboard = async (req, res) => {
       { label: 'Pending Package Orders', value: `${pendingOrders}` },
       { label: 'Development Fund', value: fmt2(0) },
       { label: 'Product Fund', value: fmt2(0) },
-      { label: 'Total Coupons', value: `${totalCouponsList.length}` },
-      { label: 'Total Discount Issued', value: `${totalDiscountCreditsList.length > 0 ? totalDiscountCreditsList[0].total : 0}` },
+      { label: 'Total Issued Coupons', value: `${totalDiscountCreditsList.length > 0 ? totalDiscountCreditsList[0].total : 0}` },
       { label: 'Total used Discount', value: `${totalDiscountDebitsList.length > 0 ? totalDiscountDebitsList[0].total : 0}` },
       { label: 'Total un-used Discount', value: `${(totalDiscountCreditsList.length > 0 ? totalDiscountCreditsList[0].total : 0) - (totalDiscountDebitsList.length > 0 ? totalDiscountDebitsList[0].total : 0)}` },
+      { label: 'Members Issued Coupon', value: `${totalCouponsList.length}` },
     ];
 
     res.status(200).json({ success: true, data: { stats: adminStats } });
