@@ -40,7 +40,7 @@ function DonationReport() {
   const [donationRows, setDonationRows] = useState([]);
   const [activeTab, setActiveTab] = useState('ALL');
   const [filters, setFilters] = useState({
-    donorMemberId: '', receiverMemberId: '', amount: '', rank: '', startDate: '', endDate: ''
+    donorMemberId: '', receiverMemberId: '', amount: '', rank: '', levelDepth: '', startDate: '', endDate: ''
   });
   const [pageSize, setPageSize] = useState('10');
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,11 +145,12 @@ function DonationReport() {
       const byReceiverId = !filters.receiverMemberId || String(row.receiverMemberId || '').toLowerCase().includes(filters.receiverMemberId.toLowerCase());
       const byAmount = !filters.amount || row.amount.includes(filters.amount);
       const byRank = !filters.rank || row.rank === filters.rank;
+      const byLevelDepth = !filters.levelDepth || String(row.levelDepth) === filters.levelDepth;
       const byStatus = activeTab === 'ALL' || row.status === activeTab;
       const rowDate = parseDate(row.requestDate);
       const byStartDate = !filters.startDate || rowDate >= filters.startDate;
       const byEndDate = !filters.endDate || rowDate <= filters.endDate;
-      return byDonorId && byReceiverId && byAmount && byRank && byStatus && byStartDate && byEndDate;
+      return byDonorId && byReceiverId && byAmount && byRank && byLevelDepth && byStatus && byStartDate && byEndDate;
     });
   }, [filters, donationRows, activeTab]);
 
@@ -265,6 +266,7 @@ function DonationReport() {
                   <option key={rankKey} value={rankKey}>{rankKey}</option>
                 ))}
               </select>
+              <input className="text-input" style={{ maxWidth: '120px' }} placeholder="LEVEL DEPTH" value={filters.levelDepth} onChange={handleFilterChange('levelDepth')} />
               <input className="text-input" type="date" style={{ maxWidth: '130px' }} value={filters.startDate} onChange={handleFilterChange('startDate')} />
               <input className="text-input" type="date" style={{ maxWidth: '120px' }} value={filters.endDate} onChange={handleFilterChange('endDate')} />
               <select className="select-input" style={{ maxWidth: '92px' }} value={pageSize} onChange={(event) => { setPageSize(event.target.value); setCurrentPage(1); }}>
