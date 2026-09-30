@@ -273,9 +273,9 @@ exports.adminFullDashboard = async (req, res) => {
       pendingOrders,
       withdrawals,
       pendingEpinRequests,
-      totalCoupons,
-      usedCoupons,
-      activeCoupons,
+      totalCouponsList,
+      totalDiscountCreditsList,
+      totalDiscountDebitsList,
       expiredCoupons
     ] = await Promise.all([
       Donation.find({ status: 'COMPLETED' }),
@@ -287,14 +287,9 @@ exports.adminFullDashboard = async (req, res) => {
       Order.countDocuments({ orderStatus: 'Pending' }),
       WithdrawalRequest.find(),
       EpinRequest.countDocuments({ status: 'Pending' }),
-      DiscountWalletTransaction.countDocuments({ credit: { $gt: 0 } }),
-      DiscountWalletTransaction.countDocuments({ debit: { $gt: 0 } }),
-      User.countDocuments({ 
-        $or: [
-          { couponWalletBalance: { $gt: 0 } },
-          { discountCouponBalance: { $gt: 0 } }
-        ] 
-      }),
+      DiscountWalletTransaction.distinct('memberId', { credit: { $gt: 0 } }),
+      DiscountWalletTransaction.aggregate([{ $match: { credit: { $gt: 0 } } }, { $group: { _id: null, total: { $sum: '$credit' } } }]),
+      DiscountWalletTransaction.aggregate([{ $match: { debit: { $gt: 0 } } }, { $group: { _id: null, total: { $sum: '$debit' } } }]),
       Promise.resolve(0)
     ]);
 
@@ -345,10 +340,10 @@ exports.adminFullDashboard = async (req, res) => {
       { label: 'Pending Package Orders', value: `${pendingOrders}` },
       { label: 'Development Fund', value: fmt2(0) },
       { label: 'Product Fund', value: fmt2(0) },
-      { label: 'Total Coupons', value: `${totalCoupons}` },
-      { label: 'Used Coupons', value: `${usedCoupons}` },
-      { label: 'Active Coupons', value: `${activeCoupons}` },
-      { label: 'Expired Coupons', value: `${expiredCoupons}` },
+      { label: 'Total Coupons', value: `${totalCouponsList.length}` },
+      { label: 'Total Discount Issued', value: `${totalDiscountCreditsList.length > 0 ? totalDiscountCreditsList[0].total : 0}` },
+      { label: 'Total used Discount', value: `${totalDiscountDebitsList.length > 0 ? totalDiscountDebitsList[0].total : 0}` },
+      { label: 'Total un-used Discount', value: `${(totalDiscountCreditsList.length > 0 ? totalDiscountCreditsList[0].total : 0) - (totalDiscountDebitsList.length > 0 ? totalDiscountDebitsList[0].total : 0)}` },
     ];
 
     res.status(200).json({ success: true, data: { stats: adminStats } });

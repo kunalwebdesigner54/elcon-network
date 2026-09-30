@@ -39,9 +39,9 @@ const defaultAdminStats = [
 	{ label: 'Development Fund', value: '₹ 0' },
 	{ label: 'Product Fund', value: '₹ 0' },
 	{ label: 'Total Coupons', value: '0' },
-	{ label: 'Used Coupons', value: '0' },
-	{ label: 'Active Coupons', value: '0' },
-	{ label: 'Expired Coupons', value: '0' }
+	{ label: 'Total Discount Issued', value: '0' },
+	{ label: 'Total used Discount', value: '0' },
+	{ label: 'Total un-used Discount', value: '0' }
 ];
 
 function Dashboard() {
@@ -112,15 +112,30 @@ function Dashboard() {
 						const icons = ['fa-solid fa-basket-shopping', 'fa-solid fa-box', 'fa-regular fa-user', 'fa-solid fa-wallet'];
 						const icon = icons[index % 4];
 
+						let customClass = '';
+						let hideIcon = false;
+						if (stat.label === 'Total Discount Issued') {
+							customClass = 'discount-issued-card';
+							hideIcon = true;
+						} else if (stat.label === 'Total used Discount') {
+							customClass = 'discount-used-card';
+							hideIcon = true;
+						} else if (stat.label === 'Total un-used Discount') {
+							customClass = 'discount-unused-card';
+							hideIcon = true;
+						}
+
 						return (
-							<article className="admin-dashboard-stat-card" key={stat.label}>
-								<div className="admin-dashboard-stat-content">
-									<div className="admin-dashboard-stat-value">{stat.value}</div>
-									<div className="admin-dashboard-stat-label">{stat.label}</div>
+							<article className={`admin-dashboard-stat-card ${customClass}`} key={stat.label}>
+								<div className="admin-dashboard-stat-content" style={hideIcon ? { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', width: '100%' } : {}}>
+									<div className="admin-dashboard-stat-label" style={hideIcon ? { color: '#fff', fontSize: '15px', fontWeight: 'bold' } : {}}>{stat.label}</div>
+									<div className="admin-dashboard-stat-value" style={hideIcon ? { color: '#fff', fontSize: '28px', textAlign: 'right', alignSelf: 'flex-end', marginTop: '12px' } : {}}>{stat.value}</div>
 								</div>
-								<div className="admin-dashboard-stat-icon-box">
-									<i className={`admin-dashboard-stat-icon ${icon}`}></i>
-								</div>
+								{!hideIcon && (
+									<div className="admin-dashboard-stat-icon-box">
+										<i className={`admin-dashboard-stat-icon ${icon}`}></i>
+									</div>
+								)}
 							</article>
 						);
 					})}
