@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
-import { getNewsPopupList } from '../../../api/managementService';
+import { getBlogList } from '../../../api/blogService';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './LatestNews.css';
@@ -8,9 +9,10 @@ import './LatestNews.css';
 function LatestNews() {
   const [newsItems, setNewsItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getNewsPopupList('News and Event')
+    getBlogList()
       .then((res) => {
         if (res.success && res.items) {
           // Filter out drafts just in case, and sort by date
@@ -100,7 +102,9 @@ function LatestNews() {
                   <div className="news-content">
                     <h3 className="news-title">{news.title}</h3>
                     <p className="news-excerpt">{news.description}</p>
-                    <button className="news-read-more" type="button">Read More <span>→</span></button>
+                    <button className="news-read-more" type="button" onClick={() => navigate(`/blog/${news.id || news._id}`)}>
+                      Read More <span>→</span>
+                    </button>
                   </div>
                 </div>
               </div>

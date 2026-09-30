@@ -156,6 +156,15 @@ const menuItems = [
     ]
   },
   {
+    key: 'blogs',
+    label: 'Manage Blogs',
+    icon: 'fa-solid fa-blog',
+    children: [
+      { label: 'Add New Blog', to: '/blogs/add-new' },
+      { label: 'List All Blogs', to: '/blogs/list-all' }
+    ]
+  },
+  {
     key: 'awardsRewards',
     label: 'Awards & Rewards',
     icon: 'fa-solid fa-trophy',
@@ -246,6 +255,7 @@ function AdminLayout() {
           'settings': 'SUPER_ADMIN_ONLY', // Sub-admins usually shouldn't access settings, but let's say 'user_management'
           'coupon': 'wallet_management',
           'newsPopup': 'product_management',
+          'blogs': 'product_management',
           'awardsRewards': 'product_management',
           'support': 'support',
           'rank': 'reports'

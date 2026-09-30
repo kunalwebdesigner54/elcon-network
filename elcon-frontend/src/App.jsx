@@ -160,6 +160,9 @@ import AwardsRewardsSetting from './Components/Admin/AwardsRewards/AwardsRewards
 import LuckyDrawSetting from './Components/Admin/AwardsRewards/LuckyDrawSetting';
 import RewardsQualifiers from './Components/Common/RewardsQualifiers';
 import LuckyDrawWinners from './Components/Common/LuckyDrawWinners';
+import AddNewBlog from './Components/Admin/Blogs/AddNewBlog';
+import ListBlogs from './Components/Admin/Blogs/ListBlogs';
+import SingleBlog from './Components/Public/Blogs/SingleBlog';
 
 function App() {
   useEffect(() => {
@@ -232,6 +235,7 @@ function App() {
           <Route path="registration" element={<Register />} />
           <Route path="user-login" element={<UserLogin />} />
           <Route path="product" element={<PublicProducts />} />
+          <Route path="blog/:id" element={<SingleBlog />} />
         </Route>
 
         <Route path="/user" element={<ProtectedRoute><UserLayout /></ProtectedRoute>}>
@@ -422,6 +426,10 @@ function App() {
           <Route path="news-popup/add-new" element={<NewsAdd />} />
           <Route path="news-popup/edit/:id" element={<NewsAdd />} />
           <Route path="news-popup/list-all" element={<NewsList />} />
+
+          <Route path="blogs/add-new" element={<AddNewBlog />} />
+          <Route path="blogs/edit/:id" element={<AddNewBlog />} />
+          <Route path="blogs/list-all" element={<ListBlogs />} />
 
           <Route path="awards-rewards/setting" element={<AwardsRewardsSetting />} />
           <Route path="awards-rewards/lucky-draw" element={<LuckyDrawSetting />} />

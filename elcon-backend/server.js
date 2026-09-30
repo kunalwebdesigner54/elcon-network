@@ -20,6 +20,7 @@ const depositsRoutes = require('./routes/deposits');
 const epinsRoutes = require('./routes/epins');
 const settingsRoutes = require('./routes/settings');
 const newsPopupRoutes = require('./routes/newsPopup');
+const blogsRoutes = require('./routes/blogs');
 const transactionsRoutes = require('./routes/transactions');
 const donationsRoutes = require('./routes/donations');
 const supportTicketsRoutes = require('./routes/supportTickets');
@@ -82,6 +83,7 @@ const startServer = async () => {
     app.use('/api/epins', epinsRoutes);
     app.use('/api/settings', settingsRoutes);
     app.use('/api/news-popup', newsPopupRoutes);
+    app.use('/api/blogs', blogsRoutes);
     app.use('/api/transactions', transactionsRoutes);
     app.use('/api/donations', donationsRoutes);
     app.use('/api/support-tickets', supportTicketsRoutes);
