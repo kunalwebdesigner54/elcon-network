@@ -168,7 +168,7 @@ function DonationReport() {
 
   const formatRowsForExport = (rows) => rows.map((row) => ([
     row.srNo, row.receiverMemberId, row.receiverMemberName, row.donorMemberId, row.donorMemberName,
-    row.directs, row.levelDepth, row.amount, row.rank, row.requestDate, row.approveDate,
+    row.directs, row.levelDepth, row.amount, row.rank ? `Level ${row.rank}` : '', row.requestDate, row.approveDate,
     row.transactionId, row.paymentProof, row.status,
     row.skippedMembers && row.skippedMembers.length > 0 ? (row.skippedMembers[0].memberId || row.skippedMembers[0]) : '---'
   ]));
@@ -321,7 +321,7 @@ function DonationReport() {
                       <td>{row.directs}</td>
                       <td>{row.levelDepth}</td>
                       <td>{row.amount}</td>
-                      <td>{row.rank}</td>
+                      <td>{row.rank ? `Level ${row.rank}` : ''}</td>
                       <td>{row.requestDate}</td>
                       <td>{row.approveDate}</td>
                       <td>{row.transactionId}</td>
