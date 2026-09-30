@@ -1113,7 +1113,7 @@ main,
   padding: 12px 24px;
   font-size: 16px;
   font-weight: 600;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
   cursor: pointer;
   z-index: 99;
   display: flex;

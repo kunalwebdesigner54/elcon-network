@@ -79,7 +79,9 @@ const ProductSection = ({ title, products, onProductClick, windowWidth }) => {
                       <div className="pp-card-no-img">No Image</div>
                     )}
                     {product.discount > 0 && (
-                      <span className="pp-card-badge">{product.discount}% OFF</span>
+                      <span className="pp-card-badge">
+                        {product.discount > 100 ? `₹${product.discount} OFF` : `${product.discount}% OFF`}
+                      </span>
                     )}
                   </div>
                   <div className="pp-card-body">

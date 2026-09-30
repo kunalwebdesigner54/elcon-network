@@ -1,6 +1,5 @@
-/* ─── Public Products Page ─── */
 .pp-page {
-  background: var(--bg-darkest, #0B1120);
+  background: #f7f7f7;
   min-height: 100vh;
 }
 
@@ -138,7 +137,7 @@
 }
 
 .pp-card {
-  background: #f7f7f7;
+  background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 16px;
   overflow: hidden;
