@@ -268,10 +268,10 @@ function Register() {
       <section className="public-page">
         <div className="public-container">
           <div className="register-card">
-            <h2 className="register-title" style={{ color: '#fff' }}>Registration Form</h2>
+            <h2 className="register-title">Registration Form</h2>
 
             {checkingSettings ? (
-              <div style={{ color: '#fff', textAlign: 'center', padding: '20px' }}>Loading...</div>
+              <div style={{ textAlign: 'center', padding: '20px' }}>Loading...</div>
             ) : !registrationEnabled ? (
               <div style={{ padding: '30px', textAlign: 'center' }}>
                 <h3 style={{ color: '#ff4d4f', marginBottom: '15px' }}>Registration Temporarily Paused</h3>
