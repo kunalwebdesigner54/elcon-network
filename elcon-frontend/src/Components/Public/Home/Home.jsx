@@ -88,9 +88,7 @@ function Home() {
             <p className="home-banner-kicker">Welcome To</p>
             <h1 className="home-banner-title">Elcon Network</h1>
             <p className="home-banner-desc">
-              This platform has been started because in this time many people business have small speed and
-              many people jobs have less income. A small dose of yours by joining this system can help many
-              families.
+              COMMUNITY BASE BUSINESS & ONLINE SHOPPING PLATFORM
             </p>
           </div>
           <div className="home-banner-img-wrap">
