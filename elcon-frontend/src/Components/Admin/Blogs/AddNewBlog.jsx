@@ -110,8 +110,16 @@ export default function AddNewBlog(){
 
           <div className="blog-row">
             <label>Images</label>
-            <input type="file" multiple accept="image/*" onChange={handleImageChange} className="file-input" />
-            <small>Max 5 images allowed.</small>
+            <div className="custom-file-upload">
+              <label htmlFor="blog-image-upload" className="btn-browse">
+                Browse
+              </label>
+              <input id="blog-image-upload" type="file" multiple accept="image/*" onChange={handleImageChange} className="file-input-hidden" />
+              <span className="file-name-display">
+                {form.images && form.images.length > 0 ? `${form.images.length} image(s) selected` : 'No file chosen'}
+              </span>
+            </div>
+            <small style={{ color: '#9ca3af', marginTop: '4px' }}>Max 5 images allowed.</small>
           </div>
 
           <div className="blog-row">
