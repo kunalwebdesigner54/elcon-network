@@ -507,25 +507,30 @@ exports.getMyDonations = async (req, res) => {
     const levelDepthMap = {};
     users.forEach(u => { levelDepthMap[u.memberId] = u.levelDepth || 0; });
 
-    const mapRow = (d, type) => ({
-      sNo: 0,
-      donationId: d.donationId,
-      type,
-      level: d.level,
-      levelDepth: levelDepthMap[d.fromMemberId] || 0,
-      amount: d.amount,
-      fromMemberId: d.fromMemberId,
-      fromName: d.fromName,
-      toMemberId: d.toMemberId,
-      toName: d.toName,
-      status: d.status,
-      skippedMembers: d.skippedMembers || [],
-      date: formatDate(d.createdAt),
-      dateRaw: d.createdAt,
-      utrNumber: d.utrNumber || '---',
-      remark: d.remark || '---',
-      directs: directsMap[d.fromMemberId] || 0,
-    });
+    const mapRow = (d, type) => {
+      const donorDepth = levelDepthMap[d.fromMemberId] || 0;
+      const receiverDepth = levelDepthMap[d.toMemberId] || 0;
+
+      return {
+        sNo: 0,
+        donationId: d.donationId,
+        type,
+        level: d.level,
+        levelDepth: donorDepth,
+        amount: d.amount,
+        fromMemberId: d.fromMemberId,
+        fromName: d.fromName,
+        toMemberId: d.toMemberId,
+        toName: d.toName,
+        status: d.status,
+        skippedMembers: d.skippedMembers || [],
+        date: formatDate(d.createdAt),
+        dateRaw: d.createdAt,
+        utrNumber: d.utrNumber || '---',
+        remark: d.remark || '---',
+        directs: directsMap[d.fromMemberId] || 0,
+      };
+    };
 
     const sentRows = sent.map((d, i) => ({ ...mapRow(d, 'SENT'), sNo: i + 1 }));
     const receivedRows = received.map((d, i) => ({ ...mapRow(d, 'RECEIVED'), sNo: i + 1 }));
