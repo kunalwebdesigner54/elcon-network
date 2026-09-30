@@ -503,18 +503,14 @@ exports.getMyDonations = async (req, res) => {
     const directsMap = {};
     directCounts.forEach(c => { directsMap[c._id] = c.count; });
 
-    const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId levelDepth').lean();
-    const levelDepthMap = {};
-    users.forEach(u => { levelDepthMap[u.memberId] = u.levelDepth || 0; });
+    // Physical levelDepth calculation removed since Donations use logical upgrade level
 
     const mapRow = (d, type) => ({
       sNo: 0,
       donationId: d.donationId,
       type,
       level: d.level,
-      levelDepth: (levelDepthMap[d.fromMemberId] || 0) - (levelDepthMap[d.toMemberId] || 0) > 0 
-        ? (levelDepthMap[d.fromMemberId] || 0) - (levelDepthMap[d.toMemberId] || 0) 
-        : d.level,
+      levelDepth: d.level,
       amount: d.amount,
       fromMemberId: d.fromMemberId,
       fromName: d.fromName,
@@ -582,10 +578,7 @@ exports.getAllDonations = async (req, res) => {
     const directsMap = {};
     directCounts.forEach(c => { directsMap[c._id] = c.count; });
 
-    // Get levelDepth
-    const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId levelDepth').lean();
-    const levelDepthMap = {};
-    users.forEach(u => { levelDepthMap[u.memberId] = u.levelDepth || 0; });
+    // Physical levelDepth calculation removed since Donations use logical upgrade level
 
     const rows = donations.map((d, index) => ({
       sNo: index + 1,
@@ -604,9 +597,7 @@ exports.getAllDonations = async (req, res) => {
       utrNumber: d.utrNumber || '---',
       remark: d.remark || '---',
       directs: directsMap[d.fromMemberId] || 0,
-      levelDepth: (levelDepthMap[d.fromMemberId] || 0) - (levelDepthMap[d.toMemberId] || 0) > 0 
-        ? (levelDepthMap[d.fromMemberId] || 0) - (levelDepthMap[d.toMemberId] || 0) 
-        : d.level,
+      levelDepth: d.level,
     }));
 
     const totalAmount = donations.filter(d => ['APPROVED', 'COMPLETED'].includes(d.status)).reduce((s, d) => s + d.amount, 0);

@@ -12,7 +12,11 @@ const getUserIdentifiers = (req) => [req.user?.memberId, req.user?.epin, req.use
   .map((value) => String(value || '').trim())
   .filter(Boolean);
 
-const isAdmin = (req) => req.user?.role === 'admin';
+const isAdmin = (req) => {
+  const role = req.user?.role;
+  const adminType = req.user?.adminType;
+  return role === 'admin' || role === 'SUPER_ADMIN' || role === 'SUB_ADMIN' || adminType === 'SUPER_ADMIN' || adminType === 'SUB_ADMIN';
+};
 
 const formatDate = (date = new Date()) => new Date(date).toLocaleString('en-IN', {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,
@@ -122,29 +126,9 @@ exports.updateEpinRequestStatus = async (req, res) => {
     await request.save();
 
     if (previousStatus !== 'Approved' && request.status === 'Approved') {
-      const user = await User.findOne({ memberId: request.clientId }).select('+password +transactionPassword walletBalance');
-      if (!user) {
-        return res.status(404).json({ success: false, message: 'User not found for epin request' });
-      }
-
       const packageDoc = await EpinPackage.findOne({ packageName: request.packageCost, isActive: true });
       const cost = packageDoc ? packageDoc.price : Number(req.body.cost || 10);
-      const totalCost = Number(request.qty || 1) * cost;
-
-      if ((user.walletBalance || 0) < totalCost) {
-        return res.status(400).json({ success: false, message: 'Insufficient wallet balance to approve ePin request' });
-      }
-
-      user.walletBalance -= totalCost;
-      await user.save();
-
-      await createWalletTransaction({
-        memberId: user.memberId,
-        description: `EPIN GENERATION - ${request._id}`,
-        debit: totalCost,
-        approvalStatus: 'Approved',
-      });
-
+      
       const generatedBy = req.body.generatedBy || req.user?.memberId || req.user?.epin || 'ADMIN';
       const currentOwner = String(req.body.currentOwner || generatedBy).trim();
       const remark = String(req.body.remark || '-').trim();
