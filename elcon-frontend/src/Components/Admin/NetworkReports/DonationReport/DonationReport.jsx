@@ -266,7 +266,12 @@ function DonationReport() {
                   <option key={rankKey} value={rankKey}>{rankKey}</option>
                 ))}
               </select>
-              <input className="text-input" style={{ maxWidth: '120px' }} placeholder="LEVEL DEPTH" value={filters.levelDepth} onChange={handleFilterChange('levelDepth')} />
+              <select className="select-input" style={{ maxWidth: '130px' }} value={filters.levelDepth} onChange={handleFilterChange('levelDepth')}>
+                <option value="">LEVEL DEPTH</option>
+                {[...Array(30)].map((_, i) => (
+                  <option key={i+1} value={i+1}>{i+1}</option>
+                ))}
+              </select>
               <input className="text-input" type="date" style={{ maxWidth: '130px' }} value={filters.startDate} onChange={handleFilterChange('startDate')} />
               <input className="text-input" type="date" style={{ maxWidth: '120px' }} value={filters.endDate} onChange={handleFilterChange('endDate')} />
               <select className="select-input" style={{ maxWidth: '92px' }} value={pageSize} onChange={(event) => { setPageSize(event.target.value); setCurrentPage(1); }}>
