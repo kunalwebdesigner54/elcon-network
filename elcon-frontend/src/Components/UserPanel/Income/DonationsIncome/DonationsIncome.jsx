@@ -119,7 +119,7 @@ function DonationsIncome() {
                       <td>{row.fromMemberId}</td>
                       <td>{row.fromName}</td>
                       <td>{row.directs || 0}</td>
-                      <td>{row.level}</td>
+                      <td>{row.levelDepth}</td>
                       <td style={{ color: '#27ae60', fontWeight: 'bold' }}>₹ {row.amount?.toLocaleString('en-IN')}</td>
                       <td>Level {row.level}</td>
                       <td>{row.donationId}</td>

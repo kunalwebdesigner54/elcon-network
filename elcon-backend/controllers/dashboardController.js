@@ -289,8 +289,13 @@ exports.adminFullDashboard = async (req, res) => {
       EpinRequest.countDocuments({ status: 'Pending' }),
       Coupon.countDocuments(),
       Coupon.countDocuments({ status: 'USED' }),
-      Coupon.countDocuments({ status: 'ACTIVE' }),
-      Coupon.countDocuments({ status: 'EXPIRED' })
+      Coupon.countDocuments({ status: 'ACTIVE', expiryDate: { $gt: new Date() } }),
+      Coupon.countDocuments({
+        $or: [
+          { status: 'EXPIRED' },
+          { status: 'ACTIVE', expiryDate: { $lte: new Date() } }
+        ]
+      })
     ]);
 
     const totalDonationAmount = allDonations.reduce((s, d) => s + d.amount, 0);

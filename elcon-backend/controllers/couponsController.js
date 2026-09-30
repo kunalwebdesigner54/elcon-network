@@ -2,18 +2,21 @@ const Coupon = require('../models/Coupon');
 
 const { formatDate, formatDateOnly } = require('../utils/dateFormatter');
 
-const formatCoupon = (coupon, index = 0) => ({
-  sNo: index + 1,
-  couponId: coupon.couponId,
-  memberId: coupon.memberId,
-  memberName: coupon.memberName,
-  amount: Number(coupon.amount || 0).toFixed(2),
-  createdDate: formatDate(coupon.createdAt),
-  expiryDate: formatDate(coupon.expiryDate),
-  usedDate: coupon.usedDate ? formatDate(coupon.usedDate) : '-',
-  usedInOrder: coupon.usedInOrder || '-',
-  status: coupon.status,
-});
+const formatCoupon = (coupon, index = 0) => {
+  const isExpired = coupon.status === 'ACTIVE' && new Date(coupon.expiryDate) <= new Date();
+  return {
+    sNo: index + 1,
+    couponId: coupon.couponId,
+    memberId: coupon.memberId,
+    memberName: coupon.memberName,
+    amount: Number(coupon.amount || 0).toFixed(2),
+    createdDate: formatDate(coupon.createdAt),
+    expiryDate: formatDate(coupon.expiryDate),
+    usedDate: coupon.usedDate ? formatDate(coupon.usedDate) : '-',
+    usedInOrder: coupon.usedInOrder || '-',
+    status: isExpired ? 'EXPIRED' : coupon.status,
+  };
+};
 
 exports.getMyCoupons = async (req, res) => {
   try {
@@ -38,7 +41,20 @@ exports.getAllCoupons = async (req, res) => {
     if (memberId) filter.memberId = new RegExp(memberId.trim(), 'i');
     if (memberName) filter.memberName = new RegExp(memberName.trim(), 'i');
     if (usedInOrder) filter.usedInOrder = new RegExp(usedInOrder.trim(), 'i');
-    if (status) filter.status = status.toUpperCase();
+    if (status) {
+      const s = status.toUpperCase();
+      if (s === 'ACTIVE') {
+        filter.status = 'ACTIVE';
+        filter.expiryDate = { $gt: new Date() };
+      } else if (s === 'EXPIRED') {
+        filter.$or = [
+          { status: 'EXPIRED' },
+          { status: 'ACTIVE', expiryDate: { $lte: new Date() } }
+        ];
+      } else {
+        filter.status = s;
+      }
+    }
 
     if (startDate || endDate) {
       filter.createdAt = {};
@@ -66,9 +82,14 @@ exports.getCouponStats = async (req, res) => {
   try {
     const [totalCoupons, activeCoupons, usedCoupons, expiredCoupons] = await Promise.all([
       Coupon.countDocuments(),
-      Coupon.countDocuments({ status: 'ACTIVE' }),
+      Coupon.countDocuments({ status: 'ACTIVE', expiryDate: { $gt: new Date() } }),
       Coupon.countDocuments({ status: 'USED' }),
-      Coupon.countDocuments({ status: 'EXPIRED' }),
+      Coupon.countDocuments({
+        $or: [
+          { status: 'EXPIRED' },
+          { status: 'ACTIVE', expiryDate: { $lte: new Date() } }
+        ]
+      }),
     ]);
 
     const totalDiscount = await Coupon.aggregate([
