@@ -1100,3 +1100,183 @@ main,
 .public-mobile-sublink {
     padding-left: 35px !important;
 }
+
+/* Floating Login Button */
+.floating-login-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #0ea5e9;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+  cursor: pointer;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.floating-login-btn:hover {
+  background-color: #0284c7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+}
+
+/* Slide-in Login Panel */
+.slide-in-login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.slide-in-login-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.slide-in-login-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 100%;
+  max-width: 350px;
+  height: 100%;
+  background: #fff;
+  z-index: 1001;
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+.slide-in-login-panel.open {
+  right: 0;
+}
+
+.slide-in-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.slide-in-close:hover {
+  color: #0f172a;
+}
+
+.slide-in-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.slide-in-header h3 {
+  font-size: 24px;
+  color: #1e293b;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.slide-in-header p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.slide-in-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.form-group input {
+  padding: 12px 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.slide-in-submit {
+  background: #49ba70; /* Green from the reference image */
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.slide-in-submit:hover {
+  background: #3a975a;
+}
+
+.slide-in-submit:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.slide-in-error {
+  color: #b91c1c;
+  background: #fef2f2;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.slide-in-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.slide-in-footer a {
+  color: #0ea5e9;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.slide-in-footer a:hover {
+  text-decoration: underline;
+}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { getNewsPopupList, getBranding } from '../../../api/managementService';
+import { loginUser } from '../../../api/authService';
 import Swal from 'sweetalert2';
 import './PublicLayout.css';
 
@@ -26,8 +27,7 @@ const navItems = [
       { label: 'Join Business', to: '#' },
       { label: 'How MLM Works', to: '#' },
       { label: 'Income Plan', to: '#' },
-      { label: 'Training Videos', to: '#' },
-      { label: 'Login / Register', to: '/user-login' }
+      { label: 'Training Videos', to: '#' }
     ]
   },
   {
@@ -56,10 +56,50 @@ const navItems = [
 ];
 
 function PublicLayout() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [brandingLogo, setBrandingLogo] = useState(null);
   const [logoLoading, setLogoLoading] = useState(true);
+
+  // Slide-in login state
+  const [isLoginSlideOpen, setIsLoginSlideOpen] = useState(false);
+  const [loginId, setLoginId] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  const handleLoginSubmit = async (event) => {
+    event.preventDefault();
+    setLoginError('');
+    setLoginLoading(true);
+
+    try {
+      const isEmail = loginId.includes('@');
+      const payload = isEmail ? { email: loginId, password } : { memberId: loginId, password };
+      const data = await loginUser(payload);
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('user', JSON.stringify(data.user));
+
+      const isAdminUser = data?.user?.role === 'admin'
+        || data?.user?.role === 'SUPER_ADMIN'
+        || data?.user?.role === 'SUB_ADMIN'
+        || data?.user?.adminType === 'SUPER_ADMIN'
+        || data?.user?.adminType === 'SUB_ADMIN';
+
+      if (isAdminUser) {
+        navigate('/dashboard');
+        return;
+      }
+      navigate('/user/dashboard');
+    } catch (requestError) {
+      const responseData = requestError?.response?.data;
+      const message = responseData?.errors?.[0]?.msg || responseData?.message || 'Invalid login credentials';
+      setLoginError(message);
+    } finally {
+      setLoginLoading(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -232,9 +272,6 @@ function PublicLayout() {
           </nav>
 
           <div className="public-auth-btns">
-            <NavLink to="/user-login" className="public-auth-btn btn-primary">
-              Login
-            </NavLink>
             <NavLink to="/registration" className="public-auth-btn btn-secondary">
               Registration
             </NavLink>
@@ -248,9 +285,6 @@ function PublicLayout() {
         </nav>
 
         <div className="public-mobile-auth">
-          <NavLink to="/user-login" className="public-auth-btn btn-primary" onClick={closeMenu}>
-            Login
-          </NavLink>
           <NavLink to="/registration" className="public-auth-btn btn-secondary" onClick={closeMenu}>
             Registration
           </NavLink>
@@ -354,6 +388,53 @@ function PublicLayout() {
         </div>
       </footer>
       <div className="public-copyright">Copyright © 2026 Elcon Network. All Rights Reserved.</div>
+      {/* Floating Login Button */}
+      <button 
+        className="floating-login-btn"
+        onClick={() => setIsLoginSlideOpen(true)}
+      >
+        <span className="login-icon">👤</span> Login
+      </button>
+
+      {/* Slide-in Login Form */}
+      <div className={`slide-in-login-overlay ${isLoginSlideOpen ? 'open' : ''}`} onClick={() => setIsLoginSlideOpen(false)}></div>
+      <div className={`slide-in-login-panel ${isLoginSlideOpen ? 'open' : ''}`}>
+        <button className="slide-in-close" onClick={() => setIsLoginSlideOpen(false)}>✕</button>
+        <div className="slide-in-header">
+          <h3>Welcome Back</h3>
+          <p>Login to your account</p>
+        </div>
+        <form className="slide-in-form" onSubmit={handleLoginSubmit}>
+          {loginError && <div className="slide-in-error">{loginError}</div>}
+          <div className="form-group">
+            <label>Member ID or Email</label>
+            <input
+              type="text"
+              placeholder="Enter Member ID or Email"
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="slide-in-submit" disabled={loginLoading}>
+            {loginLoading ? 'Logging in...' : 'Login'}
+          </button>
+          <div className="slide-in-footer">
+            <p>Not a member? <NavLink to="/registration" onClick={() => setIsLoginSlideOpen(false)}>Create a new account</NavLink></p>
+          </div>
+        </form>
+      </div>
+
     </div>
   );
 }
