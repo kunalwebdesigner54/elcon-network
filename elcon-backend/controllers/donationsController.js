@@ -503,14 +503,16 @@ exports.getMyDonations = async (req, res) => {
     const directsMap = {};
     directCounts.forEach(c => { directsMap[c._id] = c.count; });
 
-    // Physical levelDepth calculation removed since Donations use logical upgrade level
+    const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId levelDepth').lean();
+    const levelDepthMap = {};
+    users.forEach(u => { levelDepthMap[u.memberId] = u.levelDepth || 0; });
 
     const mapRow = (d, type) => ({
       sNo: 0,
       donationId: d.donationId,
       type,
       level: d.level,
-      levelDepth: d.level,
+      levelDepth: levelDepthMap[d.fromMemberId] || 0,
       amount: d.amount,
       fromMemberId: d.fromMemberId,
       fromName: d.fromName,
@@ -578,7 +580,9 @@ exports.getAllDonations = async (req, res) => {
     const directsMap = {};
     directCounts.forEach(c => { directsMap[c._id] = c.count; });
 
-    // Physical levelDepth calculation removed since Donations use logical upgrade level
+    const users = await User.find({ memberId: { $in: uniqueMemberIds } }).select('memberId levelDepth').lean();
+    const levelDepthMap = {};
+    users.forEach(u => { levelDepthMap[u.memberId] = u.levelDepth || 0; });
 
     const rows = donations.map((d, index) => ({
       sNo: index + 1,
@@ -597,7 +601,7 @@ exports.getAllDonations = async (req, res) => {
       utrNumber: d.utrNumber || '---',
       remark: d.remark || '---',
       directs: directsMap[d.fromMemberId] || 0,
-      levelDepth: d.level,
+      levelDepth: levelDepthMap[d.fromMemberId] || 0,
     }));
 
     const totalAmount = donations.filter(d => ['APPROVED', 'COMPLETED'].includes(d.status)).reduce((s, d) => s + d.amount, 0);
