@@ -105,7 +105,7 @@ function ProductsSection() {
                         )}
                         {product.discount > 0 && (
                           <span className="pp-card-badge">
-                            {product.discount > 100 ? `₹${product.discount} OFF` : `${product.discount}% OFF`}
+                            ₹{product.discount} OFF
                           </span>
                         )}
                       </div>
