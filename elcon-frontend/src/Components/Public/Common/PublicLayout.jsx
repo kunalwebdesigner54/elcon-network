@@ -18,25 +18,7 @@ const navItems = [
   },
   { 
     label: 'NGO', 
-    dropdown: [
-      { label: 'About NGO', to: '/about-us' },
-      { label: 'Mission & Vision', to: '#' },
-      { 
-        label: 'Projects', 
-        dropdown: [
-          { label: 'Education Program', to: '#' },
-          { label: 'Health Camp', to: '#' },
-          { label: 'Environment Drive', to: '#' }
-        ]
-      },
-      { label: 'Impact Stories', to: '#' },
-      { label: 'Gallery', to: '/gallery' },
-      { label: 'Donate', to: '#' },
-      { label: 'Volunteer', to: '#' },
-      { label: 'Helping Process', to: '/helping-process' },
-      { label: 'Our Activity', to: '/our-activity' },
-      { label: 'Legal & Registration', to: '#' }
-    ]
+    to: '/ngo'
   },
   {
     label: 'Business',

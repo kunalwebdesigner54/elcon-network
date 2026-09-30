@@ -79,6 +79,7 @@ import Home from './Components/Public/Home/Home';
 import AboutUs from './Components/Public/About/AboutUs';
 import HelpingProcess from './Components/Public/HelpingProcess/HelpingProcess';
 import OurActivity from './Components/Public/OurActivity/OurActivity';
+import Ngo from './Components/Public/Ngo/Ngo';
 import Gallery from './Components/Public/Gallery/Gallery';
 import Contact from './Components/Public/Contact/Contact';
 import Register from './Components/Public/Register/Register';
@@ -224,7 +225,8 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about-us" element={<AboutUs />} />
           <Route path="helping-process" element={<HelpingProcess />} />
-          <Route path="our-activity" element={<OurActivity />} />
+          <Route path="our-activity" element={<Navigate to="/ngo" replace />} />
+          <Route path="ngo" element={<Ngo />} />
           <Route path="gallery" element={<Gallery />} />
           <Route path="contact" element={<Contact />} />
           <Route path="registration" element={<Register />} />
