@@ -393,7 +393,7 @@ function PublicLayout() {
         className="floating-login-btn"
         onClick={() => setIsLoginSlideOpen(true)}
       >
-        <span className="login-icon">👤</span> Login
+        Login
       </button>
 
       {/* Slide-in Login Form */}
