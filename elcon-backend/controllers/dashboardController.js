@@ -5,6 +5,7 @@ const Order = require('../models/Order');
 const LevelIncome = require('../models/LevelIncome');
 const RepurchaseIncome = require('../models/RepurchaseIncome');
 const SiteSetting = require('../models/SiteSetting');
+const DiscountWalletTransaction = require('../models/DiscountWalletTransaction');
 const { getTeamStats } = require('../services/teamService');
 const { getActualCompletedLevel } = require('../services/uplineEngine');
 
@@ -260,7 +261,6 @@ exports.adminFullDashboard = async (req, res) => {
 
     // Models required for advanced stats
     const WithdrawalRequest = require('../models/WithdrawalRequest');
-    const Coupon = require('../models/Coupon');
     const EpinRequest = require('../models/EpinRequest');
 
     const [
@@ -287,15 +287,15 @@ exports.adminFullDashboard = async (req, res) => {
       Order.countDocuments({ orderStatus: 'Pending' }),
       WithdrawalRequest.find(),
       EpinRequest.countDocuments({ status: 'Pending' }),
-      Coupon.countDocuments(),
-      Coupon.countDocuments({ status: 'USED' }),
-      Coupon.countDocuments({ status: 'ACTIVE', expiryDate: { $gt: new Date() } }),
-      Coupon.countDocuments({
+      DiscountWalletTransaction.countDocuments({ credit: { $gt: 0 } }),
+      DiscountWalletTransaction.countDocuments({ debit: { $gt: 0 } }),
+      User.countDocuments({ 
         $or: [
-          { status: 'EXPIRED' },
-          { status: 'ACTIVE', expiryDate: { $lte: new Date() } }
-        ]
-      })
+          { couponWalletBalance: { $gt: 0 } },
+          { discountCouponBalance: { $gt: 0 } }
+        ] 
+      }),
+      Promise.resolve(0)
     ]);
 
     const totalDonationAmount = allDonations.reduce((s, d) => s + d.amount, 0);
