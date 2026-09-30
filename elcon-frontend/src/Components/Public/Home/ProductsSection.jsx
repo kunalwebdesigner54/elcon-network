@@ -39,9 +39,10 @@ function ProductsSection() {
     // Fetch actual products
     const fetchProducts = async () => {
       try {
-        const data = await getPublicProducts();
-        // Just take the first 8 products for the home page slider
-        setProducts(data.slice(0, 8));
+        const response = await getPublicProducts('shopping'); // Assuming we show shopping products by default
+        const raw = response.products || [];
+        const showingProducts = raw.filter((p) => (p.status || '').toUpperCase() === 'SHOWING');
+        setProducts(showingProducts.slice(0, 8));
       } catch (err) {
         console.error('Error fetching products for home page', err);
       } finally {
