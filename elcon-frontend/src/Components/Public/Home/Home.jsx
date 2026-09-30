@@ -96,6 +96,10 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* Products Section */}
+      <ProductsSection />
+
       <section className="home-steps-section">
         <div className="public-container home-steps-row">
 
@@ -193,9 +197,6 @@ function Home() {
 
       {/* Services Section */}
       <Services />
-
-      {/* Products Section */}
-      <ProductsSection />
 
       {/* Latest News & Blogs */}
       <LatestNews />
