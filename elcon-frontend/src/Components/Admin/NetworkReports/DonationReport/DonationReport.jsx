@@ -145,7 +145,7 @@ function DonationReport() {
       const byReceiverId = !filters.receiverMemberId || String(row.receiverMemberId || '').toLowerCase().includes(filters.receiverMemberId.toLowerCase());
       const byAmount = !filters.amount || row.amount.includes(filters.amount);
       const byRank = !filters.rank || row.rank === filters.rank;
-      const byLevelDepth = !filters.levelDepth || String(row.levelDepth) === filters.levelDepth;
+      const byLevelDepth = !filters.levelDepth || parseInt(row.levelDepth, 10) === parseInt(filters.levelDepth, 10);
       const byStatus = activeTab === 'ALL' || row.status === activeTab;
       const rowDate = parseDate(row.requestDate);
       const byStartDate = !filters.startDate || rowDate >= filters.startDate;
