@@ -7,15 +7,9 @@ import './PublicLayout.css';
 
 const navItems = [
   { label: 'Home', to: '/' },
-  {
-    label: 'Products',
-    dropdown: [
-      { label: 'Grocery', to: '#' },
-      { label: 'Health & Wellness', to: '#' },
-      { label: 'Personal Care', to: '#' },
-      { label: 'Product Details Page', to: '#' },
-      { label: 'View All Products', to: '/product' }
-    ]
+  { 
+    label: 'Products', 
+    to: '/product' 
   },
   { 
     label: 'NGO', 
