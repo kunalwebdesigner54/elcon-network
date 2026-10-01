@@ -50,14 +50,14 @@ export default function ListBlogs() {
   };
 
   const handleEdit = (id) => {
-    navigate(`/admin/blogs/edit/${id}`);
+    navigate(`/blogs/edit/${id}`);
   };
 
   return (
     <div className="blog-list-container">
       <div className="blog-list-header">
         <h2>List All Blogs</h2>
-        <button className="btn-add-new" onClick={() => navigate('/admin/blogs/add-new')}>
+        <button className="btn-add-new" onClick={() => navigate('/blogs/add-new')}>
           + Add New Blog
         </button>
       </div>

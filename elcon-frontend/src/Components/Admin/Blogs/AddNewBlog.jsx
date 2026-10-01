@@ -79,7 +79,7 @@ export default function AddNewBlog(){
         await createBlog(form);
         await Swal.fire("Success", "Successfully added!", "success");
       }
-      navigate('/admin/blogs/list-all');
+      navigate('/blogs/list-all');
     } catch (error) {
       Swal.fire("Error", error.message || "Failed to save.", "error");
     } finally {
