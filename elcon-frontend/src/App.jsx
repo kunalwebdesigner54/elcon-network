@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import RepurchaseProductsAdmin from './Components/Admin/ProductsPackage/RepurchaseProducts/RepurchaseProductsAdmin';
 import PublicProducts from './Components/Public/Products/PublicProducts';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import AutoLogout from './Components/Common/AutoLogout';
 import './App.css';
 import AdminLayout from './Components/Admin/Common/AdminLayout';
 import AdminBlankPage from './Components/Admin/Common/AdminBlankPage';
@@ -214,6 +215,7 @@ function App() {
   }, []);
   return (
     <BrowserRouter>
+      <AutoLogout timeoutMinutes={15} />
       <ToastContainer />
       <Routes>
         <Route path="/login" element={<UserLogin />} />
