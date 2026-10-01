@@ -109,6 +109,7 @@ const PublicProducts = () => {
   const navigate = useNavigate();
   const [sections, setSections] = useState({});
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   useEffect(() => {
@@ -148,6 +149,18 @@ const PublicProducts = () => {
 
       <section className="pp-content">
         <div className="public-container">
+          
+          <div className="pp-search-container">
+            <i className="fa-solid fa-search pp-search-icon"></i>
+            <input 
+              type="text" 
+              className="pp-search-input" 
+              placeholder="Search products or categories..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
           {loading ? (
             <div className="pp-loading">
               <div className="pp-spinner"></div>
@@ -155,7 +168,17 @@ const PublicProducts = () => {
             </div>
           ) : (
             SECTIONS.map((sec) => {
-              const products = sections[sec.key] || [];
+              const rawProducts = sections[sec.key] || [];
+              const lowerSearch = searchTerm.toLowerCase();
+              const isCategoryMatch = sec.title.toLowerCase().includes(lowerSearch);
+              
+              const products = isCategoryMatch 
+                ? rawProducts 
+                : rawProducts.filter(p => p.name?.toLowerCase().includes(lowerSearch) || p.productName?.toLowerCase().includes(lowerSearch));
+
+              // If there's a search term and no products match in this section, hide it
+              if (searchTerm && products.length === 0) return null;
+
               return (
                 <ProductSection
                   key={sec.key}

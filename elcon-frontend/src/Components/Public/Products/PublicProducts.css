@@ -8,6 +8,41 @@
   padding: 50px 0 70px;
 }
 
+/* ─── Search Bar ─── */
+.pp-search-container {
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pp-search-input {
+  width: 100%;
+  padding: 16px 20px 16px 50px;
+  font-size: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  background: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  outline: none;
+  color: #333;
+}
+
+.pp-search-input:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15);
+}
+
+.pp-search-icon {
+  position: absolute;
+  left: 20px;
+  color: #94a3b8;
+  font-size: 18px;
+  pointer-events: none;
+}
+
 /* ─── Loading State ─── */
 .pp-loading {
   display: flex;
